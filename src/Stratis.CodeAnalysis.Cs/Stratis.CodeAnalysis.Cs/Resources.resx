@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AnalyzerDescription" xml:space="preserve">
+    <value>Type names should be all uppercase.</value>
+    <comment>An optional longer localizable description of the diagnostic.</comment>
+  </data>
+  <data name="AnalyzerMessageFormat" xml:space="preserve">
+    <value>Type name '{0}' contains lowercase letters</value>
+    <comment>The format-able message the diagnostic displays.</comment>
+  </data>
+  <data name="AnalyzerTitle" xml:space="preserve">
+    <value>Type name contains lowercase letters</value>
+    <comment>The title of the diagnostic.</comment>
+  </data>
+  <data name="SC0001_Description" xml:space="preserve">
+    <value>Smart contract code must not be inside a namespace. See https://academy.stratisplatform.com/Architecture%20Reference/SmartContracts/smart-contracts-basic-theory.html#using-net-for-smart-contracts .</value>
+    <comment>An optional longer localizable description of the diagnostic.</comment>
+  </data>
+  <data name="SC0001_MessageFormat" xml:space="preserve">
+    <value>Namespace declaration not allowed in smart contract code</value>
+    <comment>The format-able message the diagnostic displays.</comment>
+  </data>
+  <data name="SC0001_Title" xml:space="preserve">
+    <value>Namespace declaration not allowed</value>
+    <comment>The title of the diagnostic.</comment>
+  </data>
+  <data name="SC0002_Description" xml:space="preserve">
+    <value>Types from namespace cannot be used here</value>
+    <comment>An optional longer localizable description of the diagnostic.</comment>
+  </data>
+  <data name="SC0002_MessageFormat" xml:space="preserve">
+    <value>Types from namespace {0} cannot be used in smart contract code</value>
+    <comment>The format-able message the diagnostic displays.</comment>
+  </data>
+  <data name="SC0002_Title" xml:space="preserve">
+    <value>Namespace cannot be used here</value>
+    <comment>The title of the diagnostic.</comment>
+  </data>
+  <data name="SC0003_Description" xml:space="preserve">
+    <value>Classes in smart contract code must inherit from Stratis.SmartContrsct</value>
+  </data>
+  <data name="SC0003_MessageFormat" xml:space="preserve">
+    <value>Class {0} must inherit from class Stratis.SmartContracts.SmartContract</value>
+  </data>
+  <data name="SC0003_Title" xml:space="preserve">
+    <value>Class must inherit from SmartContract class</value>
+  </data>
+  <data name="SC0004_Description" xml:space="preserve">
+    <value>The first parameter in a smart constructor must be of type ISmartContractState.</value>
+  </data>
+  <data name="SC0004_MessageFormat" xml:space="preserve">
+    <value>Parameter {0} must be of type ISmartContractState.</value>
+  </data>
+  <data name="SC0004_Title" xml:space="preserve">
+    <value>Parameter type not allowed</value>
+  </data>
+  <data name="SC0005_Description" xml:space="preserve">
+    <value>New object creation of reference types is not allowed in smart contract code. See https://github.com/stratisproject/StratisFullNode/blob/master/Documentation/Features/SmartContracts/Clr-execution-and-validation.md</value>
+  </data>
+  <data name="SC0005_MessageFormat" xml:space="preserve">
+    <value>A new {0} object cannot be created here</value>
+  </data>
+  <data name="SC0005_Title" xml:space="preserve">
+    <value>New object creation of reference type not allowed</value>
+  </data>
+  <data name="SC0006_Description" xml:space="preserve">
+    <value>Field declarations are not allowed in smart contract code. See https://github.com/stratisproject/StratisFullNode/blob/master/Documentation/Features/SmartContracts/Clr-execution-and-validation.md</value>
+  </data>
+  <data name="SC0006_MessageFormat" xml:space="preserve">
+    <value>A field declaration cannot be made here</value>
+  </data>
+  <data name="SC0006_Title" xml:space="preserve">
+    <value>Field declaration not allowed</value>
+  </data>
+  <data name="SC0007_Description" xml:space="preserve">
+    <value>Only certain variable types can be used in smart contract code</value>
+  </data>
+  <data name="SC0007_MessageFormat" xml:space="preserve">
+    <value>Cannot declare a variable of type {0} here</value>
+  </data>
+  <data name="SC0007_Title" xml:space="preserve">
+    <value>Variable declaration not allowed</value>
+  </data>
+  <data name="SC0008_Description" xml:space="preserve">
+    <value>Only certain types and members can be used in smart contract code</value>
+  </data>
+  <data name="SC0008_MessageFormat" xml:space="preserve">
+    <value>Property {0} from type {1} cannot be used here</value>
+  </data>
+  <data name="SC0008_Title" xml:space="preserve">
+    <value>Cannot use this property here</value>
+  </data>
+  <data name="SC0009_Description" xml:space="preserve">
+    <value>Cannot use this method here</value>
+  </data>
+  <data name="SC0009_MessageFormat" xml:space="preserve">
+    <value>Method {0} from type {1} cannot be used here</value>
+  </data>
+  <data name="SC0009_Title" xml:space="preserve">
+    <value>Method invocation not allowed</value>
+  </data>
+  <data name="SC0010_Description" xml:space="preserve">
+    <value>An assert condition should be derived from input or state</value>
+  </data>
+  <data name="SC0010_MessageFormat" xml:space="preserve">
+    <value>Assert condition will always evaluate to {0}</value>
+  </data>
+  <data name="SC0010_Title" xml:space="preserve">
+    <value>Assert condition should not be constant</value>
+  </data>
+  <data name="SC0011_Description" xml:space="preserve">
+    <value>Custom assert message should be used, as this can be parsed to identify reason for failure</value>
+  </data>
+  <data name="SC0011_MessageFormat" xml:space="preserve">
+    <value>Assert should contain custom message that indicates exact reason for failure</value>
+  </data>
+  <data name="SC0011_Title" xml:space="preserve">
+    <value>Assert should contain custom message</value>
+  </data>
+  <data name="SC0012_Description" xml:space="preserve">
+    <value>Assert message should not be empty, as this can be parsed to identify reason for failure</value>
+  </data>
+  <data name="SC0012_MessageFormat" xml:space="preserve">
+    <value>Assert message should indicate exact reason for failure</value>
+  </data>
+  <data name="SC0012_Title" xml:space="preserve">
+    <value>Assert message should not be empty</value>
+  </data>
+</root>
