@@ -1,0 +1,3 @@
+[submodule "ext/Stratis.SmartContracts"]
+	path = ext/Stratis.SmartContracts
+	url = https://github.com/allisterb/Stratis.SmartContracts.git
