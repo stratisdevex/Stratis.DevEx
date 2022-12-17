@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33103.201
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.CodeAnalysis.Cs", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.csproj", "{C37F3131-9C5E-4B79-B277-45E0A0150757}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.csproj", "{C37F3131-9C5E-4B79-B277-45E0A0150757}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.CodeAnalysis.Cs.CodeFixes", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.CodeFixes\Stratis.CodeAnalysis.Cs.CodeFixes.csproj", "{4BD9724D-1344-4E51-9198-79DD9C9114B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs.CodeFixes", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.CodeFixes\Stratis.CodeAnalysis.Cs.CodeFixes.csproj", "{4BD9724D-1344-4E51-9198-79DD9C9114B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.CodeAnalysis.Cs.Package", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\Stratis.CodeAnalysis.Cs.Package.csproj", "{61F46ECE-B253-4F9E-9CFC-9D0F5AFA518F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs.Package", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\Stratis.CodeAnalysis.Cs.Package.csproj", "{61F46ECE-B253-4F9E-9CFC-9D0F5AFA518F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.CodeAnalysis.Cs.Test", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Test\Stratis.CodeAnalysis.Cs.Test.csproj", "{A4C39D06-9BCF-43CC-B2E2-D0EB44D28AC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs.Test", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Test\Stratis.CodeAnalysis.Cs.Test.csproj", "{A4C39D06-9BCF-43CC-B2E2-D0EB44D28AC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.CodeAnalysis.Cs.Vsix", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Vsix\Stratis.CodeAnalysis.Cs.Vsix.csproj", "{406C292A-8321-417E-A49F-4AC86D8A37D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs.Vsix", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Vsix\Stratis.CodeAnalysis.Cs.Vsix.csproj", "{406C292A-8321-417E-A49F-4AC86D8A37D6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{8DC77034-0F3C-40E6-A352-B157BCB85462}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{A0717F4C-8EED-4659-B72F-50DB73E1F64E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.SmartContracts", "..\ext\Stratis.SmartContracts\Stratis.SmartContracts\Stratis.SmartContracts.csproj", "{17BC4574-1774-4068-9CFB-70B5E76CB4FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.CodeAnalysis.Cs.TestProject", "..\tests\Stratis.CodeAnalysis.Cs.TestProject\Stratis.CodeAnalysis.Cs.TestProject.csproj", "{84AC62F5-E520-491A-BCE0-345EE7338AF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +107,18 @@ Global
 		{17BC4574-1774-4068-9CFB-70B5E76CB4FD}.Release|arm64.Build.0 = Release|Any CPU
 		{17BC4574-1774-4068-9CFB-70B5E76CB4FD}.Release|x86.ActiveCfg = Release|Any CPU
 		{17BC4574-1774-4068-9CFB-70B5E76CB4FD}.Release|x86.Build.0 = Release|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Debug|arm64.Build.0 = Debug|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Debug|x86.Build.0 = Debug|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Release|arm64.ActiveCfg = Release|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Release|arm64.Build.0 = Release|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Release|x86.ActiveCfg = Release|Any CPU
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +130,7 @@ Global
 		{A4C39D06-9BCF-43CC-B2E2-D0EB44D28AC1} = {86A6FC48-CF63-4A0F-A842-A4B96CAF4EDF}
 		{406C292A-8321-417E-A49F-4AC86D8A37D6} = {3244104A-4F62-488E-8DA9-B1FEB2E367E7}
 		{17BC4574-1774-4068-9CFB-70B5E76CB4FD} = {A0717F4C-8EED-4659-B72F-50DB73E1F64E}
+		{84AC62F5-E520-491A-BCE0-345EE7338AF1} = {86A6FC48-CF63-4A0F-A842-A4B96CAF4EDF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {602325FF-1BC0-4A57-8252-3F0471EA4151}

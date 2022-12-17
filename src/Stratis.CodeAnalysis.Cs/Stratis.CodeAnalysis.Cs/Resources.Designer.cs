@@ -106,15 +106,6 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Namespace declaration not allowed.
-        /// </summary>
-        internal static string SC0001_Title {
-            get {
-                return ResourceManager.GetString("SC0001_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Types from namespace cannot be used here.
         /// </summary>
         internal static string SC0002_Description {

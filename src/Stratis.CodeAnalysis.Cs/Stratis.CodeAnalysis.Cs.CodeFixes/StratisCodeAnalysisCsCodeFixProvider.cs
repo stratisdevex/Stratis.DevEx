@@ -20,7 +20,7 @@ namespace Stratis.CodeAnalysis.Cs
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
-            get { return ImmutableArray.Create(StratisCodeAnalysisCsAnalyzer.DiagnosticId); }
+            get { return ImmutableArray.Create<string>(); }
         }
 
         public sealed override FixAllProvider GetFixAllProvider()

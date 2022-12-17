@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 using VerifyCS = Stratis.CodeAnalysis.Cs.Test.CSharpCodeFixVerifier<
-    Stratis.CodeAnalysis.Cs.StratisCodeAnalysisCsAnalyzer,
+    Stratis.CodeAnalysis.Cs.SmartContractAnalyzer,
     Stratis.CodeAnalysis.Cs.StratisCodeAnalysisCsCodeFixProvider>;
 
 namespace Stratis.CodeAnalysis.Cs.Test
