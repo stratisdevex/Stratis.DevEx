@@ -6,7 +6,7 @@ using VerifyCS = Stratis.CodeAnalysis.Cs.Test.CSharpCodeFixVerifier<
 
 namespace Stratis.CodeAnalysis.Cs.Test
 {
-    [TestClass]
+    
     public class StratisCodeAnalysisCsUnitTest
     {
         //No diagnostics expected to show up

@@ -20,6 +20,7 @@ namespace Stratis.CodeAnalysis.Cs.Test
 
                     return solution;
                 });
+                TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.SmartContract).Assembly);
             }
         }
     }

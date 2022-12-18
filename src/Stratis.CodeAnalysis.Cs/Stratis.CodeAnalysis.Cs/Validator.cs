@@ -93,7 +93,7 @@ namespace Stratis.CodeAnalysis.Cs
             var fpn = fp
                 .ChildTokens()
                 .First(t => t.IsKind(SyntaxKind.IdentifierToken));
-
+            var m = model.GetSymbolInfo(fpt).Symbol;
             var classSymbol = model.GetSymbolInfo(fpt).Symbol as ITypeSymbol;
             if (classSymbol.ToDisplayString() != "Stratis.SmartContracts.ISmartContractState")
             {
@@ -385,6 +385,8 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(IndexAttribute)
         };
 
+        internal static readonly Type[] BoxedWhitelistedTypes = { };
+        
         internal static readonly string[] UnboxedPrimitiveTypeNames =
         {
             "void",
@@ -406,6 +408,18 @@ namespace Stratis.CodeAnalysis.Cs
         internal static readonly string[] SmartContractTypeNames = SmartContractTypes.Select(t => t.FullName).ToArray();
 
         internal static readonly string[] SmartContractArrayTypeNames = SmartContractArrayTypes.Select(t => t.FullName).ToArray();
+
+        internal static  readonly string[] WhitelistedUnBoxedTypeNames = {
+            "void",
+            "bool",
+            "byte",
+            "char",
+            "int",
+            "uint",
+            "long",
+            "ulong",
+            "string",
+        };
 
         internal static readonly string[] WhitelistedArrayPropertyNames = { "Length" };
 

@@ -53,7 +53,7 @@ namespace Stratis.CodeAnalysis.Cs.Test
                 TestCode = source,
                 FixedCode = fixedSource,
             };
-
+            test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.SmartContract).Assembly);
             test.ExpectedDiagnostics.AddRange(expected);
             await test.RunAsync(CancellationToken.None);
         }
