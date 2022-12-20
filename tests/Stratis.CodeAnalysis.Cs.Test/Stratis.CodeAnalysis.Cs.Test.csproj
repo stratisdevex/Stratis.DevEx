@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ext\Stratis.SmartContracts\Stratis.SmartContracts\Stratis.SmartContracts.csproj" />
-    <ProjectReference Include="..\Stratis.CodeAnalysis.Cs.CodeFixes\Stratis.CodeAnalysis.Cs.CodeFixes.csproj" />
-    <ProjectReference Include="..\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.csproj" />
+    <ProjectReference Include="..\..\ext\Stratis.SmartContracts\Stratis.SmartContracts\Stratis.SmartContracts.csproj" />
+    <ProjectReference Include="..\..\src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.CodeFixes\Stratis.CodeAnalysis.Cs.CodeFixes.csproj" />
+    <ProjectReference Include="..\..\src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.csproj" />
   </ItemGroup>
 
 </Project>

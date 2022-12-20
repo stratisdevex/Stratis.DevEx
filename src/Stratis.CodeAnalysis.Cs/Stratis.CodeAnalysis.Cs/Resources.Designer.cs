@@ -88,7 +88,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Smart contract code must not be inside a namespace. See https://academy.stratisplatform.com/Architecture%20Reference/SmartContracts/smart-contracts-basic-theory.html#using-net-for-smart-contracts ..
+        ///   Looks up a localized string similar to foo.
         /// </summary>
         internal static string SC0001_Description {
             get {
@@ -97,11 +97,20 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Namespace declaration not allowed in smart contract code.
+        ///   Looks up a localized string similar to Namespace declaration not allowed in smart contract code. See https://academy.stratisplatform.com/Architecture%20Reference/SmartContracts/smart-contracts-basic-theory.html#using-net-for-smart-contracts ..
         /// </summary>
         internal static string SC0001_MessageFormat {
             get {
                 return ResourceManager.GetString("SC0001_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Namespace declaration not allowed.
+        /// </summary>
+        internal static string SC0001_Title {
+            get {
+                return ResourceManager.GetString("SC0001_Title", resourceCulture);
             }
         }
         

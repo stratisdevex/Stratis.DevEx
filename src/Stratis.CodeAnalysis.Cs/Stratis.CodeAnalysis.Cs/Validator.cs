@@ -43,7 +43,7 @@ namespace Stratis.CodeAnalysis.Cs
             return CreateDiagnostic("SC0001", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
         }
 
-        // Only allow using Stratis.SmartContract namespace in smart contract code
+        // Only allow using Stratis.SmartContracts namespace in smart contract code
         public static Diagnostic AnalyzeUsingDirective(UsingDirectiveSyntax node, SemanticModel model)
         {
             var ns = node.DescendantNodes().OfType<NameSyntax>().FirstOrDefault();
@@ -132,6 +132,10 @@ namespace Stratis.CodeAnalysis.Cs
             var typename = type.ToDisplayString();
         
             if (type.IsValueType || PrimitiveArrayTypeNames.Contains(typename) || (type.IsArrayTypeKind() && (elementtype.IsValueType)))
+            {
+                return NoDiagnostic;
+            }
+            else if (typename == typeof(Stratis.SmartContracts.DeployAttribute).Name)
             {
                 return NoDiagnostic;
             }
