@@ -1,5 +1,6 @@
 namespace Stratis.DevEx;
 
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -12,36 +13,12 @@ public abstract class Runtime
     #region Constructors
     static Runtime()
     {
-        Logger = new ConsoleLogger();
-        IsKubernetesPod = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("KUBERNETES_PORT")) || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENSHIFT_BUILD_NAMESPACE"));
-        if (IsKubernetesPod)
+        Configuration = new ConfigurationBuilder().Build(); 
+        if (!Directory.Exists(StratisDevDir))
         {
-            Configuration = new ConfigurationBuilder()
-                .AddEnvironmentVariables()
-                .Build();
+            Directory.CreateDirectory(StratisDevDir);
         }
-        else if (Assembly.GetEntryAssembly()?.GetName().Name == "Silver.CLI" && Environment.GetEnvironmentVariable("USERNAME") == "Allister")
-        {
-            Configuration = new ConfigurationBuilder()
-                .AddUserSecrets("c0697968-04fe-49d7-a785-aaa817e38935")
-                .AddEnvironmentVariables()
-                .Build();
-        }
-        else if (Assembly.GetEntryAssembly()?.GetName().Name == "Silver.CLI")
-        {
-            Configuration = new ConfigurationBuilder()
-            .AddJsonFile("config.json", optional: true)
-            .AddEnvironmentVariables()
-            .Build();
-        }
-        else
-        {
-            Configuration = new ConfigurationBuilder()
-            .AddJsonFile("config.json", optional: true)
-            .Build();
-        }
-
-        DefaultHttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Silver/" + AssemblyVersion.ToString(2));
+        var logFileName = Path.Combine(Runtime.StratisDevDir, "Stratis.DevEx.log");    
     }
     public Runtime(CancellationToken ct)
     {
@@ -81,32 +58,6 @@ public abstract class Runtime
     #endregion
 
     #region Methods
-
-    public static Func<T, bool> All<T>() => (x_ => true);
-
-    public static Func<T, T> Identity<T>() => (x => x);
-    
-    public static void SetLogger(Logger logger)
-    {
-        Logger = logger;
-    }
-
-    public static void SetLoggerIfNone(Logger logger)
-    {
-        if (Logger == null)
-        {
-            Logger = logger;
-        }
-    }
-
-    public static void SetDefaultLoggerIfNone()
-    {
-        if (Logger == null)
-        {
-            Logger = new ConsoleLogger();
-        }
-    }
-
     [DebuggerStepThrough]
     public static void Info(string messageTemplate, params object[] args) => Logger.Info(messageTemplate, args);
 
@@ -172,11 +123,17 @@ public abstract class Runtime
     }
 
     [DebuggerStepThrough]
-    public static object? GetProp<T>(T o, string name)
+    public static object? GetProp(object o, string name)
     {
-        PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        PropertyInfo[] properties = o.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         return properties.FirstOrDefault(x => x.Name == name)?.GetValue(o);
     }
+
+    public static string UserHomeDir => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+    public static string AppDataDir => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+    public static string StratisDevDir => Path.Combine(AppDataDir, "StratisDev");
 
     public static string? RunCmd(string cmdName, string arguments = "", string? workingDir = null, DataReceivedEventHandler? outputHandler = null, DataReceivedEventHandler? errorHandler = null, 
         bool checkExists = true, bool isNETFxTool = false, bool isNETCoreTool = false)

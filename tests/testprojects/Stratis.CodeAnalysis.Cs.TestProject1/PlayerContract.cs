@@ -1,5 +1,5 @@
 ﻿using Stratis.SmartContracts;
-using System.Collections;
+
 public class Player : SmartContract
 {
     public Player(ISmartContractState state, Address player, Address opponent, string gameName)

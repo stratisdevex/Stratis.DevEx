@@ -12,6 +12,9 @@
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Operations;
 
+    using Stratis.DevEx;
+    using System.IO;
+
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class SmartContractAnalyzer : DiagnosticAnalyzer
     {
@@ -21,9 +24,23 @@
         public override void Initialize(AnalysisContext context)
         {
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
-            
+            Runtime.Info("Stratis.CodeAnalysis analyzer initializing. Dev data folder is {0}.", Runtime.StratisDevDir);
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-
+            /*
+            context.RegisterSemanticModelAction(action =>
+            {
+                var workspace = Runtime.GetProp(action.SemanticModel.Compilation.Options, "Workspace");
+                if (workspace != null) 
+                {
+                    var sln = Runtime.GetProp(workspace, "CurrentSolution");
+                    var fpath = (string) Runtime.GetProp(sln, "FilePath");
+                    Runtime.Info("Solution path is {0}.", fpath);
+                    
+                }
+                
+             
+            });
+            */
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
@@ -56,8 +73,14 @@
                 }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
             //context.RegisterCompilationStartAction(OnCompilationStart);
             //context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.Namespace, SymbolKind.NamedType);
-            #endregion
-
         }
+        #endregion
+
+        #region Fields
+        string Soln;
+        public static string logFileName;
+        #endregion
+
+
     }
 }

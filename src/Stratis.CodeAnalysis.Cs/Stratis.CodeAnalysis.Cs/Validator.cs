@@ -7,11 +7,13 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+
 using Stratis.SmartContracts;
 
+using Stratis.DevEx;
 namespace Stratis.CodeAnalysis.Cs
 {
-    public class Validator
+    public class Validator : Runtime
     {
         #region Constructors
         static Validator()
