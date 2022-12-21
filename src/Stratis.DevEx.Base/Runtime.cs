@@ -22,9 +22,7 @@ public abstract class Runtime
         {
             Directory.CreateDirectory(StratisDevDir);
         }
-        var logFileName = Path.Combine(Runtime.StratisDevDir, "Stratis.DevEx.log");
-        Logger = new FileLogger(logFileName, category: "ROSLYN");
-        Info("Line1");
+        Logger = new FileLogger(Path.Combine(StratisDevDir, "Stratis.DevEx.log"));
     }
     public Runtime(CancellationToken ct)
     {
@@ -84,6 +82,12 @@ public abstract class Runtime
 
     [DebuggerStepThrough]
     public static Logger.Op Begin(string messageTemplate, params object[] args) => Logger.Begin(messageTemplate, args);
+
+    [DebuggerStepThrough]
+    public static void SetFileLogger(string filename, bool debug = false, string category = "DevEx")
+    {
+        Logger = new FileLogger(filename, debug, category);
+    }
 
     [DebuggerStepThrough]
     public static void WarnIfFileExists(string filename)

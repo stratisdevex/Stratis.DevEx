@@ -24,6 +24,7 @@
         public override void Initialize(AnalysisContext context)
         {
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
+            Runtime.SetFileLogger(Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"), category: "ROSLYN");
             Runtime.Info("Stratis.CodeAnalysis analyzer initializing. Dev data folder is {0}.", Runtime.StratisDevDir);
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             /*

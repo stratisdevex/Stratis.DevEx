@@ -1,5 +1,6 @@
 namespace Stratis.DevEx;
 
+using System.IO;
 using System.Text;
 public static class StringExtensions
 {
@@ -81,5 +82,7 @@ public static class StringExtensions
 
     public static bool IsGitHubUrl(this string u) =>
         Uri.TryCreate(u, UriKind.Absolute, out var uri) && uri.Host == "github.com" ? true : false;
+
+    public static string CombinePath(this string s1, string s2) => Path.Combine(s1, s2);
 }
 
