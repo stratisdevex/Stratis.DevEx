@@ -1,5 +1,9 @@
 namespace Stratis.DevEx;
 
+using Microsoft.Extensions.Logging;
+using NReco.Logging;
+using NReco.Logging.File;
+
 public abstract class Logger
 { 
     public abstract class Op : IDisposable
@@ -104,5 +108,76 @@ public class ConsoleLogger : Logger
     public override void Fatal(string messageTemplate, params object[] args) => Console.WriteLine("[FATAL] " + messageTemplate, args);
 
     public override Op Begin(string messageTemplate, params object[] args) => new ConsoleOp(this, String.Format(messageTemplate, args));
+}
+#endregion
+
+#region NReco file logger
+/// <summary>
+/// This is a file logger implementation that doesn't require any 3rd-party NuGet packages except for the Microsoft.Extensions.Logging base libraries and can work in libraries
+/// like Roslyn analyzers where loading 3rd-party packages is problematic.
+/// </summary>
+public class FileLogger : Logger
+{
+    public FileLogger(string logFileName, bool debug = false, string category = "DevEx") : base()
+    {
+        IsDebug = debug;
+        var factory = new LoggerFactory();
+        factory.AddProvider(new FileLoggerProvider(logFileName, false));
+        logger = factory.CreateLogger(category);
+    }
+
+    public override void Info(string messageTemplate, params object[] args) => logger.LogInformation(messageTemplate, args);
+
+    public override void Debug(string messageTemplate, params object[] args) => logger.LogDebug(messageTemplate, args);
+
+    public override void Error(string messageTemplate, params object[] args) => logger.LogError(messageTemplate, args);
+
+    public override void Error(Exception ex, string messageTemplate, params object[] args) => logger.LogError(ex, messageTemplate, args);
+
+    public override void Warn(string messageTemplate, params object[] args) => logger.LogWarning(messageTemplate, args);
+
+    public override void Fatal(string messageTemplate, params object[] args) => logger.LogCritical(messageTemplate, args);
+
+    public override Op Begin(string messageTemplate, params object[] args) => new FileLoggerOp(this, String.Format(messageTemplate, args));
+
+    protected ILogger logger;
+}
+
+public class FileLoggerOp : Logger.Op
+{
+    public FileLoggerOp(FileLogger l, string opName) : base(l)
+    {
+        this.opName = opName;
+        timer.Start();
+        this.l = l;
+        l.Info(opName + "...");
+    }
+
+    public override void Complete()
+    {
+        timer.Stop();
+        l.Info($"{0} completed in {1}ms.", opName, timer.ElapsedMilliseconds);
+        isCompleted = true;
+    }
+
+    public override void Abandon()
+    {
+        timer.Stop();
+        isAbandoned = true;
+        l.Error($"{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
+    }
+
+    public override void Dispose()
+    {
+        if (timer.IsRunning) timer.Stop();
+        if (!(isCompleted || isAbandoned))
+        {
+            l.Error($"{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
+        }
+    }
+
+    string opName;
+    Stopwatch timer = new Stopwatch();
+    FileLogger l;
 }
 #endregion

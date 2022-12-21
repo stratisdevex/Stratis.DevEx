@@ -23,10 +23,8 @@ public abstract class Runtime
             Directory.CreateDirectory(StratisDevDir);
         }
         var logFileName = Path.Combine(Runtime.StratisDevDir, "Stratis.DevEx.log");
-        var factory = new LoggerFactory();
-        factory.AddProvider(new FileLoggerProvider(logFileName, false));
-        var logger = factory.CreateLogger("TEST");
-        logger.LogInformation("Line1");
+        Logger = new FileLogger(logFileName, category: "ROSLYN");
+        Info("Line1");
     }
     public Runtime(CancellationToken ct)
     {
