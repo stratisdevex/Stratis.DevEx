@@ -6,7 +6,11 @@ using System.IO.Compression;
 using System.Net;
 using System.Reflection;
 
+
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using NReco.Logging;
+using NReco.Logging.File;
 
 public abstract class Runtime
 {
@@ -18,7 +22,11 @@ public abstract class Runtime
         {
             Directory.CreateDirectory(StratisDevDir);
         }
-        var logFileName = Path.Combine(Runtime.StratisDevDir, "Stratis.DevEx.log");    
+        var logFileName = Path.Combine(Runtime.StratisDevDir, "Stratis.DevEx.log");
+        var factory = new LoggerFactory();
+        factory.AddProvider(new FileLoggerProvider(logFileName, false));
+        var logger = factory.CreateLogger("TEST");
+        logger.LogInformation("Line1");
     }
     public Runtime(CancellationToken ct)
     {

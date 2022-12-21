@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\ext\nreco_logging\src\NReco.Logging.File\NReco.Logging.File.csproj" />
+  </ItemGroup>
+
 </Project>
