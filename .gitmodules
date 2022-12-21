@@ -1,3 +1,6 @@
 [submodule "ext/Stratis.SmartContracts"]
 	path = ext/Stratis.SmartContracts
 	url = https://github.com/allisterb/Stratis.SmartContracts.git
+[submodule "ext/nreco_logging"]
+	path = ext/nreco_logging
+	url = https://github.com/allisterb/nreco_logging.git
