@@ -130,8 +130,16 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation)
         {
             var type = objectCreation.Type;
+            
             var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
-
+            if (elementtype is not null)
+            {
+                Debug("New array of type {0}[] created.", elementtype.ToDisplayString());
+            }
+            else
+            {
+                Debug("New object of type {0} created.", type.ToDisplayString());
+            }
             var typename = type.ToDisplayString();
         
             if (type.IsValueType || PrimitiveArrayTypeNames.Contains(typename) || (type.IsArrayTypeKind() && (elementtype.IsValueType)))
