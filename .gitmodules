@@ -4,3 +4,6 @@
 [submodule "ext/nreco_logging"]
 	path = ext/nreco_logging
 	url = https://github.com/allisterb/nreco_logging.git
+[submodule "ext/SharpConfig"]
+	path = ext/SharpConfig
+	url = https://github.com/allisterb/SharpConfig.git
