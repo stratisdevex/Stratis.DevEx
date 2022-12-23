@@ -43,6 +43,8 @@ public abstract class Logger
     public abstract void Fatal(string messageTemplate, params object[] args);
 
     public abstract Op Begin(string messageTemplate, params object[] args);
+
+    public abstract void Close();
 }
 
 #region Console logger
@@ -84,18 +86,18 @@ public class ConsoleOp : Logger.Op
 
 public class ConsoleLogger : Logger
 {
-    public ConsoleLogger(bool debug = false):base() 
-    { 
-        IsDebug = debug; 
+    public ConsoleLogger(bool debug = false) : base()
+    {
+        IsDebug = debug;
     }
-    
+
     public override void Info(string messageTemplate, params object[] args) => Console.WriteLine("[INFO] " + messageTemplate, args);
 
     public override void Debug(string messageTemplate, params object[] args)
     {
-        if (IsDebug) 
-        { 
-            Console.WriteLine("[DEBUG] " + messageTemplate, args); 
+        if (IsDebug)
+        {
+            Console.WriteLine("[DEBUG] " + messageTemplate, args);
         }
     }
 
@@ -108,6 +110,8 @@ public class ConsoleLogger : Logger
     public override void Fatal(string messageTemplate, params object[] args) => Console.WriteLine("[FATAL] " + messageTemplate, args);
 
     public override Op Begin(string messageTemplate, params object[] args) => new ConsoleOp(this, String.Format(messageTemplate, args));
+
+    public override void Close() {}
 }
 #endregion
 
@@ -122,7 +126,7 @@ public class FileLogger : Logger
     {
         IsDebug = debug;
         var factory = new LoggerFactory();
-        factory.AddProvider(new FileLoggerProvider(logFileName/*, new FileLoggerOptions {FormatLogEntry = entry => 
+        loggerProvider = new FileLoggerProvider(logFileName, new FileLoggerOptions() { MinLevel = debug ? LogLevel.Debug : LogLevel.Information } /*, new FileLoggerOptions {FormatLogEntry = entry => 
         {
             var logBuilder = new StringBuilder();
             if (!string.IsNullOrEmpty(entry.Message))
@@ -139,7 +143,8 @@ public class FileLogger : Logger
                 logBuilder.Append("]\t");
                 logBuilder.Append(message);
             }
-        } }*/));
+        } }*/);
+        factory.AddProvider(loggerProvider);
         logger = factory.CreateLogger(category);
     }
 
@@ -157,7 +162,13 @@ public class FileLogger : Logger
 
     public override Op Begin(string messageTemplate, params object[] args) => new FileLoggerOp(this, String.Format(messageTemplate, args));
 
+    public override void Close()
+    {
+        this.loggerProvider.Dispose();
+    }
     protected ILogger logger;
+
+    protected ILoggerProvider loggerProvider;
 }
 
 public class FileLoggerOp : Logger.Op

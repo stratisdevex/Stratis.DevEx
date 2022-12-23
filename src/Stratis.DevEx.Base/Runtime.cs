@@ -12,11 +12,13 @@ public abstract class Runtime
     #region Constructors
     static Runtime()
     {
+        AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
         if (!Directory.Exists(StratisDevDir))
         {
             Directory.CreateDirectory(StratisDevDir);
         }
         Logger = new FileLogger(Path.Combine(StratisDevDir, "Stratis.DevEx.log"));
+        Info("Stratis.DevEx startup...");
         var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
         if (!File.Exists(globalCfgFile))
         {
@@ -25,7 +27,17 @@ public abstract class Runtime
             newcfg["General"]["Debug"].BoolValue = false;
             newcfg.SaveToFile(globalCfgFile);
         }
+        else
+        {
+            Info("Loading existing global configuration file...");
+        }
         GlobalConfig = Configuration.LoadFromFile(globalCfgFile);
+        if (GlobalConfig["General"]["Debug"].BoolValue)
+        {
+            Logger.Close();
+            Logger = new FileLogger(Path.Combine(StratisDevDir, "Stratis.DevEx.log"), debug:true);
+            Info("Debug mode enabled.");
+        }
         Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
     }
     public Runtime(CancellationToken ct)
@@ -64,6 +76,14 @@ public abstract class Runtime
     #endregion
 
     #region Methods
+    private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        if (Logger != null)
+        {
+            Error((Exception)e.ExceptionObject, "Unhandled runtime error occurred.");
+        }
+    }
+
     [DebuggerStepThrough]
     public static void Info(string messageTemplate, params object[] args) => Logger.Info(messageTemplate, args);
 
