@@ -27,9 +27,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test Projects", "Test Proje
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs.TestProject1", "..\tests\testprojects\Stratis.CodeAnalysis.Cs.TestProject1\Stratis.CodeAnalysis.Cs.TestProject1.csproj", "{9C1A30FD-FF32-47E0-8FBA-8C994AC66553}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.DevEx.Base", "Stratis.DevEx.Base\Stratis.DevEx.Base.csproj", "{F54AA3E2-F4BF-4C94-8AC9-A476265A70BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.Base", "Stratis.DevEx.Base\Stratis.DevEx.Base.csproj", "{F54AA3E2-F4BF-4C94-8AC9-A476265A70BF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NReco.Logging.File", "..\ext\nreco_logging\src\NReco.Logging.File\NReco.Logging.File.csproj", "{988B3EB4-FE9B-4BA5-8CD5-FD87C007E5F5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpConfig", "..\ext\SharpConfig\Src\SharpConfig.csproj", "{368DF89F-7DD7-49D0-B290-E7E8D3347A07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -149,6 +151,18 @@ Global
 		{988B3EB4-FE9B-4BA5-8CD5-FD87C007E5F5}.Release|arm64.Build.0 = Release|Any CPU
 		{988B3EB4-FE9B-4BA5-8CD5-FD87C007E5F5}.Release|x86.ActiveCfg = Release|Any CPU
 		{988B3EB4-FE9B-4BA5-8CD5-FD87C007E5F5}.Release|x86.Build.0 = Release|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Debug|arm64.Build.0 = Debug|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Debug|x86.Build.0 = Debug|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Release|arm64.ActiveCfg = Release|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Release|arm64.Build.0 = Release|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Release|x86.ActiveCfg = Release|Any CPU
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -164,6 +178,7 @@ Global
 		{9C1A30FD-FF32-47E0-8FBA-8C994AC66553} = {3D87B9FF-6152-47D3-BB4B-F9A02960B89E}
 		{F54AA3E2-F4BF-4C94-8AC9-A476265A70BF} = {8DC77034-0F3C-40E6-A352-B157BCB85462}
 		{988B3EB4-FE9B-4BA5-8CD5-FD87C007E5F5} = {A0717F4C-8EED-4659-B72F-50DB73E1F64E}
+		{368DF89F-7DD7-49D0-B290-E7E8D3347A07} = {A0717F4C-8EED-4659-B72F-50DB73E1F64E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {602325FF-1BC0-4A57-8252-3F0471EA4151}

@@ -42,6 +42,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeNamespaceDecl(NamespaceDeclarationSyntax node, SemanticModel model)
         {
             var ns = node.DescendantNodes().First();
+            Debug("Namespace {0} declared.", ns.ToFullString());
             return CreateDiagnostic("SC0001", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
         }
 

@@ -122,7 +122,24 @@ public class FileLogger : Logger
     {
         IsDebug = debug;
         var factory = new LoggerFactory();
-        factory.AddProvider(new FileLoggerProvider(logFileName, false));
+        factory.AddProvider(new FileLoggerProvider(logFileName/*, new FileLoggerOptions {FormatLogEntry = entry => 
+        {
+            var logBuilder = new StringBuilder();
+            if (!string.IsNullOrEmpty(entry.Message))
+            {
+                DateTime timeStamp = DateTime.Now;
+                logBuilder.Append(timeStamp.ToString("o"));
+                logBuilder.Append('\t');
+                logBuilder.Append(NReco.Logging.File.FileLogger.GetShortLogLevel(logLevel));
+                logBuilder.Append("\t[");
+                logBuilder.Append(logName);
+                logBuilder.Append("]");
+                logBuilder.Append("\t[");
+                logBuilder.Append(eventId);
+                logBuilder.Append("]\t");
+                logBuilder.Append(message);
+            }
+        } }*/));
         logger = factory.CreateLogger(category);
     }
 

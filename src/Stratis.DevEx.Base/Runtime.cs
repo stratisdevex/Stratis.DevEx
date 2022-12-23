@@ -6,23 +6,27 @@ using System.IO.Compression;
 using System.Net;
 using System.Reflection;
 
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using NReco.Logging;
-using NReco.Logging.File;
-
+using SharpConfig; 
 public abstract class Runtime
 {
     #region Constructors
     static Runtime()
     {
-        Configuration = new ConfigurationBuilder().Build(); 
         if (!Directory.Exists(StratisDevDir))
         {
             Directory.CreateDirectory(StratisDevDir);
         }
         Logger = new FileLogger(Path.Combine(StratisDevDir, "Stratis.DevEx.log"));
+        var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
+        if (!File.Exists(globalCfgFile))
+        {
+            Info("Creating new global configuration file...");
+            var newcfg = new Configuration();
+            newcfg["General"]["Debug"].BoolValue = false;
+            newcfg.SaveToFile(globalCfgFile);
+        }
+        GlobalConfig = Configuration.LoadFromFile(globalCfgFile);
+        Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
     }
     public Runtime(CancellationToken ct)
     {
@@ -32,9 +36,7 @@ public abstract class Runtime
     #endregion
 
     #region Properties
-    public static IConfigurationRoot Configuration { get; set; }
-
-    public static string Config(string i) => Configuration[i];
+    public static Configuration GlobalConfig { get; set; }
 
     public static bool DebugEnabled { get; set; }
 

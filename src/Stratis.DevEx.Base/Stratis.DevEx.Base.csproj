@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ext\nreco_logging\src\NReco.Logging.File\NReco.Logging.File.csproj" />
+    <ProjectReference Include="..\..\ext\SharpConfig\Src\SharpConfig.csproj" />
   </ItemGroup>
 
 </Project>
