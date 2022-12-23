@@ -54,10 +54,6 @@ public abstract class Runtime
 
     public static bool InteractiveConsole { get; set; } = false;
 
-    public static bool IsKubernetesPod { get; }
-
-    public static bool IsAzureFunction { get; set; }
-
     public static string PathSeparator { get; } = Environment.OSVersion.Platform == PlatformID.Win32NT ? "\\" : "/";
 
     public static Logger Logger { get; protected set; }

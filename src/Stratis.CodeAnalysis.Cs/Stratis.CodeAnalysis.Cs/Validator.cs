@@ -130,7 +130,6 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation)
         {
             var type = objectCreation.Type;
-            
             var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
             if (elementtype is not null)
             {
@@ -322,8 +321,12 @@ namespace Stratis.CodeAnalysis.Cs
             new DiagnosticDescriptor(id, RM.GetString($"{id}_Title"), RM.GetString($"{id}_MessageFormat"), Category,
                 severity, true, RM.GetString($"{id}_Description"));
 
-        public static Diagnostic CreateDiagnostic(string id, DiagnosticSeverity severity, Location location, params object[] args) =>
-            Diagnostic.Create(GetDescriptor(id, severity), location, args);
+        public static Diagnostic CreateDiagnostic(string id, DiagnosticSeverity severity, Location location, params object[] args)
+        {
+            var d = Diagnostic.Create(GetDescriptor(id, severity), location, args);
+            Debug("Emitting diagnostic Id: {0} Title: {1} Location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
+            return d;
+        }
         #endregion
 
         #region Fields
@@ -349,7 +352,23 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(string),
         };
 
-       internal static readonly Type[] BoxedPrimitiveArrayTypes =
+        internal static readonly string[] UnboxedPrimitiveTypeNames =
+        {
+            "void",
+            "bool",
+            "byte",
+            "sbyte",
+            "char",
+            "int",
+            "uint",
+            "long",
+            "ulong",
+            "string",
+        };
+
+        internal static readonly string[] PrimitiveTypeNames = UnboxedPrimitiveTypeNames.Concat(BoxedPrimitiveTypes.Select(t => t.FullName)).ToArray();
+
+        internal static readonly Type[] BoxedPrimitiveArrayTypes =
        {
             typeof(bool[]),
             typeof(byte[]),
@@ -363,6 +382,8 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(UInt256[]),
             typeof(string[])
         };
+
+        internal static readonly string[] PrimitiveArrayTypeNames = UnboxedPrimitiveTypeNames.Skip(1).Select(t => t + "[]").Concat(BoxedPrimitiveArrayTypes.Select(t => t.FullName)).ToArray();
 
         internal static readonly Type[] SmartContractTypes =
         {
@@ -399,42 +420,10 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(DeployAttribute),
             typeof(IndexAttribute)
         };
-
-        internal static readonly Type[] BoxedWhitelistedTypes = { };
-        
-        internal static readonly string[] UnboxedPrimitiveTypeNames =
-        {
-            "void",
-            "bool",
-            "byte",
-            "sbyte",
-            "char",
-            "int",
-            "uint",
-            "long",
-            "ulong",
-            "string",
-        };
-
-        internal static readonly string[] PrimitiveTypeNames = UnboxedPrimitiveTypeNames.Concat(BoxedPrimitiveTypes.Select(t => t.FullName)).ToArray();
-
-        internal static readonly string[] PrimitiveArrayTypeNames = UnboxedPrimitiveTypeNames.Skip(1).Select(t => t + "[]").Concat(BoxedPrimitiveArrayTypes.Select(t => t.FullName)).ToArray();
-
+ 
         internal static readonly string[] SmartContractTypeNames = SmartContractTypes.Select(t => t.FullName).ToArray();
 
         internal static readonly string[] SmartContractArrayTypeNames = SmartContractArrayTypes.Select(t => t.FullName).ToArray();
-
-        internal static  readonly string[] WhitelistedUnBoxedTypeNames = {
-            "void",
-            "bool",
-            "byte",
-            "char",
-            "int",
-            "uint",
-            "long",
-            "ulong",
-            "string",
-        };
 
         internal static readonly string[] WhitelistedArrayPropertyNames = { "Length" };
 
