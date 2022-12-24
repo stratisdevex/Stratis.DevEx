@@ -126,39 +126,45 @@ public class FileLogger : Logger
     {
         IsDebug = debug;
         var factory = new LoggerFactory();
-        loggerProvider = new FileLoggerProvider(logFileName, new FileLoggerOptions() { MinLevel = debug ? LogLevel.Debug : LogLevel.Information } /*, new FileLoggerOptions {FormatLogEntry = entry => 
-        {
-            var logBuilder = new StringBuilder();
-            if (!string.IsNullOrEmpty(entry.Message))
+        loggerProvider = new FileLoggerProvider(logFileName, new FileLoggerOptions() { MinLevel = debug ? LogLevel.Debug : LogLevel.Information, 
+            FormatLogEntry = entry => 
             {
-                DateTime timeStamp = DateTime.Now;
-                logBuilder.Append(timeStamp.ToString("o"));
-                logBuilder.Append('\t');
-                logBuilder.Append(NReco.Logging.File.FileLogger.GetShortLogLevel(logLevel));
-                logBuilder.Append("\t[");
-                logBuilder.Append(logName);
-                logBuilder.Append("]");
-                logBuilder.Append("\t[");
-                logBuilder.Append(eventId);
-                logBuilder.Append("]\t");
-                logBuilder.Append(message);
-            }
-        } }*/);
+                var logBuilder = new StringBuilder();
+                if (!string.IsNullOrEmpty(entry.Message))
+                {
+                    DateTime timeStamp = DateTime.Now;
+                    logBuilder.Append(timeStamp.ToString());
+                    logBuilder.Append(' ');
+                    logBuilder.Append(NReco.Logging.File.FileLogger.GetShortLogLevel(entry.LogLevel));
+                    logBuilder.Append(" [");
+                    logBuilder.Append(Runtime.LogName);
+                    logBuilder.Append("]");
+                    logBuilder.Append(" [");
+                    logBuilder.Append(entry.EventId.Id.ToString());
+                    logBuilder.Append("] ");
+                    logBuilder.Append(entry.Message);
+                    return logBuilder.ToString();
+                }
+                else
+                {
+                    return "";
+                }
+            } });
         factory.AddProvider(loggerProvider);
         logger = factory.CreateLogger(category);
     }
 
-    public override void Info(string messageTemplate, params object[] args) => logger.LogInformation(messageTemplate, args);
+    public override void Info(string messageTemplate, params object[] args) => logger.LogInformation(Runtime.SessionId, messageTemplate, args);
 
-    public override void Debug(string messageTemplate, params object[] args) => logger.LogDebug(messageTemplate, args);
+    public override void Debug(string messageTemplate, params object[] args) => logger.LogDebug(Runtime.SessionId, messageTemplate, args);
 
-    public override void Error(string messageTemplate, params object[] args) => logger.LogError(messageTemplate, args);
+    public override void Error(string messageTemplate, params object[] args) => logger.LogError(Runtime.SessionId, messageTemplate, args);
 
-    public override void Error(Exception ex, string messageTemplate, params object[] args) => logger.LogError(ex, messageTemplate, args);
+    public override void Error(Exception ex, string messageTemplate, params object[] args) => logger.LogError(Runtime.SessionId, ex, messageTemplate, args);
 
-    public override void Warn(string messageTemplate, params object[] args) => logger.LogWarning(messageTemplate, args);
+    public override void Warn(string messageTemplate, params object[] args) => logger.LogWarning(Runtime.SessionId, messageTemplate, args);
 
-    public override void Fatal(string messageTemplate, params object[] args) => logger.LogCritical(messageTemplate, args);
+    public override void Fatal(string messageTemplate, params object[] args) => logger.LogCritical(Runtime.SessionId, messageTemplate, args);
 
     public override Op Begin(string messageTemplate, params object[] args) => new FileLoggerOp(this, String.Format(messageTemplate, args));
 

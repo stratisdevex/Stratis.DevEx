@@ -8,6 +8,8 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 
+using Microsoft.Extensions.Logging;
+
 using SharpConfig; 
 public abstract class Runtime
 {
@@ -15,12 +17,13 @@ public abstract class Runtime
     static Runtime()
     {
         AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
+        SessionId = new EventId(Rng.Next(0, 99999));
         if (!Directory.Exists(StratisDevDir))
         {
             Directory.CreateDirectory(StratisDevDir);
         }
         Logger = new FileLogger(Path.Combine(StratisDevDir, "Stratis.DevEx.log"));
-        Info("Stratis.DevEx startup...");
+        Info(Environment.NewLine + "Stratis DevEx startup with session id {0}...", SessionId.Id);
         var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
         if (!File.Exists(globalCfgFile))
         {
@@ -60,6 +63,12 @@ public abstract class Runtime
 
     public static Logger Logger { get; protected set; }
 
+    public static string LogName { get; set; } = "BASE";
+
+    public static Random Rng { get; } = new Random();
+
+    public static EventId SessionId { get; protected set; }
+
     public static CancellationTokenSource Cts { get; } = new CancellationTokenSource();
 
     public static CancellationToken Ct { get; protected set; } = Cts.Token;
@@ -76,6 +85,7 @@ public abstract class Runtime
     #region Methods
     private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
+        LogName = "BASE";
         if (Logger != null)
         {
             Error((Exception)e.ExceptionObject, "Unhandled runtime error occurred.");
@@ -102,12 +112,6 @@ public abstract class Runtime
 
     [DebuggerStepThrough]
     public static Logger.Op Begin(string messageTemplate, params object[] args) => Logger.Begin(messageTemplate, args);
-
-    [DebuggerStepThrough]
-    public static void SetFileLogger(string filename, bool debug = false, string category = "DevEx")
-    {
-        Logger = new FileLogger(filename, debug, category);
-    }
 
     [DebuggerStepThrough]
     public static string FailIfFileNotFound(string filePath)
@@ -141,8 +145,6 @@ public abstract class Runtime
 
     [DebuggerStepThrough]
     public T FailIfNotInitialized<T>(Func<T> r) => Initialized ? r() : throw new RuntimeNotInitializedException(this);
-
-    
 
     [DebuggerStepThrough]
     public static void SetProps<T>(T o, Dictionary<string, object> setprops)

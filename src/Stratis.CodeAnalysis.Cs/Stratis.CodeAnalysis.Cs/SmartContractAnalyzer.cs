@@ -24,15 +24,14 @@
         public override void Initialize(AnalysisContext context)
         {
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
-            Runtime.Logger.Close();
-            Runtime.SetFileLogger(Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"), category: "ROSLYN", debug: Runtime.GlobalConfig["General"]["Debug"].BoolValue);
+            Runtime.LogName = "ROSLYN";
             Runtime.Info("Stratis.CodeAnalysis analyzer initializing...");
             //context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             
-            context.RegisterCompilationStartAction(action =>
+            context.RegisterCompilationStartAction(ctx =>
             {
-                Runtime.Info("Compilation start");
-                var workspace = Runtime.GetProp(action.Compilation.Options, "Workspace");
+                Runtime.Info("Compilation start...");
+                var workspace = Runtime.GetProp(ctx.Compilation.Options, "Workspace");
                 if (workspace != null) 
                 {
                     var sln = Runtime.GetProp(workspace, "CurrentSolution");
@@ -44,7 +43,12 @@
                 {
                     Runtime.Info("Could not get Workspace property");
                 }
-             
+                if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg"))
+                {
+                    var cfg = Runtime.LoadConfig(ctx.Options.AdditionalFiles.First(f => f.Path == "stratisdev.cfg").Path);
+                    Runtime.BindConfig(Runtime.GlobalConfig, cfg);
+                }
+
             });
 
             
@@ -88,7 +92,8 @@
         { 
             if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg")) 
             {
-                //SharpConfig.Configuration.
+                var cfg = Runtime.LoadConfig(ctx.Options.AdditionalFiles.First(f => f.Path == "stratisdev.cfg").Path);
+                Runtime.BindConfig(Runtime.GlobalConfig, cfg);
             }
         }
         #endregion
