@@ -50,6 +50,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeUsingDirective(UsingDirectiveSyntax node, SemanticModel model)
         {
             var ns = node.DescendantNodes().OfType<NameSyntax>().FirstOrDefault();
+            Debug("Using directive for namespace {0} declared.", ns.ToFullString().Trim());
             if (ns != null && !WhitelistedNamespaces.Contains(ns.ToFullString()))
             {
                 return CreateDiagnostic("SC0002", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
@@ -140,8 +141,9 @@ namespace Stratis.CodeAnalysis.Cs
                 Debug("New object of type {0} created.", type.ToDisplayString());
             }
             var typename = type.ToDisplayString();
+            var elementtypename = elementtype?.ToDisplayString() ?? "";
         
-            if (type.IsValueType || PrimitiveArrayTypeNames.Contains(typename) || (type.IsArrayTypeKind() && (elementtype.IsValueType)))
+            if (type.IsValueType || PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename)  || (type.IsArrayTypeKind() && (elementtype.IsValueType || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename))))
             {
                 return NoDiagnostic;
             }
