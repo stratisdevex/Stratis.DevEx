@@ -134,11 +134,11 @@ namespace Stratis.CodeAnalysis.Cs
             var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
             if (elementtype is not null)
             {
-                Debug("New array of type {0}[] created.", elementtype.ToDisplayString());
+                Debug("New array of type {0}[] created at location {1}.", elementtype.ToDisplayString(), objectCreation.Syntax.GetLocation());
             }
             else
             {
-                Debug("New object of type {0} created.", type.ToDisplayString());
+                Debug("New object of type {0} created at location {1}.", type.ToDisplayString(), objectCreation.Syntax.GetLocation());
             }
             var typename = type.ToDisplayString();
             var elementtypename = elementtype?.ToDisplayString() ?? "";

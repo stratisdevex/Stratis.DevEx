@@ -1,8 +1,10 @@
 namespace Stratis.DevEx;
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 
@@ -108,9 +110,24 @@ public abstract class Runtime
     }
 
     [DebuggerStepThrough]
-    public static void WarnIfFileExists(string filename)
+    public static string FailIfFileNotFound(string filePath)
+    {
+        if (filePath.StartsWith("http://") || filePath.StartsWith("https://"))
+        {
+            return filePath;
+        }
+        else if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException(filePath);
+        }
+        else return filePath;
+    }
+
+    [DebuggerStepThrough]
+    public static string WarnIfFileExists(string filename)
     {
         if (File.Exists(filename)) Warn("File {0} exists, overwriting...", filename);
+        return filename;
     }
 
     [DebuggerStepThrough]
@@ -125,19 +142,7 @@ public abstract class Runtime
     [DebuggerStepThrough]
     public T FailIfNotInitialized<T>(Func<T> r) => Initialized ? r() : throw new RuntimeNotInitializedException(this);
 
-    [DebuggerStepThrough]
-    public static string FailIfFileNotFound(string filePath)
-    {
-        if (filePath.StartsWith("http://") || filePath.StartsWith("https://"))
-        {
-            return filePath;
-        }
-        else if (!File.Exists(filePath))
-        {
-            throw new FileNotFoundException(filePath);
-        }
-        else return filePath;
-    }
+    
 
     [DebuggerStepThrough]
     public static void SetProps<T>(T o, Dictionary<string, object> setprops)
@@ -293,6 +298,39 @@ public abstract class Runtime
         else return path;
     }
 
+    public static Configuration CreateDefaultConfig()
+    {
+        var cfg  = new Configuration();
+        var general = cfg.Add("General");
+        general.Add("Debug", true);
+        return cfg;
+    }
 
+    public static void SaveConfig(Configuration cfg, string filename) => cfg.SaveToFile(WarnIfFileExists(filename));
+    
+    public static Configuration LoadConfig(string filename) => Configuration.LoadFromFile(FailIfFileNotFound(filename));
+    
+    public static Configuration BindConfig(Configuration cfg1, Configuration cfg2) 
+    {
+        foreach(var section in cfg2)
+        {
+            if (!cfg1.Contains(section.Name))
+            {
+                cfg1.Add(section.Name);
+            }
+            foreach(var setting in section)
+            {
+                if (!cfg1[section.Name].Contains(setting.Name))
+                {
+                    cfg1[section.Name].Add(setting);
+                }
+                else
+                {
+                    cfg1[section.Name][setting.Name].RawValue = setting.RawValue;
+                }
+            }
+        }
+        return cfg1;
+    }
     #endregion
 }

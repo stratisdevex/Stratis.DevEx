@@ -26,12 +26,13 @@
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
             Runtime.Logger.Close();
             Runtime.SetFileLogger(Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"), category: "ROSLYN", debug: Runtime.GlobalConfig["General"]["Debug"].BoolValue);
-            Runtime.Info("Stratis.CodeAnalysis analyzer initializing. Dev data folder is {0}.", Runtime.StratisDevDir);
+            Runtime.Info("Stratis.CodeAnalysis analyzer initializing...");
             //context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-            /*
-            context.RegisterSemanticModelAction(action =>
+            
+            context.RegisterCompilationStartAction(action =>
             {
-                var workspace = Runtime.GetProp(action.SemanticModel.Compilation.Options, "Workspace");
+                Runtime.Info("Compilation start");
+                var workspace = Runtime.GetProp(action.Compilation.Options, "Workspace");
                 if (workspace != null) 
                 {
                     var sln = Runtime.GetProp(workspace, "CurrentSolution");
@@ -39,10 +40,14 @@
                     Runtime.Info("Solution path is {0}.", fpath);
                     
                 }
-                
+                else
+                {
+                    Runtime.Info("Could not get Workspace property");
+                }
              
             });
-            */
+
+            
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
@@ -75,6 +80,16 @@
                 }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
             //context.RegisterCompilationStartAction(OnCompilationStart);
             //context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.Namespace, SymbolKind.NamedType);
+        }
+        #endregion
+
+        #region Methods
+        private static void HandleCompilationStart(CompilationStartAnalysisContext ctx)
+        { 
+            if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg")) 
+            {
+                //SharpConfig.Configuration.
+            }
         }
         #endregion
 
