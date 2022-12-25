@@ -23,14 +23,15 @@
         
         public override void Initialize(AnalysisContext context)
         {
-            if (!Debugger.IsAttached) context.EnableConcurrentExecution();
-            Runtime.LogName = "ROSLYN";
+            Runtime.Initialize("ROSLYN", Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"));
             Runtime.Info("Stratis.CodeAnalysis analyzer initializing...");
-            //context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-            
+
+            if (!Debugger.IsAttached) context.EnableConcurrentExecution();
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.RegisterCompilationStartAction(ctx =>
             {
                 Runtime.Info("Compilation start...");
+                /*
                 var workspace = Runtime.GetProp(ctx.Compilation.Options, "Workspace");
                 if (workspace != null) 
                 {
@@ -43,15 +44,17 @@
                 {
                     Runtime.Info("Could not get Workspace property");
                 }
+                */
+ 
                 if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg"))
                 {
-                    var cfg = Runtime.LoadConfig(ctx.Options.AdditionalFiles.First(f => f.Path == "stratisdev.cfg").Path);
+                    var cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path == "stratisdev.cfg").Path;
+                    Runtime.Info("Loading analyzer configuration from {0}...", cfgFile);
+                    var cfg = Runtime.LoadConfig(cfgFile);
                     Runtime.BindConfig(Runtime.GlobalConfig, cfg);
                 }
-
+                
             });
-
-            
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
@@ -59,50 +62,30 @@
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeFieldDecl((FieldDeclarationSyntax)ctx.Node, ctx), SyntaxKind.FieldDeclaration);
             
             context.RegisterOperationAction(ctx =>
-                {
-                    switch (ctx.Operation)
-                    {
-                        case IObjectCreationOperation objectCreation:
-                            Validator.AnalyzeObjectCreation(objectCreation, ctx);
-                            break;
-
-                        case IPropertyReferenceOperation propReference:
-                            Validator.AnalyzePropertyReference(propReference, ctx);
-                            break;
-
-                        case IInvocationOperation methodInvocation:
-                            Validator.AnalyzeMethodInvocation(methodInvocation, ctx);
-                            Validator.AnalyzeAssertConditionConstant(methodInvocation, ctx);
-                            Validator.AnalyzeAssertMessageNotProvided(methodInvocation, ctx);
-                            Validator.AnalyzeAssertMessageEmpty(methodInvocation, ctx);
-                            break;
-                        
-                        case IVariableDeclaratorOperation variableDeclarator:
-                            Validator.AnalyzeVariableDeclaration(variableDeclarator, ctx);
-                            break;
-                    }
-                }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
-            //context.RegisterCompilationStartAction(OnCompilationStart);
-            //context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.Namespace, SymbolKind.NamedType);
-        }
-        #endregion
-
-        #region Methods
-        private static void HandleCompilationStart(CompilationStartAnalysisContext ctx)
-        { 
-            if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg")) 
             {
-                var cfg = Runtime.LoadConfig(ctx.Options.AdditionalFiles.First(f => f.Path == "stratisdev.cfg").Path);
-                Runtime.BindConfig(Runtime.GlobalConfig, cfg);
-            }
+                switch (ctx.Operation)
+                {
+                    case IObjectCreationOperation objectCreation:
+                        Validator.AnalyzeObjectCreation(objectCreation, ctx);
+                        break;
+
+                    case IPropertyReferenceOperation propReference:
+                        Validator.AnalyzePropertyReference(propReference, ctx);
+                        break;
+
+                    case IInvocationOperation methodInvocation:
+                        Validator.AnalyzeMethodInvocation(methodInvocation, ctx);
+                        Validator.AnalyzeAssertConditionConstant(methodInvocation, ctx);
+                        Validator.AnalyzeAssertMessageNotProvided(methodInvocation, ctx);
+                        Validator.AnalyzeAssertMessageEmpty(methodInvocation, ctx);
+                        break;
+                        
+                    case IVariableDeclaratorOperation variableDeclarator:
+                        Validator.AnalyzeVariableDeclaration(variableDeclarator, ctx);
+                        break;
+                }
+            }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
         }
         #endregion
-
-        #region Fields
-        string Soln;
-        public static string logFileName;
-        #endregion
-
-
     }
 }

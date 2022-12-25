@@ -18,32 +18,7 @@ public abstract class Runtime
     {
         AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
         SessionId = new EventId(Rng.Next(0, 99999));
-        if (!Directory.Exists(StratisDevDir))
-        {
-            Directory.CreateDirectory(StratisDevDir);
-        }
-        Logger = new FileLogger(Path.Combine(StratisDevDir, "Stratis.DevEx.log"));
-        Info(Environment.NewLine + "Stratis DevEx startup with session id {0}...", SessionId.Id);
-        var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
-        if (!File.Exists(globalCfgFile))
-        {
-            Info("Creating new global configuration file...");
-            var newcfg = new Configuration();
-            newcfg["General"]["Debug"].BoolValue = false;
-            newcfg.SaveToFile(globalCfgFile);
-        }
-        else
-        {
-            Info("Loading existing global configuration file...");
-        }
-        GlobalConfig = Configuration.LoadFromFile(globalCfgFile);
-        if (GlobalConfig["General"]["Debug"].BoolValue)
-        {
-            Logger.Close();
-            Logger = new FileLogger(Path.Combine(StratisDevDir, "Stratis.DevEx.log"), debug:true);
-            Info("Debug mode enabled.");
-        }
-        Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
+        Logger = new ConsoleLogger();
     }
     public Runtime(CancellationToken ct)
     {
@@ -83,6 +58,32 @@ public abstract class Runtime
     #endregion
 
     #region Methods
+    public static void Initialize(string logname, string logfile)
+    {
+        LogName = logname;
+        Logger = new FileLogger(logfile);
+        Info("Stratis DevEx startup with session id {0}...", SessionId.Id);
+        var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
+        if (!File.Exists(globalCfgFile))
+        {
+            Info("Creating new global configuration file...");
+            var newcfg = new Configuration();
+            newcfg["General"]["Debug"].BoolValue = false;
+            newcfg.SaveToFile(globalCfgFile);
+        }
+        else
+        {
+            Info("Loading existing global configuration file...");
+        }
+        GlobalConfig = Configuration.LoadFromFile(globalCfgFile);
+        if (GlobalConfig["General"]["Debug"].BoolValue)
+        {
+            Logger.Close();
+            Logger = new FileLogger(Path.Combine(StratisDevDir, "Stratis.DevEx.log"), debug: true);
+            Info("Debug mode enabled.");
+        }
+        Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
+    }
     private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
         LogName = "BASE";

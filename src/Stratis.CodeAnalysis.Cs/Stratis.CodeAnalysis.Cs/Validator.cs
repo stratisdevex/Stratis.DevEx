@@ -326,7 +326,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic CreateDiagnostic(string id, DiagnosticSeverity severity, Location location, params object[] args)
         {
             var d = Diagnostic.Create(GetDescriptor(id, severity), location, args);
-            Debug("Emitting diagnostic Id: {0} Title: {1} Location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
+            Debug("Emitting diagnostic Id: {0}. Title: {1}. Location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
             return d;
         }
         #endregion
