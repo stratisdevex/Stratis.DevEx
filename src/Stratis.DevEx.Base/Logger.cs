@@ -124,34 +124,39 @@ public class FileLogger : Logger
 {
     public FileLogger(string logFileName, bool debug = false, string category = "DevEx") : base()
     {
-        IsDebug = debug;
+        this.IsDebug = debug;
         var factory = new LoggerFactory();
         loggerProvider = new FileLoggerProvider(logFileName, new FileLoggerOptions() { MinLevel = debug ? LogLevel.Debug : LogLevel.Information, 
-            FormatLogEntry = entry => 
-            {
-                var logBuilder = new StringBuilder();
-                if (!string.IsNullOrEmpty(entry.Message))
-                {
-                    DateTime timeStamp = DateTime.Now;
-                    logBuilder.Append(timeStamp.ToString());
-                    logBuilder.Append(' ');
-                    logBuilder.Append(NReco.Logging.File.FileLogger.GetShortLogLevel(entry.LogLevel));
-                    logBuilder.Append(" [");
-                    logBuilder.Append(Runtime.LogName);
-                    logBuilder.Append("]");
-                    logBuilder.Append(" [");
-                    logBuilder.Append(entry.EventId.Id.ToString());
-                    logBuilder.Append("] ");
-                    logBuilder.Append(entry.Message);
-                    return logBuilder.ToString();
-                }
-                else
-                {
-                    return "";
-                }
-            } });
+            FormatLogEntry = FileLogger.FormatLogEntry});
         factory.AddProvider(loggerProvider);
         logger = factory.CreateLogger(category);
+        this.logFileName = logFileName;
+    }
+
+    public static string FormatLogEntry(LogMessage entry)
+    {
+        {
+            var logBuilder = new StringBuilder();
+            if (!string.IsNullOrEmpty(entry.Message))
+            {
+                DateTime timeStamp = DateTime.Now;
+                logBuilder.Append(timeStamp.ToString());
+                logBuilder.Append(' ');
+                logBuilder.Append(NReco.Logging.File.FileLogger.GetShortLogLevel(entry.LogLevel));
+                logBuilder.Append(" [");
+                logBuilder.Append(Runtime.LogName);
+                logBuilder.Append("]");
+                logBuilder.Append(" [");
+                logBuilder.Append(entry.EventId.Id.ToString());
+                logBuilder.Append("] ");
+                logBuilder.Append(entry.Message);
+                return logBuilder.ToString();
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
 
     public override void Info(string messageTemplate, params object[] args) => logger.LogInformation(Runtime.SessionId, messageTemplate, args);
@@ -170,8 +175,12 @@ public class FileLogger : Logger
 
     public override void Close()
     {
+        Info("Closing {0} log to file {1}...", Runtime.LogName, this.logFileName);
         this.loggerProvider.Dispose();
     }
+
+    protected string logFileName;
+    
     protected ILogger logger;
 
     protected ILoggerProvider loggerProvider;

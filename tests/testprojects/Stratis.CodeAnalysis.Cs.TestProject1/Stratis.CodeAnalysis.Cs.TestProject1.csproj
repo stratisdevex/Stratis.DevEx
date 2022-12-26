@@ -8,4 +8,8 @@
     <PackageReference Include="Stratis.SmartContracts" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AdditionalFiles Include="stratisdev.cfg" />
+  </ItemGroup>
+
 </Project>

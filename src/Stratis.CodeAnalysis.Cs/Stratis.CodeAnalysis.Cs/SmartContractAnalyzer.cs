@@ -45,7 +45,7 @@
                     Runtime.Info("Could not get Workspace property");
                 }
                 */
- 
+                Runtime.Debug("Project additional files: {0}.", ctx.Options.AdditionalFiles.Select(f => f.Path));
                 if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg"))
                 {
                     var cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path == "stratisdev.cfg").Path;

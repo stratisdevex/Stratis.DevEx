@@ -28,7 +28,9 @@ public abstract class Runtime
     #endregion
 
     #region Properties
-    public static Configuration GlobalConfig { get; set; }
+    public bool Initialized { get; protected set; }
+
+    public static Configuration GlobalConfig { get; set; } = new Configuration();
 
     public static bool DebugEnabled { get; set; }
 
@@ -53,16 +55,15 @@ public abstract class Runtime
     public static string AssemblyLocation { get; } = Path.GetDirectoryName(Assembly.GetAssembly(typeof(Runtime))!.Location)!;
 
     public static Version AssemblyVersion { get; } = Assembly.GetAssembly(typeof(Runtime))!.GetName().Version!;
-
-    public bool Initialized { get; protected set; }
     #endregion
 
     #region Methods
     public static void Initialize(string logname, string logfile)
     {
+        Logger.Close();
         LogName = logname;
         Logger = new FileLogger(logfile);
-        Info("Stratis DevEx startup with session id {0}...", SessionId.Id);
+        Info("Stratis DevEx initialize with session id {0}...", SessionId.Id);
         var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
         if (!File.Exists(globalCfgFile))
         {
@@ -79,7 +80,7 @@ public abstract class Runtime
         if (GlobalConfig["General"]["Debug"].BoolValue)
         {
             Logger.Close();
-            Logger = new FileLogger(Path.Combine(StratisDevDir, "Stratis.DevEx.log"), debug: true);
+            Logger = new FileLogger(logfile, debug: true);
             Info("Debug mode enabled.");
         }
         Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
