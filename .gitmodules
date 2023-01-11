@@ -6,4 +6,4 @@
 	url = https://github.com/stratisdevex/nreco_logging.git
 [submodule "ext/SharpConfig"]
 	path = ext/SharpConfig
-	url = https://github.com/allisterb/SharpConfig.git
+	url = https://github.com/stratisdevex/SharpConfig.git
