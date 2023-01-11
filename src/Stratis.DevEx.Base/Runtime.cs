@@ -42,6 +42,8 @@ public abstract class Runtime
 
     public static string LogName { get; set; } = "BASE";
 
+    public static bool LogInitialized { get; protected set; } = false;
+
     public static Random Rng { get; } = new Random();
 
     public static EventId SessionId { get; protected set; }
@@ -58,12 +60,13 @@ public abstract class Runtime
     #endregion
 
     #region Methods
-    public static void Initialize(string logname, string logfile)
+    public static void InitializeLog(string logname, string logfile)
     {
         Logger.Close();
         LogName = logname;
-        Logger = new FileLogger(logfile);
-        Info("Stratis DevEx initialize with session id {0}...", SessionId.Id);
+        var logFileName = StratisDevDir.CombinePath(logfile + "." + SessionId.Id.ToString() + ".log");
+        Logger = new FileLogger(logFileName); ;
+        Info("Stratis DevEx initialize with session id {0} and log file {1}...", SessionId.Id, logFileName); ;
         var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
         if (!File.Exists(globalCfgFile))
         {

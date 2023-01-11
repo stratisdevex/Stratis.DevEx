@@ -13,8 +13,7 @@
     using Microsoft.CodeAnalysis.Operations;
 
     using Stratis.DevEx;
-    using System.IO;
-
+   
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class SmartContractAnalyzer : DiagnosticAnalyzer
     {
@@ -23,7 +22,7 @@
         
         public override void Initialize(AnalysisContext context)
         {
-            Runtime.Initialize("ROSLYN", Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"));
+            Runtime.InitializeLog("ROSLYN", Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"));
             Runtime.Info("Stratis.CodeAnalysis analyzer initializing...");
 
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
