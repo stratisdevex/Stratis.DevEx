@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ext\Stratis.SmartContracts\Stratis.SmartContracts\Stratis.SmartContracts.csproj" />
     <ProjectReference Include="..\..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
   </ItemGroup>
 

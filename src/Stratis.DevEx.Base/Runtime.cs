@@ -16,8 +16,8 @@ public abstract class Runtime
     #region Constructors
     static Runtime()
     {
-        AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
-        SessionId = new EventId(Rng.Next(0, 99999));
+        //AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
+        //SessionId = new EventId(Rng.Next(0, 99999));
         Logger = new ConsoleLogger();
     }
     public Runtime(CancellationToken ct)
@@ -60,6 +60,9 @@ public abstract class Runtime
     #endregion
 
     #region Methods
+
+    public static void Foo()
+    { }
     public static void InitializeLog(string logname, string logfile)
     {
         Logger.Close();

@@ -22,14 +22,15 @@
         
         public override void Initialize(AnalysisContext context)
         {
-            Runtime.InitializeLog("ROSLYN", Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"));
-            Runtime.Info("Stratis.CodeAnalysis analyzer initializing...");
+            //Runtime.Foo();
+            //Runtime.InitializeLog("ROSLYN", Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"));
+            //Runtime.Info("Stratis.CodeAnalysis analyzer initializing...");
 
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.RegisterCompilationStartAction(ctx =>
             {
-                Runtime.Info("Compilation start...");
+                //Runtime.Info("Compilation start...");
                 /*
                 var workspace = Runtime.GetProp(ctx.Compilation.Options, "Workspace");
                 if (workspace != null) 
@@ -44,13 +45,13 @@
                     Runtime.Info("Could not get Workspace property");
                 }
                 */
-                Runtime.Debug("Project additional files: {0}.", ctx.Options.AdditionalFiles.Select(f => f.Path));
+                //Runtime.Debug("Project additional files: {0}.", ctx.Options.AdditionalFiles.Select(f => f.Path));
                 if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg"))
                 {
                     var cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path == "stratisdev.cfg").Path;
-                    Runtime.Info("Loading analyzer configuration from {0}...", cfgFile);
-                    var cfg = Runtime.LoadConfig(cfgFile);
-                    Runtime.BindConfig(Runtime.GlobalConfig, cfg);
+                    //Runtime.Info("Loading analyzer configuration from {0}...", cfgFile);
+                    //var cfg = Runtime.LoadConfig(cfgFile);
+                    //Runtime.BindConfig(Runtime.GlobalConfig, cfg);
                 }
                 
             });
