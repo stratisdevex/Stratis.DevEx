@@ -1,14 +1,11 @@
 namespace Stratis.DevEx;
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-
-using Microsoft.Extensions.Logging;
 
 using SharpConfig; 
 public abstract class Runtime
@@ -46,7 +43,7 @@ public abstract class Runtime
 
     public static Random Rng { get; } = new Random();
 
-    public static EventId SessionId { get; protected set; }
+    //public static EventId SessionId { get; protected set; }
 
     public static CancellationTokenSource Cts { get; } = new CancellationTokenSource();
 
@@ -67,9 +64,9 @@ public abstract class Runtime
     {
         Logger.Close();
         LogName = logname;
-        var logFileName = StratisDevDir.CombinePath(logfile + "." + SessionId.Id.ToString() + ".log");
+        var logFileName = StratisDevDir.CombinePath(logfile +  ".log");
         Logger = new FileLogger(logFileName); ;
-        Info("Stratis DevEx initialize with session id {0} and log file {1}...", SessionId.Id, logFileName); ;
+        Info("Stratis DevEx initialize with log file {1}...", logFileName); ;
         var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
         if (!File.Exists(globalCfgFile))
         {

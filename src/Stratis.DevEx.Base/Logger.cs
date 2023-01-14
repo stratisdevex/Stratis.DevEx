@@ -1,8 +1,6 @@
 namespace Stratis.DevEx;
 
-using Microsoft.Extensions.Logging;
-using NReco.Logging;
-using NReco.Logging.File;
+using NLog;
 
 public abstract class Logger
 { 
@@ -116,6 +114,7 @@ public class ConsoleLogger : Logger
 #endregion
 
 #region NReco file logger
+/*
 /// <summary>
 /// This is a file logger implementation that doesn't require any 3rd-party NuGet packages except for the Microsoft.Extensions.Logging base libraries and can work in libraries
 /// like Roslyn analyzers where loading 3rd-party packages is problematic.
@@ -184,6 +183,89 @@ public class FileLogger : Logger
     protected ILogger logger;
 
     protected ILoggerProvider loggerProvider;
+}
+
+public class FileLoggerOp : Logger.Op
+{
+    public FileLoggerOp(FileLogger l, string opName) : base(l)
+    {
+        this.opName = opName;
+        timer.Start();
+        this.l = l;
+        l.Info(opName + "...");
+    }
+
+    public override void Complete()
+    {
+        timer.Stop();
+        l.Info($"{0} completed in {1}ms.", opName, timer.ElapsedMilliseconds);
+        isCompleted = true;
+    }
+
+    public override void Abandon()
+    {
+        timer.Stop();
+        isAbandoned = true;
+        l.Error($"{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
+    }
+
+    public override void Dispose()
+    {
+        if (timer.IsRunning) timer.Stop();
+        if (!(isCompleted || isAbandoned))
+        {
+            l.Error($"{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
+        }
+    }
+
+    string opName;
+    Stopwatch timer = new Stopwatch();
+    FileLogger l;
+}
+*/
+#endregion
+
+#region NLog file logger
+public class FileLogger : Logger
+{
+    public FileLogger(string logFileName, bool debug = false, string category = "DevEx") : base()
+    {
+        var config = new NLog.Config.LoggingConfiguration();
+        var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logFileName };
+        LogManager.Configuration = config;
+        this.logFileName = logFileName;
+        this.logger = LogManager.GetCurrentClassLogger();
+
+    }
+
+    #region Overriden methods
+    public override void Info(string messageTemplate, params object[] args) => logger.Info(messageTemplate, args);
+
+    public override void Debug(string messageTemplate, params object[] args) => logger.Debug(messageTemplate, args);
+
+    public override void Error(string messageTemplate, params object[] args) => logger.Error(messageTemplate, args);
+
+    public override void Error(Exception ex, string messageTemplate, params object[] args) => logger.Error(ex, messageTemplate, args);
+
+    public override void Warn(string messageTemplate, params object[] args) => logger.Warn(messageTemplate, args);
+
+    public override void Fatal(string messageTemplate, params object[] args) => logger.Fatal(messageTemplate, args);
+
+    public override Op Begin(string messageTemplate, params object[] args) => new FileLoggerOp(this, String.Format(messageTemplate, args));
+
+    public override void Close()
+    {
+        Info("Closing {0} log to file {1}...", Runtime.LogName, this.logFileName);
+        LogManager.Flush();
+        LogManager.Shutdown();
+    }
+
+    #endregion
+
+    #region Fields
+    protected string logFileName;
+    protected NLog.Logger logger;
+    #endregion
 }
 
 public class FileLoggerOp : Logger.Op
