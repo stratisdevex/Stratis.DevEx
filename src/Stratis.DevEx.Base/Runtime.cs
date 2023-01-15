@@ -13,7 +13,8 @@ public abstract class Runtime
     #region Constructors
     static Runtime()
     {
-        //AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
+        
         //SessionId = new EventId(Rng.Next(0, 99999));
         Logger = new ConsoleLogger();
     }
@@ -49,7 +50,7 @@ public abstract class Runtime
 
     public static CancellationToken Ct { get; protected set; } = Cts.Token;
 
-    public static HttpClient DefaultHttpClient { get; } = new HttpClient();
+    //public static HttpClient DefaultHttpClient { get; } = new HttpClient();
 
     public static string AssemblyLocation { get; } = Path.GetDirectoryName(Assembly.GetAssembly(typeof(Runtime))!.Location)!;
 
@@ -57,10 +58,7 @@ public abstract class Runtime
     #endregion
 
     #region Methods
-
-    public static void Foo()
-    { }
-    public static void InitializeLog(string logname, string logfile)
+    public static void Initialize(string logname, string logfile)
     {
         Logger.Close();
         LogName = logname;

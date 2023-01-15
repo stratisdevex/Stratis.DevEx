@@ -12,8 +12,9 @@
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Operations;
 
-    using Stratis.DevEx;
-   
+    //using Stratis.DevEx;
+
+    using NLog;
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class SmartContractAnalyzer : DiagnosticAnalyzer
     {
@@ -22,8 +23,15 @@
         
         public override void Initialize(AnalysisContext context)
         {
-            //Runtime.Foo();
-            //Runtime.InitializeLog("ROSLYN", Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"));
+
+            //var config = new NLog.Config.LoggingConfiguration();
+            //var logfilename = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StratisDev", "foo.log");
+            //var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logfilename };
+            //LogManager.Configuration = config;
+            
+            //var logger = LogManager.GetCurrentClassLogger();
+            //logger.Info("Hello");
+            //Runtime.Initialize("ROSLYN", Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"));
             //Runtime.Info("Stratis.CodeAnalysis analyzer initializing...");
 
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();

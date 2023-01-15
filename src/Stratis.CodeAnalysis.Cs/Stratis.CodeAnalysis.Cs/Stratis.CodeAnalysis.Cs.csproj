@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
 
@@ -15,6 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\ext\NLog\NLog.csproj" />
+    <ProjectReference Include="..\..\..\ext\SharpConfig\Src\SharpConfig.csproj" />
     <ProjectReference Include="..\..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
   </ItemGroup>
 

@@ -10,10 +10,11 @@ using Microsoft.CodeAnalysis.Operations;
 
 //using Stratis.SmartContracts;
 
-//using Stratis.DevEx;
+using Stratis.DevEx;
+
 namespace Stratis.CodeAnalysis.Cs
 {
-    public class Validator //: Runtime
+    public class Validator : Runtime
     {
         #region Constructors
         static Validator()
@@ -428,10 +429,10 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(IndexAttribute)
             */
         };
- 
-        internal static readonly string[] SmartContractTypeNames = SmartContractTypes.Select(t => t.FullName).ToArray();
 
-        internal static readonly string[] SmartContractArrayTypeNames = SmartContractArrayTypes.Select(t => t.FullName).ToArray();
+        internal static readonly string[] SmartContractTypeNames = { };//SmartContractTypes.Select(t => t.FullName).ToArray();
+
+        internal static readonly string[] SmartContractArrayTypeNames = { };//SmartContractArrayTypes.Select(t => t.FullName).ToArray();
 
         internal static readonly string[] WhitelistedArrayPropertyNames = { "Length" };
 
