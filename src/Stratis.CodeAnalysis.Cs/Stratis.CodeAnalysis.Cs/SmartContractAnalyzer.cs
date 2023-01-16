@@ -15,6 +15,9 @@
     //using Stratis.DevEx;
 
     using NLog;
+    using NLog.Common;
+    using NLog.Targets;
+    using NLog.Config;
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class SmartContractAnalyzer : DiagnosticAnalyzer
     {
@@ -24,13 +27,18 @@
         public override void Initialize(AnalysisContext context)
         {
 
-            //var config = new NLog.Config.LoggingConfiguration();
-            //var logfilename = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StratisDev", "foo.log");
-            //var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logfilename };
-            //LogManager.Configuration = config;
+            var config = new NLog.Config.LoggingConfiguration();
+            var logfilename = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StratisDev", "foo.log");
+            var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logfilename };
+            config.AddTarget(logfile);
+            var rule = new LoggingRule("*", LogLevel.Info, logfile);
+
+            config.LoggingRules.Add(rule);
+            LogManager.Configuration = config;
             
-            //var logger = LogManager.GetCurrentClassLogger();
-            //logger.Info("Hello");
+            var logger = LogManager.GetCurrentClassLogger();
+            logger.Info("Hello");
+            LogManager.Flush();
             //Runtime.Initialize("ROSLYN", Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"));
             //Runtime.Info("Stratis.CodeAnalysis analyzer initializing...");
 
