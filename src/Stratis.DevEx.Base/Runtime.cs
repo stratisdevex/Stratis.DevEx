@@ -10,7 +10,7 @@ namespace Stratis.DevEx
 
     using SharpConfig;
     using NLog;
-
+    using NLog.Config;
     public abstract class Runtime
     {
         #region Constructors
@@ -19,16 +19,25 @@ namespace Stratis.DevEx
             AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
 
             //SessionId = new EventId(Rng.Next(0, 99999));
+            
             Logger = new ConsoleLogger();
+
+            
+            /*
             var config = new NLog.Config.LoggingConfiguration();
             var logfilename = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StratisDev", "foo.log");
             var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logfilename };
+            config.AddTarget(logfile);
+            var rule = new LoggingRule("*", LogLevel.Info, logfile);
+
+            config.LoggingRules.Add(rule);
             LogManager.Configuration = config;
 
             var logger = LogManager.GetCurrentClassLogger();
             logger.Info("Hello");
             LogManager.Flush();
             LogManager.Shutdown();
+            */
         }
         public Runtime(CancellationToken ct)
         {
@@ -74,7 +83,9 @@ namespace Stratis.DevEx
         {
             Logger.Close();
             LogName = logname;
-            var logFileName = StratisDevDir.CombinePath(logfile + ".log");
+            
+            //var logFileName = StratisDevDir.CombinePath(logname + ".log");
+            /*
             Logger = new FileLogger(logFileName); ;
             Info("Stratis DevEx initialize with log file {1}...", logFileName); ;
             var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
@@ -97,6 +108,21 @@ namespace Stratis.DevEx
                 Info("Debug mode enabled.");
             }
             Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
+            */
+
+            var config = new NLog.Config.LoggingConfiguration();
+            var logfilename = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StratisDev", "foo.log");
+            var logfile2 = new NLog.Targets.FileTarget("logfile") { FileName = logfilename };
+            config.AddTarget(logfile2);
+            var rule = new LoggingRule("*", LogLevel.Info, logfile2);
+
+            config.LoggingRules.Add(rule);
+            LogManager.Configuration = config;
+
+            var logger = LogManager.GetLogger("ROSLYN");
+            logger.Info("Hello");
+            LogManager.Flush();
+
         }
         private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
