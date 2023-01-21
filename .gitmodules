@@ -1,9 +1,6 @@
 [submodule "ext/Stratis.SmartContracts"]
 	path = ext/Stratis.SmartContracts
 	url = https://github.com/stratisdevex/Stratis.SmartContracts.git
-[submodule "ext/nreco_logging"]
-	path = ext/nreco_logging
-	url = https://github.com/stratisdevex/nreco_logging.git
 [submodule "ext/SharpConfig"]
 	path = ext/SharpConfig
 	url = https://github.com/stratisdevex/SharpConfig.git
