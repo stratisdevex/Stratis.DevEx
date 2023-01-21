@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ext\NLog\NLog.csproj" />
+    <ProjectReference Include="..\..\ext\NLog\src\NLog\NLog.csproj" />
     <ProjectReference Include="..\..\ext\SharpConfig\Src\SharpConfig.csproj" />
   </ItemGroup>
 
