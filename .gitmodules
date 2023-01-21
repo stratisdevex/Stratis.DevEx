@@ -7,3 +7,6 @@
 [submodule "ext/SharpConfig"]
 	path = ext/SharpConfig
 	url = https://github.com/stratisdevex/SharpConfig.git
+[submodule "ext/NLog"]
+	path = ext/NLog
+	url = https://github.com/stratisdevex/NLog.git
