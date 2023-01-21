@@ -18,7 +18,7 @@ namespace Stratis.DevEx
         {
             AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
 
-            //SessionId = new EventId(Rng.Next(0, 99999));
+            SessionId = Rng.Next(0, 99999);
             
             Logger = new ConsoleLogger();
 
@@ -57,15 +57,17 @@ namespace Stratis.DevEx
 
         public static string PathSeparator { get; } = Environment.OSVersion.Platform == PlatformID.Win32NT ? "\\" : "/";
 
-        public static Logger Logger { get; protected set; }
-
+        public static string ToolName { get; set; } = "Stratis DevEx";
+        
         public static string LogName { get; set; } = "BASE";
+
+        public static Logger Logger { get; protected set; }
 
         public static bool LogInitialized { get; protected set; } = false;
 
         public static Random Rng { get; } = new Random();
 
-        //public static EventId SessionId { get; protected set; }
+        public static int SessionId { get; protected set; }
 
         public static CancellationTokenSource Cts { get; } = new CancellationTokenSource();
 
@@ -79,16 +81,15 @@ namespace Stratis.DevEx
         #endregion
 
         #region Methods
-        public static void Initialize(string logname, string logfile)
+        public static void Initialize(string toolname, string logname)
         {
             Logger.Close();
+            ToolName = toolname;
             LogName = logname;
-            
-            //var logFileName = StratisDevDir.CombinePath(logname + ".log");
-            /*
-            Logger = new FileLogger(logFileName); ;
-            Info("Stratis DevEx initialize with log file {1}...", logFileName); ;
-            var globalCfgFile = StratisDevDir.CombinePath("Stratis.DevEx.cfg");
+            var fulllogfilename = StratisDevDir.CombinePath($"{ToolName}.{SessionId}.log");
+            Logger = new FileLogger(fulllogfilename, false, LogName); ;
+            Info("{0} initialized with log file {1}...", ToolName, fulllogfilename); ;
+            var globalCfgFile = StratisDevDir.CombinePath(ToolName + ".cfg");
             if (!File.Exists(globalCfgFile))
             {
                 Info("Creating new global configuration file...");
@@ -104,29 +105,13 @@ namespace Stratis.DevEx
             if (GlobalConfig["General"]["Debug"].BoolValue)
             {
                 Logger.Close();
-                Logger = new FileLogger(logfile, debug: true);
+                Logger = new FileLogger(fulllogfilename, debug: true, logname);
                 Info("Debug mode enabled.");
             }
             Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
-            */
-
-            var config = new NLog.Config.LoggingConfiguration();
-            var logfilename = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StratisDev", "foo.log");
-            var logfile2 = new NLog.Targets.FileTarget("logfile") { FileName = logfilename };
-            config.AddTarget(logfile2);
-            var rule = new LoggingRule("*", LogLevel.Info, logfile2);
-
-            config.LoggingRules.Add(rule);
-            LogManager.Configuration = config;
-
-            var logger = LogManager.GetLogger("ROSLYN");
-            logger.Info("Hello");
-            LogManager.Flush();
-
         }
         private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            LogName = "BASE";
             if (Logger != null)
             {
                 Error((Exception)e.ExceptionObject, "Unhandled runtime error occurred.");

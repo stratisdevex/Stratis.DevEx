@@ -1,7 +1,7 @@
 namespace Stratis.DevEx
 {
-
     using NLog;
+    using NLog.Config;
 
     public abstract class Logger
     {
@@ -114,129 +114,25 @@ namespace Stratis.DevEx
     }
     #endregion
 
-    #region NReco file logger
-    /*
-    /// <summary>
-    /// This is a file logger implementation that doesn't require any 3rd-party NuGet packages except for the Microsoft.Extensions.Logging base libraries and can work in libraries
-    /// like Roslyn analyzers where loading 3rd-party packages is problematic.
-    /// </summary>
-    public class FileLogger : Logger
-    {
-        public FileLogger(string logFileName, bool debug = false, string category = "DevEx") : base()
-        {
-            this.IsDebug = debug;
-            var factory = new LoggerFactory();
-            loggerProvider = new FileLoggerProvider(logFileName, new FileLoggerOptions() { MinLevel = debug ? LogLevel.Debug : LogLevel.Information, 
-                FormatLogEntry = FileLogger.FormatLogEntry});
-            factory.AddProvider(loggerProvider);
-            logger = factory.CreateLogger(category);
-            this.logFileName = logFileName;
-        }
-
-        public static string FormatLogEntry(LogMessage entry)
-        {
-            {
-                var logBuilder = new StringBuilder();
-                if (!string.IsNullOrEmpty(entry.Message))
-                {
-                    DateTime timeStamp = DateTime.Now;
-                    logBuilder.Append(timeStamp.ToString());
-                    logBuilder.Append(' ');
-                    logBuilder.Append(NReco.Logging.File.FileLogger.GetShortLogLevel(entry.LogLevel));
-                    logBuilder.Append(" [");
-                    logBuilder.Append(Runtime.LogName);
-                    logBuilder.Append("]");
-                    logBuilder.Append(" [");
-                    logBuilder.Append(entry.EventId.Id.ToString());
-                    logBuilder.Append("] ");
-                    logBuilder.Append(entry.Message);
-                    return logBuilder.ToString();
-                }
-                else
-                {
-                    return "";
-                }
-            }
-        }
-
-        public override void Info(string messageTemplate, params object[] args) => logger.LogInformation(Runtime.SessionId, messageTemplate, args);
-
-        public override void Debug(string messageTemplate, params object[] args) => logger.LogDebug(Runtime.SessionId, messageTemplate, args);
-
-        public override void Error(string messageTemplate, params object[] args) => logger.LogError(Runtime.SessionId, messageTemplate, args);
-
-        public override void Error(Exception ex, string messageTemplate, params object[] args) => logger.LogError(Runtime.SessionId, ex, messageTemplate, args);
-
-        public override void Warn(string messageTemplate, params object[] args) => logger.LogWarning(Runtime.SessionId, messageTemplate, args);
-
-        public override void Fatal(string messageTemplate, params object[] args) => logger.LogCritical(Runtime.SessionId, messageTemplate, args);
-
-        public override Op Begin(string messageTemplate, params object[] args) => new FileLoggerOp(this, String.Format(messageTemplate, args));
-
-        public override void Close()
-        {
-            Info("Closing {0} log to file {1}...", Runtime.LogName, this.logFileName);
-            this.loggerProvider.Dispose();
-        }
-
-        protected string logFileName;
-
-        protected ILogger logger;
-
-        protected ILoggerProvider loggerProvider;
-    }
-
-    public class FileLoggerOp : Logger.Op
-    {
-        public FileLoggerOp(FileLogger l, string opName) : base(l)
-        {
-            this.opName = opName;
-            timer.Start();
-            this.l = l;
-            l.Info(opName + "...");
-        }
-
-        public override void Complete()
-        {
-            timer.Stop();
-            l.Info($"{0} completed in {1}ms.", opName, timer.ElapsedMilliseconds);
-            isCompleted = true;
-        }
-
-        public override void Abandon()
-        {
-            timer.Stop();
-            isAbandoned = true;
-            l.Error($"{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
-        }
-
-        public override void Dispose()
-        {
-            if (timer.IsRunning) timer.Stop();
-            if (!(isCompleted || isAbandoned))
-            {
-                l.Error($"{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
-            }
-        }
-
-        string opName;
-        Stopwatch timer = new Stopwatch();
-        FileLogger l;
-    }
-    */
-    #endregion
-
     #region NLog file logger
     public class FileLogger : Logger
     {
-        public FileLogger(string logFileName, bool debug = false, string category = "DevEx") : base()
+        public FileLogger(string logFileName, bool debug = false, string logname = "DevEx") : base()
         {
-            var config = new NLog.Config.LoggingConfiguration();
+            var config = new LoggingConfiguration();
             var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logFileName };
+            config.AddTarget(logfile);
+            config.AddRule(new LoggingRule("*", LogLevel.Info, logfile));
+            config.AddRule(new LoggingRule("*", LogLevel.Warn, logfile));
+            config.AddRule(new LoggingRule("*", LogLevel.Error, logfile));
+            config.AddRule(new LoggingRule("*", LogLevel.Fatal, logfile));
+            if (debug)
+            {
+                config.AddRule(new LoggingRule("*", LogLevel.Debug, logfile));
+            }
             LogManager.Configuration = config;
             this.logFileName = logFileName;
-            this.logger = LogManager.GetCurrentClassLogger();
-
+            this.logger = LogManager.GetLogger(logname);
         }
 
         #region Overriden methods

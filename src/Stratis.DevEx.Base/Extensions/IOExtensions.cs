@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Text;
-
-namespace Stratis.DevEx
+﻿namespace Stratis.DevEx
 {
+    using System;
+    using System.IO;
+    using System.Text;
+
     public static class IOExtensions
     {
         /// <summary>

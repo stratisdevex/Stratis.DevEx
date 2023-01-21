@@ -26,9 +26,7 @@
         
         public override void Initialize(AnalysisContext context)
         {
-
-            
-            Runtime.Initialize("ROSLYN", Runtime.StratisDevDir.CombinePath("Stratis.CodeAnalysis.Cs.log"));
+            Runtime.Initialize("Stratis.CodeAnalysis.Cs", "ROSLYN");
             //Runtime.Info("Stratis.CodeAnalysis analyzer initializing...");
 
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
