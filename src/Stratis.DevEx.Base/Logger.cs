@@ -44,6 +44,8 @@ namespace Stratis.DevEx
         public abstract Op Begin(string messageTemplate, params object[] args);
 
         public abstract void Close();
+
+        public abstract void SetLogLevelDebug();
     }
 
     #region Console logger
@@ -111,6 +113,8 @@ namespace Stratis.DevEx
         public override Op Begin(string messageTemplate, params object[] args) => new ConsoleOp(this, String.Format(messageTemplate, args));
 
         public override void Close() { }
+
+        public override void SetLogLevelDebug() => IsDebug = true;
     }
     #endregion
 
@@ -126,13 +130,15 @@ namespace Stratis.DevEx
             config.AddRule(new LoggingRule("*", LogLevel.Warn, logfile));
             config.AddRule(new LoggingRule("*", LogLevel.Error, logfile));
             config.AddRule(new LoggingRule("*", LogLevel.Fatal, logfile));
+            config.AddRule(new LoggingRule("*", LogLevel.Debug, logfile));
             if (debug)
             {
-                config.AddRule(new LoggingRule("*", LogLevel.Debug, logfile));
+                config.Variables["logLevel"] = "Debug";
             }
             LogManager.Configuration = config;
             this.logFileName = logFileName;
             this.logger = LogManager.GetLogger(logname);
+           
         }
 
         #region Overriden methods
@@ -152,11 +158,16 @@ namespace Stratis.DevEx
 
         public override void Close()
         {
-            Info("Closing {0} log to file {1}...", Runtime.LogName, this.logFileName);
+            Info("Closing {0} log file {1}...", Runtime.LogName, this.logFileName);
             LogManager.Flush();
             LogManager.Shutdown();
         }
 
+        public override void SetLogLevelDebug()
+        {
+            LogManager.Configuration.Variables["logLevel"] = "Debug";
+            LogManager.ReconfigExistingLoggers();
+        }
         #endregion
 
         #region Fields

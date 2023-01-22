@@ -17,37 +17,22 @@ namespace Stratis.DevEx
         static Runtime()
         {
             AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
-
-            SessionId = Rng.Next(0, 99999);
-            
+            SessionId = Rng.Next(0, 99999);            
             Logger = new ConsoleLogger();
-
-            
-            /*
-            var config = new NLog.Config.LoggingConfiguration();
-            var logfilename = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "StratisDev", "foo.log");
-            var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logfilename };
-            config.AddTarget(logfile);
-            var rule = new LoggingRule("*", LogLevel.Info, logfile);
-
-            config.LoggingRules.Add(rule);
-            LogManager.Configuration = config;
-
-            var logger = LogManager.GetCurrentClassLogger();
-            logger.Info("Hello");
-            LogManager.Flush();
-            LogManager.Shutdown();
-            */
         }
+
         public Runtime(CancellationToken ct)
         {
             Ct = ct;
         }
+
         public Runtime() : this(Cts.Token) { }
         #endregion
 
         #region Properties
         public bool Initialized { get; protected set; }
+
+        public static bool RuntimeInitialized { get; protected set; }
 
         public static Configuration GlobalConfig { get; set; } = new Configuration();
 
@@ -63,7 +48,11 @@ namespace Stratis.DevEx
 
         public static Logger Logger { get; protected set; }
 
-        public static bool LogInitialized { get; protected set; } = false;
+        public static string UserHomeDir => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+        public static string AppDataDir => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+        public static string StratisDevDir => Path.Combine(AppDataDir, "StratisDev");
 
         public static Random Rng { get; } = new Random();
 
@@ -83,6 +72,11 @@ namespace Stratis.DevEx
         #region Methods
         public static void Initialize(string toolname, string logname)
         {
+            if (RuntimeInitialized)
+            {
+                Info("Runtime already initialized...skipping init.");
+                return;
+            }
             Logger.Close();
             ToolName = toolname;
             LogName = logname;
@@ -92,7 +86,7 @@ namespace Stratis.DevEx
             var globalCfgFile = StratisDevDir.CombinePath(ToolName + ".cfg");
             if (!File.Exists(globalCfgFile))
             {
-                Info("Creating new global configuration file...");
+                Info("Creating new global configuration file for {0}...", ToolName);
                 var newcfg = new Configuration();
                 newcfg["General"]["Debug"].BoolValue = false;
                 newcfg.SaveToFile(globalCfgFile);
@@ -104,20 +98,13 @@ namespace Stratis.DevEx
             GlobalConfig = Configuration.LoadFromFile(globalCfgFile);
             if (GlobalConfig["General"]["Debug"].BoolValue)
             {
-                Logger.Close();
-                Logger = new FileLogger(fulllogfilename, debug: true, logname);
+                Logger.SetLogLevelDebug();
                 Info("Debug mode enabled.");
             }
             Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
+            RuntimeInitialized = true;
         }
-        private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            if (Logger != null)
-            {
-                Error((Exception)e.ExceptionObject, "Unhandled runtime error occurred.");
-            }
-        }
-
+       
         [DebuggerStepThrough]
         public static void Info(string messageTemplate, params object[] args) => Logger.Info(messageTemplate, args);
 
@@ -190,11 +177,13 @@ namespace Stratis.DevEx
             return properties.FirstOrDefault(x => x.Name == name)?.GetValue(o);
         }
 
-        public static string UserHomeDir => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-        public static string AppDataDir => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
-        public static string StratisDevDir => Path.Combine(AppDataDir, "StratisDev");
+        private static void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (Logger != null)
+            {
+                Error((Exception)e.ExceptionObject, "Unhandled runtime error occurred.");
+            }
+        }
 
         public static string? RunCmd(string cmdName, string arguments = "", string? workingDir = null, DataReceivedEventHandler? outputHandler = null, DataReceivedEventHandler? errorHandler = null,
             bool checkExists = true, bool isNETFxTool = false, bool isNETCoreTool = false)
