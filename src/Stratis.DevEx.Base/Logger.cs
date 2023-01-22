@@ -124,7 +124,13 @@ namespace Stratis.DevEx
         public FileLogger(string logFileName, bool debug = false, string logname = "DevEx") : base()
         {
             var config = new LoggingConfiguration();
-            var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logFileName };
+            var logfile = new NLog.Targets.FileTarget("logfile")
+            {
+                FileName = logFileName,
+                Layout = debug ? "${longdate} ${level:uppercase=true} ${logger} ${callsite:skipFrames=2} ${message:withexception=true}" : 
+                                 "${longdate} ${level:uppercase=true} ${logger} ${message:withexception=true}"
+
+            };
             config.AddTarget(logfile);
             config.AddRule(new LoggingRule("*", LogLevel.Info, logfile));
             config.AddRule(new LoggingRule("*", LogLevel.Warn, logfile));
@@ -138,7 +144,6 @@ namespace Stratis.DevEx
             LogManager.Configuration = config;
             this.logFileName = logFileName;
             this.logger = LogManager.GetLogger(logname);
-           
         }
 
         #region Overriden methods
@@ -165,7 +170,20 @@ namespace Stratis.DevEx
 
         public override void SetLogLevelDebug()
         {
-            LogManager.Configuration.Variables["logLevel"] = "Debug";
+            var config = LogManager.Configuration;
+            config.RemoveTarget("logfile");
+            var logfile = new NLog.Targets.FileTarget("logfile")
+            {
+                FileName = this.logFileName,
+                Layout = "${longdate} ${level:uppercase=true} ${logger} ${callsite:skipFrames=2} ${message:withexception=true}"
+            };
+            config.AddTarget(logfile);
+            config.AddRule(new LoggingRule("*", LogLevel.Info, logfile));
+            config.AddRule(new LoggingRule("*", LogLevel.Warn, logfile));
+            config.AddRule(new LoggingRule("*", LogLevel.Error, logfile));
+            config.AddRule(new LoggingRule("*", LogLevel.Fatal, logfile));
+            config.AddRule(new LoggingRule("*", LogLevel.Debug, logfile));
+            config.Variables["logLevel"] = "Debug";
             LogManager.ReconfigExistingLoggers();
         }
         #endregion
