@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
-//using Stratis.SmartContracts;
+using Stratis.SmartContracts;
 
 using Stratis.DevEx;
 
@@ -350,8 +350,8 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(uint),
             typeof(long),
             typeof(ulong),
-            //typeof(UInt128),
-            //typeof(UInt256),
+            typeof(UInt128),
+            typeof(UInt256),
             typeof(string),
         };
 
@@ -381,8 +381,8 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(uint[]),
             typeof(long[]),
             typeof(ulong[]),
-            //typeof(UInt128[]),
-            //typeof(UInt256[]),
+            typeof(UInt128[]),
+            typeof(UInt256[]),
             typeof(string[])
         };
 
@@ -390,7 +390,6 @@ namespace Stratis.CodeAnalysis.Cs
 
         internal static readonly Type[] SmartContractTypes =
         {
-            /*
             typeof(Address),
             typeof(Block),
             typeof(IBlock),
@@ -403,12 +402,10 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(ITransferResult),
             typeof(Message),
             typeof(SmartContract)
-            */
         };
 
         internal static readonly Type[] SmartContractArrayTypes =
         {
-            /*
             typeof(Address[]),
             typeof(Block[]),
             typeof(IBlock[]),
@@ -419,20 +416,17 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(ISmartContractState[]),
             typeof(ITransferResult[]),
             typeof(Message[]),
-            */
         };
 
         internal static readonly Type[] SmartContractAttributeTypes =
         {
-            /*
             typeof(DeployAttribute),
             typeof(IndexAttribute)
-            */
         };
 
-        internal static readonly string[] SmartContractTypeNames = { };//SmartContractTypes.Select(t => t.FullName).ToArray();
+        internal static readonly string[] SmartContractTypeNames = SmartContractTypes.Select(t => t.FullName).ToArray();
 
-        internal static readonly string[] SmartContractArrayTypeNames = { };//SmartContractArrayTypes.Select(t => t.FullName).ToArray();
+        internal static readonly string[] SmartContractArrayTypeNames = SmartContractArrayTypes.Select(t => t.FullName).ToArray();
 
         internal static readonly string[] WhitelistedArrayPropertyNames = { "Length" };
 
