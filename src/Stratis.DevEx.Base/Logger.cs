@@ -127,7 +127,7 @@ namespace Stratis.DevEx
             var logfile = new NLog.Targets.FileTarget("logfile")
             {
                 FileName = logFileName,
-                Layout = debug ? "${longdate} ${level:uppercase=true} ${logger} ${callsite:skipFrames=2} ${message:withexception=true}" : 
+                Layout = debug ? "${longdate} ${level:uppercase=true} ${logger} ${callsite:skipFrames=2}: ${message:withexception=true}" : 
                                  "${longdate} ${level:uppercase=true} ${logger} ${message:withexception=true}"
 
             };
@@ -175,7 +175,7 @@ namespace Stratis.DevEx
             var logfile = new NLog.Targets.FileTarget("logfile")
             {
                 FileName = this.logFileName,
-                Layout = "${longdate} ${level:uppercase=true} ${logger} ${callsite:skipFrames=2} ${message:withexception=true}"
+                Layout = "${longdate} ${level:uppercase=true} ${logger} ${callsite:skipFrames=2}: ${message:withexception=true}"
             };
             config.AddTarget(logfile);
             config.AddRule(new LoggingRule("*", LogLevel.Info, logfile));

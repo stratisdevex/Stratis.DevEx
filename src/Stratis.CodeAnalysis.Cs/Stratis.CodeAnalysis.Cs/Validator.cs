@@ -43,7 +43,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeNamespaceDecl(NamespaceDeclarationSyntax node, SemanticModel model)
         {
             var ns = node.DescendantNodes().First();
-            //Debug("Namespace {0} declared.", ns.ToFullString().Trim());
+            Debug("Namespace {0} declared.", ns.ToFullString().Trim());
             return CreateDiagnostic("SC0001", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
         }
 
@@ -51,7 +51,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeUsingDirective(UsingDirectiveSyntax node, SemanticModel model)
         {
             var ns = node.DescendantNodes().OfType<NameSyntax>().FirstOrDefault();
-            //Debug("Using directive for namespace {0} declared.", ns.ToFullString().Trim());
+            Debug("Using directive for namespace {0} declared.", ns.ToFullString().Trim());
             if (ns != null && !WhitelistedNamespaces.Contains(ns.ToFullString()))
             {
                 return CreateDiagnostic("SC0002", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
@@ -135,11 +135,11 @@ namespace Stratis.CodeAnalysis.Cs
             var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
             if (elementtype is not null)
             {
-                //Debug("New array of type {0}[] created at location {1}.", elementtype.ToDisplayString(), objectCreation.Syntax.GetLocation());
+                Debug("New array of type {0}[] created at location {1}.", elementtype.ToDisplayString(), objectCreation.Syntax.GetLocation());
             }
             else
             {
-                //Debug("New object of type {0} created at location {1}.", type.ToDisplayString(), objectCreation.Syntax.GetLocation());
+                Debug("New object of type {0} created at location {1}.", type.ToDisplayString(), objectCreation.Syntax.GetLocation());
             }
             var typename = type.ToDisplayString();
             var elementtypename = elementtype?.ToDisplayString() ?? "";
@@ -327,7 +327,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic CreateDiagnostic(string id, DiagnosticSeverity severity, Location location, params object[] args)
         {
             var d = Diagnostic.Create(GetDescriptor(id, severity), location, args);
-            //Debug("Emitting diagnostic Id: {0}. Title: {1}. Location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
+            Debug("Emitting diagnostic Id: {0}. Title: {1}. Location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
             return d;
         }
         #endregion
