@@ -22,3 +22,11 @@ To help diagnose issues set `Debug=True` in the global configuration file and re
 | SC0003 | Classes in smart contract code must inherit from Stratis.SmartContract | Error |
 | SC0004 | The first parameter in a smart constructor must be of type ISmartContractState | Error |
 | SC0005 | New object creation of reference types is not allowed in smart contract code | Error | 
+| SC0006 | Field declarations are not allowed in smart contract code | Error |
+| SC0007 | Only certain variable types can be used in smart contract code | Error |
+| SC0008 | Only certain types and members can be used in smart contract code | Error |
+| SC0009 | Cannot use this method here | Error |
+| SC0010 | An assert condition should be derived from input or state | Warning |
+| SC0011 | Custom assert message should be used, as this can be parsed to identify reason for failure | Warning |
+| SC0012 | Assert message should not be empty, as this can be parsed to identify reason for failure | Warning |
+
