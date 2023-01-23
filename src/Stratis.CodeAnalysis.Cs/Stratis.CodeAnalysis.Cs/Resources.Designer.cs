@@ -19,7 +19,7 @@ namespace Stratis.CodeAnalysis.Cs {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -88,7 +88,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to foo.
+        ///   Looks up a localized string similar to Smart contract classes cannot be declared inside a namespace.
         /// </summary>
         internal static string SC0001_Description {
             get {
@@ -97,7 +97,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Namespace declaration not allowed in smart contract code. See https://academy.stratisplatform.com/Architecture%20Reference/SmartContracts/smart-contracts-basic-theory.html#using-net-for-smart-contracts ..
+        ///   Looks up a localized string similar to A smart contract class cannot be declared inside the namespace {0}..
         /// </summary>
         internal static string SC0001_MessageFormat {
             get {

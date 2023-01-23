@@ -130,11 +130,11 @@
     <comment>The title of the diagnostic.</comment>
   </data>
   <data name="SC0001_Description" xml:space="preserve">
-    <value>foo</value>
+    <value>Smart contract classes cannot be declared inside a namespace</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
   <data name="SC0001_MessageFormat" xml:space="preserve">
-    <value>Namespace declaration not allowed in smart contract code. See https://academy.stratisplatform.com/Architecture%20Reference/SmartContracts/smart-contracts-basic-theory.html#using-net-for-smart-contracts .</value>
+    <value>A smart contract class cannot be declared inside the namespace {0}.</value>
     <comment>The format-able message the diagnostic displays.</comment>
   </data>
   <data name="SC0001_Title" xml:space="preserve">
