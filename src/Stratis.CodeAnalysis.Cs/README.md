@@ -9,6 +9,16 @@ Then install the latest version of the package.
 # Usage
 The analyzer can be configured using `%AppData%\StratisDev\stratisdev.cfg`. Logfiles are written to the same folder.
 
-
 # Troubleshooting
 To help diagnose issues set `Debug=True` in the global configuration file and reload the solution or project.
+
+# Code Analysis
+
+## Validation rules
+| Id | Description | Severity |
+| --- | ----------- | ------  |
+| SC0001 | Smart contract classes cannot be declared inside a namespace | Error |
+| SC0002 | Types from namespace cannot be used here | Error |
+| SC0003 | Classes in smart contract code must inherit from Stratis.SmartContract | Error |
+| SC0004 | The first parameter in a smart constructor must be of type ISmartContractState | Error |
+| SC0005 | New object creation of reference types is not allowed in smart contract code | Error | 
