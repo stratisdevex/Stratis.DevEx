@@ -144,14 +144,10 @@ namespace Stratis.CodeAnalysis.Cs
             var typename = type.ToDisplayString();
             var elementtypename = elementtype?.ToDisplayString() ?? "";
         
-            if (type.IsValueType || PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename)  || (type.IsArrayTypeKind() && (elementtype.IsValueType || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename))))
+            if (type.IsValueType || PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename) || SmartContractArrayTypeNames.Contains(typename) || (type.IsArrayTypeKind() && (elementtype.IsValueType || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename))))
             {
                 return NoDiagnostic;
             }
-            //else if (typename == typeof(Stratis.SmartContracts.DeployAttribute).Name)
-            //{
-            //    return NoDiagnostic;
-            //}
             else
             {
                 return CreateDiagnostic("SC0005", DiagnosticSeverity.Error, objectCreation.Syntax.GetLocation(), type.ToDisplayString());
@@ -427,6 +423,8 @@ namespace Stratis.CodeAnalysis.Cs
         internal static readonly string[] SmartContractTypeNames = SmartContractTypes.Select(t => t.FullName).ToArray();
 
         internal static readonly string[] SmartContractArrayTypeNames = SmartContractArrayTypes.Select(t => t.FullName).ToArray();
+
+        internal static readonly string[] SmartContractAttributeTypeNames = SmartContractAttributeTypes.Select(t => t.FullName).ToArray();
 
         internal static readonly string[] WhitelistedArrayPropertyNames = { "Length" };
 
