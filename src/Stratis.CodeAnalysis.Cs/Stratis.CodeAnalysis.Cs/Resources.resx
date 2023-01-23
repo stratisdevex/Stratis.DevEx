@@ -154,7 +154,7 @@
     <comment>The title of the diagnostic.</comment>
   </data>
   <data name="SC0003_Description" xml:space="preserve">
-    <value>Classes in smart contract code must inherit from Stratis.SmartContrsct</value>
+    <value>Classes in smart contract code must inherit from Stratis.SmartContract</value>
   </data>
   <data name="SC0003_MessageFormat" xml:space="preserve">
     <value>Class {0} must inherit from class Stratis.SmartContracts.SmartContract</value>

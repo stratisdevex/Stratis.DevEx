@@ -142,7 +142,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Classes in smart contract code must inherit from Stratis.SmartContrsct.
+        ///   Looks up a localized string similar to Classes in smart contract code must inherit from Stratis.SmartContract.
         /// </summary>
         internal static string SC0003_Description {
             get {
