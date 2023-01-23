@@ -14,7 +14,7 @@
     <PackageProjectUrl>https://github.com/allisterb/Stratis.DevEx</PackageProjectUrl>
     <RepositoryUrl>https://github.com/allisterb/Stratis.DevEx.git</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>Stratis smart code analysis and validation</Description>
+    <Description>Stratis smart contract code analysis and validation</Description>
     <PackageReleaseNotes>First public release.</PackageReleaseNotes>
     <Copyright>Copyright © 2023 Allister Beharry</Copyright>
     <PackageTags>analyzers, smart contracts, stratis</PackageTags>
