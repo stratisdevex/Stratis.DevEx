@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,7 +10,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
 using Stratis.SmartContracts;
-
 using Stratis.DevEx;
 
 namespace Stratis.CodeAnalysis.Cs
@@ -39,19 +39,19 @@ namespace Stratis.CodeAnalysis.Cs
         #endregion
 
         #region Methods
-        // Namespace declarations not allowed in smart contract code
+        // SC0001 Namespace declarations not allowed in smart contract code
         public static Diagnostic AnalyzeNamespaceDecl(NamespaceDeclarationSyntax node, SemanticModel model)
         {
             var ns = node.DescendantNodes().First();
-            Debug("Namespace {0} declared.", ns.ToFullString().Trim());
+            Debug("Namespace {0} declared at {1} .", ns.ToString(), ns.GetLineLocation());
             return CreateDiagnostic("SC0001", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
         }
 
-        // Only allow using Stratis.SmartContracts namespace in smart contract code
+        // SC0002 Only allow using Stratis.SmartContracts namespace in smart contract code
         public static Diagnostic AnalyzeUsingDirective(UsingDirectiveSyntax node, SemanticModel model)
         {
             var ns = node.DescendantNodes().OfType<NameSyntax>().FirstOrDefault();
-            Debug("Using directive for namespace {0} declared.", ns.ToFullString().Trim());
+            Debug("Using namespace {0} declared at {1}.", ns.ToFullString().Trim(), ns.GetLineLocation());
             if (ns != null && !WhitelistedNamespaces.Contains(ns.ToFullString()))
             {
                 return CreateDiagnostic("SC0002", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
@@ -62,10 +62,11 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        // Declared classes must inherit from Stratis.SmartContracts.SmartContract
+        // SC0003 Declared classes must inherit from Stratis.SmartContracts.SmartContract
         public static Diagnostic AnalyzeClassDecl(ClassDeclarationSyntax node, SemanticModel model)
         {
             var classSymbol = model.GetDeclaredSymbol(node) as ITypeSymbol;
+            Debug("Class {0} declared.", classSymbol.ToDisplayString());
             if (classSymbol.BaseType is null || classSymbol.BaseType.ToDisplayString() != "Stratis.SmartContracts.SmartContract")
             {
                 return CreateDiagnostic("SC0003", DiagnosticSeverity.Error, node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).GetLocation(), classSymbol.Name);
@@ -76,7 +77,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        // Class constructor must have a ISmartContractState as first parameter.
+        // SC0004 Class constructor must have a ISmartContractState as first parameter.
         public static Diagnostic AnalyzeConstructorDecl(ConstructorDeclarationSyntax node, SemanticModel model)
         {
             if (node.Parent is StructDeclarationSyntax) return NoDiagnostic;
@@ -110,7 +111,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        // Non-const field declarations outside structs not allowed in smart contract classes
+        // SC0005 Non-const field declarations outside structs not allowed in smart contract classes
         public static Diagnostic AnalyzeFieldDecl(FieldDeclarationSyntax node, SemanticModel model)
         {
             if (node.Parent.IsKind(SyntaxKind.StructDeclaration))
@@ -128,7 +129,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        // New object creation not allowed except for structs and arrays of primitive types and structs
+        // SC0006 New object creation not allowed except for structs and arrays of primitive types and structs
         public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation)
         {
             var type = objectCreation.Type;
@@ -154,7 +155,34 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        // Only struct properties or whitelisted properties of reference types can be accessed
+        // SC0007 Only certain variable types can be used in smart contract code
+        public static Diagnostic AnalyzeVariableDeclaration(IVariableDeclaratorOperation variableDeclarator)
+        {
+            var v = variableDeclarator.Symbol;
+            var type = variableDeclarator.Symbol.Type;
+            Debug("Variable {0} of type {1} declared at {2}.", v.ToDisplayString(), type.ToDisplayString(), variableDeclarator.Syntax.GetLineLocation());
+            var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
+            var basetype = type.BaseType;
+
+            var typename = type.ToDisplayString();
+            var elementtypename = elementtype?.ToDisplayString() ?? string.Empty;
+            var basetypename = basetype?.ToDisplayString() ?? string.Empty;
+
+            if (PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename) || SmartContractTypeNames.Contains(basetypename))
+            {
+                return NoDiagnostic;
+            }
+            else if (type.IsValueType || type.IsObject() || type.IsEnum() || (type.IsArrayTypeKind() && (elementtype.IsValueType || elementtype.IsObject() || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename))))
+            {
+                return NoDiagnostic;
+            }
+            else
+            {
+                return CreateDiagnostic("SC0007", DiagnosticSeverity.Error, variableDeclarator.Syntax.GetLocation(), typename);
+            }
+        }
+
+        // SC0008 Only struct properties or whitelisted properties of reference types can be accessed
         public static Diagnostic AnalyzePropertyReference(IPropertyReferenceOperation propReference)
         {
             var member = propReference.Member;
@@ -211,31 +239,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        // 
-        public static Diagnostic AnalyzeVariableDeclaration(IVariableDeclaratorOperation variableDeclarator)
-        {
-            var node = variableDeclarator.Syntax;
-            var type = variableDeclarator.Symbol.Type;
-            var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol) type).ElementType : null;
-            var basetype = type.BaseType;
-
-            var typename = type.ToDisplayString();    
-            var elementtypename = elementtype?.ToDisplayString() ?? string.Empty;
-            var basetypename = basetype?.ToDisplayString() ?? string.Empty;
-
-            if (PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename) || SmartContractTypeNames.Contains(basetypename))
-            {
-                return NoDiagnostic;
-            }
-            else if (type.IsValueType || type.IsEnum() || (type.IsArrayTypeKind() && (elementtype.IsValueType || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename))))
-            {
-                return NoDiagnostic;
-            }
-            else
-            {
-                return CreateDiagnostic("SC0007", DiagnosticSeverity.Error, node.GetLocation(), typename);
-            }
-        }
+        
 
         // Assert should not test constant value boolean condition
         private static Diagnostic AnalyzeAssertConditionConstant(IInvocationOperation methodInvocation)
@@ -323,7 +327,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic CreateDiagnostic(string id, DiagnosticSeverity severity, Location location, params object[] args)
         {
             var d = Diagnostic.Create(GetDescriptor(id, severity), location, args);
-            Debug("Emitting diagnostic Id: {0}. Title: {1}. Location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
+            Info("Emitting diagnostic id: {0}; title: {1}; location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
             return d;
         }
         #endregion
