@@ -17,6 +17,8 @@ namespace Stratis.DevEx
         static Runtime()
         {
             AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
+            EntryAssembly = Assembly.GetEntryAssembly();
+            IsUnitTestRun = EntryAssembly.FullName.StartsWith("testhost");
             SessionId = Rng.Next(0, 99999);            
             Logger = new ConsoleLogger();
         }
@@ -62,11 +64,13 @@ namespace Stratis.DevEx
 
         public static CancellationToken Ct { get; protected set; } = Cts.Token;
 
-        //public static HttpClient DefaultHttpClient { get; } = new HttpClient();
+        public static Assembly EntryAssembly { get; protected set; }
 
         public static string AssemblyLocation { get; } = Path.GetDirectoryName(Assembly.GetAssembly(typeof(Runtime))!.Location)!;
 
         public static Version AssemblyVersion { get; } = Assembly.GetAssembly(typeof(Runtime))!.GetName().Version!;
+        
+        public static bool IsUnitTestRun { get; set; }
         #endregion
 
         #region Methods
@@ -77,31 +81,42 @@ namespace Stratis.DevEx
                 Info("Runtime already initialized...skipping init.");
                 return;
             }
-            Logger.Close();
-            ToolName = toolname;
-            LogName = logname;
-            var fulllogfilename = StratisDevDir.CombinePath($"{ToolName}.{SessionId}.log");
-            Logger = new FileLogger(fulllogfilename, false, LogName); ;
-            Info("{0} initialized with log file {1}...", ToolName, fulllogfilename); ;
-            var globalCfgFile = StratisDevDir.CombinePath(ToolName + ".cfg");
-            if (!File.Exists(globalCfgFile))
+            if (!IsUnitTestRun)
             {
-                Info("Creating new global configuration file for {0}...", ToolName);
-                var newcfg = new Configuration();
-                newcfg["General"]["Debug"].BoolValue = false;
-                newcfg.SaveToFile(globalCfgFile);
+                Logger.Close();
+                ToolName = toolname;
+                LogName = logname;
+                var fulllogfilename = StratisDevDir.CombinePath($"{ToolName}.{SessionId}.log");
+                Logger = new FileLogger(fulllogfilename, false, LogName); ;
+                Info("{0} initialized from entry assembly {1} with log file {2}...", ToolName, EntryAssembly, fulllogfilename); ;
+                var globalCfgFile = StratisDevDir.CombinePath(ToolName + ".cfg");
+                if (!File.Exists(globalCfgFile))
+                {
+                    Info("Creating new global configuration file for {0}...", ToolName);
+                    var newcfg = new Configuration();
+                    newcfg["General"]["Debug"].BoolValue = false;
+                    newcfg.SaveToFile(globalCfgFile);
+                }
+                else
+                {
+                    Info("Loading existing global configuration file...");
+                }
+                GlobalConfig = Configuration.LoadFromFile(globalCfgFile);
+                if (GlobalConfig["General"]["Debug"].BoolValue)
+                {
+                    Logger.SetLogLevelDebug();
+                    Info("Debug mode enabled.");
+                }
+                Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
             }
             else
             {
-                Info("Loading existing global configuration file...");
-            }
-            GlobalConfig = Configuration.LoadFromFile(globalCfgFile);
-            if (GlobalConfig["General"]["Debug"].BoolValue)
-            {
+                GlobalConfig = new Configuration();
+                GlobalConfig["General"]["Debug"].BoolValue = true;
                 Logger.SetLogLevelDebug();
+                Info("{0} initialized from unit test host assembly {1}...", ToolName, EntryAssembly);
                 Info("Debug mode enabled.");
             }
-            Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
             RuntimeInitialized = true;
         }
        

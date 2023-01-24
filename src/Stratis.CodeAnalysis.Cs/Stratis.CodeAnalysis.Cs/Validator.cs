@@ -160,10 +160,10 @@ namespace Stratis.CodeAnalysis.Cs
         {
             var v = variableDeclarator.Symbol;
             var type = variableDeclarator.Symbol.Type;
-            Debug("Variable {0} of type {1} declared at {2}.", v.ToDisplayString(), type.ToDisplayString(), variableDeclarator.Syntax.GetLineLocation());
             var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
             var basetype = type.BaseType;
-
+            Debug("Variable {0} of type {1} declared at {2}. Base type: {3}. Array type: {4}. Element type: {5}.", v.ToDisplayString(), type.ToDisplayString(), variableDeclarator.Syntax.GetLineLocation(), basetype.ToDisplayString(), type.IsArrayTypeKind(), elementtype?.ToDisplayString() ?? "");
+            
             var typename = type.ToDisplayString();
             var elementtypename = elementtype?.ToDisplayString() ?? string.Empty;
             var basetypename = basetype?.ToDisplayString() ?? string.Empty;
@@ -172,7 +172,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return NoDiagnostic;
             }
-            else if (type.IsValueType || type.IsObject() || type.IsEnum() || (type.IsArrayTypeKind() && (elementtype.IsValueType || elementtype.IsObject() || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename))))
+            else if (type.IsValueType || type.IsObject() || type.IsEnum() || (type.IsArrayTypeKind() && (elementtype.IsValueType || elementtype.IsObject() || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename) || (elementtype.IsArrayTypeKind() && ((IArrayTypeSymbol)elementtype).ElementType.IsValueType))))
             {
                 return NoDiagnostic;
             }
