@@ -57,6 +57,15 @@ jobs:
         
     # Build the solution
     - name: Restore the application
-      run: msbuild "$env:Solution_Name" /t:Build /p:Configuration=$env:Configuration
+      run: dotnet build "$env:Solution_Name" /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
+        
+    # Pack Stratis.CodeAnalysis.Cs package
+    - name: Pack Stratis.CodeAnalysis.Cs
+      run: dotnet pack "src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\Stratis.CodeAnalysis.Cs.Package.csproj" --configuration Debug /p:Version=${VERSION} --no-build --output .
+    
+    #- name: Push Stratis.CodeAnalysis.Cs
+    #  run: dotnet nuget push NuGet.Workflow.${VERSION}.nupkg --source https://nuget.pkg.github.com/acraven/index.json --api-key ${GITHUB_TOKEN}
+    #  env:
+    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
