@@ -20,6 +20,112 @@ $buildRunnerToolsFolder = Join-Path $buildRunnerToolsFolder ".buildtools"
 
 # Miscellaneous
 
+function MyGet-HipChatRoomMessage {
+    # copyright: https://github.com/lholman/hipchat-ps
+
+	param(
+        [parameter(Position = 0, Mandatory = $True)] 
+        [string]$apitoken,
+	    [parameter(Position = 1, Mandatory = $True)]
+	    [string]$roomid,
+	    [parameter(Position = 2, Mandatory = $False)]
+	    [string]$from = $env:COMPUTERNAME,
+	    [parameter(Position = 3, Mandatory = $True)]
+	    [string]$message,	
+        [parameter(Position = 4, Mandatory = $False)]
+	    [string]$colour = "yellow",
+	    [parameter(Position = 5, Mandatory = $False)]
+	    [string]$notify = "1",
+	    [parameter(Position = 6, Mandatory = $False)]
+	    [string]$apihost = "api.hipchat.com"
+	)
+
+	#Replace naked URL's with hyperlinks
+	$regex = [regex] "((www\.|(http|https|ftp|news|file)+\:\/\/)[&#95;.a-z0-9-]+\.[a-z0-9\/&#95;:@=.+?,##%&~-]*[^.|\'|\# |!|\(|?|,| |>|<|;|\)])"
+	$message = $regex.Replace($message, "<a href=`"`$1`">`$1</a>").Replace("href=`"www", "href=`"http://www")
+					
+	#Do the HTTP POST to HipChat
+	$post = "auth_token=$apitoken&room_id=$roomid&from=$from&color=$colour&message=$message&notify=$notify"
+	Write-Debug "post = $post"
+	Write-Debug "https://$apihost/v1/rooms/message"
+	$webRequest = [System.Net.WebRequest]::Create("https://$apihost/v1/rooms/message")
+	$webRequest.ContentType = "application/x-www-form-urlencoded"
+	$postStr = [System.Text.Encoding]::UTF8.GetBytes($post)
+	$webrequest.ContentLength = $postStr.Length
+	$webRequest.Method = "POST"
+	$requestStream = $webRequest.GetRequestStream()
+	$requestStream.Write($postStr, 0,$postStr.length)
+	$requestStream.Close()
+					
+	[System.Net.WebResponse] $resp = $webRequest.GetResponse();
+	$rs = $resp.GetResponseStream();
+	[System.IO.StreamReader] $sr = New-Object System.IO.StreamReader -argumentList $rs;
+	$result = $sr.ReadToEnd();				
+        
+    return $result | Format-Table
+
+}
+
+function MyGet-AssemblyVersion-Set {
+    param(
+        [parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
+        [string]$projectFolder,
+        [parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidatePattern("^([0-9]+)\.([0-9]+)\.([0-9]+)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+)?$")]
+        [string]$version
+    )
+
+    function Write-VersionAssemblyInfo {
+        Param(
+            [string]
+            $version, 
+
+            [string]
+            $assemblyInfo
+        )
+		
+		$nugetVersion = $version
+		$version = $version -match "\d+\.\d+\.\d+"
+		$version = $matches[0]
+
+        $numberOfReplacements = 0
+        $newContent = Get-Content $assemblyInfo | %{
+            $regex = "(Assembly(?:File)?Version)\(`"\d+\.\d+\.\d+`"\)"
+            $newString = $_
+            if ($_ -match $regex) {
+                $numberOfReplacements++
+                $newString = $_ -replace $regex, "`$1(`"$version`")"
+            }
+            $newString
+        }		
+			
+	    $newContent = $newContent | %{
+            $regex = "(AssemblyInformationalVersion)\(`".*`"\)"
+            $newString = $_
+            if ($_ -match $regex) {
+                $numberOfReplacements++
+                $newString = $_ -replace $regex, "`$1(`"$nugetVersion`")"
+            }
+            $newString
+        }
+
+        if ($numberOfReplacements -ne 3) {
+            MyGet-Die "Expected to replace the version number in 3 places in AssemblyInfo.cs (AssemblyVersion, AssemblyFileVersion, AssemblyInformationalVersion) but actually replaced it in $numberOfReplacements"
+        }
+		
+        $newContent | Set-Content $assemblyInfo -Encoding UTF8
+    }
+
+    $projectFolder = Split-Path -parent $projectFolder
+    $assemblyInfo = Get-ChildItem -Path $projectFolder -Filter "AssemblyInfo.cs" -Recurse
+    $assemblyInfo = $assemblyInfo[0].FullName
+
+    MyGet-Write-Diagnostic "New assembly version: $version"
+
+    Write-VersionAssemblyInfo -assemblyInfo $assemblyInfo -version $version
+
+}
+
 function MyGet-AssemblyInfo {
   # https://github.com/peters/assemblyinfo/blob/develop/getassemblyinfo.ps1
 
@@ -511,7 +617,7 @@ function MyGet-AssemblyInfo {
                 if($optionalHeaders.SubSystemMinor -eq 0x6) {
                     $targetFramework = "NET45"
                 } else {
-                    $targetFramework = "NET40"
+                    $targetFramework = "NET472"
                 }
             }
        }
@@ -731,19 +837,48 @@ function MyGet-CurlExe-Path {
     MyGet-Die "Could not find curl executable: $curl"
 }
 
+function MyGet-VSWhereExe-Path {
+
+    $VSWhereExe = Join-Path $buildRunnerToolsFolder "tools\vswhere\latest\vswhere.exe"
+    if (Test-Path $VSWhereExe) {
+        return $VSWhereExe
+    }
+
+    MyGet-Die "Could not find vswhere executable: $VSWhereExe"
+}
+
 function MyGet-NugetExe-Path {
     param(
-        [ValidateSet("2.5", "2.6", "2.7", "latest")]
-        [string] $version = "latest"
-    )
+        [ValidateSet("2.5", "2.6", "2.7", "2.8.0", "2.8.1", "latest")]
+        [string] $version = "latest",		
+        [parameter(Position = 1, ValueFromPipeline = $true)]
+        [string] $config = $env:NUGET_CONFIG_FILENAME
+	)
+	
+    $useNugetConfig = $true
+    if([string]::IsNullOrWhiteSpace($config)) {
+        $useNugetConfig = $false
+    }
+
+	if($useNugetConfig -and (-not (Test-Path $config))) {
+		Myget-Die "Nuget config does not exist: $config"
+	} elseif($useNugetConfig) {
+		MyGet-Write-Diagnostic "Using nuget configuration file: $config"		
+	}
 
     # Test environment variable
-    if((MyGet-BuildRunner -eq "myget") -and (Test-Path env:nuget)) {
-        return $env:nuget
+    if(Test-Path env:nuget) {
+        if($useNugetConfig) {
+    		. $env:nuget config -ConfigFile $config
+        }
+        return $env:nuget  
     }
 
     $nuget = Join-Path $buildRunnerToolsFolder "tools\nuget\$version\nuget.exe"
     if (Test-Path $nuget) {
+        if($useNugetConfig) {
+    		. $nuget config -ConfigFile $config
+        }
         return $nuget
     }
 
@@ -807,12 +942,13 @@ function MyGet-Normalize-Paths {
         $i++;
     }
 
+	return $paths 
 }
 
 function MyGet-TargetFramework-To-Clr {
     param(
         [parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateSet("v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.7.2")]
+        [ValidateSet("v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.5.2", "v4.6", "v4.6.1", "v4.6.2", "v4.7", "v4.7.2", "v4.8")]
         [string]$targetFramework
     )
 
@@ -834,8 +970,26 @@ function MyGet-TargetFramework-To-Clr {
         "v4.5.1" {
             $clr = "net451"
         }
+        "v4.5.2" {
+            $clr = "net452"
+        }
+		"v4.6" {
+			$clr = "net46"
+		}
+		"v4.6.1" {
+			$clr = "net461"
+		}
+		"v4.6.2" {
+		    $clr = "net462"
+		}
+		"v4.7" {
+		    $clr = "net47"
+        }
         "v4.7.2" {
-            $clr = "net472"
+		    $clr = "net472"
+        }
+        "v4.8" {
+            $clr = "net48"
         }
     }
 
@@ -845,7 +999,7 @@ function MyGet-TargetFramework-To-Clr {
 function MyGet-Clr-To-TargetFramework {
     param(
         [parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateSet("net20", "net35", "net40", "net45", "net451")]
+        [ValidateSet("net20", "net35", "net40", "net45", "net451", "net452", "net46", "net461","net462", "net472")]
         [string]$clr
     )
 
@@ -867,9 +1021,27 @@ function MyGet-Clr-To-TargetFramework {
         "net451" {
             $targetFramework = "v4.5.1"
         }
-        "net472" {
-            $targetFramework = "v4.7.2"
+        "net452" {
+            $targetFramework = "v4.5.2"
         }
+		"net46" {
+			$targetFramework = "v4.6"
+		}
+		"net461" {
+			$targetFramework = "v4.6.1"
+		}
+		"net462" {
+			$targetFramework = "v4.6.2"
+		}
+		"net47" {
+			$targetFramework = "v4.7"
+        }
+        "net472" {
+			$targetFramework = "v4.7.2"
+        }
+        "net48" {
+			$targetFramework = "v4.8"
+		}
     }
 
     return $targetFramework
@@ -894,23 +1066,28 @@ function MyGet-Build-Clean {
     )
 
     MyGet-Write-Diagnostic "Build: Clean"
+    
+    $deleteFolders = $folders -split ","
 
-    Get-ChildItem $rootFolder -Include $folders -Recurse | ForEach-Object {
-       Remove-Item $_.fullname -Force -Recurse 
+    Foreach($deletePath in $deleteFolders) {
+        if (Test-Path "$rootFolder/$deletePath"){
+            Remove-Item -Recurse -Force "$rootFolder/$deletePath"
+        }
     }
-
 }
 
 function MyGet-Build-Bootstrap {
     param(
         [parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
-        [string]$project
-    )
+        [string]$project,
+        [parameter(Position = 1, ValueFromPipeline = $true)]
+        [string]$nugetConfigFilename = $env:NUGET_CONFIG_FILENAME
+	)
 
     MyGet-Write-Diagnostic "Build: Bootstrap"
 
     $solutionFolder = [System.IO.Path]::GetDirectoryName($project)
-    $nugetExe = MyGet-NugetExe-Path
+    $nugetExe = MyGet-NugetExe-Path -Config $nugetConfigFilename
 
     . $nugetExe config -Set Verbosity=quiet
 
@@ -958,7 +1135,10 @@ function MyGet-Build-Nupkg {
         [string]$nugetPackOptions = $null,
 
         [parameter(Position = 9, ValueFromPipeline = $true)]
-        [string]$nugetIncludeSymbols = $true
+        [string]$nugetIncludeSymbols = $true,
+		
+        [parameter(Position = 10, ValueFromPipeline = $true)]
+        [string]$nugetConfigFilename = $env:NUGET_CONFIG_FILENAME
 
     )
     
@@ -982,7 +1162,7 @@ function MyGet-Build-Nupkg {
 
     # Nuget
     $nugetCurrentFolder = [System.IO.Path]::GetDirectoryName($nuspec)
-    $nugetExe = MyGet-NugetExe-Path
+    $nugetExe = MyGet-NugetExe-Path -Config $nugetConfigFilename
     $nugetProperties = @(
         "Configuration=$config",
         "Platform=$platform",
@@ -1049,11 +1229,11 @@ function MyGet-Build-Project {
         [string]$version,
         
         [parameter(Position = 6, Mandatory = $false, ValueFromPipeline = $true)]
-        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.7.2")]
+        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.5.2", "v4.6", "v4.6.1", "v4.6.2", "v4.7", "v4.8")]
         [string[]]$targetFrameworks = @(),
 
         [parameter(Position = 7, Mandatory = $false, ValueFromPipeline = $true)]
-        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.7.2")]
+        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.5.2", "v4.6", "v4.6.1", "v4.6.2", "v4.7", "v4.8")]
         [string]$targetFramework = $null,
 
         [parameter(Position = 8, Mandatory = $true, ValueFromPipeline = $true)]
@@ -1065,7 +1245,12 @@ function MyGet-Build-Project {
         [string]$verbosity = "Minimal",
 
         [parameter(Position = 10, ValueFromPipeline = $true)]
-        [string]$MSBuildCustomProperties = $null
+        [string]$MSBuildCustomProperties = $null,
+
+        [parameter(Position = 11, ValueFromPipeline = $true)]
+		[string]$MSBuildPath = "$(Get-Content env:windir)\Microsoft.NET\Framework$MSBuildx64Framework\v4.0.30319\MSBuild.exe",
+
+        [bool] $MSBuildx64 = $false
     )
 
     $projectOutputPath = Join-Path $outputFolder "$version\$platform\$config"
@@ -1115,8 +1300,14 @@ function MyGet-Build-Project {
             $msbuildPlatform = "Any CPU"
         }
 
+        # Force x64 edition of msbuild
+        $MSBuildx64Framework = ""
+        if($MSBuildx64) {
+            $MSBuildx64Framework = "64"
+        }
+
         # http://msdn.microsoft.com/en-us/library/vstudio/ms164311.aspx
-        & "$(Get-Content env:windir)\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe" `
+        & $MSBuildPath `
             $projectPath `
             /target:$target `
             /property:Configuration=$config `
@@ -1180,7 +1371,11 @@ function MyGet-Build-Solution {
         [string]$nuspec = $null,
 
         [parameter(Position = 12, ValueFromPipeline = $true)]
-        [string]$MSBuildCustomProperties = $null
+        [string]$MSBuildCustomProperties = $null,
+		
+		[parameter(Position = 13, ValueFromPipeline = $true)]
+		[string]$MSBuildPath = "$(Get-Content env:windir)\Microsoft.NET\Framework$MSBuildx64Framework\v4.0.30319\MSBuild.exe"
+
     )
 
     if(-not (Test-Path $sln)) {
@@ -1210,7 +1405,8 @@ function MyGet-Build-Solution {
             MyGet-Build-Project -rootFolder $rootFolder -project $project -outputFolder $outputFolder `
                 -target $target -config $config -targetFrameworks $targetFrameworks `
                 -version $version -platform $platform -verbosity $verbosity `
-                -MSBuildCustomProperties $MSBuildCustomProperties
+                -MSBuildCustomProperties $MSBuildCustomProperties `
+				-MSBuildPath $MSBuildPath
     
             if(-not ($excludeNupkgProjects -contains $project)) {
                 MyGet-Build-Nupkg -rootFolder $rootFolder -project $project -nuspec $nuspec -outputFolder $finalBuildOutputFolder `
@@ -1424,7 +1620,9 @@ function MyGet-Squirrel-New-Release {
         [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
         [string]$solutionFolder,
         [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
-        [string]$buildFolder
+        [string]$buildFolder,
+        [Parameter(Position = 2, Mandatory = $true, ValueFromPipeline = $true)]
+        [string]$releasesFolder
     )
 
     $packagesDir = Join-Path $solutionFolder "packages"
@@ -1442,7 +1640,7 @@ function MyGet-Squirrel-New-Release {
 
     Import-Module $commandsPsm1.FullName
 
-    New-ReleaseForPackage -SolutionDir $solutionFolder -BuildDir $buildFolder
+    New-ReleaseForPackage -SolutionDir $solutionFolder -BuildDir $buildFolder -ReleasesDir $releasesFolder
 
 }
 
@@ -1569,13 +1767,9 @@ if(-not (Test-Path $buildRunnerToolsFolder)) {
 
     MyGet-Write-Diagnostic "Downloading prerequisites"
 
-	git clone --depth=1 https://github.com/myget/BuildTools.git $buildRunnerToolsFolder
+	git clone --depth=1 https://github.com/peters/buildtools.git $buildRunnerToolsFolder
 
     $(Get-Item $buildRunnerToolsFolder).Attributes = "Hidden"
-
-    if($updateSelf -eq $false) {
-        Remove-Variable -Name buildRunnerToolsFolder
-    }
 
 }
 
@@ -1594,6 +1788,5 @@ if($updateSelf -eq $true) {
     Invoke-WebRequest "https://raw.github.com/peters/myget/master/myget.include.ps1" -OutFile $rootFolder\myget.include.ps1 -Verbose
     
     Remove-Variable -Name rootFolder
-    Remove-Variable -Name buildRunnerToolsFolder
 
 }
