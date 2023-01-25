@@ -867,6 +867,9 @@ function MyGet-Clr-To-TargetFramework {
         "net451" {
             $targetFramework = "v4.5.1"
         }
+        "net472" {
+            $targetFramework = "v4.7.2"
+        }
     }
 
     return $targetFramework
@@ -1046,11 +1049,11 @@ function MyGet-Build-Project {
         [string]$version,
         
         [parameter(Position = 6, Mandatory = $false, ValueFromPipeline = $true)]
-        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1")]
+        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.7.2")]
         [string[]]$targetFrameworks = @(),
 
         [parameter(Position = 7, Mandatory = $false, ValueFromPipeline = $true)]
-        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1")]
+        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.7.2")]
         [string]$targetFramework = $null,
 
         [parameter(Position = 8, Mandatory = $true, ValueFromPipeline = $true)]

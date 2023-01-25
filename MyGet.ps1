@@ -30,7 +30,7 @@ $solutionFolder = Join-Path $currentFolder "src\$solutionName"
 $outputFolder = Join-Path $currentFolder "src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\bin\Debug"
 
 # Clean
-if($clean) { MyGet-Build-Clean $rootFolder }
+if($clean) { MyGet-Build-Clean $currentFolder }
 
 # Platforms to build for
 $platforms | ForEach-Object {
@@ -43,7 +43,7 @@ $platforms | ForEach-Object {
         $buildOutputFolder = Join-Path $outputFolder "$packageVersion\$platform\$config"
 
         # Build project
-        MyGet-Build-Project -rootFolder $rootFolder `
+        MyGet-Build-Project -rootFolder $currentFolder `
             -outputFolder $outputFolder `
             -project $project `
             -config $config `
