@@ -46,12 +46,12 @@ jobs:
         Configuration: ${{ matrix.configuration }}
     
     - name: Execute Stratis.CodeAnalysis.Cs unit tests
-      run: dotnet test "$env:CodeAnalysis_Cs_Test_Project_Path"
+      run: dotnet test "$env:CodeAnalysis_Cs_Test_Project_Path" -l "console;verbosity=detailed"
     
     - name: Pack Stratis.CodeAnalysis.Cs package
       run: dotnet pack "$env:CodeAnalysis_Cs_Project_Path" --configuration Debug /p:Version=${VERSION} --no-build --output .
     
-    #- name: Push Stratis.CodeAnalysis.Cs
-    #  run: dotnet nuget push NuGet.Workflow.${VERSION}.nupkg --source https://nuget.pkg.github.com/acraven/index.json --api-key ${GITHUB_TOKEN}
-    #  env:
-    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Push Stratis.CodeAnalysis.Cs
+      run: dotnet nuget push .\Stratis.CodeAnalysis.{VERSION}.nupkg --source https://www.myget.org/F/stratisdevex/api/v2/package --api-key ${MYGET_TOKEN}
+      env:
+        MYGET_TOKEN: ${{ secrets.MYGET_TOKEN }}
