@@ -35,7 +35,7 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Restore the solution
+    - name: Restore the Stratis.DevEx solution
       run: dotnet restore "$env:Solution_Name"  /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
@@ -48,10 +48,16 @@ jobs:
     - name: Execute Stratis.CodeAnalysis.Cs unit tests
       run: dotnet test "$env:CodeAnalysis_Cs_Test_Project_Path" -l "console;verbosity=detailed"
     
-    - name: Pack Stratis.CodeAnalysis.Cs package
-      run: dotnet pack "$env:CodeAnalysis_Cs_Project_Path" --configuration Debug /p:Version=${VERSION} --no-build --output .
+    - name: Get Stratis.CodeAnalysis.Cs version
+      id: package_version
+      uses: KageKirin/get-csproj-version@v1.0.0
+      with:
+        file: "$env:CodeAnalysis_Cs_Project_Path"
     
-    - name: Push Stratis.CodeAnalysis.Cs
-      run: dotnet nuget push .\Stratis.CodeAnalysis.{VERSION}.nupkg --source https://www.myget.org/F/stratisdevex/api/v2/package --api-key ${MYGET_TOKEN}
+    - name: Pack Stratis.CodeAnalysis.Cs package
+      run: dotnet pack "$env:CodeAnalysis_Cs_Project_Path" --configuration Debug /p:Version=${{ steps.test.package_version.version}} --no-build --output .
+    
+    - name: Push Stratis.CodeAnalysis.Cs package to dev feed
+      run: dotnet nuget push .\Stratis.CodeAnalysis.${{ steps.test.package_version.version }}.nupkg --source https://www.myget.org/F/stratisdevex/api/v2/package --api-key $env:MYGET_TOKEN
       env:
         MYGET_TOKEN: ${{ secrets.MYGET_TOKEN }}
