@@ -1248,7 +1248,7 @@ function MyGet-Build-Project {
         [string]$MSBuildCustomProperties = $null,
 
         [parameter(Position = 11, ValueFromPipeline = $true)]
-		[string]$MSBuildPath = "$(Get-Content env:windir)\Microsoft.NET\Framework$MSBuildx64Framework\v4.0.30319\MSBuild.exe",
+		[string]$MSBuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 
         [bool] $MSBuildx64 = $false
     )
@@ -1374,7 +1374,7 @@ function MyGet-Build-Solution {
         [string]$MSBuildCustomProperties = $null,
 		
 		[parameter(Position = 13, ValueFromPipeline = $true)]
-		[string]$MSBuildPath = "dotnet msbuild"
+		[string]$MSBuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 
     )
 
