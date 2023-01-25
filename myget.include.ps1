@@ -812,7 +812,7 @@ function MyGet-Normalize-Paths {
 function MyGet-TargetFramework-To-Clr {
     param(
         [parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateSet("v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1")]
+        [ValidateSet("v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.7.2")]
         [string]$targetFramework
     )
 
@@ -833,6 +833,9 @@ function MyGet-TargetFramework-To-Clr {
         }
         "v4.5.1" {
             $clr = "net451"
+        }
+        "v4.7.2" {
+            $clr = "net472"
         }
     }
 
