@@ -27,7 +27,7 @@ $packageVersion = MyGet-Package-Version $packageVersion
 # Solution
 $solutionName = "Stratis.DevEx"
 $solutionFolder = Join-Path $currentFolder "src\$solutionName"
-$outputFolder = Join-Path $currentFolder "src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\bin\Debug"
+$outputFolder = Join-Path $currentFolder "bin"
 
 # Clean
 if($clean) { MyGet-Build-Clean $currentFolder }
@@ -42,17 +42,17 @@ $platforms | ForEach-Object {
         $project = $_
         $buildOutputFolder = Join-Path $outputFolder "$packageVersion\$platform\$config"
 
-        # Build project
-        MyGet-Build-Project -rootFolder $currentFolder `
+        # Build solution for current platform
+        MyGet-Build-Solution -sln $solutionFolder\$solutionName.sln `
+            -rootFolder $currentFolder `
             -outputFolder $outputFolder `
-            -project $project `
+            -version $packageVersion `
             -config $config `
             -target $target `
+            -platforms $platforms `
             -targetFrameworks $targetFrameworks `
-            -platform $platform `
-            -verbosity $verbosity `
-            -version $packageVersion `
-    
+            -verbosity $verbosity
+
         # Build .nupkg
         MyGet-Build-Nupkg -rootFolder $ rootFolder `
             -outputFolder $ buildOutputFolder `
