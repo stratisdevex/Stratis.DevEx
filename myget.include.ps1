@@ -1312,7 +1312,6 @@ function MyGet-Build-Project {
             /target:$target `
             /property:Configuration=$config `
             /property:OutputPath=$buildOutputFolder `
-            /property:TargetFrameworkVersion=$targetFramework `
             /property:Platform=$msbuildPlatform `
             /maxcpucount `
             /verbosity:$verbosity `
