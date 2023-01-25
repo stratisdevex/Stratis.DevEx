@@ -1248,7 +1248,7 @@ function MyGet-Build-Project {
         [string]$MSBuildCustomProperties = $null,
 
         [parameter(Position = 11, ValueFromPipeline = $true)]
-		[string]$MSBuildPath = "$(Get-Content env:MsBuildExe)"
+		[string]$MSBuildPath = "MSBuild.exe"
 
         [bool] $MSBuildx64 = $false
     )
@@ -1374,7 +1374,7 @@ function MyGet-Build-Solution {
         [string]$MSBuildCustomProperties = $null,
 		
 		[parameter(Position = 13, ValueFromPipeline = $true)]
-		[string]$MSBuildPath = $(Get-Content env:MsBuildExe)
+		[string]$MSBuildPath = "MSBuild.exe"
 
     )
 
