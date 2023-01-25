@@ -7,9 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
-
     strategy:
       matrix:
         configuration: [Debug]
@@ -42,8 +40,8 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
         
-    - name: Build the Stratis.CodeAnalysis.Cs project and unit tests
-      run: dotnet build "$env:CodeAnalysis_Cs_Project_Path" /p:Configuration=$env:Configuration && dotnet build "$env:CodeAnalysis_Cs_Test_Project_Path" /p:Configuration=$env:Configuration
+    - name: Build the Stratis.CodeAnalysis.Cs project
+      run: dotnet build "$env:CodeAnalysis_Cs_Project_Path" /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
     

@@ -88,7 +88,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Smart contract classes cannot be declared inside a namespace.
+        ///   Looks up a localized string similar to Smart contract classes cannot be declared inside a namespace..
         /// </summary>
         internal static string SC0001_Description {
             get {

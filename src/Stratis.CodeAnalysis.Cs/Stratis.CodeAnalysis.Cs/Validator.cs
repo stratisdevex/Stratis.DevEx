@@ -44,15 +44,15 @@ namespace Stratis.CodeAnalysis.Cs
         {
             var ns = node.DescendantNodes().First();
             Debug("Namespace {0} declared at {1} .", ns.ToString(), ns.GetLineLocation());
-            return CreateDiagnostic("SC0001", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
+            return CreateDiagnostic("SC0001", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToString());
         }
 
         // SC0002 Only allow using Stratis.SmartContracts namespace in smart contract code
         public static Diagnostic AnalyzeUsingDirective(UsingDirectiveSyntax node, SemanticModel model)
         {
             var ns = node.DescendantNodes().OfType<NameSyntax>().FirstOrDefault();
-            Debug("Using namespace {0} declared at {1}.", ns.ToFullString().Trim(), ns.GetLineLocation());
-            if (ns != null && !WhitelistedNamespaces.Contains(ns.ToFullString()))
+            Debug("Using namespace {0} declared at {1}.", ns.ToString(), ns.GetLineLocation());
+            if (ns != null && !WhitelistedNamespaces.Contains(ns.ToString()))
             {
                 return CreateDiagnostic("SC0002", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
             }

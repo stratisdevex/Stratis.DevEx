@@ -18,19 +18,19 @@ namespace Stratis.CodeAnalysis.Cs.Test
         public async Task NamespaceDeclNotAllowedTest()
         {
             var code = 
-@"namespace ns1
-{
-    using Stratis.SmartContracts;
-    public class Player : SmartContract
-    {
-        public Player(ISmartContractState state, Address player, Address opponent, string gameName)
-            : base(state)
+@"  namespace ns1 {
+        using Stratis.SmartContracts;
+        public class Player : SmartContract
         {
+            public Player(ISmartContractState state, Address player, Address opponent, string gameName)
+                : base(state)
+            {
            
+            }
         }
     }
-}";
-            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0001").WithSpan(1, 11, 1, 14).WithArguments("ns1"));
+";
+            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0001").WithSpan(1, 13, 1, 16).WithArguments("ns1"));
         }
 
         [TestMethod]

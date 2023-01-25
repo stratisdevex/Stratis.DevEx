@@ -41,6 +41,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{ABC1
 		..\MyGet.ps1 = ..\MyGet.ps1
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{F0C599CF-2317-43C2-BDFF-445483D2DE06}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\publish-packages-myget.yml = ..\.github\workflows\publish-packages-myget.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
