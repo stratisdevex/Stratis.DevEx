@@ -1229,11 +1229,11 @@ function MyGet-Build-Project {
         [string]$version,
         
         [parameter(Position = 6, Mandatory = $false, ValueFromPipeline = $true)]
-        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.5.2", "v4.6", "v4.6.1", "v4.6.2", "v4.7", "v4.8")]
+        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.5.2", "v4.6", "v4.6.1", "v4.6.2", "v4.7", "v4.7.2", "v4.8")]
         [string[]]$targetFrameworks = @(),
 
         [parameter(Position = 7, Mandatory = $false, ValueFromPipeline = $true)]
-        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.5.2", "v4.6", "v4.6.1", "v4.6.2", "v4.7", "v4.8")]
+        [ValidateSet("v1.1", "v2.0", "v3.5", "v4.0", "v4.5", "v4.5.1", "v4.5.2", "v4.6", "v4.6.1", "v4.6.2", "v4.7", "v4.7.2", "v4.8")]
         [string]$targetFramework = $null,
 
         [parameter(Position = 8, Mandatory = $true, ValueFromPipeline = $true)]
