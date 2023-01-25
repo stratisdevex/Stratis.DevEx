@@ -36,32 +36,32 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Restore the Stratis.DevEx solution
-      run: dotnet restore "$env:Solution_Name"  /p:Configuration=$env:Configuration
+      run: dotnet restore "${{ env.Solution_Name }}"  /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
         
     - name: Build the Stratis.CodeAnalysis.Cs project
-      run: dotnet build "$env:CodeAnalysis_Cs_Project_Path" /p:Configuration=$env:Configuration
+      run: dotnet build "${{ env.CodeAnalysis_Cs_Project_Path }}" /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
     
     - name: Execute Stratis.CodeAnalysis.Cs unit tests
-      run: dotnet test "$env:CodeAnalysis_Cs_Test_Project_Path" -l "console;verbosity=detailed"
+      run: dotnet test "${{ env.CodeAnalysis_Cs_Test_Project_Path }}" -l "console;verbosity=detailed"
     
     - name: Get Stratis.CodeAnalysis.Cs base package version
       id: package_version
       uses: KageKirin/get-csproj-version@v1.0.0
       with:
         xpath: //PropertyGroup//PackageVersion
-        file: "src\\Stratis.CodeAnalysis.Cs\\Stratis.CodeAnalysis.Cs.Package\\Stratis.CodeAnalysis.Cs.Package.csproj"
+        file: "${{ env.CodeAnalysis_Cs_Project_Path }}"
     
     - name: Get git SHA
       run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       
     - name: Set Stratis.CodeAnalysis.Cs CI package version
-      run: echo "CI_VERSION=${{ steps.test.package_version.version }}.CI$env:GIT_SHA" >> $GITHUB_ENV
+      run: echo "CI_VERSION=${{ steps.test.package_version.version }}.CI${{ env.GIT_SHA }}" >> $GITHUB_ENV
     
     - name: Push Stratis.CodeAnalysis.Cs package to dev feed
-      run: dotnet nuget push .\Stratis.CodeAnalysis.$env:CI_VERSION.nupkg --source https://www.myget.org/F/stratisdevex/api/v2/package --api-key $env:MYGET_TOKEN
+      run: dotnet nuget push .\Stratis.CodeAnalysis.${{env.CI_VERSION}}.nupkg --source https://www.myget.org/F/stratisdevex/api/v2/package --api-key ${{ env.MYGET_TOKEN }}
       env:
         MYGET_TOKEN: ${{ secrets.MYGET_TOKEN }}
