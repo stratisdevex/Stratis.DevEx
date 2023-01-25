@@ -26,7 +26,7 @@ $packageVersion = MyGet-Package-Version $packageVersion
 
 # Solution
 $solutionName = "Stratis.DevEx"
-$solutionFolder = Join-Path $currentFolder "src\$solutionName"
+$solutionFolder = Join-Path $currentFolder "src"
 $outputFolder = Join-Path $currentFolder "bin"
 
 # Clean
