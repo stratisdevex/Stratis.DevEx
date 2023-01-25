@@ -55,9 +55,9 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
         
-    # Build the solution
+    # Build the Stratis.CodeAnalysis.Cs project
     - name: Build the solution
-      run: dotnet build "$env:Solution_Name" /p:Configuration=$env:Configuration
+      run: dotnet build "src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\Stratis.CodeAnalysis.Cs.Package.csproj" /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
         
