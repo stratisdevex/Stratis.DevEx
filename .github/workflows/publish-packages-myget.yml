@@ -56,10 +56,12 @@ jobs:
         file: "${{ env.CodeAnalysis_Cs_Project_Path }}"
     
     - name: Get git SHA
+      id: git_sha
       run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       
     - name: Set Stratis.CodeAnalysis.Cs CI package version
-      run: echo "CI_VERSION=${{ steps.test.package_version.version }}.CI${{ env.GIT_SHA }}" >> $GITHUB_ENV
+      id: ci_version
+      run: echo "CI_VERSION=${{ steps.package_version.version }}.CI${{ env.GIT_SHA }}" >> $GITHUB_ENV
     
     - name: Pack Stratis.CodeAnalysis.Cs package
       run: dotnet pack "${{ env.CodeAnalysis_Cs_Project_Path }}" --configuration Debug /p:Version=${{ env.CI_VERSION }} --no-build --output .
