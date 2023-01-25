@@ -1,6 +1,6 @@
 param(
     [string[]]$projects = @(
-        "src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\Stratis.CodeAnalysis.Cs.Package.csproj",
+        "src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\Stratis.CodeAnalysis.Cs.Package.csproj"
     ),
     [string[]]$platforms = @(
         "AnyCpu"
