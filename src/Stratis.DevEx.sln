@@ -37,6 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog", "..\ext\NLog\src\NLo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{ABC12B6A-E4B7-4AB5-ADEA-A486EBE3FF07}"
 	ProjectSection(SolutionItems) = preProject
+		..\myget.include.ps1 = ..\myget.include.ps1
 		..\MyGet.ps1 = ..\MyGet.ps1
 	EndProjectSection
 EndProject

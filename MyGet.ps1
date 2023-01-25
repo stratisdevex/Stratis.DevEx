@@ -16,18 +16,18 @@ param(
 )
 
 # Initialization
-$rootFolder = Split-Path -parent $script:MyInvocation.MyCommand.Path
-$rootFolder = Join-Path $rootFolder ..
+$currentFolder = Split-Path -parent $script:MyInvocation.MyCommand.Path
+$rootFolder = Join-Path $currentFolder ..
 
-. $rootFolder\myget.include.ps1
+. $currentFolder\myget.include.ps1
 
 # MyGet
 $packageVersion = MyGet-Package-Version $packageVersion
 
 # Solution
 $solutionName = "Stratis.DevEx"
-$solutionFolder = Join-Path $rootFolder "src\$solutionName"
-$outputFolder = Join-Path $rootFolder "src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\bin\Debug"
+$solutionFolder = Join-Path $currentFolder "src\$solutionName"
+$outputFolder = Join-Path $currentFolder "src\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.Package\bin\Debug"
 
 # Clean
 if($clean) { MyGet-Build-Clean $rootFolder }
