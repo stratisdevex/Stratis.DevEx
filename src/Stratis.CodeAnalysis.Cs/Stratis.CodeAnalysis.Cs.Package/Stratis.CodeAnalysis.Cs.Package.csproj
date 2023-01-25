@@ -9,7 +9,7 @@
 
   <PropertyGroup>
     <PackageId>Stratis.CodeAnalysis</PackageId>
-    <PackageVersion>0.1.0.0-alpha</PackageVersion>
+    <PackageVersion>0.1.0</PackageVersion>
     <Authors>Allister Beharry</Authors>
     <PackageProjectUrl>https://github.com/allisterb/Stratis.DevEx</PackageProjectUrl>
     <RepositoryUrl>https://github.com/allisterb/Stratis.DevEx.git</RepositoryUrl>
