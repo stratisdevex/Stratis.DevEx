@@ -1248,7 +1248,7 @@ function MyGet-Build-Project {
         [string]$MSBuildCustomProperties = $null,
 
         [parameter(Position = 11, ValueFromPipeline = $true)]
-		[string]$MSBuildPath = "MSBuild.exe"
+		[string]$MSBuildPath = "MSBuild.exe",
 
         [bool] $MSBuildx64 = $false
     )
