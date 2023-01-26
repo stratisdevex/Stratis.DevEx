@@ -46,7 +46,7 @@ jobs:
       id: project_version
       uses: kzrnm/get-net-sdk-project-versions-action@v1.3.0
       with:
-        proj_path: "${{ env.CodeAnalysis_Cs_Project_Path }}"
+        proj_path: "src/Stratis.CodeAnalysis.Cs/Stratis.CodeAnalysis.Cs/Stratis.CodeAnalysis.Cs.csproj"
     
     - name: Get git commit SHA
       id: git_sha
