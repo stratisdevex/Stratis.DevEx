@@ -32,9 +32,6 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
     - name: Restore the Stratis.DevEx solution
       run: dotnet restore "${{ env.Solution_Name }}"  /p:Configuration=$env:Configuration
       env:
@@ -55,17 +52,17 @@ jobs:
         xpath: //PropertyGroup//PackageVersion
         file: "${{ env.CodeAnalysis_Cs_Project_Path }}"
     
-    - name: Get git SHA
+    - name: Get git commit SHA
       id: git_sha
       run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       shell: bash
       
     - name: Set Stratis.CodeAnalysis.Cs CI package version
       id: ci_version
-      run: echo "CI_VERSION=${{ steps.package_version.outputs.version }}.CI${{ env.GIT_SHA }}" >> $env:GITHUB_ENV
+      run: echo "CI_VERSION=${{ steps.package_version.outputs.version }}+ci${{ env.GIT_SHA }}" >> $env:GITHUB_ENV
     
     - name: Pack Stratis.CodeAnalysis.Cs package
-      run: dotnet pack ${{ env.CodeAnalysis_Cs_Project_Path }} --configuration Debug /p:Version=${{ env.CI_VERSION }} --no-build --output .
+      run: dotnet pack ${{ env.CodeAnalysis_Cs_Project_Path }} --configuration Debug /p:PackageVersion=${{ env.CI_VERSION }} --no-build --output .
 
     - name: Push Stratis.CodeAnalysis.Cs package to dev feed
       run: dotnet nuget push .\Stratis.CodeAnalysis.${{ env.CI_VERSION }}.nupkg --source https://www.myget.org/F/stratisdevex/api/v2/package --api-key ${{ env.MYGET_TOKEN }}
