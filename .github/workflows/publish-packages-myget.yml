@@ -27,16 +27,16 @@ jobs:
         fetch-depth: 0
         submodules: recursive
 
-    - name: Install .NET 6.0 workload
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
-
     - name: Restore the Stratis.DevEx solution
       run: dotnet restore "${{ env.Solution_Name }}"  /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
-            
+        
+    - name: Build the Stratis.CodeAnalysis.Cs project
+      run: dotnet build "${{ env.CodeAnalysis_Cs_Project_Path }}" /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
+    
     - name: Execute Stratis.CodeAnalysis.Cs unit tests
       run: dotnet test "${{ env.CodeAnalysis_Cs_Test_Project_Path }}" -l "console;verbosity=detailed"
     
