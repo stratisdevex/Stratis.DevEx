@@ -46,7 +46,7 @@ jobs:
       id: project_version
       uses: kzrnm/get-net-sdk-project-versions-action@v1.3.0
       with:
-        proj_path: "src/Stratis.CodeAnalysis.Cs/Stratis.CodeAnalysis.Cs/Stratis.CodeAnalysis.Cs.csproj"
+        proj-path: ${{ env.CodeAnalysis_Cs_Project_Path }
     
     - name: Get git commit SHA
       id: git_sha
@@ -58,7 +58,7 @@ jobs:
       run: echo "CI_VERSION=${{ steps.project_version.outputs.assembly-version }}-ci${{ env.GIT_SHA }}" >> $env:GITHUB_ENV
     
     - name: Pack Stratis.CodeAnalysis.Cs package
-      run: dotnet pack ${{ env.CodeAnalysis_Cs_Project_Path }} --configuration Debug -p:Version=${{ env.CI_VERSION }} --no-build --output .
+      run: dotnet pack ${{ env.CodeAnalysis_Cs_Package_Project_Path }} --configuration Debug -p:Version=${{ env.CI_VERSION }} --no-build --output .
 
     - name: Push Stratis.CodeAnalysis.Cs package to dev feed
       run: dotnet nuget push .\Stratis.CodeAnalysis.${{ env.CI_VERSION }}.nupkg --source https://www.myget.org/F/stratisdevex/api/v2/package --api-key ${{ env.MYGET_TOKEN }}
