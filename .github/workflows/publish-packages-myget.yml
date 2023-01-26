@@ -44,7 +44,7 @@ jobs:
     
     - name: Get Stratis.CodeAnalysis.Cs base project version
       id: project_version
-      uses: kzrnm/get-net-sdk-project-versions-action@v1.3.
+      uses: kzrnm/get-net-sdk-project-versions-action@v1.3.0
       with:
         proj_path: "${{ env.CodeAnalysis_Cs_Project_Path }}"
     
