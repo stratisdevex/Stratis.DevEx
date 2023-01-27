@@ -18,7 +18,7 @@ namespace Stratis.DevEx
         {
             AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
             EntryAssembly = Assembly.GetEntryAssembly();
-            IsUnitTestRun = EntryAssembly.FullName.StartsWith("testhost");
+            IsUnitTestRun = EntryAssembly?.FullName.StartsWith("testhost") ?? false;
             SessionId = Rng.Next(0, 99999);            
             Logger = new ConsoleLogger();
         }
@@ -88,7 +88,7 @@ namespace Stratis.DevEx
                 LogName = logname;
                 var fulllogfilename = StratisDevDir.CombinePath($"{ToolName}.{SessionId}.log");
                 Logger = new FileLogger(fulllogfilename, false, LogName); ;
-                Info("{0} initialized from entry assembly {1} with log file {2}...", ToolName, EntryAssembly, fulllogfilename); ;
+                Info("{0} initialized from entry assembly {1} with log file {2}...", ToolName, EntryAssembly?.GetName().FullName ?? "(None)", fulllogfilename); ;
                 var globalCfgFile = StratisDevDir.CombinePath(ToolName + ".cfg");
                 if (!File.Exists(globalCfgFile))
                 {

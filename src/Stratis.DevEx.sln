@@ -35,12 +35,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.Base.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLog", "..\ext\NLog\src\NLog\NLog.csproj", "{A0BFF0DB-ED9A-4639-AE86-8E709A1EFC66}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{ABC12B6A-E4B7-4AB5-ADEA-A486EBE3FF07}"
-	ProjectSection(SolutionItems) = preProject
-		..\myget.include.ps1 = ..\myget.include.ps1
-		..\MyGet.ps1 = ..\MyGet.ps1
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{F0C599CF-2317-43C2-BDFF-445483D2DE06}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\publish-packages-myget.yml = ..\.github\workflows\publish-packages-myget.yml
