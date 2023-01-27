@@ -55,7 +55,7 @@ jobs:
       
     - name: Set Stratis.CodeAnalysis.Cs CI package version
       id: ci_version
-      run: echo "CI_VERSION=${{ steps.project_version.outputs.assembly-version }}-ci{{ github.run_number }}git${{ env.GIT_SHA }}" >> $env:GITHUB_ENV
+      run: echo "CI_VERSION=${{ steps.project_version.outputs.assembly-version }}-ci${{ github.run_number }}git${{ env.GIT_SHA }}" >> $env:GITHUB_ENV
     
     - name: Pack Stratis.CodeAnalysis.Cs package
       run: dotnet pack ${{ env.CodeAnalysis_Cs_Package_Project_Path }} --configuration Debug -p:Version=${{ env.CI_VERSION }} --no-build --output .
