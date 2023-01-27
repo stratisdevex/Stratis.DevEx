@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Stratis.CodeAnalysis.Cs.a7215eed-a920-4ff9-ab3a-1d95ece4c265" Version="1.0" Language="en-US" Publisher="Allister"/>
+    <Identity Id="Stratis.CodeAnalysis.Cs.a7215eed-a920-4ff9-ab3a-1d95ece4c265" Version="0.1.0" Language="en-US" Publisher="Allister"/>
     <DisplayName>Stratis.CodeAnalysis.Cs</DisplayName>
     <Description xml:space="preserve">This is a sample diagnostic extension for the .NET Compiler Platform ("Roslyn").</Description>
   </Metadata>
