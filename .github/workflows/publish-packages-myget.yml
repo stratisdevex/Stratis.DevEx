@@ -60,7 +60,7 @@ jobs:
       run: dotnet pack ${{ env.CodeAnalysis_Cs_Package_Project_Path }} --configuration Debug -p:Version=${{ env.CI_VERSION }} --no-build --output .
 
     - name: Push Stratis.CodeAnalysis.Cs package to GitHub dev feed
-      run: dotnet nuget push .\Stratis.CodeAnalysis.${{ env.CI_VERSION }}.nupkg --source https://nuget.pkg.github.com/stratisdevex/Stratis.DevEx/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push .\Stratis.CodeAnalysis.${{ env.CI_VERSION }}.nupkg --source https://nuget.pkg.github.com/stratisdevex/Stratis.DevEx/ --api-key ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push Stratis.CodeAnalysis.Cs package to MyGet dev feed
       run: dotnet nuget push .\Stratis.CodeAnalysis.${{ env.CI_VERSION }}.nupkg --source https://www.myget.org/F/stratisdevex/api/v2/package --api-key ${{ env.MYGET_TOKEN }}
