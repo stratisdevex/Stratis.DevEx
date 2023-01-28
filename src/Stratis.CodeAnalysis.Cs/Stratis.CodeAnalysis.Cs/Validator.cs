@@ -43,7 +43,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeNamespaceDecl(NamespaceDeclarationSyntax node, SemanticModel model)
         {
             var ns = node.DescendantNodes().First();
-            Debug("Namespace {0} declared at {1} .", ns.ToString(), ns.GetLineLocation());
+            Debug("Namespace {0} declared at {1}.", ns.ToString(), ns.GetLineLocation());
             return CreateDiagnostic("SC0001", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToString());
         }
 
@@ -66,7 +66,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeClassDecl(ClassDeclarationSyntax node, SemanticModel model)
         {
             var classSymbol = model.GetDeclaredSymbol(node) as ITypeSymbol;
-            Debug("Class {0} declared.", classSymbol.ToDisplayString());
+            Debug("Class {0} declared at {1}.", classSymbol.ToDisplayString(), node.GetLineLocation());
             if (classSymbol.BaseType is null || classSymbol.BaseType.ToDisplayString() != "Stratis.SmartContracts.SmartContract")
             {
                 return CreateDiagnostic("SC0003", DiagnosticSeverity.Error, node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).GetLocation(), classSymbol.Name);
