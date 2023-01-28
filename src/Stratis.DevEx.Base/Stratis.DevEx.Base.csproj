@@ -11,4 +11,8 @@
     <ProjectReference Include="..\..\ext\SharpConfig\Src\SharpConfig.csproj" />
   </ItemGroup>
 
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net472' OR '$(TargetFramework)' == 'netstandard2.0' ">
+    <NoWarn>0105</NoWarn>
+  </PropertyGroup>
+
 </Project>

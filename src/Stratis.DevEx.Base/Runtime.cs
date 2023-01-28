@@ -1,16 +1,11 @@
 namespace Stratis.DevEx
 {
-
     using System;
     using System.IO;
-    using System.IO.Compression;
     using System.Linq;
-    using System.Net;
     using System.Reflection;
 
     using SharpConfig;
-    using NLog;
-    using NLog.Config;
     public abstract class Runtime
     {
         #region Constructors
@@ -116,7 +111,7 @@ namespace Stratis.DevEx
                     GlobalConfig = new Configuration();
                     GlobalConfig["General"]["Debug"].BoolValue = true;
                     Logger.SetLogLevelDebug();
-                    Info("{0} initialized from unit test host assembly {1}...", ToolName, EntryAssembly);
+                    Info("{0} initialized from unit test host assembly {1}...", ToolName, EntryAssembly!);
                     Info("Debug mode enabled.");
                 }
                 RuntimeInitialized = true;
