@@ -49,6 +49,7 @@ namespace Stratis.CodeAnalysis.Cs
                     equivalenceKey: nameof(CodeFixResources.CodeFixTitle)),
                 diagnostic);
             */
+            await Task.CompletedTask;
         }
 
         private async Task<Solution> MakeUppercaseAsync(Document document, TypeDeclarationSyntax typeDecl, CancellationToken cancellationToken)

@@ -11,6 +11,8 @@ namespace foo
             Opponent = opponent;
             GameName = gameName;
             GameState = (uint)StateType.Provisioned;
+            byte[] b = { };
+            b.Clone();
         }
 
         public enum StateType : uint
@@ -73,6 +75,7 @@ namespace foo
 
         public void SendPing()
         {
+            System.Collections.Generic.List<int> l = new System.Collections.Generic.List<int>();
             Assert(Message.Sender == PlayerAddress);
             Assert(GameState == (uint)StateType.ReceivedPing || GameState == (uint)StateType.Provisioned);
 

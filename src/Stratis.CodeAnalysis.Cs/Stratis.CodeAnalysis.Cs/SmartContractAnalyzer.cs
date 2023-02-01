@@ -26,23 +26,10 @@
             
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+            #pragma warning disable RS1012
             context.RegisterCompilationStartAction(ctx =>
             {
-                Runtime.Debug("Compilation start...");
-                /*
-                var workspace = Runtime.GetProp(ctx.Compilation.Options, "Workspace");
-                if (workspace != null) 
-                {
-                    var sln = Runtime.GetProp(workspace, "CurrentSolution");
-                    var fpath = (string) Runtime.GetProp(sln, "FilePath");
-                    Runtime.Info("Solution path is {0}.", fpath);
-                    
-                }
-                else
-                {
-                    Runtime.Info("Could not get Workspace property");
-                }
-                */
+                Runtime.Debug("Compilation start..."); 
                 //Runtime.Debug("Project additional files: {0}.", ctx.Options.AdditionalFiles.Select(f => f.Path));
                 if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg"))
                 {
@@ -53,6 +40,7 @@
                 }
                 
             });
+            #pragma warning restore RS1012
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);

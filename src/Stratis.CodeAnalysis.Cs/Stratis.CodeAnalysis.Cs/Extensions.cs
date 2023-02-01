@@ -15,6 +15,10 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static bool IsEnum(this ITypeSymbol t) => t != null && t.SpecialType == SpecialType.System_Enum;
 
+        public static bool IsUserStruct(this ITypeSymbol t) => t != null && t.SpecialType == SpecialType.None && t.IsValueType; 
+
+        public static bool IsSmartContract(this ITypeSymbol t) => t != null && t.ToDisplayString() == "Stratis.SmartContracts.SmartContract" || (t.BaseType != null && (t.BaseType.ToDisplayString() == "Stratis.SmartContracts.SmartContract"));
+
         public static FileLinePositionSpan GetLineLocation(this SyntaxNode s) => s.GetLocation().GetLineSpan();
     
         public static Diagnostic Report(this Diagnostic diagnostic, SyntaxNodeAnalysisContext ctx)

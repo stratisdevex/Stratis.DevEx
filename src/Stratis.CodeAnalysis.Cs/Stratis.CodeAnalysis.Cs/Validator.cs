@@ -39,6 +39,8 @@ namespace Stratis.CodeAnalysis.Cs
         #endregion
 
         #region Methods
+
+        #region Syntax analysis
         // SC0001 Namespace declarations not allowed in smart contract code
         public static Diagnostic AnalyzeNamespaceDecl(NamespaceDeclarationSyntax node, SemanticModel model)
         {
@@ -128,9 +130,11 @@ namespace Stratis.CodeAnalysis.Cs
                 return CreateDiagnostic("SC0006", DiagnosticSeverity.Error, node.GetLocation());
             }
         }
+        #endregion
 
-        // SC0006 New object creation not allowed except for structs and arrays of primitive types and structs
-        public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation)
+        #region Semantic analysis
+            // SC0006 New object creation not allowed except for structs and arrays of primitive types and structs
+            public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation)
         {
             var type = objectCreation.Type;
             var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
@@ -187,20 +191,11 @@ namespace Stratis.CodeAnalysis.Cs
         {
             var member = propReference.Member;
             string propname = member.Name;
-            
             var type = member.ContainingType;
-            var basetype = type.BaseType;
-            var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
-
             var typename = type.ToDisplayString();
-            var basetypename = basetype?.ToDisplayString() ?? "";
-            var elementtypename = elementtype?.ToDisplayString() ?? string.Empty;
-
-            if (type.IsValueType || type.IsEnum())
-            {
-                return NoDiagnostic;
-            }
-            else if (PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename) || SmartContractTypeNames.Contains(basetypename))
+            Debug("Property reference {0} at {1}", member.ToDisplayString(), propReference.Syntax.GetLineLocation());
+            
+            if(type.IsSmartContract() || type.IsEnum() || type.IsUserStruct() || PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename))
             {
                 return NoDiagnostic;
             }
@@ -221,25 +216,22 @@ namespace Stratis.CodeAnalysis.Cs
             var method = methodInvocation.TargetMethod;
             var type = method.ContainingType;
             var basetype = type.BaseType;
-
             var typename = type.ToDisplayString();
-            var basetypename = basetype?.ToDisplayString() ?? string.Empty;
-            
-            if (PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename) || SmartContractTypeNames.Contains(basetypename))
+            Debug("Method invocation {0} at {1}", method.ToDisplayString(), node.GetLineLocation());
+
+            if (type.IsSmartContract() || type.IsEnum() || type.IsUserStruct() || PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename))
             {
                 return NoDiagnostic;
             }
-            else if (WhitelistedMethodNames.ContainsKey(typename) && WhitelistedMethodNames[typename].Contains(method.Name))
+            else if (IsWhitelistedMethodName(typename, method.Name))
             {
                 return NoDiagnostic;
             }
             else
             {
-                return CreateDiagnostic("SC0009", DiagnosticSeverity.Error, node.GetLocation(), method, typename);
+                return CreateDiagnostic("SC0009", DiagnosticSeverity.Error, node.GetLocation(), method.Name, typename);
             }
         }
-
-        
 
         // Assert should not test constant value boolean condition
         private static Diagnostic AnalyzeAssertConditionConstant(IInvocationOperation methodInvocation)
@@ -282,8 +274,11 @@ namespace Stratis.CodeAnalysis.Cs
             var location = methodInvocation.Arguments[1].Syntax.GetLocation();
             return CreateDiagnostic("SC0012", DiagnosticSeverity.Info, location);
         }
+        #endregion
 
         #region Overloads
+
+        #region Syntax analysis
         public static Diagnostic AnalyzeUsingDirective(UsingDirectiveSyntax node, SyntaxNodeAnalysisContext ctx) =>
            AnalyzeUsingDirective(node, ctx.SemanticModel)?.Report(ctx);
         public static Diagnostic AnalyzeNamespaceDecl(NamespaceDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
@@ -297,7 +292,9 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static Diagnostic AnalyzeFieldDecl(FieldDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
            AnalyzeFieldDecl(node, ctx.SemanticModel)?.Report(ctx);
+        #endregion
 
+        #region Semantic analysis
         public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation, OperationAnalysisContext ctx) =>
             AnalyzeObjectCreation(objectCreation).Report(ctx);
 
@@ -320,6 +317,9 @@ namespace Stratis.CodeAnalysis.Cs
             AnalyzeAssertMessageEmpty(methodInvocation).Report(ctx);
         #endregion
 
+        #endregion
+
+        #region Diagnostic utilities
         public static DiagnosticDescriptor GetDescriptor(string id, DiagnosticSeverity severity) =>
             new DiagnosticDescriptor(id, RM.GetString($"{id}_Title"), RM.GetString($"{id}_MessageFormat"), Category,
                 severity, true, RM.GetString($"{id}_Description"));
@@ -330,6 +330,10 @@ namespace Stratis.CodeAnalysis.Cs
             Info("Emitting diagnostic id: {0}; title: {1}; location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
             return d;
         }
+
+        public static bool IsWhitelistedMethodName(string typename, string methodname) => WhitelistedMethodNames.ContainsKey(typename) && WhitelistedArrayMethodNames.Contains(methodname);
+        #endregion
+
         #endregion
 
         #region Fields
@@ -344,14 +348,11 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(void),
             typeof(bool),
             typeof(byte),
-            typeof(sbyte),
             typeof(char),
             typeof(int),
             typeof(uint),
             typeof(long),
             typeof(ulong),
-            typeof(UInt128),
-            typeof(UInt256),
             typeof(string),
         };
 
@@ -372,7 +373,7 @@ namespace Stratis.CodeAnalysis.Cs
         internal static readonly string[] PrimitiveTypeNames = UnboxedPrimitiveTypeNames.Concat(BoxedPrimitiveTypes.Select(t => t.FullName)).ToArray();
 
         internal static readonly Type[] BoxedPrimitiveArrayTypes =
-       {
+        {
             typeof(bool[]),
             typeof(byte[]),
             typeof(sbyte[]),
@@ -390,6 +391,8 @@ namespace Stratis.CodeAnalysis.Cs
 
         internal static readonly Type[] SmartContractTypes =
         {
+            typeof(UInt128),
+            typeof(UInt256),
             typeof(Address),
             typeof(Block),
             typeof(IBlock),
@@ -401,11 +404,12 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(ISerializer),
             typeof(ITransferResult),
             typeof(Message),
-            typeof(SmartContract)
         };
 
         internal static readonly Type[] SmartContractArrayTypes =
         {
+            typeof(UInt128[]),
+            typeof(UInt256[]),
             typeof(Address[]),
             typeof(Block[]),
             typeof(IBlock[]),

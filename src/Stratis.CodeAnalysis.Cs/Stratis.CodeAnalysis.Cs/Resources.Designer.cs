@@ -106,7 +106,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Namespace declaration not allowed.
+        ///   Looks up a localized string similar to Namespace declaration not allowed for smart contract class..
         /// </summary>
         internal static string SC0001_Title {
             get {
@@ -115,7 +115,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Types from namespace cannot be used here.
+        ///   Looks up a localized string similar to Types from this namespace cannot be used here..
         /// </summary>
         internal static string SC0002_Description {
             get {
@@ -124,7 +124,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Types from namespace {0} cannot be used in smart contract code.
+        ///   Looks up a localized string similar to Types from namespace {0} cannot be used in smart contract code..
         /// </summary>
         internal static string SC0002_MessageFormat {
             get {
@@ -133,7 +133,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Namespace cannot be used here.
+        ///   Looks up a localized string similar to Types from this namespace cannot be used in smart contract code..
         /// </summary>
         internal static string SC0002_Title {
             get {
@@ -142,7 +142,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Classes in smart contract code must inherit from Stratis.SmartContract.
+        ///   Looks up a localized string similar to Classes in smart contract code must inherit from Stratis.SmartContracts.SmartContract..
         /// </summary>
         internal static string SC0003_Description {
             get {
@@ -160,7 +160,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Class must inherit from SmartContract class.
+        ///   Looks up a localized string similar to Smart contract class must inherit from type Stratis.SmartContracts.SmartContract..
         /// </summary>
         internal static string SC0003_Title {
             get {
@@ -169,7 +169,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The first parameter in a smart constructor must be of type ISmartContractState..
+        ///   Looks up a localized string similar to The first parameter in a smart contract constructor must be of type ISmartContractState..
         /// </summary>
         internal static string SC0004_Description {
             get {
@@ -187,7 +187,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter type not allowed.
+        ///   Looks up a localized string similar to First parameter in a smart contract constructor must be of type ISmartContractState..
         /// </summary>
         internal static string SC0004_Title {
             get {
@@ -196,7 +196,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New object creation of reference types is not allowed in smart contract code. See https://github.com/stratisproject/StratisFullNode/blob/master/Documentation/Features/SmartContracts/Clr-execution-and-validation.md.
+        ///   Looks up a localized string similar to New object creation of a reference type is not allowed in smart contract code..
         /// </summary>
         internal static string SC0005_Description {
             get {
@@ -205,7 +205,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A new {0} object cannot be created here.
+        ///   Looks up a localized string similar to A new {0} object cannot be created here..
         /// </summary>
         internal static string SC0005_MessageFormat {
             get {
@@ -214,7 +214,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New object creation of reference type not allowed.
+        ///   Looks up a localized string similar to New object creation of a reference type is not allowed in smart contract code..
         /// </summary>
         internal static string SC0005_Title {
             get {
@@ -241,7 +241,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Field declaration not allowed.
+        ///   Looks up a localized string similar to Field declarations not allowed is smart contract code..
         /// </summary>
         internal static string SC0006_Title {
             get {
@@ -250,7 +250,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only certain variable types can be used in smart contract code.
+        ///   Looks up a localized string similar to Only certain variable types can be used in smart contract code..
         /// </summary>
         internal static string SC0007_Description {
             get {
@@ -259,7 +259,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot declare a variable of type {0} here.
+        ///   Looks up a localized string similar to Cannot declare a variable of type {0} here..
         /// </summary>
         internal static string SC0007_MessageFormat {
             get {
@@ -268,7 +268,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable declaration not allowed.
+        ///   Looks up a localized string similar to Variable declaration of this type not allowed in smart contract code..
         /// </summary>
         internal static string SC0007_Title {
             get {
@@ -286,7 +286,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Property {0} from type {1} cannot be used here.
+        ///   Looks up a localized string similar to Property {0} from type {1} cannot be used here..
         /// </summary>
         internal static string SC0008_MessageFormat {
             get {
@@ -295,7 +295,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot use this property here.
+        ///   Looks up a localized string similar to This property cannot be used in smart contract code..
         /// </summary>
         internal static string SC0008_Title {
             get {
@@ -304,7 +304,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot use this method here.
+        ///   Looks up a localized string similar to This method cannot be used in smart contract code..
         /// </summary>
         internal static string SC0009_Description {
             get {
@@ -313,7 +313,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method {0} from type {1} cannot be used here.
+        ///   Looks up a localized string similar to Method {0} from type {1} cannot be used here..
         /// </summary>
         internal static string SC0009_MessageFormat {
             get {
@@ -322,7 +322,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method invocation not allowed.
+        ///   Looks up a localized string similar to This method cannot be used in smart contract code..
         /// </summary>
         internal static string SC0009_Title {
             get {

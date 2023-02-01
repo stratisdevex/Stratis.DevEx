@@ -138,47 +138,47 @@
     <comment>The format-able message the diagnostic displays.</comment>
   </data>
   <data name="SC0001_Title" xml:space="preserve">
-    <value>Namespace declaration not allowed</value>
+    <value>Namespace declaration not allowed for smart contract class.</value>
     <comment>The title of the diagnostic.</comment>
   </data>
   <data name="SC0002_Description" xml:space="preserve">
-    <value>Types from namespace cannot be used here</value>
+    <value>Types from this namespace cannot be used here.</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
   <data name="SC0002_MessageFormat" xml:space="preserve">
-    <value>Types from namespace {0} cannot be used in smart contract code</value>
+    <value>Types from namespace {0} cannot be used in smart contract code.</value>
     <comment>The format-able message the diagnostic displays.</comment>
   </data>
   <data name="SC0002_Title" xml:space="preserve">
-    <value>Namespace cannot be used here</value>
+    <value>Types from this namespace cannot be used in smart contract code.</value>
     <comment>The title of the diagnostic.</comment>
   </data>
   <data name="SC0003_Description" xml:space="preserve">
-    <value>Classes in smart contract code must inherit from Stratis.SmartContract</value>
+    <value>Classes in smart contract code must inherit from Stratis.SmartContracts.SmartContract.</value>
   </data>
   <data name="SC0003_MessageFormat" xml:space="preserve">
     <value>Class {0} must inherit from class Stratis.SmartContracts.SmartContract</value>
   </data>
   <data name="SC0003_Title" xml:space="preserve">
-    <value>Class must inherit from SmartContract class</value>
+    <value>Smart contract class must inherit from type Stratis.SmartContracts.SmartContract.</value>
   </data>
   <data name="SC0004_Description" xml:space="preserve">
-    <value>The first parameter in a smart constructor must be of type ISmartContractState.</value>
+    <value>The first parameter in a smart contract constructor must be of type ISmartContractState.</value>
   </data>
   <data name="SC0004_MessageFormat" xml:space="preserve">
     <value>Parameter {0} must be of type ISmartContractState.</value>
   </data>
   <data name="SC0004_Title" xml:space="preserve">
-    <value>Parameter type not allowed</value>
+    <value>First parameter in a smart contract constructor must be of type ISmartContractState.</value>
   </data>
   <data name="SC0005_Description" xml:space="preserve">
-    <value>New object creation of reference types is not allowed in smart contract code. See https://github.com/stratisproject/StratisFullNode/blob/master/Documentation/Features/SmartContracts/Clr-execution-and-validation.md</value>
+    <value>New object creation of a reference type is not allowed in smart contract code.</value>
   </data>
   <data name="SC0005_MessageFormat" xml:space="preserve">
-    <value>A new {0} object cannot be created here</value>
+    <value>A new {0} object cannot be created here.</value>
   </data>
   <data name="SC0005_Title" xml:space="preserve">
-    <value>New object creation of reference type not allowed</value>
+    <value>New object creation of a reference type is not allowed in smart contract code.</value>
   </data>
   <data name="SC0006_Description" xml:space="preserve">
     <value>Field declarations are not allowed in smart contract code. See https://github.com/stratisproject/StratisFullNode/blob/master/Documentation/Features/SmartContracts/Clr-execution-and-validation.md</value>
@@ -187,34 +187,34 @@
     <value>A field declaration cannot be made here</value>
   </data>
   <data name="SC0006_Title" xml:space="preserve">
-    <value>Field declaration not allowed</value>
+    <value>Field declarations not allowed is smart contract code.</value>
   </data>
   <data name="SC0007_Description" xml:space="preserve">
-    <value>Only certain variable types can be used in smart contract code</value>
+    <value>Only certain variable types can be used in smart contract code.</value>
   </data>
   <data name="SC0007_MessageFormat" xml:space="preserve">
-    <value>Cannot declare a variable of type {0} here</value>
+    <value>Cannot declare a variable of type {0} here.</value>
   </data>
   <data name="SC0007_Title" xml:space="preserve">
-    <value>Variable declaration not allowed</value>
+    <value>Variable declaration of this type not allowed in smart contract code.</value>
   </data>
   <data name="SC0008_Description" xml:space="preserve">
     <value>Only certain types and members can be used in smart contract code</value>
   </data>
   <data name="SC0008_MessageFormat" xml:space="preserve">
-    <value>Property {0} from type {1} cannot be used here</value>
+    <value>Property {0} from type {1} cannot be used here.</value>
   </data>
   <data name="SC0008_Title" xml:space="preserve">
-    <value>Cannot use this property here</value>
+    <value>This property cannot be used in smart contract code.</value>
   </data>
   <data name="SC0009_Description" xml:space="preserve">
-    <value>Cannot use this method here</value>
+    <value>This method cannot be used in smart contract code.</value>
   </data>
   <data name="SC0009_MessageFormat" xml:space="preserve">
-    <value>Method {0} from type {1} cannot be used here</value>
+    <value>Method {0} from type {1} cannot be used here.</value>
   </data>
   <data name="SC0009_Title" xml:space="preserve">
-    <value>Method invocation not allowed</value>
+    <value>This method cannot be used in smart contract code.</value>
   </data>
   <data name="SC0010_Description" xml:space="preserve">
     <value>An assert condition should be derived from input or state</value>
