@@ -76,6 +76,7 @@ namespace foo
         public void SendPing()
         {
             System.Collections.Generic.List<int> l = new System.Collections.Generic.List<int>();
+            float cc = 0f;
             Assert(Message.Sender == PlayerAddress);
             Assert(GameState == (uint)StateType.ReceivedPing || GameState == (uint)StateType.Provisioned);
 

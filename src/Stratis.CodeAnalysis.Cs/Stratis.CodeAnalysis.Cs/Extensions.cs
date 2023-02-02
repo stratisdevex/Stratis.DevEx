@@ -8,7 +8,9 @@ namespace Stratis.CodeAnalysis.Cs
     public static class Extensions
     {
         public static bool IsObject(this ITypeSymbol t) => t != null && (t.ToDisplayString() == "System.Object" || t.ToDisplayString() == "object");
-        
+
+        public static bool IsFloat(this ITypeSymbol t) => t != null && (t.ToDisplayString() == "System.Single" || t.ToDisplayString() == "System.Double" || t.ToDisplayString() == "float" || t.ToDisplayString() == "double");
+
         public static bool IsArrayTypeSymbol(this ITypeSymbol t) => t != null && t.GetType().Name == "ArrayTypeSymbol";
 
         public static bool IsArrayTypeKind(this ITypeSymbol t) => t != null && t.TypeKind == TypeKind.Array;

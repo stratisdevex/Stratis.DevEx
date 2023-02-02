@@ -19,6 +19,7 @@ public class MultisigContract : SmartContract
 
         // This is set after the owners are initially added so that it only needs to be initially set once, rather than after every owner is added.
         Required = required;
+        var x = 0f + 1f;
     }
     
     /// <summary>

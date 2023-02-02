@@ -241,7 +241,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Field declarations not allowed is smart contract code..
+        ///   Looks up a localized string similar to Field declarations not allowed in smart contract code..
         /// </summary>
         internal static string SC0006_Title {
             get {
@@ -408,6 +408,33 @@ namespace Stratis.CodeAnalysis.Cs {
         internal static string SC0012_Title {
             get {
                 return ResourceManager.GetString("SC0012_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This type cannot be used in smart contract code..
+        /// </summary>
+        internal static string SC0013_Description {
+            get {
+                return ResourceManager.GetString("SC0013_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type {0} cannot be used in smart contract code..
+        /// </summary>
+        internal static string SC0013_MessageFormat {
+            get {
+                return ResourceManager.GetString("SC0013_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This type cannot be used in smart contract code..
+        /// </summary>
+        internal static string SC0013_Title {
+            get {
+                return ResourceManager.GetString("SC0013_Title", resourceCulture);
             }
         }
     }
