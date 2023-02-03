@@ -73,6 +73,10 @@ namespace foo
             }
         }
 
+        void X(object x, float r)
+        {
+
+        }
         public void SendPing()
         {
             System.Collections.Generic.List<int> l = new System.Collections.Generic.List<int>();

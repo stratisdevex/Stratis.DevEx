@@ -6,6 +6,7 @@ namespace Stratis.DevEx
     using System.Reflection;
 
     using SharpConfig;
+
     public abstract class Runtime
     {
         #region Constructors

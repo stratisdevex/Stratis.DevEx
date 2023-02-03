@@ -84,7 +84,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeConstructorDecl(ConstructorDeclarationSyntax node, SemanticModel model)
         {
             if (node.Parent is StructDeclarationSyntax) return NoDiagnostic;
-            var parent = (ClassDeclarationSyntax) node.Parent;
+            var parent = (ClassDeclarationSyntax)node.Parent;
             var parentSymbol = model.GetDeclaredSymbol(parent) as ITypeSymbol;
             Debug("Constructor for type {0} declared at {1}.", parentSymbol.ToDisplayString(), node.GetLineLocation());
             var fp = node
@@ -98,7 +98,7 @@ namespace Stratis.CodeAnalysis.Cs
             if (fp == null) return NoDiagnostic;
 
             var fpt = fp.Type;
-           
+
             var fpn = fp
                 .ChildTokens()
                 .First(t => t.IsKind(SyntaxKind.IdentifierToken));
@@ -135,11 +135,31 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeMethodDecl(MethodDeclarationSyntax node, SemanticModel model)
         {
             var methodname = node.Identifier.Text;
-            var typename = node.ReturnType.ToString();
-            
-            Debug("Method {0}{1} of type {2} declared at {3}.", methodname, node.ParameterList, typename, node.GetLineLocation());
-            return NoDiagnostic;
-            //var ty
+            var type = (ITypeSymbol) model.GetSymbolInfo(node.ReturnType).Symbol;
+            var typename = type.ToDisplayString();
+            Debug("Method {0}{1} of return type {2} declared at {3}.", methodname, node.ParameterList, typename, node.GetLineLocation());
+
+            foreach (var p in node.ParameterList.Parameters)
+            {
+                var pt = model.GetDeclaredSymbol(p).Type;
+                if (pt.IsEnum() || pt.IsUserStruct() || IsPrimitiveType(pt) || IsSmartContractType(pt) || IsWhitelistedArrayType(pt))
+                {
+                    continue;
+                }
+                else
+                {
+                    return CreateDiagnostic("SC0013", DiagnosticSeverity.Error, p.GetLocation(), pt.ToDisplayString());
+                }
+            }
+
+            if (type.IsEnum() || type.IsUserStruct() || IsPrimitiveType(type) || IsSmartContractType(type) || IsWhitelistedArrayType(type)) 
+            {
+                return NoDiagnostic;
+            }
+            else
+            {
+                return CreateDiagnostic("SC0013", DiagnosticSeverity.Error, node.GetLocation(), typename);
+            }
         }
 
         public static Diagnostic AnalyzeExpressionSyntax(ExpressionSyntax node, SemanticModel model)
@@ -195,7 +215,7 @@ namespace Stratis.CodeAnalysis.Cs
             Debug("Variable {0} of type {1} declared at {2}. Base type: {3}. Enum type: {4}. User struct: {5}. Primitive type: {6}., Array type: {7}. Element type: {8}.", 
                 v.ToDisplayString(), typename, variableDeclarator.Syntax.GetLineLocation(), basetype.ToDisplayString(), type.IsEnum(), type.IsUserStruct(), PrimitiveTypeNames.Contains(typename), type.IsArrayTypeKind(), elementtype?.ToDisplayString() ?? "(none)");
             
-            if (type.IsEnum() || type.IsUserStruct() || PrimitiveTypeNames.Contains(typename))
+            if (type.IsEnum() || type.IsUserStruct() || IsPrimitiveType(type))
             {
                 return NoDiagnostic;
             }
@@ -374,10 +394,10 @@ namespace Stratis.CodeAnalysis.Cs
             return d;
         }
 
-        public static bool IsWhitelistedMethodName(string typename, string methodname) => WhitelistedMethodNames.ContainsKey(typename) && WhitelistedMethodNames[typename].Contains(methodname);
+        public static bool IsPrimitiveType(ITypeSymbol t) => PrimitiveTypeNames.Contains(t.ToDisplayString());
 
-        public static bool IsWhitelistedPropertyName(string typename, string propname) => WhitelistedPropertyNames.ContainsKey(typename) && WhitelistedPropertyNames[typename].Contains(propname);
-        
+        public static bool IsSmartContractType(ITypeSymbol type) => SmartContractTypeNames.Contains(type.ToDisplayString());
+
         public static bool IsWhitelistedArrayType(ITypeSymbol type)
         {
             var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
@@ -385,6 +405,9 @@ namespace Stratis.CodeAnalysis.Cs
             return type.IsArrayTypeKind() && (elementtype.IsUserStruct() || elementtype.IsObject() || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename) || (elementtype.IsArrayTypeKind() && IsWhitelistedArrayType(elementtype)));
         }
 
+        public static bool IsWhitelistedMethodName(string typename, string methodname) => WhitelistedMethodNames.ContainsKey(typename) && WhitelistedMethodNames[typename].Contains(methodname);
+
+        public static bool IsWhitelistedPropertyName(string typename, string propname) => WhitelistedPropertyNames.ContainsKey(typename) && WhitelistedPropertyNames[typename].Contains(propname);
         #endregion
 
         #endregion
