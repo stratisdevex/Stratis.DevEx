@@ -21,7 +21,8 @@ public class MultisigContract : SmartContract
         Required = required;
         var x = 0f + 1f;
     }
-    
+
+    ~MultisigContract() { }
     /// <summary>
     /// The current count of contract owners.
     /// </summary>

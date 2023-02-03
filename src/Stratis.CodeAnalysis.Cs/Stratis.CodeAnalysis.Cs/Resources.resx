@@ -261,4 +261,13 @@
   <data name="SC0014_Title" xml:space="preserve">
     <value>This type cannot be used as a smart contract method return type or parameter type.</value>
   </data>
+  <data name="SC0015_Description" xml:space="preserve">
+    <value>A smart contract class cannnot declare a destructor or finalizer.</value>
+  </data>
+  <data name="SC0015_MessageFormat" xml:space="preserve">
+    <value>The smart contract class {0} cannot declare a destructor or finalizer.</value>
+  </data>
+  <data name="SC0015_Title" xml:space="preserve">
+    <value>A smart contract class cannnot declare a destructor or finalizer.</value>
+  </data>
 </root>

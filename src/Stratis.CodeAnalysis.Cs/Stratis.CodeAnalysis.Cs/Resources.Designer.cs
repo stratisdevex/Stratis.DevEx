@@ -464,5 +464,32 @@ namespace Stratis.CodeAnalysis.Cs {
                 return ResourceManager.GetString("SC0014_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A smart contract class cannnot declare a destructor or finalizer..
+        /// </summary>
+        internal static string SC0015_Description {
+            get {
+                return ResourceManager.GetString("SC0015_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The smart contract class {0} cannot declare a destructor or finalizer..
+        /// </summary>
+        internal static string SC0015_MessageFormat {
+            get {
+                return ResourceManager.GetString("SC0015_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A smart contract class cannnot declare a destructor or finalizer..
+        /// </summary>
+        internal static string SC0015_Title {
+            get {
+                return ResourceManager.GetString("SC0015_Title", resourceCulture);
+            }
+        }
     }
 }

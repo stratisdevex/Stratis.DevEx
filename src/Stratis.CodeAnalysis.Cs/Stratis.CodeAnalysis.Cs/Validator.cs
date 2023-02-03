@@ -35,6 +35,7 @@ namespace Stratis.CodeAnalysis.Cs
                 { "SC0012", DiagnosticSeverity.Info },
                 { "SC0013", DiagnosticSeverity.Error },
                 { "SC0014", DiagnosticSeverity.Error },
+                { "SC0015", DiagnosticSeverity.Error },
             }.ToImmutableDictionary();
             Diagnostics = ImmutableArray.Create(DiagnosticIds.Select(i => GetDescriptor(i.Key, i.Value)).ToArray());
         }
@@ -162,6 +163,14 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return CreateDiagnostic("SC0014", DiagnosticSeverity.Error, node.GetLocation(), typename);
             }
+        }
+
+        public static Diagnostic AnalyzeDestructorDecl(DestructorDeclarationSyntax node, SemanticModel model)
+        {
+            var parent = (ClassDeclarationSyntax)node.Parent;
+            var parentSymbol = model.GetDeclaredSymbol(parent) as ITypeSymbol;
+            Debug("Destructor for type {0} declared at {1}.", parentSymbol.ToDisplayString(), node.GetLineLocation());
+            return CreateDiagnostic("SC0015", DiagnosticSeverity.Error, node.GetLocation(), parentSymbol.ToDisplayString());
         }
 
         public static Diagnostic AnalyzeExpressionSyntax(ExpressionSyntax node, SemanticModel model)
@@ -357,10 +366,14 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static Diagnostic AnalyzeMethodDecl(MethodDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
             AnalyzeMethodDecl(node, ctx.SemanticModel)?.Report(ctx);
-        #endregion
 
-        #region Semantic analysis
-        public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation, OperationAnalysisContext ctx) =>
+        public static Diagnostic AnalyzeDestructorDecl(DestructorDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
+            AnalyzeDestructorDecl(node, ctx.SemanticModel)?.Report(ctx);
+        
+            #endregion
+
+            #region Semantic analysis
+            public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation, OperationAnalysisContext ctx) =>
             AnalyzeObjectCreation(objectCreation).Report(ctx);
 
         public static Diagnostic AnalyzePropertyReference(IPropertyReferenceOperation propertyReference, OperationAnalysisContext ctx) =>
