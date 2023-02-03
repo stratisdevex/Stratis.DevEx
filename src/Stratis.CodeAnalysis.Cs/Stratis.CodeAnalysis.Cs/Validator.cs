@@ -34,6 +34,7 @@ namespace Stratis.CodeAnalysis.Cs
                 { "SC0011", DiagnosticSeverity.Info },
                 { "SC0012", DiagnosticSeverity.Info },
                 { "SC0013", DiagnosticSeverity.Error },
+                { "SC0014", DiagnosticSeverity.Error },
             }.ToImmutableDictionary();
             Diagnostics = ImmutableArray.Create(DiagnosticIds.Select(i => GetDescriptor(i.Key, i.Value)).ToArray());
         }
@@ -41,7 +42,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         #region Methods
 
-        #region Syntax analysis
+        #region Syntactic analysis
         // SC0001 Namespace declarations not allowed in smart contract code
         public static Diagnostic AnalyzeNamespaceDecl(NamespaceDeclarationSyntax node, SemanticModel model)
         {
@@ -132,6 +133,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
+        // SC0014 This type cannot be used as a smart contract method return type or parameter type.
         public static Diagnostic AnalyzeMethodDecl(MethodDeclarationSyntax node, SemanticModel model)
         {
             var methodname = node.Identifier.Text;
@@ -148,7 +150,7 @@ namespace Stratis.CodeAnalysis.Cs
                 }
                 else
                 {
-                    return CreateDiagnostic("SC0013", DiagnosticSeverity.Error, p.GetLocation(), pt.ToDisplayString());
+                    return CreateDiagnostic("SC0014", DiagnosticSeverity.Error, p.GetLocation(), pt.ToDisplayString());
                 }
             }
 
@@ -158,7 +160,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
             else
             {
-                return CreateDiagnostic("SC0013", DiagnosticSeverity.Error, node.GetLocation(), typename);
+                return CreateDiagnostic("SC0014", DiagnosticSeverity.Error, node.GetLocation(), typename);
             }
         }
 
@@ -335,7 +337,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         #region Overloads
 
-        #region Syntax analysis
+        #region Syntactic analysis
         public static Diagnostic AnalyzeUsingDirective(UsingDirectiveSyntax node, SyntaxNodeAnalysisContext ctx) =>
            AnalyzeUsingDirective(node, ctx.SemanticModel)?.Report(ctx);
         public static Diagnostic AnalyzeNamespaceDecl(NamespaceDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>

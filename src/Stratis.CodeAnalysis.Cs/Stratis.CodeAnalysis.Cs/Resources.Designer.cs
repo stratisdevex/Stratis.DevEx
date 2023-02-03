@@ -437,5 +437,32 @@ namespace Stratis.CodeAnalysis.Cs {
                 return ResourceManager.GetString("SC0013_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This type cannot be used as a smart contract method return type or parameter type..
+        /// </summary>
+        internal static string SC0014_Description {
+            get {
+                return ResourceManager.GetString("SC0014_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type {0} cannot be used as a smart contract method return type or parameter type..
+        /// </summary>
+        internal static string SC0014_MessageFormat {
+            get {
+                return ResourceManager.GetString("SC0014_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This type cannot be used as a smart contract method return type or parameter type..
+        /// </summary>
+        internal static string SC0014_Title {
+            get {
+                return ResourceManager.GetString("SC0014_Title", resourceCulture);
+            }
+        }
     }
 }
