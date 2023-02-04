@@ -1,4 +1,4 @@
-namespace Stratis.DevEx.Base.Tests
+namespace Stratis.DevEx.Base.Test
 {
     using SharpConfig;
     using Stratis.DevEx;

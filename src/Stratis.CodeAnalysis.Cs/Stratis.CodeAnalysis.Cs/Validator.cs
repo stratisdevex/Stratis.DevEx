@@ -186,6 +186,7 @@ namespace Stratis.CodeAnalysis.Cs
             return CreateDiagnostic("SC0015", DiagnosticSeverity.Error, node.GetLocation(), type.ToDisplayString());
         }
 
+        // SC0016 Exception handling with try/catch blocks not allowed in smart contract code.
         public static Diagnostic AnalyzeTryStmt(TryStatementSyntax node, SemanticModel model)
         {
             var parent = (ClassDeclarationSyntax) node.Ancestors().First(a => a.Kind() == SyntaxKind.ClassDeclaration);
@@ -194,23 +195,11 @@ namespace Stratis.CodeAnalysis.Cs
             return CreateDiagnostic("SC0016", DiagnosticSeverity.Error, node.GetLocation());
         }
 
-        public static Diagnostic AnalyzeExpressionSyntax(ExpressionSyntax node, SemanticModel model)
-        {
-            var type = model.GetTypeInfo(node).Type;
-            Debug("Expression of type {0} at {1}.", type.ToDisplayString(), node.GetLineLocation());
-            if (!type.IsFloat())
-            {
-                return NoDiagnostic;
-            }
-            else
-            {
-                return CreateDiagnostic("SC0013", DiagnosticSeverity.Error, node.GetLocation(), type.ToDisplayString());
-            }
-        }
+       
         #endregion
 
         #region Semantic analysis
-            // SC0006 New object creation not allowed except for structs and arrays of primitive types and structs
+        // SC0006 New object creation not allowed except for structs and arrays of primitive types and structs
         public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation)
         {
             var type = objectCreation.Type;
@@ -284,6 +273,8 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
+        // SC0009 This method cannot be used in smart contract code.
+        // SC0013 This type cannot be used in smart contract code.
         public static Diagnostic AnalyzeMethodInvocation(IInvocationOperation methodInvocation)
         {
             var node = methodInvocation.Syntax;
@@ -322,7 +313,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        // Assert should not test constant value boolean condition
+        // SC0010 Assert should not test constant value boolean condition
         private static Diagnostic AnalyzeAssertConditionConstant(IInvocationOperation methodInvocation)
         {
             if (methodInvocation.Arguments.Length == 0) return NoDiagnostic;
@@ -337,7 +328,7 @@ namespace Stratis.CodeAnalysis.Cs
             return CreateDiagnostic("SC0010", DiagnosticSeverity.Warning, location, value);
         }
 
-        // Assert should be called with message
+        // SC0011 Assert should be called with message
         private static Diagnostic AnalyzeAssertMessageNotProvided(IInvocationOperation methodInvocation)
         {
             var method = methodInvocation.TargetMethod;
@@ -349,7 +340,7 @@ namespace Stratis.CodeAnalysis.Cs
             return CreateDiagnostic("SC0011", DiagnosticSeverity.Info, location);
         }
 
-        // Assert message should not be empty
+        // SC0012 Assert message should not be empty
         private static Diagnostic AnalyzeAssertMessageEmpty(IInvocationOperation methodInvocation)
         {
             var method = methodInvocation.TargetMethod;
@@ -381,9 +372,6 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static Diagnostic AnalyzeFieldDecl(FieldDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
            AnalyzeFieldDecl(node, ctx.SemanticModel)?.Report(ctx);
-
-        public static Diagnostic AnalyzeExpressionSyntax(ExpressionSyntax node, SyntaxNodeAnalysisContext ctx) =>
-           AnalyzeExpressionSyntax(node, ctx.SemanticModel)?.Report(ctx);
 
         public static Diagnostic AnalyzeMethodDecl(MethodDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
             AnalyzeMethodDecl(node, ctx.SemanticModel)?.Report(ctx);
