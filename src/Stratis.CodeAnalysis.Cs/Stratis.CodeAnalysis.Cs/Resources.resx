@@ -270,4 +270,13 @@
   <data name="SC0015_Title" xml:space="preserve">
     <value>A smart contract class cannnot declare a destructor or finalizer.</value>
   </data>
+  <data name="SC0016_Description" xml:space="preserve">
+    <value>Exception handling with try/catch blocks is not allowed in smart contract code due to non-deterministic behaviour.</value>
+  </data>
+  <data name="SC0016_MessageFormat" xml:space="preserve">
+    <value>Exception handling with try/catch blocks not allowed in smart contract code.</value>
+  </data>
+  <data name="SC0016_Title" xml:space="preserve">
+    <value>Exception handling with try/catch blocks not allowed in smart contract code.</value>
+  </data>
 </root>

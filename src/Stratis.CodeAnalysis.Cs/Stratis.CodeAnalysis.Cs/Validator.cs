@@ -36,6 +36,7 @@ namespace Stratis.CodeAnalysis.Cs
                 { "SC0013", DiagnosticSeverity.Error },
                 { "SC0014", DiagnosticSeverity.Error },
                 { "SC0015", DiagnosticSeverity.Error },
+                { "SC0016", DiagnosticSeverity.Error }
             }.ToImmutableDictionary();
             Diagnostics = ImmutableArray.Create(DiagnosticIds.Select(i => GetDescriptor(i.Key, i.Value)).ToArray());
         }
@@ -176,10 +177,18 @@ namespace Stratis.CodeAnalysis.Cs
         // SC0015 A smart contract class cannnot declare a destructor or finalizer.
         public static Diagnostic AnalyzeDestructorDecl(DestructorDeclarationSyntax node, SemanticModel model)
         {
-            var parent = (ClassDeclarationSyntax)node.Parent;
-            var parentSymbol = model.GetDeclaredSymbol(parent) as ITypeSymbol;
-            Debug("Destructor for type {0} declared at {1}.", parentSymbol.ToDisplayString(), node.GetLineLocation());
-            return CreateDiagnostic("SC0015", DiagnosticSeverity.Error, node.GetLocation(), parentSymbol.ToDisplayString());
+            var parent = (ClassDeclarationSyntax) node.Parent;
+            var type = model.GetDeclaredSymbol(parent) as ITypeSymbol;
+            Debug("Destructor for type {0} declared at {1}.", type.ToDisplayString(), node.GetLineLocation());
+            return CreateDiagnostic("SC0015", DiagnosticSeverity.Error, node.GetLocation(), type.ToDisplayString());
+        }
+
+        public static Diagnostic AnalyzeTryStmt(TryStatementSyntax node, SemanticModel model)
+        {
+            var parent = (ClassDeclarationSyntax) node.Ancestors().First(a => a.Kind() == SyntaxKind.ClassDeclaration);
+            var type = model.GetDeclaredSymbol(parent) as ITypeSymbol;
+            Debug("Try statement in class {0} at {1}.", type.ToDisplayString(), node.GetLineLocation());
+            return CreateDiagnostic("SC0016", DiagnosticSeverity.Error, node.GetLocation());
         }
 
         public static Diagnostic AnalyzeExpressionSyntax(ExpressionSyntax node, SemanticModel model)
@@ -378,12 +387,15 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static Diagnostic AnalyzeDestructorDecl(DestructorDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
             AnalyzeDestructorDecl(node, ctx.SemanticModel)?.Report(ctx);
-        
-            #endregion
 
-            #region Semantic analysis
-            public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation, OperationAnalysisContext ctx) =>
-            AnalyzeObjectCreation(objectCreation).Report(ctx);
+        public static Diagnostic AnalyzeTryStmt(TryStatementSyntax node, SyntaxNodeAnalysisContext ctx) =>
+            AnalyzeTryStmt(node, ctx.SemanticModel)?.Report(ctx);
+
+        #endregion
+
+        #region Semantic analysis
+        public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation, OperationAnalysisContext ctx) =>
+        AnalyzeObjectCreation(objectCreation).Report(ctx);
 
         public static Diagnostic AnalyzePropertyReference(IPropertyReferenceOperation propertyReference, OperationAnalysisContext ctx) =>
             AnalyzePropertyReference(propertyReference).Report(ctx);
@@ -402,6 +414,7 @@ namespace Stratis.CodeAnalysis.Cs
         
         public static Diagnostic AnalyzeAssertMessageEmpty(IInvocationOperation methodInvocation, OperationAnalysisContext ctx) =>
             AnalyzeAssertMessageEmpty(methodInvocation).Report(ctx);
+        
         #endregion
 
         #endregion

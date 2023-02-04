@@ -491,5 +491,32 @@ namespace Stratis.CodeAnalysis.Cs {
                 return ResourceManager.GetString("SC0015_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception handling with try/catch blocks is not allowed in smart contract code due to non-deterministic behaviour..
+        /// </summary>
+        internal static string SC0016_Description {
+            get {
+                return ResourceManager.GetString("SC0016_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception handling with try/catch blocks not allowed in smart contract code..
+        /// </summary>
+        internal static string SC0016_MessageFormat {
+            get {
+                return ResourceManager.GetString("SC0016_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception handling with try/catch blocks not allowed in smart contract code..
+        /// </summary>
+        internal static string SC0016_Title {
+            get {
+                return ResourceManager.GetString("SC0016_Title", resourceCulture);
+            }
+        }
     }
 }
