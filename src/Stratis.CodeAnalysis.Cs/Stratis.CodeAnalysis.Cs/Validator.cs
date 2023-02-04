@@ -135,13 +135,21 @@ namespace Stratis.CodeAnalysis.Cs
         }
 
         // SC0014 This type cannot be used as a smart contract method return type or parameter type.
+        // SC0015 A smart contract class cannnot declare a destructor or finalizer.
         public static Diagnostic AnalyzeMethodDecl(MethodDeclarationSyntax node, SemanticModel model)
         {
             var methodname = node.Identifier.Text;
             var type = (ITypeSymbol) model.GetSymbolInfo(node.ReturnType).Symbol;
             var typename = type.ToDisplayString();
-            Debug("Method {0}{1} of return type {2} declared at {3}.", methodname, node.ParameterList, typename, node.GetLineLocation());
+            var parent = (ClassDeclarationSyntax)node.Parent;
+            var parentSymbol = model.GetDeclaredSymbol(parent) as ITypeSymbol;
+            Debug("Method {0}{1} of return type {2} in class {3} declared at {4}.", methodname, node.ParameterList, typename, parentSymbol.ToDisplayString(), node.GetLineLocation());
 
+            if (methodname == "Finalize" && parentSymbol.IsSmartContract())
+            {
+                return CreateDiagnostic("SC0015", DiagnosticSeverity.Error, node.GetLocation(), parentSymbol.ToDisplayString());
+            }
+        
             foreach (var p in node.ParameterList.Parameters)
             {
                 var pt = model.GetDeclaredSymbol(p).Type;
@@ -159,12 +167,13 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return NoDiagnostic;
             }
-            else
+            else 
             {
                 return CreateDiagnostic("SC0014", DiagnosticSeverity.Error, node.GetLocation(), typename);
             }
         }
 
+        // SC0015 A smart contract class cannnot declare a destructor or finalizer.
         public static Diagnostic AnalyzeDestructorDecl(DestructorDeclarationSyntax node, SemanticModel model)
         {
             var parent = (ClassDeclarationSyntax)node.Parent;
