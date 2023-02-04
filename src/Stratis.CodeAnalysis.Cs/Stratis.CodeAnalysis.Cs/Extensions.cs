@@ -1,6 +1,7 @@
-﻿using System;
+﻿using System.Linq;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Stratis.CodeAnalysis.Cs

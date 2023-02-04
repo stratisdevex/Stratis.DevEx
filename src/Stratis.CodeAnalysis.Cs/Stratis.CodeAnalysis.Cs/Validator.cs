@@ -120,6 +120,7 @@ namespace Stratis.CodeAnalysis.Cs
         // SC0005 Non-const field declarations outside structs not allowed in smart contract classes
         public static Diagnostic AnalyzeFieldDecl(FieldDeclarationSyntax node, SemanticModel model)
         {
+            Debug("Field declaration of {0} at {1}.", node.Declaration.Variables.First().Identifier.Text, node.GetLineLocation());
             if (node.Parent.IsKind(SyntaxKind.StructDeclaration))
             {
                 return NoDiagnostic;
@@ -131,7 +132,9 @@ namespace Stratis.CodeAnalysis.Cs
             }
             else
             {
-                return CreateDiagnostic("SC0006", DiagnosticSeverity.Error, node.GetLocation());
+                var parent = (ClassDeclarationSyntax) node.Parent;
+                var type = model.GetDeclaredSymbol(parent) as ITypeSymbol;
+                return CreateDiagnostic("SC0006", DiagnosticSeverity.Error, node.GetLocation(), type.ToDisplayString());
             }
         }
 
@@ -208,7 +211,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         #region Semantic analysis
             // SC0006 New object creation not allowed except for structs and arrays of primitive types and structs
-            public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation)
+        public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation)
         {
             var type = objectCreation.Type;
             var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;

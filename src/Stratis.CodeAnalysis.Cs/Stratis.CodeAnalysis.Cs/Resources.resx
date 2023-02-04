@@ -142,7 +142,7 @@
     <comment>The title of the diagnostic.</comment>
   </data>
   <data name="SC0002_Description" xml:space="preserve">
-    <value>Types from this namespace cannot be used here.</value>
+    <value>Types from this namespace cannot be used in smart contract code.</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
   <data name="SC0002_MessageFormat" xml:space="preserve">
@@ -181,13 +181,13 @@
     <value>New object creation of a reference type is not allowed in smart contract code.</value>
   </data>
   <data name="SC0006_Description" xml:space="preserve">
-    <value>Field declarations are not allowed in smart contract code. See https://github.com/stratisproject/StratisFullNode/blob/master/Documentation/Features/SmartContracts/Clr-execution-and-validation.md</value>
+    <value>Non-const field declarations are not allowed in smart contract classes.</value>
   </data>
   <data name="SC0006_MessageFormat" xml:space="preserve">
-    <value>A field declaration cannot be made here</value>
+    <value>A non-const field declaration cannot be made in the class {0}.</value>
   </data>
   <data name="SC0006_Title" xml:space="preserve">
-    <value>Field declarations not allowed in smart contract code.</value>
+    <value>Non-const field declarations are not allowed in smart contract classes</value>
   </data>
   <data name="SC0007_Description" xml:space="preserve">
     <value>Only certain variable types can be used in smart contract code.</value>

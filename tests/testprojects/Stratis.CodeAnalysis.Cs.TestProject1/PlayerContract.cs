@@ -75,8 +75,8 @@ namespace foo
 
         void X(object x, float r)
         {
-            try
-            { }
+            //try
+            //{ }
         }
         public void SendPing()
         {

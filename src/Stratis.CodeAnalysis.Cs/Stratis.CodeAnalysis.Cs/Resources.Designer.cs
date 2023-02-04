@@ -115,7 +115,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Types from this namespace cannot be used here..
+        ///   Looks up a localized string similar to Types from this namespace cannot be used in smart contract code..
         /// </summary>
         internal static string SC0002_Description {
             get {
@@ -223,7 +223,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Field declarations are not allowed in smart contract code. See https://github.com/stratisproject/StratisFullNode/blob/master/Documentation/Features/SmartContracts/Clr-execution-and-validation.md.
+        ///   Looks up a localized string similar to Non-const field declarations are not allowed in smart contract classes..
         /// </summary>
         internal static string SC0006_Description {
             get {
@@ -232,7 +232,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A field declaration cannot be made here.
+        ///   Looks up a localized string similar to A non-const field declaration cannot be made in the class {0}..
         /// </summary>
         internal static string SC0006_MessageFormat {
             get {
@@ -241,7 +241,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Field declarations not allowed in smart contract code..
+        ///   Looks up a localized string similar to Non-const field declarations are not allowed in smart contract classes.
         /// </summary>
         internal static string SC0006_Title {
             get {

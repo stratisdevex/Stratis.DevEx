@@ -12,21 +12,35 @@ The analyzer can be configured using `%AppData%\StratisDev\stratisdev.cfg`. Logf
 # Troubleshooting
 To help diagnose issues set `Debug=True` in the global configuration file and reload the solution or project.
 
-# Code Analysis
+# Code Analysis Rules
 
 ## Validation rules
+These are the rules implemented by the [validator module](https://github.com/stratisdevex/Stratis.DevEx/blob/master/src/Stratis.CodeAnalysis.Cs/Stratis.CodeAnalysis.Cs/Validator.cs) of the smart contract Roslyn analyzer based on the [CLR execution and validation](https://github.com/stratisproject/StratisFullNode/blob/master/Documentation/Features/SmartContracts/Clr-execution-and-validation.md) Stratis doc:
+### Format validation
 | Id | Description | Severity |
 | --- | ----------- | ------  |
-| SC0001 | Smart contract classes cannot be declared inside a namespace | Error |
-| SC0002 | Types from namespace cannot be used here | Error |
-| SC0003 | Classes in smart contract code must inherit from Stratis.SmartContract | Error |
-| SC0004 | The first parameter in a smart constructor must be of type ISmartContractState | Error |
-| SC0005 | New object creation of reference types is not allowed in smart contract code | Error | 
-| SC0006 | Field declarations are not allowed in smart contract code | Error |
-| SC0007 | Only certain variable types can be used in smart contract code | Error |
-| SC0008 | Only certain types and members can be used in smart contract code | Error |
-| SC0009 | Cannot use this method here | Error |
-| SC0010 | An assert condition should be derived from input or state | Warning |
-| SC0011 | Custom assert message should be used, as this can be parsed to identify reason for failure | Info |
-| SC0012 | Assert message should not be empty, as this can be parsed to identify reason for failure | Info |
+| SC0001 | Smart contract classes cannot be declared inside a namespace. | Error |
+| SC0002 | Types from this namespace cannot be used in smart contract code. | Error |
+| SC0003 | Classes in smart contract code must inherit from Stratis.SmartContract. | Error |
+| SC0004 | The first parameter in a smart constructor must be of type ISmartContractState. | Error |
+| SC0005 | New object creation of reference types is not allowed in smart contract code. | Error | 
+| SC0006 | Non-const field declarations are not allowed in smart contract classes. | Error |
+| SC0007 | Only certain variable types can be used in smart contract code. | Error |
+| SC0008 | Only certain types and members can be used in smart contract code. | Error |
+| SC0009 | Cannot use this method here. | Error |
+| SC0010 | An assert condition should be derived from input or state. | Warning |
+| SC0011 | Custom assert message should be used, as this can be parsed to identify reason for failure. | Info |
+| SC0012 | Assert message should not be empty, as this can be parsed to identify reason for failure. | Info |
+| SC0013 | This type cannot be used in smart contract code. | Error | 
+| SC0014 | This type cannot be used as a smart contract method return type or parameter type. | Error | 
+ 
+
+### Determinism validation
+| Id | Description | Severity |
+| --- | ----------- | ------  |
+| SC0015 | A smart contract class cannnot declare a destructor or finalizer. | Error |
+| SC0016 | Exception handling with try/catch blocks not allowed in smart contract code. | Error | 
+
+
+
 
