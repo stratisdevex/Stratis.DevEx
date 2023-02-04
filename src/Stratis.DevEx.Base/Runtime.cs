@@ -91,8 +91,7 @@ namespace Stratis.DevEx
                     if (!File.Exists(globalCfgFile))
                     {
                         Info("Creating new global configuration file for {0}...", ToolName);
-                        var newcfg = new Configuration();
-                        newcfg["General"]["Debug"].BoolValue = false;
+                        var newcfg = CreateDefaultConfig();
                         newcfg.SaveToFile(globalCfgFile);
                     }
                     else
@@ -109,7 +108,7 @@ namespace Stratis.DevEx
                 }
                 else
                 {
-                    GlobalConfig = new Configuration();
+                    GlobalConfig = CreateDefaultConfig();
                     GlobalConfig["General"]["Debug"].BoolValue = true;
                     Logger.SetLogLevelDebug();
                     Info("{0} initialized from unit test host assembly {1}...", ToolName, EntryAssembly!);
@@ -333,7 +332,7 @@ namespace Stratis.DevEx
         {
             var cfg = new Configuration();
             var general = cfg.Add("General");
-            general.Add("Debug", true);
+            general.Add("Debug", false);
             return cfg;
         }
 

@@ -117,6 +117,8 @@ namespace foo
             Assert(Message.Sender == PlayerAddress);
             GameState = (uint)StateType.Finished;
         }
+
+        public string xx;
     }
 
     [Deploy]
