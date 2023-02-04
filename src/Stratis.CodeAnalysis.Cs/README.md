@@ -2,9 +2,9 @@
 This tool is a Roslyn analyzer that provides static analysis and validation of Stratis smart contract C# code.
 
 # Installation
-You need to add the Stratis.DevEx [package dev feed](https://www.myget.org/F/stratisdevex/api/v3/index.json) to your NuGet package sources e.g. in Visual Studio goto Tools->Options->NuGet Package Manager->Package Sources and add the URL https://www.myget.org/F/stratisdevex/api/v3/index.json.
+You need to add the Stratis.DevEx [package dev feed](https://www.myget.org/feed/Packages/stratisdevex) to your NuGet package sources e.g. in Visual Studio goto Tools->Options->NuGet Package Manager->Package Sources and add the URL https://www.myget.org/F/stratisdevex/api/v3/index.json.
 ![img](https://phx02pap002files.storage.live.com/y4mFcBqajfZXbydpDpjiAiulclR9coMXZSydLbTxLKGfz9tyH2m4w86rPrkZ-413id1Wx5nhdOiS6CnnLu7EHEs10pv7J80zhwTaA8WPv3-ZQ3mGB_eHI7Fke3K4rCv501KDPyf7I3PGS1vLfoQhZtzfECq2tUXp6xEWr9sVZxp1ONLZVDSDweix3scfSCO8TZ7?width=1918&height=963&cropmode=none)
-Make sure you select to inlude prerelease packages in the NuGet browser window. Then install the latest version of the package.
+Make sure you select the right package source and also to include prerelease packages in the NuGet browser window. Then install the latest version of the package into your smart contract project.
 
 # Usage
 The analyzer can be configured using `%AppData%\StratisDev\stratisdev.cfg`. Logfiles are written to the same folder.
