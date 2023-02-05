@@ -1,7 +1,7 @@
 ﻿using Stratis.SmartContracts;
 
-namespace foo
-{
+//namespace foo
+//{
     public class Player : SmartContract
     {
         public Player(ISmartContractState state, Address player, Address opponent, string gameName)
@@ -13,6 +13,7 @@ namespace foo
             GameState = (uint)StateType.Provisioned;
             byte[] b = { };
             b.Clone();
+        var v = NLog.Common.InternalLogger.IncludeTimestamp;
         }
 
         public enum StateType : uint
@@ -75,8 +76,8 @@ namespace foo
 
         void X(object x, float r)
         {
-            //try
-            //{ }
+            try
+            { }
         }
         public void SendPing()
         {
@@ -168,4 +169,4 @@ namespace foo
             public string GameName;
         }
     }
-}
+//}

@@ -12,4 +12,10 @@
     <AdditionalFiles Include="stratisdev.cfg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\..\Stratis.DevEx.Base.Test\bin\Debug\netcoreapp3.1\NLog.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

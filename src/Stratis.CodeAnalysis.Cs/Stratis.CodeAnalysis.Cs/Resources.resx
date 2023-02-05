@@ -279,4 +279,13 @@
   <data name="SC0016_Title" xml:space="preserve">
     <value>Exception handling with try/catch blocks not allowed in smart contract code.</value>
   </data>
+  <data name="SC0017_Description" xml:space="preserve">
+    <value>Smart contract assemblies cannot directly referency any other .NET assembly except Stratis.SmartContracts</value>
+  </data>
+  <data name="SC0017_MessageFormat" xml:space="preserve">
+    <value>Cannot reference assembly {0}.</value>
+  </data>
+  <data name="SC0017_Title" xml:space="preserve">
+    <value>Smart contract assemblies cannot directly reference any other .NET assembly except Stratis.SmartContracts.</value>
+  </data>
 </root>

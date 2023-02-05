@@ -27,10 +27,10 @@
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             
-            #pragma warning disable RS1012
+            #pragma warning disable RS1012, RS1013
             context.RegisterCompilationStartAction(ctx =>
             {
-                Runtime.Debug("Compilation start..."); 
+                Runtime.Debug("Compilation start...");
                 //Runtime.Debug("Project additional files: {0}.", ctx.Options.AdditionalFiles.Select(f => f.Path));
                 if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg"))
                 {
@@ -39,9 +39,13 @@
                     //var cfg = Runtime.LoadConfig(cfgFile);
                     //Runtime.BindConfig(Runtime.GlobalConfig, cfg);
                 }
+
                 
+
             });
             #pragma warning restore RS1012
+
+            context.RegisterCompilationAction(ctx => Try(() => Validator.AnalyzeCompilation(ctx)));
 
             #region Smart contract validation
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
@@ -80,5 +84,18 @@
         #endregion
 
         #endregion
+
+        public static Diagnostic Try(Func<Diagnostic> d)
+        {
+            try
+            {
+                return d();
+            }
+            catch (Exception e)
+            {
+                Runtime.Error(e, "Exception thrown in analysis method.");
+                return null;
+            }
+        }
     }
 }

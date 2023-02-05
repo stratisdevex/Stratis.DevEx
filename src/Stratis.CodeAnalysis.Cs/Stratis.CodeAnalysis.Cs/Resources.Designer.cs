@@ -518,5 +518,32 @@ namespace Stratis.CodeAnalysis.Cs {
                 return ResourceManager.GetString("SC0016_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smart contract assemblies cannot directly referency any other .NET assembly except Stratis.SmartContracts.
+        /// </summary>
+        internal static string SC0017_Description {
+            get {
+                return ResourceManager.GetString("SC0017_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot reference assembly {0}..
+        /// </summary>
+        internal static string SC0017_MessageFormat {
+            get {
+                return ResourceManager.GetString("SC0017_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smart contract assemblies cannot directly reference any other .NET assembly except Stratis.SmartContracts..
+        /// </summary>
+        internal static string SC0017_Title {
+            get {
+                return ResourceManager.GetString("SC0017_Title", resourceCulture);
+            }
+        }
     }
 }
