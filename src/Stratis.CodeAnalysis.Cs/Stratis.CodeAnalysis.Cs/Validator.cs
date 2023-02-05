@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -47,18 +48,19 @@ namespace Stratis.CodeAnalysis.Cs
         #region Methods
 
         #region Compilation analysis
-        public static Diagnostic AnalyzeCompilation(CompilationAnalysisContext ctx)
+        public static List<Diagnostic> AnalyzeCompilation(Compilation c)
         {
-            var refs = ctx.Compilation.ReferencedAssemblyNames.Select(a => a.Name);
+            var refs = c.ReferencedAssemblyNames.Select(a => a.Name);
+            var d = new List<Diagnostic>();
             //Debug("Compilation assembly references: {0}.", refs.JoinWithSpaces());
             foreach (var r in refs)
             {
                 if (!AllowedAssemblyReferencesNames.Contains(r))
                 {
-                    ctx.ReportDiagnostic(CreateDiagnostic("SC0017", DiagnosticSeverity.Error, Location.None, r));
+                    d.Add(CreateDiagnostic("SC0017", DiagnosticSeverity.Error, Location.None, r));
                 }
             }
-            return null;
+            return d;
         }
         #endregion
         
@@ -440,18 +442,6 @@ namespace Stratis.CodeAnalysis.Cs
             return d;
         }
 
-        public static Diagnostic? Try(Func<Diagnostic> d)
-        {
-            try
-            {
-                return d();
-            }
-            catch (Exception e)
-            {
-                Error(e, "Exception thrown in analysis method.");
-                return null;
-            }
-        }
         public static bool IsPrimitiveType(ITypeSymbol t) => PrimitiveTypeNames.Contains(t.ToDisplayString());
 
         public static bool IsSmartContractType(ITypeSymbol type) => SmartContractTypeNames.Contains(type.ToDisplayString());
@@ -586,6 +576,17 @@ namespace Stratis.CodeAnalysis.Cs
         internal static string allowedAssemblyReferencesStr = "Microsoft.CSharp Microsoft.VisualBasic.Core Microsoft.VisualBasic Microsoft.Win32.Primitives mscorlib netstandard System.AppContext System.Buffers System.Collections.Concurrent System.Collections System.Collections.Immutable System.Collections.NonGeneric System.Collections.Specialized System.ComponentModel.Annotations System.ComponentModel.DataAnnotations System.ComponentModel System.ComponentModel.EventBasedAsync System.ComponentModel.Primitives System.ComponentModel.TypeConverter System.Configuration System.Console System.Core System.Data.Common System.Data.DataSetExtensions System.Data System.Diagnostics.Contracts System.Diagnostics.Debug System.Diagnostics.DiagnosticSource System.Diagnostics.FileVersionInfo System.Diagnostics.Process System.Diagnostics.StackTrace System.Diagnostics.TextWriterTraceListener System.Diagnostics.Tools System.Diagnostics.TraceSource System.Diagnostics.Tracing System System.Drawing System.Drawing.Primitives System.Dynamic.Runtime System.Globalization.Calendars System.Globalization System.Globalization.Extensions System.IO.Compression.Brotli System.IO.Compression System.IO.Compression.FileSystem System.IO.Compression.ZipFile System.IO System.IO.FileSystem System.IO.FileSystem.DriveInfo System.IO.FileSystem.Primitives System.IO.FileSystem.Watcher System.IO.IsolatedStorage System.IO.MemoryMappedFiles System.IO.Pipes System.IO.UnmanagedMemoryStream System.Linq System.Linq.Expressions System.Linq.Parallel System.Linq.Queryable System.Memory System.Net System.Net.Http System.Net.HttpListener System.Net.Mail System.Net.NameResolution System.Net.NetworkInformation System.Net.Ping System.Net.Primitives System.Net.Requests System.Net.Security System.Net.ServicePoint System.Net.Sockets System.Net.WebClient System.Net.WebHeaderCollection System.Net.WebProxy System.Net.WebSockets.Client System.Net.WebSockets System.Numerics System.Numerics.Vectors System.ObjectModel System.Reflection.DispatchProxy System.Reflection System.Reflection.Emit System.Reflection.Emit.ILGeneration System.Reflection.Emit.Lightweight System.Reflection.Extensions System.Reflection.Metadata System.Reflection.Primitives System.Reflection.TypeExtensions System.Resources.Reader System.Resources.ResourceManager System.Resources.Writer System.Runtime.CompilerServices.Unsafe System.Runtime.CompilerServices.VisualC System.Runtime System.Runtime.Extensions System.Runtime.Handles System.Runtime.InteropServices System.Runtime.InteropServices.RuntimeInformation System.Runtime.InteropServices.WindowsRuntime System.Runtime.Intrinsics System.Runtime.Loader System.Runtime.Numerics System.Runtime.Serialization System.Runtime.Serialization.Formatters System.Runtime.Serialization.Json System.Runtime.Serialization.Primitives System.Runtime.Serialization.Xml System.Security.Claims System.Security.Cryptography.Algorithms System.Security.Cryptography.Csp System.Security.Cryptography.Encoding System.Security.Cryptography.Primitives System.Security.Cryptography.X509Certificates System.Security System.Security.Principal System.Security.SecureString System.ServiceModel.Web System.ServiceProcess System.Text.Encoding.CodePages System.Text.Encoding System.Text.Encoding.Extensions System.Text.Encodings.Web System.Text.Json System.Text.RegularExpressions System.Threading.Channels System.Threading System.Threading.Overlapped System.Threading.Tasks.Dataflow System.Threading.Tasks System.Threading.Tasks.Extensions System.Threading.Tasks.Parallel System.Threading.Thread System.Threading.ThreadPool System.Threading.Timer System.Transactions System.Transactions.Local System.ValueTuple System.Web System.Web.HttpUtility System.Windows System.Xml System.Xml.Linq System.Xml.ReaderWriter System.Xml.Serialization System.Xml.XDocument System.Xml.XmlDocument System.Xml.XmlSerializer System.Xml.XPath System.Xml.XPath.XDocument WindowsBase Stratis.SmartContracts";
 
         internal static string[] AllowedAssemblyReferencesNames;
+
+        /// <summary>
+        /// The set of Assemblies that a <see cref="SmartContract"/> is required to reference
+        /// </summary>
+        //internal static HashSet<Assembly> AllowedSCAssemblies = new HashSet<Assembly> {
+        //        Assembly.Load("System.Runtime"),
+        //        typeof(object).Assembly,
+        //        typeof(SmartContract).Assembly,
+        //        typeof(Enumerable).Assembly,
+                //typeof(IStandardToken).Assembly
+        //    };
         #endregion
     }
 }

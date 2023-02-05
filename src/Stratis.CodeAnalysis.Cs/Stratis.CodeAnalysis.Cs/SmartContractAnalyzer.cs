@@ -45,9 +45,9 @@
             });
             #pragma warning restore RS1012
 
-            context.RegisterCompilationAction(ctx => Try(() => Validator.AnalyzeCompilation(ctx)));
-
             #region Smart contract validation
+            context.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
+
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
@@ -56,6 +56,7 @@
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeMethodDecl((MethodDeclarationSyntax)ctx.Node, ctx), SyntaxKind.MethodDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeDestructorDecl((DestructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.DestructorDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeTryStmt((TryStatementSyntax)ctx.Node, ctx), SyntaxKind.TryStatement);
+            
             context.RegisterOperationAction(ctx =>
             {
                 switch (ctx.Operation)
@@ -85,6 +86,9 @@
 
         #endregion
 
+        #region Methods
+
+        #region Diagnostic utilities
         public static Diagnostic Try(Func<Diagnostic> d)
         {
             try
@@ -97,5 +101,8 @@
                 return null;
             }
         }
+        #endregion
+
+        #endregion
     }
 }
