@@ -18,7 +18,21 @@ namespace Stratis.DevEx
     public static class CollectionUtils
     {
         public static string JoinWith(this IEnumerable<string> s, string j) => s.Aggregate((a, b) => a + j + b);
-        public static string JoinWithSpaces(this IEnumerable<string> s) => s.Aggregate((a, b) => a + " " + b);
+        public static string JoinWithSpaces(this IEnumerable<string> s)
+        {
+            if (s.Count() == 0)
+            {
+                return "";
+            }
+            else if (s.Count() == 1)
+            {
+                return s.First();
+            }
+            else
+            {
+                return s.Aggregate((a, b) => a + " " + b);
+            }
+        }
 
         public static T FailIfKeyNotPresent<T>(this Dictionary<string, object> d, string k)
             => d.ContainsKey(k) ? (T)d[k] : throw new KeyNotFoundException($"The required key {k} is not present.");

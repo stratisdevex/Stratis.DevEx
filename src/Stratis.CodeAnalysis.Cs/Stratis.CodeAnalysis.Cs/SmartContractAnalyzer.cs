@@ -95,6 +95,17 @@
             var classSymbol = ctx.SemanticModel.GetDeclaredSymbol(node) as ITypeSymbol;
             var attrs = node.AttributeLists.Select(al => al.Attributes).SelectMany(x => x);
             Runtime.Debug("Class {0} with attributes {1} declared at {2}.", classSymbol.ToDisplayString(), attrs.Select(a => a.Name.ToString()).JoinWithSpaces(), node.GetLineLocation());
+            foreach(var a in attrs)
+            {
+                if (a.Name.ToString() == "Deploy")
+                {
+                    if (attrCount++ > 0)
+                    {
+                        //ctx.re
+                    }
+
+                }
+            }
             //foreach(var al in node.AttributeLists)
             //{
             //    foreach (var a in al.Attributes)
