@@ -545,5 +545,32 @@ namespace Stratis.CodeAnalysis.Cs {
                 return ResourceManager.GetString("SC0017_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only one class in a smart contract assembly can be marked with the Deploy attribute..
+        /// </summary>
+        internal static string SC0018_Description {
+            get {
+                return ResourceManager.GetString("SC0018_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only one class in a smart contract assembly can be marked with the Deploy attribute..
+        /// </summary>
+        internal static string SC0018_MessageFormat {
+            get {
+                return ResourceManager.GetString("SC0018_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only one class in a smart contract assembly can be marked with the Deploy attribute..
+        /// </summary>
+        internal static string SC0018_Title {
+            get {
+                return ResourceManager.GetString("SC0018_Title", resourceCulture);
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
@@ -23,7 +24,7 @@
         public override void Initialize(AnalysisContext context)
         {
             Runtime.Initialize("Stratis.CodeAnalysis.Cs", "ROSLYN");
-            
+            attrCount = 0;
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             
@@ -50,7 +51,7 @@
 
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
+            context.RegisterSyntaxNodeAction(ctx => AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeConstructorDecl((ConstructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ConstructorDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeFieldDecl((FieldDeclarationSyntax)ctx.Node, ctx), SyntaxKind.FieldDeclaration);
             context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeMethodDecl((MethodDeclarationSyntax)ctx.Node, ctx), SyntaxKind.MethodDeclaration);
@@ -86,7 +87,24 @@
 
         #endregion
 
+
         #region Methods
+
+        public void AnalyzeClassDecl(ClassDeclarationSyntax node, SyntaxNodeAnalysisContext ctx)
+        {
+            var classSymbol = ctx.SemanticModel.GetDeclaredSymbol(node) as ITypeSymbol;
+            var attrs = node.AttributeLists.Select(al => al.Attributes).SelectMany(x => x);
+            Runtime.Debug("Class {0} with attributes {1} declared at {2}.", classSymbol.ToDisplayString(), attrs.Select(a => a.Name.ToString()).JoinWithSpaces(), node.GetLineLocation());
+            //foreach(var al in node.AttributeLists)
+            //{
+            //    foreach (var a in al.Attributes)
+            //    {
+            //        if 
+            //    }
+            //}
+            Validator.AnalyzeClassDecl(node, ctx);
+        }
+
 
         #region Diagnostic utilities
         public static Diagnostic Try(Func<Diagnostic> d)
@@ -103,6 +121,10 @@
         }
         #endregion
 
+        #endregion
+
+        #region Fields
+        internal int attrCount = 0;
         #endregion
     }
 }

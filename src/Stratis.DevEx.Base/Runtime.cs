@@ -4,7 +4,7 @@ namespace Stratis.DevEx
     using System.IO;
     using System.Linq;
     using System.Reflection;
-
+    using System.Threading;
     using SharpConfig;
 
     public abstract class Runtime
@@ -74,9 +74,10 @@ namespace Stratis.DevEx
         {
             lock (__lock)
             {
+                Info("Initialize called on thread id {0}.", Thread.CurrentThread.ManagedThreadId);
                 if (RuntimeInitialized)
                 {
-                    Info("Runtime already initialized...skipping init.");
+                    Info("Runtime already initialized.");
                     return;
                 }
                 if (!IsUnitTestRun)

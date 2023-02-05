@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -39,7 +40,8 @@ namespace Stratis.CodeAnalysis.Cs
                 { "SC0014", DiagnosticSeverity.Error },
                 { "SC0015", DiagnosticSeverity.Error },
                 { "SC0016", DiagnosticSeverity.Error },
-                { "SC0017", DiagnosticSeverity.Error }
+                { "SC0017", DiagnosticSeverity.Error },
+                { "SC0018", DiagnosticSeverity.Error }
             }.ToImmutableDictionary();
             Diagnostics = ImmutableArray.Create(DiagnosticIds.Select(i => GetDescriptor(i.Key, i.Value)).ToArray());
         }
@@ -52,7 +54,7 @@ namespace Stratis.CodeAnalysis.Cs
         {
             var refs = c.ReferencedAssemblyNames.Select(a => a.Name);
             var d = new List<Diagnostic>();
-            //Debug("Compilation assembly references: {0}.", refs.JoinWithSpaces());
+            Debug("Compilation assembly references: {0}.", refs.JoinWithSpaces());
             foreach (var r in refs)
             {
                 if (!AllowedAssemblyReferencesNames.Contains(r))
