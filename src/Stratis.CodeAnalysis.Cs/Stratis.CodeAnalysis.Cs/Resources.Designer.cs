@@ -106,7 +106,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Namespace declaration not allowed for smart contract class..
+        ///   Looks up a localized string similar to Smart contract classes cannot be declared inside a namespace..
         /// </summary>
         internal static string SC0001_Title {
             get {
@@ -151,7 +151,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Class {0} must inherit from class Stratis.SmartContracts.SmartContract.
+        ///   Looks up a localized string similar to Class {0} must inherit from Stratis.SmartContracts.SmartContract..
         /// </summary>
         internal static string SC0003_MessageFormat {
             get {
@@ -160,7 +160,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Smart contract class must inherit from type Stratis.SmartContracts.SmartContract..
+        ///   Looks up a localized string similar to Classes in smart contract code must inherit from Stratis.SmartContracts.SmartContract..
         /// </summary>
         internal static string SC0003_Title {
             get {
@@ -187,7 +187,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to First parameter in a smart contract constructor must be of type ISmartContractState..
+        ///   Looks up a localized string similar to The first parameter in a smart contract constructor must be of type ISmartContractState..
         /// </summary>
         internal static string SC0004_Title {
             get {
@@ -520,7 +520,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Smart contract assemblies cannot directly referency any other .NET assembly except Stratis.SmartContracts.
+        ///   Looks up a localized string similar to Smart contract assemblies cannot directly referency any other .NET assembly except Stratis.SmartContracts..
         /// </summary>
         internal static string SC0017_Description {
             get {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -59,7 +57,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 if (!AllowedAssemblyReferencesNames.Contains(r))
                 {
-                    d.Add(CreateDiagnostic("SC0017", DiagnosticSeverity.Error, Location.None, r));
+                    d.Add(CreateDiagnostic("SC0017", Location.None, r));
                 }
             }
             return d;
@@ -72,7 +70,7 @@ namespace Stratis.CodeAnalysis.Cs
         {
             var ns = node.DescendantNodes().First();
             Debug("Namespace {0} declared at {1}.", ns.ToString(), ns.GetLineLocation());
-            return CreateDiagnostic("SC0001", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToString());
+            return CreateDiagnostic("SC0001", ns.GetLocation(), ns.ToString());
         }
 
         // SC0002 Only allow using Stratis.SmartContracts namespace in smart contract code
@@ -82,7 +80,7 @@ namespace Stratis.CodeAnalysis.Cs
             Debug("Using namespace {0} at {1}.", ns.ToString(), ns.GetLineLocation());
             if (ns != null && !WhitelistedNamespaces.Contains(ns.ToString()))
             {
-                return CreateDiagnostic("SC0002", DiagnosticSeverity.Error, ns.GetLocation(), ns.ToFullString());
+                return CreateDiagnostic("SC0002", ns.GetLocation(), ns.ToFullString());
             }
             else
             {
@@ -97,7 +95,7 @@ namespace Stratis.CodeAnalysis.Cs
             Debug("Class {0} declared at {1}.", classSymbol.ToDisplayString(), node.GetLineLocation());
             if (classSymbol.BaseType is null || classSymbol.BaseType.ToDisplayString() != "Stratis.SmartContracts.SmartContract")
             {
-                return CreateDiagnostic("SC0003", DiagnosticSeverity.Error, node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).GetLocation(), classSymbol.Name);
+                return CreateDiagnostic("SC0003", node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).GetLocation(), classSymbol.Name);
             }
             else
             {
@@ -131,7 +129,7 @@ namespace Stratis.CodeAnalysis.Cs
             var classSymbol = model.GetSymbolInfo(fpt).Symbol as ITypeSymbol;
             if (classSymbol.ToDisplayString() != "Stratis.SmartContracts.ISmartContractState")
             {
-                return CreateDiagnostic("SC0004", DiagnosticSeverity.Error, fpn.GetLocation(), fp.Identifier.Text);
+                return CreateDiagnostic("SC0004", fpn.GetLocation(), fp.Identifier.Text);
             }
             else
             {
@@ -156,7 +154,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 var parent = (ClassDeclarationSyntax) node.Parent;
                 var type = model.GetDeclaredSymbol(parent) as ITypeSymbol;
-                return CreateDiagnostic("SC0006", DiagnosticSeverity.Error, node.GetLocation(), type.ToDisplayString());
+                return CreateDiagnostic("SC0006", node.GetLocation(), type.ToDisplayString());
             }
         }
 
@@ -173,7 +171,7 @@ namespace Stratis.CodeAnalysis.Cs
 
             if (methodname == "Finalize" && parentSymbol.IsSmartContract())
             {
-                return CreateDiagnostic("SC0015", DiagnosticSeverity.Error, node.GetLocation(), parentSymbol.ToDisplayString());
+                return CreateDiagnostic("SC0015", node.GetLocation(), parentSymbol.ToDisplayString());
             }
         
             foreach (var p in node.ParameterList.Parameters)
@@ -185,7 +183,7 @@ namespace Stratis.CodeAnalysis.Cs
                 }
                 else
                 {
-                    return CreateDiagnostic("SC0014", DiagnosticSeverity.Error, p.GetLocation(), pt.ToDisplayString());
+                    return CreateDiagnostic("SC0014", p.GetLocation(), pt.ToDisplayString());
                 }
             }
 
@@ -195,7 +193,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
             else 
             {
-                return CreateDiagnostic("SC0014", DiagnosticSeverity.Error, node.GetLocation(), typename);
+                return CreateDiagnostic("SC0014", node.GetLocation(), typename);
             }
         }
 
@@ -205,7 +203,7 @@ namespace Stratis.CodeAnalysis.Cs
             var parent = (ClassDeclarationSyntax) node.Parent;
             var type = model.GetDeclaredSymbol(parent) as ITypeSymbol;
             Debug("Destructor for type {0} declared at {1}.", type.ToDisplayString(), node.GetLineLocation());
-            return CreateDiagnostic("SC0015", DiagnosticSeverity.Error, node.GetLocation(), type.ToDisplayString());
+            return CreateDiagnostic("SC0015", node.GetLocation(), type.ToDisplayString());
         }
 
         // SC0016 Exception handling with try/catch blocks not allowed in smart contract code.
@@ -214,7 +212,7 @@ namespace Stratis.CodeAnalysis.Cs
             var parent = (ClassDeclarationSyntax) node.Ancestors().First(a => a.Kind() == SyntaxKind.ClassDeclaration);
             var type = model.GetDeclaredSymbol(parent) as ITypeSymbol;
             Debug("Try statement in class {0} at {1}.", type.ToDisplayString(), node.GetLineLocation());
-            return CreateDiagnostic("SC0016", DiagnosticSeverity.Error, node.GetLocation());
+            return CreateDiagnostic("SC0016", node.GetLocation());
         }
 
        
@@ -237,13 +235,13 @@ namespace Stratis.CodeAnalysis.Cs
             var typename = type.ToDisplayString();
             var elementtypename = elementtype?.ToDisplayString() ?? "";
         
-            if (type.IsValueType || PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename) || SmartContractArrayTypeNames.Contains(typename) || (type.IsArrayTypeKind() && (elementtype.IsValueType || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename))))
+            if (type.IsValueType || IsPrimitiveType(type) || IsSmartContractType(type) || IsWhitelistedArrayType(type))
             {
                 return NoDiagnostic;
             }
             else
             {
-                return CreateDiagnostic("SC0005", DiagnosticSeverity.Error, objectCreation.Syntax.GetLocation(), type.ToDisplayString());
+                return CreateDiagnostic("SC0005", objectCreation.Syntax.GetLocation(), type.ToDisplayString());
             }
         }
 
@@ -256,9 +254,9 @@ namespace Stratis.CodeAnalysis.Cs
             var basetype = type.BaseType;
             var typename = type.ToDisplayString();
             Debug("Variable {0} of type {1} declared at {2}. Base type: {3}. Enum type: {4}. User struct: {5}. Primitive type: {6}., Array type: {7}. Element type: {8}.", 
-                v.ToDisplayString(), typename, variableDeclarator.Syntax.GetLineLocation(), basetype.ToDisplayString(), type.IsEnum(), type.IsUserStruct(), PrimitiveTypeNames.Contains(typename), type.IsArrayTypeKind(), elementtype?.ToDisplayString() ?? "(none)");
+                v.ToDisplayString(), typename, variableDeclarator.Syntax.GetLineLocation(), basetype?.ToDisplayString() ?? "(none)", type.IsEnum(), type.IsUserStruct(), IsPrimitiveType(type), type.IsArrayTypeKind(), elementtype?.ToDisplayString() ?? "(none)");
             
-            if (type.IsEnum() || type.IsUserStruct() || IsPrimitiveType(type))
+            if (type.IsEnum() || type.IsUserStruct() || IsPrimitiveType(type) || IsSmartContractType(type))
             {
                 return NoDiagnostic;
             }
@@ -268,7 +266,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
             else
             {
-                return CreateDiagnostic("SC0007", DiagnosticSeverity.Error, variableDeclarator.Syntax.GetLocation(), typename);
+                return CreateDiagnostic("SC0007", variableDeclarator.Syntax.GetLocation(), typename);
             }
         }
 
@@ -291,7 +289,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
             else
             {
-                return CreateDiagnostic("SC0008", DiagnosticSeverity.Error, propReference.Syntax.GetLocation(), propname, type);
+                return CreateDiagnostic("SC0008", propReference.Syntax.GetLocation(), propname, type);
             }
         }
 
@@ -317,7 +315,7 @@ namespace Stratis.CodeAnalysis.Cs
                 }
                 else 
                 {
-                    return CreateDiagnostic("SC0013", DiagnosticSeverity.Error, method.Parameters[i].Locations.First(), method.Name, typename);
+                    return CreateDiagnostic("SC0013", method.Parameters[i].Locations.First(), method.Name, typename);
                 }
             }
 
@@ -331,7 +329,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
             else
             {
-                return CreateDiagnostic("SC0009", DiagnosticSeverity.Error, node.GetLocation(), method.Name, typename);
+                return CreateDiagnostic("SC0009", node.GetLocation(), method.Name, typename);
             }
         }
 
@@ -347,7 +345,7 @@ namespace Stratis.CodeAnalysis.Cs
             var location = methodInvocation.Arguments[0].Syntax.GetLocation();
             var value = (bool)methodInvocation.Arguments[0].Value.ConstantValue.Value;
             
-            return CreateDiagnostic("SC0010", DiagnosticSeverity.Warning, location, value);
+            return CreateDiagnostic("SC0010", location, value);
         }
 
         // SC0011 Assert should be called with message
@@ -359,7 +357,7 @@ namespace Stratis.CodeAnalysis.Cs
                 || !methodInvocation.Arguments[1].IsImplicit) return NoDiagnostic;
             
             var location = methodInvocation.Syntax.GetLocation();
-            return CreateDiagnostic("SC0011", DiagnosticSeverity.Info, location);
+            return CreateDiagnostic("SC0011", location);
         }
 
         // SC0012 Assert message should not be empty
@@ -374,7 +372,7 @@ namespace Stratis.CodeAnalysis.Cs
             if (assertMessageSyntax != "\"\"" && assertMessageSyntax != "string.Empty") return NoDiagnostic;
             
             var location = methodInvocation.Arguments[1].Syntax.GetLocation();
-            return CreateDiagnostic("SC0012", DiagnosticSeverity.Info, location);
+            return CreateDiagnostic("SC0012", location);
         }
         #endregion
 
@@ -408,7 +406,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         #region Semantic analysis
         public static Diagnostic AnalyzeObjectCreation(IObjectCreationOperation objectCreation, OperationAnalysisContext ctx) =>
-        AnalyzeObjectCreation(objectCreation).Report(ctx);
+            AnalyzeObjectCreation(objectCreation).Report(ctx);
 
         public static Diagnostic AnalyzePropertyReference(IPropertyReferenceOperation propertyReference, OperationAnalysisContext ctx) =>
             AnalyzePropertyReference(propertyReference).Report(ctx);
@@ -437,9 +435,9 @@ namespace Stratis.CodeAnalysis.Cs
             new DiagnosticDescriptor(id, RM.GetString($"{id}_Title"), RM.GetString($"{id}_MessageFormat"), Category,
                 severity, true, RM.GetString($"{id}_Description"));
 
-        public static Diagnostic CreateDiagnostic(string id, DiagnosticSeverity severity, Location location, params object[] args)
+        public static Diagnostic CreateDiagnostic(string id, Location location, params object[] args)
         {
-            var d = Diagnostic.Create(GetDescriptor(id, severity), location, args);
+            var d = Diagnostic.Create(GetDescriptor(id, DiagnosticIds[id]), location, args);
             Info("Emitting diagnostic id: {0}; title: {1}; location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
             return d;
         }
@@ -451,8 +449,7 @@ namespace Stratis.CodeAnalysis.Cs
         public static bool IsWhitelistedArrayType(ITypeSymbol type)
         {
             var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
-            var elementtypename = elementtype?.ToDisplayString();
-            return type.IsArrayTypeKind() && (elementtype.IsUserStruct() || elementtype.IsObject() || PrimitiveTypeNames.Contains(elementtypename) || SmartContractTypeNames.Contains(elementtypename) || (elementtype.IsArrayTypeKind() && IsWhitelistedArrayType(elementtype)));
+            return type.IsArrayTypeKind() && (elementtype.IsUserStruct() || elementtype.IsObject() || IsPrimitiveType(elementtype) || IsSmartContractType(elementtype) || (elementtype.IsArrayTypeKind() && IsWhitelistedArrayType(elementtype)));
         }
 
         public static bool IsWhitelistedMethodName(string typename, string methodname) => WhitelistedMethodNames.ContainsKey(typename) && WhitelistedMethodNames[typename].Contains(methodname);

@@ -32,17 +32,13 @@
             context.RegisterCompilationStartAction(ctx =>
             {
                 Runtime.Debug("Compilation start...");
-                //Runtime.Debug("Project additional files: {0}.", ctx.Options.AdditionalFiles.Select(f => f.Path));
                 if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg"))
                 {
                     var cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path == "stratisdev.cfg").Path;
-                    //Runtime.Info("Loading analyzer configuration from {0}...", cfgFile);
+                    Runtime.Info("Loading analyzer configuration from {0}...", cfgFile);
                     //var cfg = Runtime.LoadConfig(cfgFile);
                     //Runtime.BindConfig(Runtime.GlobalConfig, cfg);
                 }
-
-                
-
             });
             #pragma warning restore RS1012
 
@@ -87,9 +83,9 @@
 
         #endregion
 
-
         #region Methods
 
+        #region Syntactic analysis
         public void AnalyzeClassDecl(ClassDeclarationSyntax node, SyntaxNodeAnalysisContext ctx)
         {
             var classSymbol = ctx.SemanticModel.GetDeclaredSymbol(node) as ITypeSymbol;
@@ -101,21 +97,14 @@
                 {
                     if (attrCount++ > 0)
                     {
-                        //ctx.re
+                        ctx.ReportDiagnostic(Validator.CreateDiagnostic("SC0018", a.GetLocation()));
                     }
 
                 }
             }
-            //foreach(var al in node.AttributeLists)
-            //{
-            //    foreach (var a in al.Attributes)
-            //    {
-            //        if 
-            //    }
-            //}
             Validator.AnalyzeClassDecl(node, ctx);
         }
-
+        #endregion
 
         #region Diagnostic utilities
         public static Diagnostic Try(Func<Diagnostic> d)

@@ -131,36 +131,30 @@
   </data>
   <data name="SC0001_Description" xml:space="preserve">
     <value>Smart contract classes cannot be declared inside a namespace.</value>
-    <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
   <data name="SC0001_MessageFormat" xml:space="preserve">
     <value>A smart contract class cannot be declared inside the namespace {0}.</value>
-    <comment>The format-able message the diagnostic displays.</comment>
   </data>
   <data name="SC0001_Title" xml:space="preserve">
-    <value>Namespace declaration not allowed for smart contract class.</value>
-    <comment>The title of the diagnostic.</comment>
+    <value>Smart contract classes cannot be declared inside a namespace.</value>
   </data>
   <data name="SC0002_Description" xml:space="preserve">
     <value>Types from this namespace cannot be used in smart contract code.</value>
-    <comment>An optional longer localizable description of the diagnostic.</comment>
   </data>
   <data name="SC0002_MessageFormat" xml:space="preserve">
     <value>Types from namespace {0} cannot be used in smart contract code.</value>
-    <comment>The format-able message the diagnostic displays.</comment>
   </data>
   <data name="SC0002_Title" xml:space="preserve">
     <value>Types from this namespace cannot be used in smart contract code.</value>
-    <comment>The title of the diagnostic.</comment>
   </data>
   <data name="SC0003_Description" xml:space="preserve">
     <value>Classes in smart contract code must inherit from Stratis.SmartContracts.SmartContract.</value>
   </data>
   <data name="SC0003_MessageFormat" xml:space="preserve">
-    <value>Class {0} must inherit from class Stratis.SmartContracts.SmartContract</value>
+    <value>Class {0} must inherit from Stratis.SmartContracts.SmartContract.</value>
   </data>
   <data name="SC0003_Title" xml:space="preserve">
-    <value>Smart contract class must inherit from type Stratis.SmartContracts.SmartContract.</value>
+    <value>Classes in smart contract code must inherit from Stratis.SmartContracts.SmartContract.</value>
   </data>
   <data name="SC0004_Description" xml:space="preserve">
     <value>The first parameter in a smart contract constructor must be of type ISmartContractState.</value>
@@ -169,7 +163,7 @@
     <value>Parameter {0} must be of type ISmartContractState.</value>
   </data>
   <data name="SC0004_Title" xml:space="preserve">
-    <value>First parameter in a smart contract constructor must be of type ISmartContractState.</value>
+    <value>The first parameter in a smart contract constructor must be of type ISmartContractState.</value>
   </data>
   <data name="SC0005_Description" xml:space="preserve">
     <value>New object creation of a reference type is not allowed in smart contract code.</value>
@@ -280,7 +274,7 @@
     <value>Exception handling with try/catch blocks not allowed in smart contract code.</value>
   </data>
   <data name="SC0017_Description" xml:space="preserve">
-    <value>Smart contract assemblies cannot directly referency any other .NET assembly except Stratis.SmartContracts</value>
+    <value>Smart contract assemblies cannot directly referency any other .NET assembly except Stratis.SmartContracts.</value>
   </data>
   <data name="SC0017_MessageFormat" xml:space="preserve">
     <value>Cannot reference assembly {0}.</value>

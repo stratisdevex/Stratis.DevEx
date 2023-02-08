@@ -13,7 +13,7 @@
             GameState = (uint)StateType.Provisioned;
             byte[] b = { };
             b.Clone();
-        var v = NLog.Common.InternalLogger.IncludeTimestamp;
+            var v = NLog.Common.InternalLogger.IncludeTimestamp;
         }
 
         public enum StateType : uint
@@ -76,13 +76,13 @@
 
         void X(object x, float r)
         {
-            try
-            { }
+        //    //try
+            //{ }
         }
         public void SendPing()
         {
-            System.Collections.Generic.List<int> l = new System.Collections.Generic.List<int>();
-            float cc = 0f;
+            //System.Collections.Generic.List<int> l = new System.Collections.Generic.List<int>();
+            //float cc = 0f;
             Assert(Message.Sender == PlayerAddress);
             Assert(GameState == (uint)StateType.ReceivedPing || GameState == (uint)StateType.Provisioned);
 
