@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -23,6 +23,19 @@ namespace Stratis.CodeAnalysis.Cs
         public static bool IsSmartContract(this ITypeSymbol t) => t != null && t.ToDisplayString() == "Stratis.SmartContracts.SmartContract" || (t.BaseType != null && (t.BaseType.ToDisplayString() == "Stratis.SmartContracts.SmartContract"));
 
         public static FileLinePositionSpan GetLineLocation(this SyntaxNode s) => s.GetLocation().GetLineSpan();
+
+        public static string ClassOrStruct(this SyntaxNode node)
+        {
+            if (node.Kind() == SyntaxKind.ClassDeclaration)
+            {
+                return "class";
+            }
+            else if (node.Kind() == SyntaxKind.StructDeclaration)
+            {
+                return "struct";
+            }
+            else throw new ArgumentException($"The node has kind {node.Kind()} and is not a class declaration or struct declaration.");
+        }
     
         public static Diagnostic Report(this Diagnostic diagnostic, SyntaxNodeAnalysisContext ctx)
         {

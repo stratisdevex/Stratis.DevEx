@@ -572,5 +572,32 @@ namespace Stratis.CodeAnalysis.Cs {
                 return ResourceManager.GetString("SC0018_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A smart contract class cannot declare a static constructor or property or field..
+        /// </summary>
+        internal static string SC0019_Description {
+            get {
+                return ResourceManager.GetString("SC0019_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The smart contract {0} {1} cannot declare a static constructor or property or field..
+        /// </summary>
+        internal static string SC0019_MessageFormat {
+            get {
+                return ResourceManager.GetString("SC0019_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A smart contract class cannot declare a static constructor or property or field..
+        /// </summary>
+        internal static string SC0019_Title {
+            get {
+                return ResourceManager.GetString("SC0019_Title", resourceCulture);
+            }
+        }
     }
 }

@@ -4,6 +4,10 @@
 //{
     public class Player : SmartContract
     {
+        static Player ()
+    {
+
+    }
         public Player(ISmartContractState state, Address player, Address opponent, string gameName)
             : base(state)
         {
@@ -167,6 +171,10 @@
             public Address Player2Contract;
 
             public string GameName;
+
+        public static string Foo;
+
+
         }
     }
 //}

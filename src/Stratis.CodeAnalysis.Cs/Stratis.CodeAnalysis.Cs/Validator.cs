@@ -39,7 +39,8 @@ namespace Stratis.CodeAnalysis.Cs
                 { "SC0015", DiagnosticSeverity.Error },
                 { "SC0016", DiagnosticSeverity.Error },
                 { "SC0017", DiagnosticSeverity.Error },
-                { "SC0018", DiagnosticSeverity.Error }
+                { "SC0018", DiagnosticSeverity.Error },
+                { "SC0019", DiagnosticSeverity.Error }
             }.ToImmutableDictionary();
             Diagnostics = ImmutableArray.Create(DiagnosticIds.Select(i => GetDescriptor(i.Key, i.Value)).ToArray());
         }
@@ -104,12 +105,17 @@ namespace Stratis.CodeAnalysis.Cs
         }
 
         // SC0004 Class constructor must have ISmartContractState as the first parameter.
+        // SC0019 A smart contract class cannot declare a static constructor or property or field.
         public static Diagnostic AnalyzeConstructorDecl(ConstructorDeclarationSyntax node, SemanticModel model)
         {
             if (node.Parent is StructDeclarationSyntax) return NoDiagnostic;
-            var parent = (ClassDeclarationSyntax)node.Parent;
-            var parentSymbol = model.GetDeclaredSymbol(parent) as ITypeSymbol;
-            Debug("Constructor for type {0} declared at {1}.", parentSymbol.ToDisplayString(), node.GetLineLocation());
+            var parent = node.Parent;
+            var type = model.GetDeclaredSymbol(parent) as ITypeSymbol;
+            Debug("Constructor for type {0} declared at {1}.", type.ToDisplayString(), node.GetLineLocation());
+            if (node.Modifiers.Any(m => m.Kind() == SyntaxKind.StaticKeyword))
+            {
+                return CreateDiagnostic("SC0019", node.GetLocation(), parent.ClassOrStruct(), type.ToDisplayString());
+            }
             var fp = node
                 .DescendantNodes()
                 .OfType<ParameterListSyntax>()
@@ -137,24 +143,32 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        // SC0005 Non-const field declarations outside structs not allowed in smart contract classes
+        // SC0005 Non-const field declarations outside structs not allowed in smart contract classes.
+        // SC0019 A smart contract class cannot declare a static constructor or property or field.
         public static Diagnostic AnalyzeFieldDecl(FieldDeclarationSyntax node, SemanticModel model)
         {
-            Debug("Field declaration of {0} at {1}.", node.Declaration.Variables.First().Identifier.Text, node.GetLineLocation());
-            if (node.Parent.IsKind(SyntaxKind.StructDeclaration))
+            var type = model.GetDeclaredSymbol(node.Parent) as ITypeSymbol;
+            Debug("Field declaration of {0} in {1} at {2}.", node.Declaration.Variables.First().Identifier.Text, type.ToDisplayString(), node.GetLineLocation());
+            if (node.Parent.IsKind(SyntaxKind.StructDeclaration) && !node.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)))
             {
                 return NoDiagnostic;
             }
-            else if (node.Modifiers.Any(m => m.IsKind(SyntaxKind.ConstKeyword)))
+            else if (node.Modifiers.Any(m => m.IsKind(SyntaxKind.ConstKeyword)) && !node.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)))
             {
-
                 return NoDiagnostic;
             }
             else
             {
-                var parent = (ClassDeclarationSyntax) node.Parent;
-                var type = model.GetDeclaredSymbol(parent) as ITypeSymbol;
-                return CreateDiagnostic("SC0006", node.GetLocation(), type.ToDisplayString());
+                
+                if (node.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)))
+                {
+                    return CreateDiagnostic("SC0019", node.GetLocation(), node.Parent.ClassOrStruct(), type.ToDisplayString());
+                }
+                else
+                {
+                    return NoDiagnostic;
+                }
+                
             }
         }
 
