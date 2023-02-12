@@ -14,7 +14,7 @@ namespace Stratis.DevEx.Base.Test
         {
             Assert.NotNull(cfg1);
             var cfg2 = Runtime.CreateDefaultConfig();
-            var c = Runtime.BindConfig(cfg1, cfg2);
+            var c = Runtime.BindConfig(cfg2, cfg1);
             Assert.True(c["General"]["Debug"].BoolValue);
         }
 

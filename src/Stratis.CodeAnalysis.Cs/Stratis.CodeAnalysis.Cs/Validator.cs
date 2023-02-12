@@ -40,7 +40,8 @@ namespace Stratis.CodeAnalysis.Cs
                 { "SC0016", DiagnosticSeverity.Error },
                 { "SC0017", DiagnosticSeverity.Error },
                 { "SC0018", DiagnosticSeverity.Error },
-                { "SC0019", DiagnosticSeverity.Error }
+                { "SC0019", DiagnosticSeverity.Error },
+                { "SC0020", DiagnosticSeverity.Error }
             }.ToImmutableDictionary();
             Diagnostics = ImmutableArray.Create(DiagnosticIds.Select(i => GetDescriptor(i.Key, i.Value)).ToArray());
         }
@@ -53,7 +54,7 @@ namespace Stratis.CodeAnalysis.Cs
         {
             var refs = c.ReferencedAssemblyNames.Select(a => a.Name);
             var d = new List<Diagnostic>();
-            Debug("Compilation assembly references: {0}.", refs.JoinWithSpaces());
+            //Debug("Compilation assembly references: {0}.", refs.JoinWithSpaces());
             foreach (var r in refs)
             {
                 if (!AllowedAssemblyReferencesNames.Contains(r))
@@ -90,6 +91,7 @@ namespace Stratis.CodeAnalysis.Cs
         }
 
         // SC0003 Declared classes must inherit from Stratis.SmartContracts.SmartContract
+        // SC0020 A smart contract type cannot con
         public static Diagnostic AnalyzeClassDecl(ClassDeclarationSyntax node, SemanticModel model)
         {
             var classSymbol = model.GetDeclaredSymbol(node) as ITypeSymbol;
@@ -144,31 +146,21 @@ namespace Stratis.CodeAnalysis.Cs
         }
 
         // SC0005 Non-const field declarations outside structs not allowed in smart contract classes.
-        // SC0019 A smart contract class cannot declare a static constructor or property or field.
         public static Diagnostic AnalyzeFieldDecl(FieldDeclarationSyntax node, SemanticModel model)
         {
             var type = model.GetDeclaredSymbol(node.Parent) as ITypeSymbol;
             Debug("Field declaration of {0} in {1} at {2}.", node.Declaration.Variables.First().Identifier.Text, type.ToDisplayString(), node.GetLineLocation());
-            if (node.Parent.IsKind(SyntaxKind.StructDeclaration) && !node.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)))
+            if (node.Parent.IsKind(SyntaxKind.StructDeclaration))
             {
                 return NoDiagnostic;
             }
-            else if (node.Modifiers.Any(m => m.IsKind(SyntaxKind.ConstKeyword)) && !node.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)))
+            else if (node.Modifiers.Any(m => m.IsKind(SyntaxKind.ConstKeyword)))
             {
                 return NoDiagnostic;
             }
             else
             {
-                
-                if (node.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)))
-                {
-                    return CreateDiagnostic("SC0019", node.GetLocation(), node.Parent.ClassOrStruct(), type.ToDisplayString());
-                }
-                else
-                {
-                    return NoDiagnostic;
-                }
-                
+                return CreateDiagnostic("SC0006", node.GetLocation(), type.ToDisplayString());
             }
         }
 
@@ -246,8 +238,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 Debug("New object of type {0} created at {1}.", type.ToDisplayString(), objectCreation.Syntax.GetLineLocation());
             }
-            var typename = type.ToDisplayString();
-            var elementtypename = elementtype?.ToDisplayString() ?? "";
+           
         
             if (type.IsValueType || IsPrimitiveType(type) || IsSmartContractType(type) || IsWhitelistedArrayType(type))
             {
@@ -255,7 +246,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
             else
             {
-                return CreateDiagnostic("SC0005", objectCreation.Syntax.GetLocation(), type.ToDisplayString());
+                return CreateDiagnostic("SC0006", objectCreation.Syntax.GetLocation(), type.ToDisplayString());
             }
         }
 
