@@ -152,7 +152,15 @@ namespace Stratis.CodeAnalysis.Cs
             Debug("Field declaration of {0} in {1} at {2}.", node.Declaration.Variables.First().Identifier.Text, type.ToDisplayString(), node.GetLineLocation());
             if (node.Parent.IsKind(SyntaxKind.StructDeclaration))
             {
-                return NoDiagnostic;
+                if(node.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)))
+                {
+                    return CreateDiagnostic("SC0019", node.GetLocation(), node.Parent.ClassOrStruct(), type.ToDisplayString());
+                }
+                else
+                {
+                    return NoDiagnostic;
+                }
+                
             }
             else if (node.Modifiers.Any(m => m.IsKind(SyntaxKind.ConstKeyword)))
             {
