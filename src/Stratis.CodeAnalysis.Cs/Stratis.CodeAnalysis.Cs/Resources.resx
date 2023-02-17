@@ -316,6 +316,6 @@
     <value>The smart contract method {0} decannot contain generic parameters.</value>
   </data>
   <data name="Sc0021_Title" xml:space="preserve">
-    <value>A smart contract method cannot</value>
+    <value>A smart contract method declaration cannot contain generic parameters.</value>
   </data>
 </root>

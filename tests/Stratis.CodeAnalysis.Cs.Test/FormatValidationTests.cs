@@ -67,6 +67,24 @@ namespace Stratis.CodeAnalysis.Cs.Test
 ";
             await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0006").WithSpan(9, 9, 9, 25).WithArguments("Player"));
         }
+
+        [TestMethod]
+        public async Task InvalidMethodDeclNotAllowedTest()
+        {
+            var code =
+@"  using Stratis.SmartContracts;
+    public class Player : SmartContract
+    {
+        public Player(ISmartContractState state, Address player, Address opponent, string gameName)
+            : base(state)
+        {
+           
+        }
+        public string[] M() => new string[] {};
+    }
+";
+            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0014").WithSpan(9, 9, 9, 48).WithArguments("string[]"));
+        }
     }
 }
 

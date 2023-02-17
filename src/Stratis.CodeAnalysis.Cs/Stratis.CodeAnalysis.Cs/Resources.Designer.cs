@@ -646,7 +646,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A smart contract method cannot.
+        ///   Looks up a localized string similar to A smart contract method declaration cannot contain generic parameters..
         /// </summary>
         internal static string Sc0021_Title {
             get {

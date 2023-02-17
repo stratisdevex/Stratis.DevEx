@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -20,7 +21,25 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static bool IsUserStruct(this ITypeSymbol t) => t != null && t.SpecialType == SpecialType.None && t.IsValueType; 
 
-        public static bool IsSmartContract(this ITypeSymbol t) => t != null && t.ToDisplayString() == "Stratis.SmartContracts.SmartContract" || (t.BaseType != null && (t.BaseType.ToDisplayString() == "Stratis.SmartContracts.SmartContract"));
+        public static bool IsSmartContract(this ITypeSymbol t) => t != null && t.ToDisplayString() == "Stratis.SmartContracts.SmartContract" || (t.BaseType != null && (t.BaseType.IsSmartContract()));
+
+        public static bool IsPrimitiveType(this ITypeSymbol t) => Validator.PrimitiveTypeNames.Contains(t.ToDisplayString());
+
+        public static bool IsStratisType(this ITypeSymbol t) => Validator.SmartContractTypeNames.Contains(t.ToDisplayString());
+
+        public static bool IsWhitelistedMethodReturnType(this ITypeSymbol t) => Validator.WhitelistedMethodReturnTypeNames.Contains(t.ToDisplayString());
+
+        public static bool IsWhitelistedArrayType(this ITypeSymbol t)
+        {
+            var elementtype = t.IsArrayTypeKind() ? ((IArrayTypeSymbol) t).ElementType : null;
+            return t.IsArrayTypeKind() && (elementtype.IsUserStruct() || elementtype.IsObject() || elementtype.IsPrimitiveType() || elementtype.IsStratisType() || (elementtype.IsArrayTypeKind() && IsWhitelistedArrayType(elementtype)));
+        }
+
+        public static bool IsWhitelistedMethodName(this ITypeSymbol t, string methodname) => 
+            Validator.WhitelistedMethodNames.ContainsKey(t.ToDisplayString()) && Validator.WhitelistedMethodNames[t.ToDisplayString()].Contains(methodname);
+
+        public static bool IsWhitelistedPropertyName(this ITypeSymbol t, string propname) => 
+            Validator.WhitelistedPropertyNames.ContainsKey(t.ToDisplayString()) && Validator.WhitelistedPropertyNames[t.ToDisplayString()].Contains(propname);
 
         public static FileLinePositionSpan GetLineLocation(this SyntaxNode s) => s.GetLocation().GetLineSpan();
 

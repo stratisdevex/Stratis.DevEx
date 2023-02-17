@@ -187,11 +187,14 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return CreateDiagnostic("SC0015", node.GetLocation(), parentSymbol.ToDisplayString());
             }
-        
+            
+            Func<ITypeSymbol, bool> typetest = node.Modifiers.Any(m => m.Kind() == SyntaxKind.PublicKeyword) ? 
+                t => t.IsWhitelistedMethodReturnType() : t => t.IsWhitelistedMethodReturnType() || t.IsValueType || t.IsWhitelistedArrayType();
+            
             foreach (var p in node.ParameterList.Parameters)
             {
                 var pt = model.GetDeclaredSymbol(p).Type;
-                if (pt.IsEnum() || pt.IsUserStruct() || IsPrimitiveType(pt) || IsSmartContractType(pt) || IsWhitelistedArrayType(pt))
+                if (typetest(pt))
                 {
                     continue;
                 }
@@ -201,7 +204,8 @@ namespace Stratis.CodeAnalysis.Cs
                 }
             }
 
-            if (type.IsEnum() || type.IsUserStruct() || IsPrimitiveType(type) || IsSmartContractType(type) || IsWhitelistedArrayType(type)) 
+             
+            if (typetest(type)) 
             {
                 return NoDiagnostic;
             }
@@ -228,8 +232,6 @@ namespace Stratis.CodeAnalysis.Cs
             Debug("Try statement in class {0} at {1}.", type.ToDisplayString(), node.GetLineLocation());
             return CreateDiagnostic("SC0016", node.GetLocation());
         }
-
-       
         #endregion
 
         #region Semantic analysis
@@ -248,7 +250,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
            
         
-            if (type.IsValueType || IsPrimitiveType(type) || IsSmartContractType(type) || IsWhitelistedArrayType(type))
+            if (type.IsValueType || type.IsPrimitiveType() || type.IsStratisType() || type.IsWhitelistedArrayType())
             {
                 return NoDiagnostic;
             }
@@ -267,13 +269,9 @@ namespace Stratis.CodeAnalysis.Cs
             var basetype = type.BaseType;
             var typename = type.ToDisplayString();
             Debug("Variable {0} of type {1} declared at {2}. Base type: {3}. Enum type: {4}. User struct: {5}. Primitive type: {6}., Array type: {7}. Element type: {8}.", 
-                v.ToDisplayString(), typename, variableDeclarator.Syntax.GetLineLocation(), basetype?.ToDisplayString() ?? "(none)", type.IsEnum(), type.IsUserStruct(), IsPrimitiveType(type), type.IsArrayTypeKind(), elementtype?.ToDisplayString() ?? "(none)");
+                v.ToDisplayString(), typename, variableDeclarator.Syntax.GetLineLocation(), basetype?.ToDisplayString() ?? "(none)", type.IsEnum(), type.IsUserStruct(), type.IsPrimitiveType(), type.IsArrayTypeKind(), elementtype?.ToDisplayString() ?? "(none)");
             
-            if (type.IsEnum() || type.IsUserStruct() || IsPrimitiveType(type) || IsSmartContractType(type))
-            {
-                return NoDiagnostic;
-            }
-            else if (IsWhitelistedArrayType(type))
+            if (type.IsEnum() || type.IsObject() || type.IsUserStruct() || type.IsPrimitiveType() || type.IsStratisType() || type.IsWhitelistedArrayType())
             {
                 return NoDiagnostic;
             }
@@ -292,11 +290,11 @@ namespace Stratis.CodeAnalysis.Cs
             var typename = type.ToDisplayString();
             Debug("Property reference {0} at {1}", member.ToDisplayString(), propReference.Syntax.GetLineLocation());
 
-            if (type.IsSmartContract() || type.IsEnum() || type.IsUserStruct() || PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename))
+            if (type.IsEnum() || type.IsPrimitiveType() || type.IsSmartContract() || type.IsStratisType() || type.IsUserStruct())
             {
                 return NoDiagnostic;
             }
-            else if (IsWhitelistedPropertyName(typename, propname))
+            else if (type.IsWhitelistedPropertyName(propname))
             {
                 return NoDiagnostic;
             }
@@ -317,12 +315,15 @@ namespace Stratis.CodeAnalysis.Cs
             var basetype = type.BaseType;
             var typename = type.ToDisplayString();
             Debug("Method invocation {0} at {1}", method.ToDisplayString(), node.GetLineLocation());
-
+            if (method.MethodKind == MethodKind.Constructor)
+            {
+                return NoDiagnostic;
+            }
             for (int i = 0; i < method.Parameters.Length; i++)
             {
                 var t = method.Parameters[i].Type;
                 var tn = t.ToDisplayString();
-                if (t.IsEnum() || t.IsUserStruct() || PrimitiveTypeNames.Contains(tn) || SmartContractTypeNames.Contains(tn) || PrimitiveArrayTypeNames.Contains(tn) || SmartContractArrayTypeNames.Contains(tn))
+                if (t.IsEnum() || t.IsUserStruct() || t.IsPrimitiveType() || t.IsSmartContract() || t.IsWhitelistedArrayType())
                 {
                     continue;
                 }
@@ -336,7 +337,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return NoDiagnostic;
             }
-            else if (IsWhitelistedMethodName(typename, methodname))
+            else if (type.IsWhitelistedMethodName(methodname))
             {
                 return NoDiagnostic;
             }
@@ -454,20 +455,6 @@ namespace Stratis.CodeAnalysis.Cs
             Info("Emitting diagnostic id: {0}; title: {1}; location: {2}.", d.Id, d.Descriptor.Title, d.Location.ToString());
             return d;
         }
-
-        public static bool IsPrimitiveType(ITypeSymbol t) => PrimitiveTypeNames.Contains(t.ToDisplayString());
-
-        public static bool IsSmartContractType(ITypeSymbol type) => SmartContractTypeNames.Contains(type.ToDisplayString());
-
-        public static bool IsWhitelistedArrayType(ITypeSymbol type)
-        {
-            var elementtype = type.IsArrayTypeKind() ? ((IArrayTypeSymbol)type).ElementType : null;
-            return type.IsArrayTypeKind() && (elementtype.IsUserStruct() || elementtype.IsObject() || IsPrimitiveType(elementtype) || IsSmartContractType(elementtype) || (elementtype.IsArrayTypeKind() && IsWhitelistedArrayType(elementtype)));
-        }
-
-        public static bool IsWhitelistedMethodName(string typename, string methodname) => WhitelistedMethodNames.ContainsKey(typename) && WhitelistedMethodNames[typename].Contains(methodname);
-
-        public static bool IsWhitelistedPropertyName(string typename, string propname) => WhitelistedPropertyNames.ContainsKey(typename) && WhitelistedPropertyNames[typename].Contains(propname);
         #endregion
 
         #endregion
@@ -579,12 +566,16 @@ namespace Stratis.CodeAnalysis.Cs
             { "System.Object", new string [] { "ToString" } },
             { "System.Array", WhitelistedArrayMethodNames}
         };
+
+        internal static string[] WhitelistedMethodReturnTypeNames = PrimitiveTypeNames.Concat(new[] { typeof(byte[]).FullName, "byte[]", typeof(Address).FullName }).ToArray();
+
         internal static readonly string[] WhitelistedNamespaces = { "System", "Stratis.SmartContracts", "Stratis.SmartContracts.Standards" };
 
         internal static string allowedAssemblyReferencesStr = "Microsoft.CSharp Microsoft.VisualBasic.Core Microsoft.VisualBasic Microsoft.Win32.Primitives mscorlib netstandard System.AppContext System.Buffers System.Collections.Concurrent System.Collections System.Collections.Immutable System.Collections.NonGeneric System.Collections.Specialized System.ComponentModel.Annotations System.ComponentModel.DataAnnotations System.ComponentModel System.ComponentModel.EventBasedAsync System.ComponentModel.Primitives System.ComponentModel.TypeConverter System.Configuration System.Console System.Core System.Data.Common System.Data.DataSetExtensions System.Data System.Diagnostics.Contracts System.Diagnostics.Debug System.Diagnostics.DiagnosticSource System.Diagnostics.FileVersionInfo System.Diagnostics.Process System.Diagnostics.StackTrace System.Diagnostics.TextWriterTraceListener System.Diagnostics.Tools System.Diagnostics.TraceSource System.Diagnostics.Tracing System System.Drawing System.Drawing.Primitives System.Dynamic.Runtime System.Globalization.Calendars System.Globalization System.Globalization.Extensions System.IO.Compression.Brotli System.IO.Compression System.IO.Compression.FileSystem System.IO.Compression.ZipFile System.IO System.IO.FileSystem System.IO.FileSystem.DriveInfo System.IO.FileSystem.Primitives System.IO.FileSystem.Watcher System.IO.IsolatedStorage System.IO.MemoryMappedFiles System.IO.Pipes System.IO.UnmanagedMemoryStream System.Linq System.Linq.Expressions System.Linq.Parallel System.Linq.Queryable System.Memory System.Net System.Net.Http System.Net.HttpListener System.Net.Mail System.Net.NameResolution System.Net.NetworkInformation System.Net.Ping System.Net.Primitives System.Net.Requests System.Net.Security System.Net.ServicePoint System.Net.Sockets System.Net.WebClient System.Net.WebHeaderCollection System.Net.WebProxy System.Net.WebSockets.Client System.Net.WebSockets System.Numerics System.Numerics.Vectors System.ObjectModel System.Reflection.DispatchProxy System.Reflection System.Reflection.Emit System.Reflection.Emit.ILGeneration System.Reflection.Emit.Lightweight System.Reflection.Extensions System.Reflection.Metadata System.Reflection.Primitives System.Reflection.TypeExtensions System.Resources.Reader System.Resources.ResourceManager System.Resources.Writer System.Runtime.CompilerServices.Unsafe System.Runtime.CompilerServices.VisualC System.Runtime System.Runtime.Extensions System.Runtime.Handles System.Runtime.InteropServices System.Runtime.InteropServices.RuntimeInformation System.Runtime.InteropServices.WindowsRuntime System.Runtime.Intrinsics System.Runtime.Loader System.Runtime.Numerics System.Runtime.Serialization System.Runtime.Serialization.Formatters System.Runtime.Serialization.Json System.Runtime.Serialization.Primitives System.Runtime.Serialization.Xml System.Security.Claims System.Security.Cryptography.Algorithms System.Security.Cryptography.Csp System.Security.Cryptography.Encoding System.Security.Cryptography.Primitives System.Security.Cryptography.X509Certificates System.Security System.Security.Principal System.Security.SecureString System.ServiceModel.Web System.ServiceProcess System.Text.Encoding.CodePages System.Text.Encoding System.Text.Encoding.Extensions System.Text.Encodings.Web System.Text.Json System.Text.RegularExpressions System.Threading.Channels System.Threading System.Threading.Overlapped System.Threading.Tasks.Dataflow System.Threading.Tasks System.Threading.Tasks.Extensions System.Threading.Tasks.Parallel System.Threading.Thread System.Threading.ThreadPool System.Threading.Timer System.Transactions System.Transactions.Local System.ValueTuple System.Web System.Web.HttpUtility System.Windows System.Xml System.Xml.Linq System.Xml.ReaderWriter System.Xml.Serialization System.Xml.XDocument System.Xml.XmlDocument System.Xml.XmlSerializer System.Xml.XPath System.Xml.XPath.XDocument WindowsBase Stratis.SmartContracts";
 
         internal static string[] AllowedAssemblyReferencesNames;
 
+        
         /// <summary>
         /// The set of Assemblies that a <see cref="SmartContract"/> is required to reference
         /// </summary>
