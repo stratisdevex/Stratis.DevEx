@@ -81,6 +81,10 @@ namespace Stratis.CodeAnalysis.Cs.Test
            
         }
         public string[] M() => new string[] {};
+
+        public byte[] B() => new byte[] {};
+
+        protected Address Me() => Address.Zero;
     }
 ";
             await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0014").WithSpan(9, 9, 9, 48).WithArguments("string[]"));

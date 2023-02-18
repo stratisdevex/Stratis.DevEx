@@ -100,12 +100,25 @@ namespace Stratis.DevEx
                         Info("Loading existing global configuration file...");
                     }
                     GlobalConfig = Configuration.LoadFromFile(globalCfgFile);
-                    if (GlobalConfig["General"]["Debug"].BoolValue)
+                    if (GlobalSetting("General", "Debug", false, true))
                     {
                         Logger.SetLogLevelDebug();
                         Info("Debug mode enabled.");
                     }
-                    Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Count(), globalCfgFile);
+                    Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Sum(s => s.SettingCount), globalCfgFile);
+                    var d = GlobalSetting("General", "DeleteLogsOlderThan", 7, true);
+                    var logfiles = Directory.GetFiles(StratisDevDir, "*.log", SearchOption.AllDirectories) ?? new string[] { };
+                    Info("{0} existing log files found.", logfiles.Length);
+                    foreach(var l in logfiles)
+                    {
+                        var age = DateTime.Now.Subtract(File.GetLastWriteTime(l));
+                        if (age.TotalDays >= d)
+                        {
+                            File.Delete(l);
+                            Info("Deleted log file {0} that is more than {1} day(s) old.", Path.GetFileName(l), d);
+                        }
+                    }
+
                 }
                 else
                 {
@@ -334,6 +347,7 @@ namespace Stratis.DevEx
             var cfg = new Configuration();
             var general = cfg.Add("General");
             general.Add("Debug", false);
+            general.Add("DeleteLogsOlderThan", 7);
             return cfg;
         }
 
@@ -362,6 +376,11 @@ namespace Stratis.DevEx
                 }
             }
             return cfg1;
+        }
+
+        public static T GlobalSetting<T>(string section, string setting, T defaultval, bool setDefault=false)
+        {
+            return GlobalConfig[section][setting].IsEmpty ? defaultval! : GlobalConfig[section][setting].GetValueOrDefault(defaultval!, setDefault);
         }
         #endregion
 
