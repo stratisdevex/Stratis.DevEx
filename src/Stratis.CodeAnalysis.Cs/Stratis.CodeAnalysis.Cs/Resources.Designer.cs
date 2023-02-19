@@ -520,7 +520,7 @@ namespace Stratis.CodeAnalysis.Cs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Smart contract assemblies cannot directly referency any other .NET assembly except Stratis.SmartContracts..
+        ///   Looks up a localized string similar to Smart contract assemblies cannot directly reference any other .NET assembly except Stratis.SmartContracts..
         /// </summary>
         internal static string SC0017_Description {
             get {
@@ -597,60 +597,6 @@ namespace Stratis.CodeAnalysis.Cs {
         internal static string SC0019_Title {
             get {
                 return ResourceManager.GetString("SC0019_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A smart contract  type cannot contain generic parameters..
-        /// </summary>
-        internal static string SC0020_Description {
-            get {
-                return ResourceManager.GetString("SC0020_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The smart contract {0} {1) cannot contain generic parameters..
-        /// </summary>
-        internal static string SC0020_MessageFormat {
-            get {
-                return ResourceManager.GetString("SC0020_MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A smart contract type cannot contain generic parameters..
-        /// </summary>
-        internal static string SC0020_Title {
-            get {
-                return ResourceManager.GetString("SC0020_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A smart contract method declaration cannot contain generic parameters..
-        /// </summary>
-        internal static string SC0021_Description {
-            get {
-                return ResourceManager.GetString("SC0021_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The smart contract method {0} decannot contain generic parameters..
-        /// </summary>
-        internal static string SC0021_MessageFormat {
-            get {
-                return ResourceManager.GetString("SC0021_MessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A smart contract method declaration cannot contain generic parameters..
-        /// </summary>
-        internal static string Sc0021_Title {
-            get {
-                return ResourceManager.GetString("Sc0021_Title", resourceCulture);
             }
         }
     }

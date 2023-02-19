@@ -64,7 +64,7 @@
             private set => State.SetUInt32(nameof(PingsReceived), value);
         }
 
-        public void ReceivePing()
+        public Message ReceivePing()
         {
             Assert(Message.Sender == Opponent);
             Assert(GameState == (uint)StateType.SentPing || GameState == (uint)StateType.Provisioned);
@@ -76,6 +76,7 @@
             {
                 PingsReceived += 1;
             }
+        return null;
         }
 
         void X(object x, float r)

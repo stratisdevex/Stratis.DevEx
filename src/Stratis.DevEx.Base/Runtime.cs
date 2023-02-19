@@ -106,7 +106,7 @@ namespace Stratis.DevEx
                         Info("Debug mode enabled.");
                     }
                     Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Sum(s => s.SettingCount), globalCfgFile);
-                    var d = GlobalSetting("General", "DeleteLogsOlderThan", 7, true);
+                    var d = GlobalSetting("General", "DeleteLogsOlderThan", 3, true);
                     var logfiles = Directory.GetFiles(StratisDevDir, "*.log", SearchOption.AllDirectories) ?? new string[] { };
                     Info("{0} existing log files found.", logfiles.Length);
                     foreach(var l in logfiles)
@@ -118,7 +118,6 @@ namespace Stratis.DevEx
                             Info("Deleted log file {0} that is more than {1} day(s) old.", Path.GetFileName(l), d);
                         }
                     }
-
                 }
                 else
                 {
@@ -347,7 +346,7 @@ namespace Stratis.DevEx
             var cfg = new Configuration();
             var general = cfg.Add("General");
             general.Add("Debug", false);
-            general.Add("DeleteLogsOlderThan", 7);
+            general.Add("DeleteLogsOlderThan", 3);
             return cfg;
         }
 
