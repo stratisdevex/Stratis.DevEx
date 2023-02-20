@@ -31,17 +31,17 @@ These are the rules implemented by the [validator module](https://github.com/str
 | SC0010 | An assert condition should be derived from input or state. | Warning |
 | SC0011 | Custom assert message should be used, as this can be parsed to identify reason for failure. | Info |
 | SC0012 | Assert message should not be empty, as this can be parsed to identify reason for failure. | Info |
-| SC0013 | This type cannot be used in smart contract code. | Error | 
 | SC0014 | This type cannot be used as a smart contract method return type or parameter type. | Error | 
 | SC0017 | Smart contract assemblies cannot directly reference any other .NET assembly except Stratis.SmartContracts. | Error |
 | SC0018 | Only one class in a smart contract assembly can be marked with the Deploy attribute. | Error |
 | SC0019 | A smart contract type cannot declare a static constructor or property or field. | Error |
-| SC0020 | A smart contract  type cannot contain generic parameters. | Error |
-
+| SC0020 | A smart contract class or struct cannot contain nested types. | Error |
+| SC0021 | A smart contract struct cannot contain a method.| Error |
 
 ### Determinism validation
 | Id | Description | Severity |
 | --- | ----------- | ------  |
+| SC0013 | This type cannot be used in smart contract code. | Error |
 | SC0015 | A smart contract class cannnot declare a destructor or finalizer. | Error |
 | SC0016 | Exception handling with try/catch blocks not allowed in smart contract code. | Error | 
 

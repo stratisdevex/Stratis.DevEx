@@ -87,7 +87,7 @@ namespace Stratis.CodeAnalysis.Cs.Test
         protected Address Me() => Address.Zero;
     }
 ";
-            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0014").WithSpan(9, 9, 9, 48).WithArguments("string[]"));
+            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0014").WithSpan(9, 16, 9, 24).WithArguments("string[]"));
         }
     }
 }
