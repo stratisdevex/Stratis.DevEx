@@ -599,5 +599,32 @@ namespace Stratis.CodeAnalysis.Cs {
                 return ResourceManager.GetString("SC0019_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A smart contract class or struct cannot contain nested types..
+        /// </summary>
+        internal static string SC0020_Description {
+            get {
+                return ResourceManager.GetString("SC0020_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The smart contract {0} {1} contains the nested type {2}..
+        /// </summary>
+        internal static string SC0020_MessageFormat {
+            get {
+                return ResourceManager.GetString("SC0020_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A smart contract class or struct cannot contain nested types..
+        /// </summary>
+        internal static string SC0020_Title {
+            get {
+                return ResourceManager.GetString("SC0020_Title", resourceCulture);
+            }
+        }
     }
 }

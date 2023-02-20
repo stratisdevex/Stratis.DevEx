@@ -41,6 +41,7 @@ namespace Stratis.CodeAnalysis.Cs
                 { "SC0017", DiagnosticSeverity.Error },
                 { "SC0018", DiagnosticSeverity.Error },
                 { "SC0019", DiagnosticSeverity.Error },
+                { "SC0020", DiagnosticSeverity.Error },
             }.ToImmutableDictionary();
             Diagnostics = ImmutableArray.Create(DiagnosticIds.Select(i => GetDescriptor(i.Key, i.Value)).ToArray());
         }
@@ -90,12 +91,22 @@ namespace Stratis.CodeAnalysis.Cs
         }
 
         // SC0003 Declared classes must inherit from Stratis.SmartContracts.SmartContract
-        // SC0020 A smart contract type cannot con
+        // SC0020 A smart contract class or struct cannot contain nested types.
         public static Diagnostic AnalyzeClassDecl(ClassDeclarationSyntax node, SemanticModel model)
         {
             var classSymbol = model.GetDeclaredSymbol(node) as ITypeSymbol;
+            var identifier = node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken));
             Debug("Class {0} declared at {1}.", classSymbol.ToDisplayString(), node.GetLineLocation());
-            if (classSymbol.BaseType is null || classSymbol.BaseType.ToDisplayString() != "Stratis.SmartContracts.SmartContract")
+            var parent = node.Parent;
+            if (parent is ClassDeclarationSyntax clp)
+            {
+                return CreateDiagnostic("SC0020", node.GetLocation(), "class", clp.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)), identifier.Text);
+            }
+            else if (parent is StructDeclarationSyntax sp)
+            {
+                return CreateDiagnostic("SC0020", node.GetLocation(), "struct", sp.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)), identifier.Text);
+            }
+            else if (classSymbol.BaseType is null || classSymbol.BaseType.ToDisplayString() != "Stratis.SmartContracts.SmartContract")
             {
                 return CreateDiagnostic("SC0003", node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).GetLocation(), classSymbol.Name);
             }
@@ -103,6 +114,20 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return NoDiagnostic;
             }
+        }
+
+        // SC0020 A smart contract class or struct cannot contain nested types.
+        public static Diagnostic AnalyzeStructDecl(StructDeclarationSyntax node, SemanticModel model)
+        {
+            var structSymbol = model.GetDeclaredSymbol(node) as ITypeSymbol;
+            var identifier = node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken));
+            Debug("Struct {0} declared at {1}.", structSymbol.ToDisplayString(), node.GetLineLocation());
+            var parent = node.Parent;
+            if (parent is StructDeclarationSyntax sp)
+            {
+                return CreateDiagnostic("SC0020", node.GetLocation(), "struct", sp.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)), identifier.Text);
+            }
+            return NoDiagnostic;
         }
 
         // SC0004 Class constructor must have ISmartContractState as the first parameter.
@@ -231,6 +256,8 @@ namespace Stratis.CodeAnalysis.Cs
             Debug("Try statement in class {0} at {1}.", type.ToDisplayString(), node.GetLineLocation());
             return CreateDiagnostic("SC0016", node.GetLocation());
         }
+
+        
         #endregion
 
         #region Semantic analysis
@@ -399,6 +426,9 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static Diagnostic AnalyzeClassDecl(ClassDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
            AnalyzeClassDecl(node, ctx.SemanticModel)?.Report(ctx);
+
+        public static Diagnostic AnalyzeStructDecl(StructDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
+          AnalyzeStructDecl(node, ctx.SemanticModel)?.Report(ctx);
 
         public static Diagnostic AnalyzeConstructorDecl(ConstructorDeclarationSyntax node, SyntaxNodeAnalysisContext ctx) =>
             AnalyzeConstructorDecl(node, ctx.SemanticModel)?.Report(ctx);

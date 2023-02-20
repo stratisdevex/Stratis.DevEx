@@ -20,6 +20,11 @@
             var v = NLog.Common.InternalLogger.IncludeTimestamp;
         }
 
+
+        public class J { public string JJ() => ""; }
+
+
+
         public enum StateType : uint
         {
             Provisioned = 0,
@@ -174,6 +179,9 @@
             public string GameName;
 
         public static string Foo;
+            public struct Bar { public int A;  }
+
+            public class Bar2 { }
 
 
         }
