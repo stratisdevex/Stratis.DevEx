@@ -626,5 +626,32 @@ namespace Stratis.CodeAnalysis.Cs {
                 return ResourceManager.GetString("SC0020_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A smart contract struct cannot contain a method..
+        /// </summary>
+        internal static string SC0021_Description {
+            get {
+                return ResourceManager.GetString("SC0021_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The smart contract struct {0} contains the method {1}..
+        /// </summary>
+        internal static string SC0021_MessageFormat {
+            get {
+                return ResourceManager.GetString("SC0021_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A smart contract struct cannot contain a method..
+        /// </summary>
+        internal static string SC0021_Title {
+            get {
+                return ResourceManager.GetString("SC0021_Title", resourceCulture);
+            }
+        }
     }
 }

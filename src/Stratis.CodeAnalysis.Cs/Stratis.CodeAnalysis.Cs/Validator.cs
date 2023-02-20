@@ -42,6 +42,7 @@ namespace Stratis.CodeAnalysis.Cs
                 { "SC0018", DiagnosticSeverity.Error },
                 { "SC0019", DiagnosticSeverity.Error },
                 { "SC0020", DiagnosticSeverity.Error },
+                { "SC0021", DiagnosticSeverity.Error },
             }.ToImmutableDictionary();
             Diagnostics = ImmutableArray.Create(DiagnosticIds.Select(i => GetDescriptor(i.Key, i.Value)).ToArray());
         }
@@ -203,15 +204,21 @@ namespace Stratis.CodeAnalysis.Cs
             var methodname = node.Identifier.Text;
             var type = (ITypeSymbol) model.GetSymbolInfo(node.ReturnType).Symbol;
             var typename = type.ToDisplayString();
-            var parent = (ClassDeclarationSyntax)node.Parent;
+            var parent = node.Parent;
+            
             var parentSymbol = model.GetDeclaredSymbol(parent) as ITypeSymbol;
-            Debug("Method {0}{1} of return type {2} in class {3} declared at {4}.", methodname, node.ParameterList, typename, parentSymbol.ToDisplayString(), node.ReturnType.GetLineLocation());
+            Debug("Method {0}{1} of return type {2} in {3} {4} declared at {5}.", methodname, node.ParameterList, typename, parent.ClassOrStruct(), parentSymbol.ToDisplayString(), node.ReturnType.GetLineLocation());
+
 
             if (methodname == "Finalize" && parentSymbol.IsSmartContract())
             {
                 return CreateDiagnostic("SC0015", node.Identifier.GetLocation(), parentSymbol.ToDisplayString());
             }
-            
+            else if (parent is StructDeclarationSyntax sd)
+            {
+                return CreateDiagnostic("SC0021", node.GetLocation(), parentSymbol.ToDisplayString(), methodname);
+            }
+
             Func<ITypeSymbol, bool> typetest = node.Modifiers.Any(m => m.Kind() == SyntaxKind.PublicKeyword) ? 
                 t => t.IsWhitelistedMethodReturnType() : t => t.IsWhitelistedMethodReturnType() || t.IsValueType || t.IsWhitelistedArrayType();
             

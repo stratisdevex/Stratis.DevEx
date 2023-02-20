@@ -309,4 +309,13 @@
   <data name="SC0020_Title" xml:space="preserve">
     <value>A smart contract class or struct cannot contain nested types.</value>
   </data>
+  <data name="SC0021_Description" xml:space="preserve">
+    <value>A smart contract struct cannot contain a method.</value>
+  </data>
+  <data name="SC0021_MessageFormat" xml:space="preserve">
+    <value>The smart contract struct {0} contains the method {1}.</value>
+  </data>
+  <data name="SC0021_Title" xml:space="preserve">
+    <value>A smart contract struct cannot contain a method.</value>
+  </data>
 </root>

@@ -168,22 +168,22 @@
 
         }
 
-        public struct GameCreated
-        {
-            [Index]
-            public Address Player1Contract;
+    public struct GameCreated
+    {
+        [Index]
+        public Address Player1Contract;
 
-            [Index]
-            public Address Player2Contract;
+        [Index]
+        public Address Player2Contract;
 
-            public string GameName;
+        public string GameName;
 
         public static string Foo;
-            public struct Bar { public int A;  }
+        public struct Bar { public int A; }
 
-            public class Bar2 { }
+        public class Bar2 { }
 
-
+        public void MM() { }
         }
     }
 //}
