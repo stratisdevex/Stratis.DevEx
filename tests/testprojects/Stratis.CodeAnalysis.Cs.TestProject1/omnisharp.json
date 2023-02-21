@@ -1,0 +1,6 @@
+{
+    "RoslynExtensionsOptions": {
+        "enableAnalyzersSupport": true,
+        "LocationPaths": ["..\\..\\..\\src\\Stratis.CodeAnalysis.Cs\\Stratis.CodeAnalysis.Cs\\bin\\Debug\\netstandard2.0"]
+    }
+}

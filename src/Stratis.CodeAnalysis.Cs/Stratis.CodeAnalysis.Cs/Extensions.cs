@@ -23,6 +23,8 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static ITypeSymbol GetRootType(this ITypeSymbol t) => t.BaseType == null || t.BaseType.IsObject() ? t : GetRootType(t.BaseType);
 
+        public static bool IsAttribute(this ITypeSymbol t) => t != null && (t.ToDisplayString() == "System.Attribute" || t.GetRootType().ToDisplayString() == "System.Attribute");
+
         public static bool IsSmartContract(this ITypeSymbol t) => t != null && (t.ToDisplayString() == "Stratis.SmartContracts.SmartContract" || (t.GetRootType().ToDisplayString() == "Stratis.SmartContracts.SmartContract"));
 
         public static bool IsPrimitiveType(this ITypeSymbol t) => Validator.PrimitiveTypeNames.Contains(t.ToDisplayString());
@@ -45,7 +47,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static FileLinePositionSpan GetLineLocation(this SyntaxNode s) => s.GetLocation().GetLineSpan();
 
-        public static string ClassOrStruct(this SyntaxNode node)
+        public static string TypeDeclLabel(this SyntaxNode node)
         {
             if (node.Kind() == SyntaxKind.ClassDeclaration)
             {
@@ -55,9 +57,13 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return "struct";
             }
-            else throw new ArgumentException($"The node has kind {node.Kind()} and is not a class declaration or struct declaration.");
+            else if (node.Kind() == SyntaxKind.InterfaceDeclaration)
+            {
+                return "interface";
+            }
+            else throw new ArgumentException($"The node has kind {node.Kind()} and is not a class declaration or struct declaration or interface declaration.");
         }
-    
+
         public static Diagnostic Report(this Diagnostic diagnostic, SyntaxNodeAnalysisContext ctx)
         {
             if (diagnostic != null) ctx.ReportDiagnostic(diagnostic);

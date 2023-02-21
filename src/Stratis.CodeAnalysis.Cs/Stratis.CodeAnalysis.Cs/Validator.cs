@@ -60,7 +60,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 if (!AllowedAssemblyReferencesNames.Contains(r))
                 {
-                    d.Add(CreateDiagnostic("SC0017", Location.None, r));
+                    //d.Add(CreateDiagnostic("SC0017", Location.None, r));
                 }
             }
             return d;
@@ -141,7 +141,7 @@ namespace Stratis.CodeAnalysis.Cs
             Debug("Constructor for type {0} declared at {1}.", type.ToDisplayString(), node.GetLineLocation());
             if (node.Modifiers.Any(m => m.Kind() == SyntaxKind.StaticKeyword))
             {
-                return CreateDiagnostic("SC0019", node.GetLocation(), parent.ClassOrStruct(), type.ToDisplayString());
+                return CreateDiagnostic("SC0019", node.GetLocation(), parent.TypeDeclLabel(), type.ToDisplayString());
             }
             var fp = node
                 .DescendantNodes()
@@ -179,7 +179,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 if(node.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)))
                 {
-                    return CreateDiagnostic("SC0019", node.GetLocation(), node.Parent.ClassOrStruct(), type.ToDisplayString());
+                    return CreateDiagnostic("SC0019", node.GetLocation(), node.Parent.TypeDeclLabel(), type.ToDisplayString());
                 }
                 else
                 {
@@ -207,7 +207,7 @@ namespace Stratis.CodeAnalysis.Cs
             var parent = node.Parent;
             
             var parentSymbol = model.GetDeclaredSymbol(parent) as ITypeSymbol;
-            Debug("Method {0}{1} of return type {2} in {3} {4} declared at {5}.", methodname, node.ParameterList, typename, parent.ClassOrStruct(), parentSymbol.ToDisplayString(), node.ReturnType.GetLineLocation());
+            Debug("Method {0}{1} of return type {2} in {3} {4} declared at {5}.", methodname, node.ParameterList, typename, parent.TypeDeclLabel(), parentSymbol.ToDisplayString(), node.ReturnType.GetLineLocation());
 
 
             if (methodname == "Finalize" && parentSymbol.IsSmartContract())
@@ -283,7 +283,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
            
         
-            if (type.IsValueType || type.IsPrimitiveType() || type.IsStratisType() || type.IsWhitelistedArrayType())
+            if (type.IsValueType || type.IsAttribute() || type.IsPrimitiveType() || type.IsStratisType() || type.IsWhitelistedArrayType())
             {
                 return NoDiagnostic;
             }
@@ -323,7 +323,7 @@ namespace Stratis.CodeAnalysis.Cs
             var typename = type.ToDisplayString();
             Debug("Property reference {0} at {1}", member.ToDisplayString(), propReference.Syntax.GetLineLocation());
 
-            if (type.IsEnum() || type.IsPrimitiveType() || type.IsSmartContract() || type.IsStratisType() || type.IsUserStruct())
+            if (type.IsEnum() || type.IsPrimitiveType() || type.IsSmartContract() || type.IsStratisType() || type.IsUserStruct() || type.TypeKind == TypeKind.Interface)
             {
                 return NoDiagnostic;
             }
@@ -513,6 +513,8 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(long),
             typeof(ulong),
             typeof(string),
+            typeof(UInt128),
+            typeof(UInt256),
         };
 
         internal static readonly string[] UnboxedPrimitiveTypeNames =
@@ -539,15 +541,15 @@ namespace Stratis.CodeAnalysis.Cs
             typeof(uint[]),
             typeof(long[]),
             typeof(ulong[]),
-            typeof(string[])
+            typeof(string[]),
+            typeof(UInt128[]),
+            typeof(UInt256[]),
         };
 
         internal static readonly string[] PrimitiveArrayTypeNames = UnboxedPrimitiveTypeNames.Skip(1).Select(t => t + "[]").Concat(BoxedPrimitiveArrayTypes.Select(t => t.FullName)).ToArray();
 
         internal static readonly Type[] SmartContractTypes =
         {
-            typeof(UInt128),
-            typeof(UInt256),
             typeof(Address),
             typeof(Block),
             typeof(IBlock),
@@ -563,8 +565,6 @@ namespace Stratis.CodeAnalysis.Cs
 
         internal static readonly Type[] SmartContractArrayTypes =
         {
-            typeof(UInt128[]),
-            typeof(UInt256[]),
             typeof(Address[]),
             typeof(Block[]),
             typeof(IBlock[]),
@@ -603,7 +603,7 @@ namespace Stratis.CodeAnalysis.Cs
             { "System.Array", WhitelistedArrayMethodNames}
         };
 
-        internal static string[] WhitelistedMethodReturnTypeNames = PrimitiveTypeNames.Concat(new[] { typeof(byte[]).FullName, "byte[]", typeof(Address).FullName }).ToArray();
+        internal static string[] WhitelistedMethodReturnTypeNames = PrimitiveTypeNames.Concat(new[] { typeof(byte[]).FullName, "byte[]", typeof(UInt128[]).FullName, typeof(UInt256[]).FullName, typeof(Address).FullName }).ToArray();
 
         internal static readonly string[] WhitelistedNamespaces = { "System", "Stratis.SmartContracts", "Stratis.SmartContracts.Standards" };
 
