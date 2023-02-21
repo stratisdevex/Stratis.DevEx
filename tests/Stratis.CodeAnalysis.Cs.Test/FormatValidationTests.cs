@@ -17,7 +17,7 @@ namespace Stratis.CodeAnalysis.Cs.Test
         [TestMethod]
         public async Task NamespaceDeclNotAllowedTest()
         {
-            var code = 
+            var code =
 @"  namespace ns1 {
         using Stratis.SmartContracts;
         public class Player : SmartContract
@@ -47,7 +47,7 @@ namespace Stratis.CodeAnalysis.Cs.Test
         }
     }
 ";
-            await VerifyCS.VerifyAnalyzerAsync(code, new DiagnosticResult[] {});
+            await VerifyCS.VerifyAnalyzerAsync(code, new DiagnosticResult[] { });
         }
 
         [TestMethod]
@@ -88,6 +88,32 @@ namespace Stratis.CodeAnalysis.Cs.Test
     }
 ";
             await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0014").WithSpan(9, 16, 9, 24).WithArguments("string[]"));
+        }
+
+
+        [TestMethod]
+        public async Task InvalidClassTypeDeclNotAllowedTest()
+        {
+            var code =
+    @"  using Stratis.SmartContracts;
+    public class Player 
+    {
+        public Player(ISmartContractState state, Address player, Address opponent, string gameName){}
+    }
+
+    public class Player2 : SmartContract
+    {
+        public Player2(ISmartContractState state, Address player, Address opponent, string gameName)
+            : base(state) {}
+    }
+
+    public class Player3 : Player2
+    {
+        public Player3(ISmartContractState state, Address player, Address opponent, string gameName)
+            : base(state, player, opponent, gameName) {}
+    }
+";
+            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0003").WithSpan(2, 18, 2, 24).WithArguments("Player"));
         }
     }
 }

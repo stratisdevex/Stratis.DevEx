@@ -19,9 +19,11 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static bool IsEnum(this ITypeSymbol t) => t != null && t.SpecialType == SpecialType.System_Enum;
 
-        public static bool IsUserStruct(this ITypeSymbol t) => t != null && t.SpecialType == SpecialType.None && t.IsValueType; 
+        public static bool IsUserStruct(this ITypeSymbol t) => t != null && t.SpecialType == SpecialType.None && t.IsValueType;
 
-        public static bool IsSmartContract(this ITypeSymbol t) => t != null && t.ToDisplayString() == "Stratis.SmartContracts.SmartContract" || (t.BaseType != null && (t.BaseType.IsSmartContract()));
+        public static ITypeSymbol GetRootType(this ITypeSymbol t) => t.BaseType == null || t.BaseType.IsObject() ? t : GetRootType(t.BaseType);
+
+        public static bool IsSmartContract(this ITypeSymbol t) => t != null && (t.ToDisplayString() == "Stratis.SmartContracts.SmartContract" || (t.GetRootType().ToDisplayString() == "Stratis.SmartContracts.SmartContract"));
 
         public static bool IsPrimitiveType(this ITypeSymbol t) => Validator.PrimitiveTypeNames.Contains(t.ToDisplayString());
 

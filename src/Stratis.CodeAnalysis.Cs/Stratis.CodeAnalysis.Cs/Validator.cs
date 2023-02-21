@@ -95,9 +95,9 @@ namespace Stratis.CodeAnalysis.Cs
         // SC0020 A smart contract class or struct cannot contain nested types.
         public static Diagnostic AnalyzeClassDecl(ClassDeclarationSyntax node, SemanticModel model)
         {
-            var classSymbol = model.GetDeclaredSymbol(node) as ITypeSymbol;
+            var type = model.GetDeclaredSymbol(node) as ITypeSymbol;
             var identifier = node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken));
-            Debug("Class {0} declared at {1}.", classSymbol.ToDisplayString(), node.GetLineLocation());
+            Debug("Class {0} declared at {1}.", type.ToDisplayString(), node.GetLineLocation());
             var parent = node.Parent;
             if (parent is ClassDeclarationSyntax clp)
             {
@@ -107,9 +107,9 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return CreateDiagnostic("SC0020", node.GetLocation(), "struct", sp.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)), identifier.Text);
             }
-            else if (classSymbol.BaseType is null || classSymbol.BaseType.ToDisplayString() != "Stratis.SmartContracts.SmartContract")
+            else if (!type.IsSmartContract())
             {
-                return CreateDiagnostic("SC0003", node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).GetLocation(), classSymbol.Name);
+                return CreateDiagnostic("SC0003", node.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).GetLocation(), type.Name);
             }
             else
             {
