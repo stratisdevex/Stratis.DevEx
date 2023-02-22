@@ -13,6 +13,8 @@
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Operations;
 
+    using SharpConfig;
+
     using Stratis.DevEx;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
@@ -28,60 +30,75 @@
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             
-            #pragma warning disable RS1012, RS1013
             context.RegisterCompilationStartAction(ctx =>
             {
                 Runtime.Debug("Compilation start...");
-                if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path == "stratisdev.cfg"))
+                var cfg = CreateDefaultAnalyzerConfig();
+                if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path.EndsWith("stratisdev.cfg")))
                 {
-                    var cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path == "stratisdev.cfg").Path;
+                    var cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path.EndsWith("stratisdev.cfg")).Path;
                     Runtime.Info("Loading analyzer configuration from {0}...", cfgFile);
-                    //var cfg = Runtime.LoadConfig(cfgFile);
-                    //Runtime.BindConfig(Runtime.GlobalConfig, cfg);
+                    cfg = Runtime.LoadConfig(cfgFile);
+                }
+                else
+                {
+                    Runtime.Info("No analyzer configuration file found, using default configuration...");
+                }
+                if (!Validator.CompilationConfiguration.ContainsKey(ctx.Compilation))
+                {
+                    Validator.CompilationConfiguration.Add(ctx.Compilation, cfg);
+                }
+                else
+                {
+                    Validator.CompilationConfiguration[ctx.Compilation] = cfg;
+                }
+
+                if (AnalyzerSetting(ctx.Compilation, "Analyzer", "Enabled", true))
+                {
+                    #region Smart contract validation
+                    //ctx.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
+                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
+                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
+                    ctx.RegisterSyntaxNodeAction(ctx => AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
+                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeStructDecl((StructDeclarationSyntax)ctx.Node, ctx), SyntaxKind.StructDeclaration);
+                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeConstructorDecl((ConstructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ConstructorDeclaration);
+                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeFieldDecl((FieldDeclarationSyntax)ctx.Node, ctx), SyntaxKind.FieldDeclaration);
+                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeMethodDecl((MethodDeclarationSyntax)ctx.Node, ctx), SyntaxKind.MethodDeclaration);
+                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeDestructorDecl((DestructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.DestructorDeclaration);
+                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeTryStmt((TryStatementSyntax)ctx.Node, ctx), SyntaxKind.TryStatement);
+
+                    ctx.RegisterOperationAction(cctx =>
+                    {
+                        switch (cctx.Operation)
+                        {
+                            case IObjectCreationOperation objectCreation:
+                                Validator.AnalyzeObjectCreation(objectCreation, cctx);
+                                break;
+
+                            case IPropertyReferenceOperation propReference:
+                                Validator.AnalyzePropertyReference(propReference, cctx);
+                                break;
+
+                            case IInvocationOperation methodInvocation:
+                                Validator.AnalyzeMethodInvocation(methodInvocation, cctx);
+                                Validator.AnalyzeAssertConditionConstant(methodInvocation, cctx);
+                                Validator.AnalyzeAssertMessageNotProvided(methodInvocation, cctx);
+                                Validator.AnalyzeAssertMessageEmpty(methodInvocation, cctx);
+                                break;
+
+                            case IVariableDeclaratorOperation variableDeclarator:
+                                Validator.AnalyzeVariableDeclaration(variableDeclarator, cctx);
+                                break;
+                        }
+                    }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
+                    #endregion
+                }
+                else
+                {
+                    Runtime.Info("Analyzer disabled in configuration file...not registering analyzer actions.");
                 }
             });
-            #pragma warning restore RS1012
-
-            #region Smart contract validation
-            context.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
-
-            context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
-            context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeStructDecl((StructDeclarationSyntax)ctx.Node, ctx), SyntaxKind.StructDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeConstructorDecl((ConstructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ConstructorDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeFieldDecl((FieldDeclarationSyntax)ctx.Node, ctx), SyntaxKind.FieldDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeMethodDecl((MethodDeclarationSyntax)ctx.Node, ctx), SyntaxKind.MethodDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeDestructorDecl((DestructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.DestructorDeclaration);
-            context.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeTryStmt((TryStatementSyntax)ctx.Node, ctx), SyntaxKind.TryStatement);
-            
-            context.RegisterOperationAction(ctx =>
-            {
-                switch (ctx.Operation)
-                {
-                    case IObjectCreationOperation objectCreation:
-                        Validator.AnalyzeObjectCreation(objectCreation, ctx);
-                        break;
-
-                    case IPropertyReferenceOperation propReference:
-                        Validator.AnalyzePropertyReference(propReference, ctx);
-                        break;
-
-                    case IInvocationOperation methodInvocation:
-                        Validator.AnalyzeMethodInvocation(methodInvocation, ctx);
-                        Validator.AnalyzeAssertConditionConstant(methodInvocation, ctx);
-                        Validator.AnalyzeAssertMessageNotProvided(methodInvocation, ctx);
-                        Validator.AnalyzeAssertMessageEmpty(methodInvocation, ctx);
-                        break;
-                        
-                    case IVariableDeclaratorOperation variableDeclarator:
-                        Validator.AnalyzeVariableDeclaration(variableDeclarator, ctx);
-                        break;
-                }
-            }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
         }
-        #endregion
-
         #endregion
 
         #region Methods
@@ -122,6 +139,21 @@
         }
         #endregion
 
+        #region Configuration
+        public static Configuration CreateDefaultAnalyzerConfig()
+        {
+            var cfg = new Configuration();
+            var analyzer = cfg.Add("Analyzer");
+            analyzer.Add("Debug", false);
+            return cfg;
+        }
+
+        public static T AnalyzerSetting<T>(Compilation c, string section, string setting, T defaultval, bool setDefault = false)
+        {
+            var cfg = Validator.CompilationConfiguration[c];
+            return cfg[section][setting].IsEmpty ? defaultval! : cfg[section][setting].GetValueOrDefault(defaultval!, setDefault);
+        }
+        #endregion
         #endregion
 
         #region Fields

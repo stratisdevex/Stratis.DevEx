@@ -9,6 +9,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
+using SharpConfig;
+
 using Stratis.SmartContracts;
 using Stratis.DevEx;
 
@@ -611,7 +613,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         internal static string[] AllowedAssemblyReferencesNames;
 
-        
+        internal static Dictionary<Compilation, Configuration> CompilationConfiguration = new();
         /// <summary>
         /// The set of Assemblies that a <see cref="SmartContract"/> is required to reference
         /// </summary>
