@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Pipes" Version="2.0.47" />
+    <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
   </ItemGroup>
 
 </Project>

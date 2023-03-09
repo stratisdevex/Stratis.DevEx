@@ -2,21 +2,22 @@
 using Eto.Forms;
 using System;
 using System.Threading.Tasks;
-using H.Pipes;
 namespace Stratis.DevEx.Gui
 {
-    class Program
+    class Program : Runtime
     {
         [STAThread]
         static void Main(string[] args)
         {
             
-            new Application(Eto.Platform.Detect).Run(new MainForm());
+            var app = new Application(Eto.Platform.Detect);
+            app.Initialized += (sender, e) => app.AsyncInvoke(async () => await Foo());
+            app.Run(new MainForm());
         }
 
         static async Task Foo()
         {
-            await using var server = new PipeServer<string>("ll");
+            await Task.CompletedTask;
         }
     }
 }
