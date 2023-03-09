@@ -318,4 +318,13 @@
   <data name="SC0021_Title" xml:space="preserve">
     <value>A smart contract struct cannot contain a method.</value>
   </data>
+  <data name="SC0022_Description" xml:space="preserve">
+    <value>A smart contract class cannot declare more than one constructor.</value>
+  </data>
+  <data name="SC0022_MessageFormat" xml:space="preserve">
+    <value>The smart contract class {0) declares more than one constructor.</value>
+  </data>
+  <data name="SC0022_Title" xml:space="preserve">
+    <value>A smart contract class cannot declare more than one constructor.</value>
+  </data>
 </root>

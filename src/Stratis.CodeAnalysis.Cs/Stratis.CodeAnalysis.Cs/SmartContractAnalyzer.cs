@@ -2,8 +2,6 @@
 {
     using System;
     using System.Diagnostics;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     
@@ -26,10 +24,9 @@
         public override void Initialize(AnalysisContext context)
         {
             Runtime.Initialize("Stratis.CodeAnalysis.Cs", "ROSLYN");
-            attrCount = 0;
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-            
+            attrCount = 0;
             context.RegisterCompilationStartAction(ctx =>
             {
                 Runtime.Debug("Compilation start...");

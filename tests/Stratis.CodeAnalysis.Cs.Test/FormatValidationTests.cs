@@ -114,7 +114,20 @@ namespace Stratis.CodeAnalysis.Cs.Test
     }
 ";
             await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0003").WithSpan(2, 18, 2, 24).WithArguments("Player"));
+
+            code =
+   @"  using Stratis.SmartContracts;
+    public class Player 
+    {
+        public Player(ISmartContractState state, Address player, Address opponent, string gameName){}
+        
+        public Player(ISmartContractState state, Address player){}
+    }
+";
+            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0022").WithSpan(2, 5, 7, 6).WithArguments("Player"));
         }
+
+
     }
 }
 
