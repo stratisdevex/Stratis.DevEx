@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-namespace Stratis.DevEx
+namespace Stratis.DevEx.Pipes
 {
     public interface IAsyncDisposable
     {

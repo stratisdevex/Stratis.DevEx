@@ -1,4 +1,4 @@
-﻿namespace H.Pipes
+﻿namespace Stratis.DevEx.Pipes
 {
     using System;
     using System.Collections.Generic;
@@ -65,7 +65,7 @@
             }
         }
 
-        private global::H.Pipes.PipeWatcher.CreatedEventArgs OnCreated(global::H.Pipes.PipeWatcher.CreatedEventArgs args)
+        private PipeWatcher.CreatedEventArgs OnCreated(PipeWatcher.CreatedEventArgs args)
         {
             Created?.Invoke(this, args);
 
@@ -75,10 +75,10 @@
         /// <summary>
         /// A helper method to raise the Created event.
         /// </summary>
-        private global::H.Pipes.PipeWatcher.CreatedEventArgs OnCreated(
+        private PipeWatcher.CreatedEventArgs OnCreated(
             string name)
         {
-            var args = new global::H.Pipes.PipeWatcher.CreatedEventArgs(name);
+            var args = new PipeWatcher.CreatedEventArgs(name);
             Created?.Invoke(this, args);
 
             return args;
@@ -87,7 +87,7 @@
         /// <summary>
         /// A helper method to raise the Deleted event.
         /// </summary>
-        private global::H.Pipes.PipeWatcher.DeletedEventArgs OnDeleted(global::H.Pipes.PipeWatcher.DeletedEventArgs args)
+        private PipeWatcher.DeletedEventArgs OnDeleted(PipeWatcher.DeletedEventArgs args)
         {
             Deleted?.Invoke(this, args);
 
@@ -97,10 +97,10 @@
         /// <summary>
         /// A helper method to raise the Deleted event.
         /// </summary>
-        private global::H.Pipes.PipeWatcher.DeletedEventArgs OnDeleted(
+        private PipeWatcher.DeletedEventArgs OnDeleted(
             string name)
         {
-            var args = new global::H.Pipes.PipeWatcher.DeletedEventArgs(name);
+            var args = new PipeWatcher.DeletedEventArgs(name);
             Deleted?.Invoke(this, args);
 
             return args;
@@ -109,7 +109,7 @@
         /// <summary>
         /// A helper method to raise the ExceptionOccurred event.
         /// </summary>
-        private global::H.Pipes.PipeWatcher.ExceptionOccurredEventArgs OnExceptionOccurred(global::H.Pipes.PipeWatcher.ExceptionOccurredEventArgs args)
+        private PipeWatcher.ExceptionOccurredEventArgs OnExceptionOccurred(PipeWatcher.ExceptionOccurredEventArgs args)
         {
             ExceptionOccurred?.Invoke(this, args);
 
@@ -119,10 +119,10 @@
         /// <summary>
         /// A helper method to raise the ExceptionOccurred event.
         /// </summary>
-        private global::H.Pipes.PipeWatcher.ExceptionOccurredEventArgs OnExceptionOccurred(
+        private PipeWatcher.ExceptionOccurredEventArgs OnExceptionOccurred(
             global::System.Exception exception)
         {
-            var args = new global::H.Pipes.PipeWatcher.ExceptionOccurredEventArgs(exception);
+            var args = new PipeWatcher.ExceptionOccurredEventArgs(exception);
             ExceptionOccurred?.Invoke(this, args);
 
             return args;
@@ -210,11 +210,11 @@
         /// <summary>
         /// When any pipe created.
         /// </summary>
-        public event global::System.EventHandler<global::H.Pipes.PipeWatcher.CreatedEventArgs>? Created;
+        public event EventHandler<CreatedEventArgs>? Created;
 
-        public event global::System.EventHandler<global::H.Pipes.PipeWatcher.DeletedEventArgs>? Deleted;
+        public event EventHandler<DeletedEventArgs>? Deleted;
 
-        public event global::System.EventHandler<global::H.Pipes.PipeWatcher.ExceptionOccurredEventArgs>? ExceptionOccurred;
+        public event EventHandler<ExceptionOccurredEventArgs>? ExceptionOccurred;
 
         /// <summary>
         /// 
