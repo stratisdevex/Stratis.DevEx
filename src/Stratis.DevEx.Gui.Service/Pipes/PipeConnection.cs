@@ -5,7 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using Stratis.DevEx.Formatters;
+    using Stratis.DevEx.Pipes.Formatters;
     using Stratis.DevEx.Pipes.Args;
     using Stratis.DevEx.Pipes.Utilities;
     using Stratis.DevEx.Pipes.IO;

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Stratis.DevEx.Formatters
+namespace Stratis.DevEx.Pipes.Formatters
 {
 
     /// <summary>

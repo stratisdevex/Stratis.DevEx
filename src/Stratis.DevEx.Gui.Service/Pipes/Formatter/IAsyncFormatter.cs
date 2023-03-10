@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Stratis.DevEx.Formatters
+namespace Stratis.DevEx.Pipes.Formatters
 {
 
     /// <summary>
