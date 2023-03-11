@@ -12,6 +12,9 @@ namespace Stratis.DevEx.Gui
         [Option("debug", Required = false, HelpText = "Enable debug mode.")]
         public bool Debug { get; set; }
 
+        [Option("no-gui", Required = false, HelpText = "Disable GUI.")]
+        public bool NoGui { get; set; }
+
         [Option("options", Required = false, HelpText = "Any additional options for the selected operation.")]
         public string AdditionalOptions { get; set; } = String.Empty;
 
