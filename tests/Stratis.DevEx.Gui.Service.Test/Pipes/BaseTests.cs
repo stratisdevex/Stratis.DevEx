@@ -9,13 +9,17 @@ using Stratis.DevEx;
 using Stratis.DevEx.Pipes;
 using Stratis.DevEx.Pipes.Formatters;
 
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Stratis.DevEx.Gui.Service.Test.Pipes
 {
-
     public class BaseTests
     {
+        static BaseTests()
+        {
+            Runtime.Initialize("Stratis.DevEx.Gui", "test");
+        }
+
         public static async Task DataTestAsync<T>(IPipeServer<T> server, IPipeClient<T> client, List<T> values, Func<T?, string>? hashFunc = null, CancellationToken cancellationToken = default)
         {
             Runtime.Info("Setting up test...");
@@ -96,11 +100,11 @@ namespace Stratis.DevEx.Gui.Service.Test.Pipes
 
                 if (hashFunc != null)
                 {
-                    Assert.NotNull(actualHash);
+                    Assert.IsNotNull(actualHash);
                 }
 
-                Assert.Equal(expectedHash, actualHash);
-                Assert.False(clientDisconnected, "Server should not disconnect the client for explicitly sending zero-length data");
+                Assert.AreEqual(expectedHash, actualHash);
+                Assert.IsFalse(clientDisconnected, "Server should not disconnect the client for explicitly sending zero-length data");
 
                 Runtime.Info("---");
 

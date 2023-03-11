@@ -9,23 +9,23 @@ using System.Threading.Tasks;
 using Stratis.DevEx.Pipes;
 using Stratis.DevEx.Pipes.Formatters;
 
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Stratis.DevEx.Gui.Service.Test.Pipes
 {
+    [TestClass]
     public class DataTests
     {
-        [Fact]
+        [TestMethod]
         public async Task NullTest()
         {
             var values = new List<string?> { null };
             static string HashFunc(string? value) => value ?? "null";
-
             await BaseTests.DataSingleTestAsync(values, HashFunc);
             
         }
         
-        [Fact]
+        [TestMethod]
         public async Task EmptyArrayTest()
         {
             var values = new List<byte[]?> { Array.Empty<byte>() };
@@ -44,7 +44,7 @@ namespace Stratis.DevEx.Gui.Service.Test.Pipes
             //await BaseTests.DataSingleTestAsync(values, HashFunc, new CerasFormatter());
         }
 
-        [Fact]
+        [TestMethod]
         public async Task EmptyArrayParallelTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
@@ -68,109 +68,109 @@ namespace Stratis.DevEx.Gui.Service.Test.Pipes
             await Task.WhenAll(tasks);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task TestEmptyMessageDoesNotDisconnectClient()
         {
             await BaseTests.BinaryDataTestAsync(0);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task TestMessageSize1B()
         {
             await BaseTests.BinaryDataTestAsync(1);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task TestMessageSize2B()
         {
             await BaseTests.BinaryDataTestAsync(2);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task TestMessageSize3B()
         {
             await BaseTests.BinaryDataTestAsync(3);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task TestMessageSize9B()
         {
             await BaseTests.BinaryDataTestAsync(9);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task TestMessageSize33B()
         {
             await BaseTests.BinaryDataTestAsync(33);
         }
 
-        //[Fact]
+        //[TestMethod]
         //public async Task TestMessageSize1Kx3_NewtonsoftJson()
         //{
         //    await BaseTests.BinaryDataTestAsync(1025, 3, new NewtonsoftJsonFormatter());
         //}
 
-        //[Fact]
+        //[TestMethod]
         //public async Task TestMessageSize1Kx3_SystemTextJson()
         //{
         //    await BaseTests.BinaryDataTestAsync(1025, 3, new SystemTextJsonFormatter());
         //}
 
-        //[Fact]
+        //[TestMethod]
         //public async Task TestMessageSize1Kx3_Ceras()
         //{
         //    await BaseTests.BinaryDataTestAsync(1025, 3, new CerasFormatter());
         //}
 
-        [Fact]
+        [TestMethod]
         public async Task TestMessageSize129B()
         {
             await BaseTests.BinaryDataTestAsync(129);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task TestMessageSize1K()
         {
             await BaseTests.BinaryDataTestAsync(1025);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task TestMessageSize1M()
         {
             await BaseTests.BinaryDataTestAsync(1024 * 1024 + 1);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task Single_TestEmptyMessageDoesNotDisconnectClient()
         {
             await BaseTests.BinaryDataSingleTestAsync(0);
         }
 
-        [Fact]
+        [TestMethod]
         public async Task Single_TestMessageSize1B()
         {
             await BaseTests.BinaryDataSingleTestAsync(1);
         }
 
-        //[Fact]
+        //[TestMethod]
         //public async Task Single_TestMessageSize1Kx3_NewtonsoftJson()
         //{
         //    await BaseTests.BinaryDataSingleTestAsync(1025, 3, new NewtonsoftJsonFormatter());
         //}
 
-        //[Fact]
+        //[TestMethod]
         //public async Task Single_TestMessageSize1Kx3_SystemTextJson()
         ///{
         //    await BaseTests.BinaryDataSingleTestAsync(1025, 3, new SystemTextJsonFormatter());
         //}
 
-        //[Fact]
+        //[TestMethod]
         //public async Task Single_TestMessageSize1Kx3_Ceras()
         //{
         //    await BaseTests.BinaryDataSingleTestAsync(1025, 3, new CerasFormatter());
         //}
 
-        [Fact]
+        [TestMethod]
         public async Task TypeTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(1));
@@ -197,7 +197,7 @@ namespace Stratis.DevEx.Gui.Service.Test.Pipes
 
             await client.WriteAsync(new Exception("Hello. It's server message"), cancellationTokenSource.Token);
 
-            Assert.True(await completionSource.Task);
+            Assert.IsTrue(await completionSource.Task);
         }
         
     }
