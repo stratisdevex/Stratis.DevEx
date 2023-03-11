@@ -24,7 +24,7 @@
     <ProjectReference Include="..\Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj" />
   </ItemGroup>
 
-  <Target Name="SetOutputToExe" BeforeTargets="BeforeBuild">
+  <Target Name="SetOutputToExe" BeforeTargets="BeforeBuild" Condition="'$(Configuration)'=='Debug'">
     <PropertyGroup>
       <OutputType>Exe</OutputType>
     </PropertyGroup>
