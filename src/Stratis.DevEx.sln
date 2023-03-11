@@ -50,9 +50,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.Gui", "Stratis.DevEx.Gui\Stratis.DevEx.Gui.csproj", "{73CDE663-0364-4EBB-8CD2-21026E201992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.DevEx.Gui.Service", "Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj", "{A38EDABA-2CE2-41CF-A37A-B7D5CB09EBC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.Gui.Service", "Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj", "{A38EDABA-2CE2-41CF-A37A-B7D5CB09EBC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.DevEx.Gui.Service.Test", "..\tests\Stratis.DevEx.Gui.Service.Test\Stratis.DevEx.Gui.Service.Test.csproj", "{2A278AEF-1A96-448D-B7EF-FC2CCF061CDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.Gui.Service.Test", "..\tests\Stratis.DevEx.Gui.Service.Test\Stratis.DevEx.Gui.Service.Test.csproj", "{2A278AEF-1A96-448D-B7EF-FC2CCF061CDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
