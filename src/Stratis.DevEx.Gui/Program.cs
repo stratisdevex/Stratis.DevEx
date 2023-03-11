@@ -14,6 +14,7 @@ namespace Stratis.DevEx.Gui
         [STAThread]
         static void Main(string[] args)
         {
+            Runtime.Initialize("Stratis.DevEx.Gui", "APP", true);
             Application = new Application(Eto.Platform.Detect);
             PipeServer = new PipeServer<Message>("stratis-devexgui");
             Application.Initialized += (sender, e) => Application.AsyncInvoke(async () => await PipeServer.StartAsync());

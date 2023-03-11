@@ -13,8 +13,10 @@
     <BuildPlatform>Windows</BuildPlatform>
   </PropertyGroup>
 
+  
   <ItemGroup>
     <PackageReference Include="Eto.Platform.Windows" Version="2.7.1" />
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,4 +24,10 @@
     <ProjectReference Include="..\Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj" />
   </ItemGroup>
 
+  <Target Name="SetOutputToExe" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <OutputType>Exe</OutputType>
+    </PropertyGroup>
+  </Target>
+   
 </Project>

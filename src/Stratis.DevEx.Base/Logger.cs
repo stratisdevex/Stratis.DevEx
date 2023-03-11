@@ -121,7 +121,7 @@ namespace Stratis.DevEx
     #region NLog file logger
     public class FileLogger : Logger
     {
-        public FileLogger(string logFileName, bool debug = false, string logname = "DevEx") : base()
+        public FileLogger(string logFileName, bool debug = false, string logname = "DevEx", bool logToConsole = false) : base()
         {
             var config = new LoggingConfiguration();
             var logfile = new NLog.Targets.FileTarget("logfile")
@@ -141,6 +141,24 @@ namespace Stratis.DevEx
             {
                 config.Variables["logLevel"] = "Debug";
             }
+            var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole");
+            if (logToConsole)
+            {
+                config.AddTarget(logconsole);
+                config.AddRule(new LoggingRule("*", LogLevel.Info, logconsole));
+                config.AddRule(new LoggingRule("*", LogLevel.Warn, logconsole));
+                config.AddRule(new LoggingRule("*", LogLevel.Error, logconsole));
+                config.AddRule(new LoggingRule("*", LogLevel.Fatal, logconsole));
+                config.AddRule(new LoggingRule("*", LogLevel.Debug, logconsole));
+            }
+            
+            /*
+            var highlightRule = new NLog.Targets.ConsoleRowHighlightingRule();
+            highlightRule.Condition = NLog.Conditions.ConditionParser.ParseExpression("level == LogLevel.Info");
+            highlightRule.ForegroundColor = NLog.Targets.ConsoleOutputColor.Green;
+            logconsole.RowHighlightingRules.Add(highlightRule);
+            */
+            
             LogManager.Configuration = config;
             this.logFileName = logFileName;
             this.logger = LogManager.GetLogger(logname);

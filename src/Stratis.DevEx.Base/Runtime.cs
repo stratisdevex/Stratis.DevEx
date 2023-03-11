@@ -70,7 +70,7 @@ namespace Stratis.DevEx
         #endregion
 
         #region Methods
-        public static void Initialize(string toolname, string logname)
+        public static void Initialize(string toolname, string logname, bool logToConsole = false)
         {
             lock (__lock)
             {
@@ -86,7 +86,7 @@ namespace Stratis.DevEx
                     ToolName = toolname;
                     LogName = logname;
                     var fulllogfilename = StratisDevDir.CombinePath($"{ToolName}.{SessionId}.log");
-                    Logger = new FileLogger(fulllogfilename, false, LogName); ;
+                    Logger = new FileLogger(fulllogfilename, false, LogName, logToConsole);
                     Info("{0} initialized from entry assembly {1} with log file {2}...", ToolName, EntryAssembly?.GetName().FullName ?? "(none)", fulllogfilename); ;
                     var globalCfgFile = StratisDevDir.CombinePath(ToolName + ".cfg");
                     if (!File.Exists(globalCfgFile))
