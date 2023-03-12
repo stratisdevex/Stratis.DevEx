@@ -24,6 +24,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs.Test", "..\tests\Stratis.CodeAnalysis.Cs.Test\Stratis.CodeAnalysis.Cs.Test.csproj", "{58238C93-CD2D-4916-B44A-B280EB3140E7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test Projects", "Test Projects", "{3D87B9FF-6152-47D3-BB4B-F9A02960B89E}"
+	ProjectSection(SolutionItems) = preProject
+		..\tests\testprojects\Stratis.CodeAnalysis.Cs.TestProject1\stratisdev.cfg = ..\tests\testprojects\Stratis.CodeAnalysis.Cs.TestProject1\stratisdev.cfg
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs.TestProject1", "..\tests\testprojects\Stratis.CodeAnalysis.Cs.TestProject1\Stratis.CodeAnalysis.Cs.TestProject1.csproj", "{9C1A30FD-FF32-47E0-8FBA-8C994AC66553}"
 EndProject
@@ -53,6 +56,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.Gui.Service", "Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj", "{A38EDABA-2CE2-41CF-A37A-B7D5CB09EBC0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.Gui.Service.Test", "..\tests\Stratis.DevEx.Gui.Service.Test\Stratis.DevEx.Gui.Service.Test.csproj", "{2A278AEF-1A96-448D-B7EF-FC2CCF061CDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.CodeAnalysis.Cs.GuiTestProject1", "..\tests\testprojects\Stratis.CodeAnalysis.Cs.GuiTestProject1\Stratis.CodeAnalysis.Cs.GuiTestProject1.csproj", "{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -232,6 +237,18 @@ Global
 		{2A278AEF-1A96-448D-B7EF-FC2CCF061CDF}.Release|arm64.Build.0 = Release|Any CPU
 		{2A278AEF-1A96-448D-B7EF-FC2CCF061CDF}.Release|x86.ActiveCfg = Release|Any CPU
 		{2A278AEF-1A96-448D-B7EF-FC2CCF061CDF}.Release|x86.Build.0 = Release|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Debug|arm64.Build.0 = Debug|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Debug|x86.Build.0 = Debug|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Release|arm64.ActiveCfg = Release|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Release|arm64.Build.0 = Release|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Release|x86.ActiveCfg = Release|Any CPU
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -252,6 +269,7 @@ Global
 		{73CDE663-0364-4EBB-8CD2-21026E201992} = {0A59A8D2-498C-4475-A722-21F7ACB87069}
 		{A38EDABA-2CE2-41CF-A37A-B7D5CB09EBC0} = {8DC77034-0F3C-40E6-A352-B157BCB85462}
 		{2A278AEF-1A96-448D-B7EF-FC2CCF061CDF} = {86A6FC48-CF63-4A0F-A842-A4B96CAF4EDF}
+		{36CD0E5D-C7E9-4B85-902B-D6C7AFABDF66} = {3D87B9FF-6152-47D3-BB4B-F9A02960B89E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {602325FF-1BC0-4A57-8252-3F0471EA4151}

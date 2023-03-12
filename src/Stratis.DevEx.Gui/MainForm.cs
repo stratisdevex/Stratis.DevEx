@@ -25,8 +25,8 @@ namespace Stratis.DevEx.Gui
             var clickMe = new Command { MenuText = "Click Me!", ToolBarText = "Click Me!" };
             clickMe.Executed += (sender, e) => MessageBox.Show(this, "I was clicked!");
 
-            var quitCommand = new Command { MenuText = "Quit", Shortcut = Application.Instance.CommonModifier | Keys.Q };
-            quitCommand.Executed += (sender, e) => Application.Instance.Quit();
+            var quitCommand = new Command { MenuText = "Quit", Shortcut = GuiApp.Instance.CommonModifier | Keys.Q };
+            quitCommand.Executed += (sender, e) => GuiApp.Instance.Quit();
 
             var aboutCommand = new Command { MenuText = "About..." };
             aboutCommand.Executed += (sender, e) => new AboutDialog().ShowDialog(this);

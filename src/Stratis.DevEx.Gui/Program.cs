@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
 
-using Stratis.DevEx.GuiMessages;
 using Stratis.DevEx.Pipes;
 
 namespace Stratis.DevEx.Gui
@@ -24,49 +23,45 @@ namespace Stratis.DevEx.Gui
             {
                 if (!GlobalSetting("General", "Debug", false))
                 {
-                    Info("Debug mode enabled.");
                     GlobalConfig["General"]["Debug"].SetValue(true);
                     Logger.SetLogLevelDebug();
+                    Info("Debug mode enabled.");
                 }
             }
 
-            PipeServer = new PipeServer<Message>("stratis-devexgui");
+            PipeServer = new PipeServer<Message>("stratis_devexgui");
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
 
             if (!args.Contains("--no-gui"))
             {
                 Info("Starting GUI...");
-                Application = new Application(Eto.Platform.Detect);
-                Application.Initialized += (sender, e) => Application.AsyncInvoke(async () => await PipeServer.StartAsync());
-                Application.Terminating += (sender, e) => PipeServer.Dispose();
-                Application.Run(new MainForm());
+                GuiApp = new GuiApp(Eto.Platform.Detect);
+                GuiApp.Initialized += (sender, e) => GuiApp.AsyncInvoke(async () => await PipeServer.StartAsync());
+                GuiApp.Terminating += (sender, e) => PipeServer.Dispose();
+                GuiApp.Run(new MainForm());
             }
             else
             {
-                Info("Not starting GUI. Press Ctrl-C to exit...");
+                PipeServer.StartAsync().Wait();
                 Console.CancelKeyPress += (sender, e) =>
                 {
                     Info("Shutting down...");
                     PipeServer.Dispose();
                     Environment.Exit(0);
                 };
+                Info("Not starting GUI. Press Ctrl-C to exit...");
                 while (true);
             }
 
             
             
         }
-
-        private static void PipeServer_ClientConnected(object sender, Pipes.Args.ConnectionEventArgs<Message> e)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
 
         #endregion
 
         #region Properties
-        public static Application? Application { get; private set; }
+        public static GuiApp? GuiApp { get; private set; }
         public static PipeServer<Message>? PipeServer { get; private set; }
         #endregion
     }

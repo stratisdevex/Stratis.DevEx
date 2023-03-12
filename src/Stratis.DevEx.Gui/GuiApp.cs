@@ -9,13 +9,13 @@ using Eto.Forms;
 
 namespace Stratis.DevEx.Gui
 {
-    public class Application : Eto.Forms.Application
+    public class GuiApp : Application
     {
         #region Constructors
-        public Application()
+        public GuiApp()
             : this(Platform.Detect) {}
 
-        public Application(Platform platform)
+        public GuiApp(Platform platform)
             : base(platform)
         {
         }

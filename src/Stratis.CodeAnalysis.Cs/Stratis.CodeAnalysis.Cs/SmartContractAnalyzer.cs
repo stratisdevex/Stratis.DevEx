@@ -14,6 +14,7 @@
     using SharpConfig;
 
     using Stratis.DevEx;
+    using Stratis.DevEx.Pipes;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class SmartContractAnalyzer : DiagnosticAnalyzer
@@ -54,6 +55,11 @@
                 {
                     #region Smart contract validation
                     //ctx.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
+                    if (AnalyzerSetting(ctx.Compilation, "Gui", "Enabled", false))
+                    {
+                        Runtime.Info("GUI enabled for compilation, registering action to send compilation message...");
+                        ctx.RegisterCompilationEndAction(cctx => SendGuiMessage(cctx.Compilation));
+                    }
                     ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
                     ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
                     ctx.RegisterSyntaxNodeAction(ctx => AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
@@ -151,10 +157,33 @@
             return cfg[section][setting].IsEmpty ? defaultval! : cfg[section][setting].GetValueOrDefault(defaultval!, setDefault);
         }
         #endregion
+
+        #region Gui
+        protected void SendGuiMessage(Compilation c)
+        {
+            if (this.pipeClient is null)
+            {
+                Runtime.Info("Creating GUI pipe client...");
+                try
+                {
+                    pipeClient = new PipeClient<Message>("stratis_devexgui");
+                }
+                catch (Exception e)
+                {
+                    Runtime.Error(e, "Error creating GUI pipe client.");
+                    return;
+                }
+            }
+            Runtime.Info("Sending compilation message...");
+            pipeClient.WriteAsync(new Message() { AssemblyName = "goo" }).Wait();
+        }
+        #endregion
+        
         #endregion
 
         #region Fields
         internal int attrCount = 0;
+        protected PipeClient<Message> pipeClient;
         #endregion
     }
 }

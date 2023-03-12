@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Stratis.DevEx.Gui": {
+      "commandName": "Project",
+      "commandLineArgs": "--no-gui --debug"
+    }
+  }
+}

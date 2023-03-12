@@ -42,11 +42,5 @@ namespace Stratis.DevEx.Gui
             return options;
         }
     }
-
-    public class AnalyzeOptions : Options
-    {
-        [Value(0, Required = true, HelpText = "The file to analyze.")]
-        public string InputFile { get; set; } = String.Empty;
-    }
     #endregion
 }
