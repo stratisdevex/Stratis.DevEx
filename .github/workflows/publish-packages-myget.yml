@@ -54,7 +54,7 @@ jobs:
       
     - name: Set Stratis.CodeAnalysis.Cs CI package version
       id: ci_version
-      run: echo "CI_VERSION=${{ steps.project_version.outputs.assembly-version }}-ci$(date +'%Y%m%d')${{ github.run_number }}git${{ env.GIT_SHA }}" >> $GITHUB_ENV
+      run: echo "CI_VERSION=${{ steps.project_version.outputs.assembly-version }}-ci$(printf "%07d" ${{ github.run_number }})git${{ env.GIT_SHA }}" >> $GITHUB_ENV
       shell: bash
     
     - name: Pack Stratis.CodeAnalysis.Cs package
