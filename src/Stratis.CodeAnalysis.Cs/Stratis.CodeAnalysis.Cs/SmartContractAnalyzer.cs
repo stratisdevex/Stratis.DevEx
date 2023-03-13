@@ -191,7 +191,8 @@
                 {
                     var m = new Message()
                     {
-                        AssemblyName = c.AssemblyName
+                        AssemblyName = c.AssemblyName,
+                        Files = c.SyntaxTrees.Select(st => st.FilePath).ToArray()
                     };
                     if (GuiProcessRunning() && !pipeClient.IsConnected)
                     {
@@ -207,7 +208,6 @@
                         op.Abandon();
                         Runtime.Error("GUI is not running or pipe client disconnected. Error sending compilation message to GUI.");
                     }
-                    
                 }
                 catch (Exception e)
                 {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Stratis.DevEx.Pipes
 {
@@ -8,6 +6,6 @@ namespace Stratis.DevEx.Pipes
     public struct Message
     {
         public string AssemblyName { get; set; }
-        
+        public string[] Files { get; set; }
     }
 }

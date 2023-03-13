@@ -5,6 +5,7 @@ namespace Stratis.DevEx
     using System.Linq;
     using System.Reflection;
     using System.Threading;
+
     using SharpConfig;
 
     public abstract class Runtime
@@ -108,8 +109,8 @@ namespace Stratis.DevEx
                         Info("Debug mode enabled.");
                     }
                     Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Sum(s => s.SettingCount), globalCfgFile);
-                    var d = GlobalSetting("General", "DeleteLogsOlderThan", 3, true);
-                    var logfiles = Directory.GetFiles(StratisDevDir, "*.log", SearchOption.AllDirectories) ?? new string[] { };
+                    var d = GlobalSetting("General", "DeleteLogsOlderThan", 2, true);
+                    var logfiles = Directory.GetFiles(StratisDevDir, ToolName + ".*.log", SearchOption.AllDirectories) ?? new string[] { };
                     Info("{0} existing log files found.", logfiles.Length);
                     foreach(var l in logfiles)
                     {
@@ -348,7 +349,7 @@ namespace Stratis.DevEx
             var cfg = new Configuration();
             var general = cfg.Add("General");
             general.Add("Debug", false);
-            general.Add("DeleteLogsOlderThan", 3);
+            general.Add("DeleteLogsOlderThan", 2);
             return cfg;
         }
 
