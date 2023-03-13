@@ -35,8 +35,7 @@ namespace Stratis.DevEx.Gui
             PipeServer = new PipeServer<Message>("stratis_devexgui") { WaitFreePipe = true };
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
             PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
-            WriteRunFile();
-
+            
             if (!args.Contains("--no-gui"))
             {
                 Info("Starting GUI...");
@@ -45,9 +44,10 @@ namespace Stratis.DevEx.Gui
                 GuiApp.Terminating += (sender, e) => Shutdown();
                 PipeServer.MessageReceived += (sender, e) => GuiApp.Invoke(() =>
                 {
-                    Info("Message received...");
+                    Info("Message received: {msg}", MessageUtils.PrettyPrint(e.Message));
                     GuiApp.ReadMessage(e.Message);
                 });
+                WriteRunFile();
                 GuiApp.Run(new MainForm());
             }
             else
@@ -57,6 +57,7 @@ namespace Stratis.DevEx.Gui
                     Info("Message received: {msg}", MessageUtils.PrettyPrint(e.Message));
                 };
                 PipeServer.StartAsync().Wait();
+                WriteRunFile();
                 Console.CancelKeyPress += (sender, e) => Shutdown();
                 Info("Not starting GUI. Press Ctrl-C to exit...");
                 while (true)

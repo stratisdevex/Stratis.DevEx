@@ -111,7 +111,7 @@ namespace Stratis.DevEx
                     Info("Loaded {0} section(s) with {1} value(s) from global configuration at {2}.", GlobalConfig.SectionCount, GlobalConfig.Sum(s => s.SettingCount), globalCfgFile);
                     var d = GlobalSetting("General", "DeleteLogsOlderThan", 2, true);
                     var logfiles = Directory.GetFiles(StratisDevDir, ToolName + ".*.log", SearchOption.AllDirectories) ?? new string[] { };
-                    Info("{0} existing log files found.", logfiles.Length);
+                    Info("{0} existing log file(s) found.", logfiles.Length);
                     foreach(var l in logfiles)
                     {
                         var age = DateTime.Now.Subtract(File.GetLastWriteTime(l));
