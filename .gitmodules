@@ -7,3 +7,6 @@
 [submodule "ext/NLog"]
 	path = ext/NLog
 	url = https://github.com/stratisdevex/NLog.git
+[submodule "ext/AGL"]
+	path = ext/AGL
+	url = https://github.com/allisterb/AGL.git
