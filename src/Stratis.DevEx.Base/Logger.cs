@@ -225,7 +225,7 @@ namespace Stratis.DevEx
         public override void Complete()
         {
             timer.Stop();
-            l.Info($"{0} completed in {1}ms.", opName, timer.ElapsedMilliseconds);
+            l.Info("{0} completed in {1}ms.", opName, timer.ElapsedMilliseconds);
             isCompleted = true;
         }
 
@@ -233,7 +233,7 @@ namespace Stratis.DevEx
         {
             timer.Stop();
             isAbandoned = true;
-            l.Error($"{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
+            l.Error("{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
         }
 
         public override void Dispose()
@@ -241,7 +241,7 @@ namespace Stratis.DevEx
             if (timer.IsRunning) timer.Stop();
             if (!(isCompleted || isAbandoned))
             {
-                l.Error($"{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
+                l.Error("{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
             }
         }
 

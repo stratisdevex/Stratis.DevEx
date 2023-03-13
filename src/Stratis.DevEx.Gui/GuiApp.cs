@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Eto;
 using Eto.Forms;
 
+using Stratis.DevEx.Pipes;
+
 namespace Stratis.DevEx.Gui
 {
     public class GuiApp : Application
@@ -21,12 +23,18 @@ namespace Stratis.DevEx.Gui
         }
         #endregion
 
-
         #region Overriden members
         protected override void OnInitialized(EventArgs e)
         {
             this.MainForm = new MainForm();
             base.OnInitialized(e);
+        }
+        #endregion
+
+        #region Methods
+        public void ReadMessage(Message m)
+        {
+
         }
         #endregion
     }

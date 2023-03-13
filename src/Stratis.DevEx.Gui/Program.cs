@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 using CommandLine;
 using CommandLine.Text;
+
+using SharpConfig;
 
 using Stratis.DevEx.Pipes;
 
@@ -29,35 +32,62 @@ namespace Stratis.DevEx.Gui
                 }
             }
 
-            PipeServer = new PipeServer<Message>("stratis_devexgui");
+            PipeServer = new PipeServer<Message>("stratis_devexgui") { WaitFreePipe = true };
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
+            WriteRunFile();
 
             if (!args.Contains("--no-gui"))
             {
                 Info("Starting GUI...");
                 GuiApp = new GuiApp(Eto.Platform.Detect);
                 GuiApp.Initialized += (sender, e) => GuiApp.AsyncInvoke(async () => await PipeServer.StartAsync());
-                GuiApp.Terminating += (sender, e) => PipeServer.Dispose();
+                GuiApp.Terminating += (sender, e) => Shutdown();
+                PipeServer.MessageReceived += (sender, e) => GuiApp.Invoke(() =>
+                {
+                    Info("Message received...");
+                    GuiApp.ReadMessage(e.Message);
+                });
                 GuiApp.Run(new MainForm());
             }
             else
             {
-                PipeServer.StartAsync().Wait();
-                Console.CancelKeyPress += (sender, e) =>
+                PipeServer.MessageReceived += (sender, e) =>
                 {
-                    Info("Shutting down...");
-                    PipeServer.Dispose();
-                    Environment.Exit(0);
+                    Info("Message received: {0}", e.Message);
                 };
+                PipeServer.StartAsync().Wait();
+                Console.CancelKeyPress += (sender, e) => Shutdown();
                 Info("Not starting GUI. Press Ctrl-C to exit...");
-                while (true);
+                while (true)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
             }
-
-            
-            
         }
         #endregion
 
+        public static void WriteRunFile()
+        {
+            var cfg = new Configuration();
+            cfg.Add(new Section("Process"));
+            cfg["Process"].Add(new Setting("ProcessId", System.Diagnostics.Process.GetCurrentProcess().Id));
+            cfg.SaveToFile(RunFile);
+            Info("Wrote run file {runfile}.", RunFile);
+        }
+
+        public static void Shutdown()
+        {
+            Info("Shutting down...");
+            if (PipeServer is not null)
+            {
+                PipeServer.Dispose();
+            }
+            if (File.Exists(RunFile))
+            {
+                File.Delete(RunFile);
+            }
+            Environment.Exit(0);
+        }
         #endregion
 
         #region Properties

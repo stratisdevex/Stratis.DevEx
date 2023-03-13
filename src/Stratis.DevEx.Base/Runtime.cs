@@ -67,6 +67,8 @@ namespace Stratis.DevEx
         public static Version AssemblyVersion { get; } = Assembly.GetAssembly(typeof(Runtime))!.GetName().Version!;
         
         public static bool IsUnitTestRun { get; set; }
+
+        public static string RunFile => StratisDevDir.CombinePath(ToolName + ".run");
         #endregion
 
         #region Methods

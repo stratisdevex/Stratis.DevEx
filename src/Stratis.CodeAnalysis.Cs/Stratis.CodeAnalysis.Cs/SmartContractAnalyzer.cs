@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
     
     using Microsoft.CodeAnalysis;
@@ -161,21 +162,100 @@
         #region Gui
         protected void SendGuiMessage(Compilation c)
         {
+            if (!GuiProcessRunning())
+            {
+                Runtime.Error("Did not detect GUI process running, not sending message.");
+                return;
+            }
             if (this.pipeClient is null)
             {
-                Runtime.Info("Creating GUI pipe client...");
+                using (var op = Runtime.Begin("Creating GUI pipe client"))
+                {
+                    try
+                    {
+                        pipeClient = new PipeClient<Message>("stratis_devexgui") { AutoReconnect = false };
+                        op.Complete();
+                    }
+                    catch (Exception e)
+                    {
+                        op.Abandon();
+                        Runtime.Error(e, "Error creating GUI pipe client.");
+                        return;
+                    }
+                }
+            }
+
+            using (var op = Runtime.Begin("Sending compilation message"))
+            {
                 try
                 {
-                    pipeClient = new PipeClient<Message>("stratis_devexgui");
+                    var m = new Message()
+                    {
+                        AssemblyName = c.AssemblyName
+                    };
+                    if (GuiProcessRunning() && !pipeClient.IsConnected)
+                    {
+                        pipeClient.ConnectAsync().Wait();
+                    }
+                    if (GuiProcessRunning() && pipeClient.IsConnected)
+                    {
+                        pipeClient.WriteAsync(m).Wait();
+                        op.Complete();
+                    }
+                    else
+                    {
+                        op.Abandon();
+                        Runtime.Error("GUI is not running or pipe client disconnected. Error sending compilation message to GUI.");
+                    }
+                    
                 }
                 catch (Exception e)
                 {
-                    Runtime.Error(e, "Error creating GUI pipe client.");
-                    return;
+                    op.Abandon();
+                    Runtime.Error(e, "Error sending compilation message to GUI.");
                 }
             }
-            Runtime.Info("Sending compilation message...");
-            pipeClient.WriteAsync(new Message() { AssemblyName = "goo" }).Wait();
+        }
+
+        protected static bool GuiProcessRunning()
+        {
+            var f = Runtime.StratisDevDir.CombinePath("Stratis.DevEx.Gui.run");
+            if (!File.Exists(f))
+            {
+                Runtime.Debug("{0} does not exist.", f);
+                return false;
+            }
+            else
+            {
+                var c = Configuration.LoadFromFile(f);
+                var pid = c["Process"]["ProcessId"].GetValueOrDefault(0);
+                if (pid == 0)
+                {
+                    Runtime.Error("Could not read process ID from Stratis.DevEx.Gui.run.");
+                    return false;
+                }
+                else
+                {
+                    try
+                    {
+                        var p = Process.GetProcessById(pid);
+                        if (p.ProcessName.Contains("Stratis.DevEx.Gui"))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            Runtime.Debug("Process {pid} is not Stratis.DevEx.Gui.", pid);
+                            return false;
+                        }
+                    }
+                    catch 
+                    {
+                        Runtime.Debug("Exception thrown getting process id {pid}.", pid);
+                        return false;
+                    }
+                }
+            }
         }
         #endregion
         
