@@ -20,6 +20,7 @@ jobs:
       CodeAnalysis_Cs_Project_Path: "src\\Stratis.CodeAnalysis.Cs\\Stratis.CodeAnalysis.Cs\\Stratis.CodeAnalysis.Cs.csproj"
       CodeAnalysis_Cs_Test_Project_Path: "tests\\Stratis.CodeAnalysis.Cs.Test\\Stratis.CodeAnalysis.Cs.Test.csproj"
       CodeAnalysis_Cs_Package_Project_Path: "src\\Stratis.CodeAnalysis.Cs\\Stratis.CodeAnalysis.Cs.Package\\Stratis.CodeAnalysis.Cs.Package.csproj"
+      VSTEST_CONNECTION_TIMEOUT: 180
       
     steps:
     - name: Checkout
