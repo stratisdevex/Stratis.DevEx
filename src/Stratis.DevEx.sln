@@ -24,9 +24,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs.Test", "..\tests\Stratis.CodeAnalysis.Cs.Test\Stratis.CodeAnalysis.Cs.Test.csproj", "{58238C93-CD2D-4916-B44A-B280EB3140E7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test Projects", "Test Projects", "{3D87B9FF-6152-47D3-BB4B-F9A02960B89E}"
-	ProjectSection(SolutionItems) = preProject
-		..\tests\testprojects\Stratis.CodeAnalysis.Cs.TestProject1\stratisdev.cfg = ..\tests\testprojects\Stratis.CodeAnalysis.Cs.TestProject1\stratisdev.cfg
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs.TestProject1", "..\tests\testprojects\Stratis.CodeAnalysis.Cs.TestProject1\Stratis.CodeAnalysis.Cs.TestProject1.csproj", "{9C1A30FD-FF32-47E0-8FBA-8C994AC66553}"
 EndProject
@@ -68,6 +65,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AGL", "AGL", "{1A0F0987-AEA7-44D2-A9A4-4D9BE6FC0365}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QUT.ShiftReduceParser", "..\ext\AGL\QUT.ShiftReduceParser\QUT.ShiftReduceParser.csproj", "{35849097-F08B-40D6-879F-9FE8090B9374}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{38EA346F-6659-4991-9878-FB96FB3FCBCF}"
+	ProjectSection(SolutionItems) = preProject
+		..\devex-gui = ..\devex-gui
+		..\devex-gui.cmd = ..\devex-gui.cmd
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -27,7 +27,7 @@
         {
             Runtime.Initialize("Stratis.CodeAnalysis.Cs", "ROSLYN");
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze);
             attrCount = 0;
             context.RegisterCompilationStartAction(ctx =>
             {
@@ -43,24 +43,16 @@
                 {
                     Runtime.Info("No analyzer configuration file found, using default configuration...");
                 }
-                if (!Validator.CompilationConfiguration.ContainsKey(ctx.Compilation))
-                {
-                    Validator.CompilationConfiguration.Add(ctx.Compilation, cfg);
-                }
-                else
-                {
-                    Validator.CompilationConfiguration[ctx.Compilation] = cfg;
-                }
-
+                Validator.CompilationConfiguration.AddOrUpdate(ctx.Compilation, cfg, (_,_) => cfg);
                 if (AnalyzerSetting(ctx.Compilation, "Analyzer", "Enabled", true))
                 {
-                    #region Smart contract validation
-                    //ctx.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
                     if (AnalyzerSetting(ctx.Compilation, "Gui", "Enabled", false))
                     {
                         Runtime.Info("GUI enabled for compilation, registering action to send compilation message...");
                         ctx.RegisterCompilationEndAction(cctx => SendGuiMessage(cctx.Compilation));
                     }
+                    #region Smart contract validation
+                    //ctx.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
                     ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
                     ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
                     ctx.RegisterSyntaxNodeAction(ctx => AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);

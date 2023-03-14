@@ -1,0 +1,2 @@
+#!/bin/bash
+dotnet ./src/Stratis.DevEx.Gui/bin/Gtk/Debug/net48/Stratis.DevEx.Gui.exe $*

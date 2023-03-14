@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Linq;
 
@@ -620,7 +621,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         internal static string[] AllowedAssemblyReferencesNames;
 
-        internal static Dictionary<Compilation, Configuration> CompilationConfiguration = new();
+        internal static ConcurrentDictionary<Compilation, Configuration> CompilationConfiguration = new();
         /// <summary>
         /// The set of Assemblies that a <see cref="SmartContract"/> is required to reference
         /// </summary>
