@@ -49,7 +49,12 @@
                     if (AnalyzerSetting(ctx.Compilation, "Gui", "Enabled", false))
                     {
                         Runtime.Info("GUI enabled for compilation, registering action to send compilation message...");
-                        ctx.RegisterCompilationEndAction(cctx => SendGuiMessage(cctx.Compilation));
+                        
+                        ctx.RegisterCompilationEndAction(cctx =>
+                        {
+                            Runtime.Info("Compilation end.");
+                            SendGuiMessage(cctx.Compilation);
+                        });
                     }
                     #region Smart contract validation
                     //ctx.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
@@ -159,6 +164,7 @@
                 Runtime.Error("Did not detect GUI process running, not sending message.");
                 return;
             }
+            
             if (this.pipeClient is null)
             {
                 using (var op = Runtime.Begin("Creating GUI pipe client"))
@@ -183,11 +189,14 @@
                 {
                     var m = new Message()
                     {
+                        CompilationId = c.GetHashCode(),
+                        EditorEntryAssembly = Runtime.EntryAssembly?.FullName ?? "(none)",
                         AssemblyName = c.AssemblyName,
-                        Files = c.SyntaxTrees.Select(st => st.FilePath).ToArray()
+                        Documents = c.SyntaxTrees.Select(st => st.FilePath).ToArray()
                     };
                     if (GuiProcessRunning() && !pipeClient.IsConnected)
                     {
+                        Runtime.Debug("Pipe client disconnected, attempting to reconnect...");
                         pipeClient.ConnectAsync().Wait();
                     }
                     if (GuiProcessRunning() && pipeClient.IsConnected)

@@ -9,7 +9,7 @@ namespace Stratis.DevEx.Pipes
         public static string PrettyPrint(Message m)
         {
             var n = Environment.NewLine;
-            return $"{{{n}\tAssemblyName:{m.AssemblyName}{n}\tFiles:{m.Files.JoinWithSpaces()}{n}}}";
+            return $"{{{n}\tCompilation ID: {m.CompilationId}\n\tEditor Entry Assembly:{m.EditorEntryAssembly}\n\tAssemblyName:{m.AssemblyName}{n}\tDocuments:{m.Documents.JoinWithSpaces()}{n}}}";
         }
     }
 }

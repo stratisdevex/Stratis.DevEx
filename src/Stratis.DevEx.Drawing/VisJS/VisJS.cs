@@ -6,6 +6,8 @@ namespace Stratis.DevEx.Drawing.VisJS
 {
     public class VisJS
     {
+        
+        public static string HtmlPageTemplate = "<html>\n<head>\n<title>\n{{title}}\n</title>\n<script type=\"text/javascript\" src=\"https://unpkg.com/vis-network/standalone/umd/vis-network.min.js\"></script>\n</head>\n<body>\n</body>\n{{body}}</html>";
         public static Network Draw(Graph graph, string width="100%", string height="600px")
         {
             var network = new Network();

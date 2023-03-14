@@ -9,6 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Stratis.CodeAnalysis" Version="0.1.0-ci0000113git0d3f71c">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Stratis.SmartContracts" Version="2.0.0" />
   </ItemGroup>
 

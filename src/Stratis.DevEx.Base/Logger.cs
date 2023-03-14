@@ -142,7 +142,7 @@ namespace Stratis.DevEx
                 config.Variables["logLevel"] = "Debug";
             }
             var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole");
-            if (logToConsole)
+            if (logToConsole || (Runtime.EntryAssembly?.FullName.StartsWith("OmniSharp") ?? false))
             {
                 config.AddTarget(logconsole);
                 config.AddRule(new LoggingRule("*", LogLevel.Info, logconsole));

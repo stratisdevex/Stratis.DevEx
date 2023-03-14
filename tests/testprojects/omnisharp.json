@@ -1,0 +1,10 @@
+{
+    "RoslynExtensionsOptions": {
+        "EnableAnalyzersSupport": true,
+        "DocumentAnalysisTimeoutMs": 30000,
+        "EnableDecompilationSupport": true,
+        "EnableImportsCompletion": true,
+        "LocationPaths": ["..\\..\\src\\Stratis.CodeAnalysis.Cs\\Stratis.CodeAnalysis.Cs\\bin\\Debug\\netstandard2.0"]
+    
+    }
+}
