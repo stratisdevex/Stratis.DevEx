@@ -20,22 +20,19 @@ namespace Stratis.DevEx.Gui
         [STAThread]
         static void Main(string[] args)
         {
-            //ParserResult<Options> result = new Parser().ParseArguments<Options>(args);
-            Runtime.Initialize("Stratis.DevEx.Gui", "APP", true);
-            if (args.Contains("--debug") || args.Contains("-d"))
+            Initialize("Stratis.DevEx.Gui", "APP", true);
+            if ((args.Contains("--debug") || args.Contains("-d")) && !GlobalSetting("General", "Debug", false))
             {
-                if (!GlobalSetting("General", "Debug", false))
-                {
-                    GlobalConfig["General"]["Debug"].SetValue(true);
-                    Logger.SetLogLevelDebug();
-                    Info("Debug mode enabled.");
-                }
+                GlobalConfig["General"]["Debug"].SetValue(true);
+                Logger.SetLogLevelDebug();
+                Info("Debug mode enabled.");                
             }
 
             PipeServer = new PipeServer<Message>("stratis_devexgui") { WaitFreePipe = true };
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
             PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
-            
+
+            //ParserResult<Options> result = new Parser().ParseArguments<Options>(args);
             if (!args.Contains("--no-gui"))
             {
                 Info("Starting GUI...");
