@@ -10,6 +10,7 @@
     <ProjectReference Include="..\..\ext\AGL\AGL.Drawing.NETStandard\AGL.Drawing.NETStandard.csproj" />
     <ProjectReference Include="..\..\ext\AGL\AGL.NETStandard\AGL.NETStandard.csproj" />
     <ProjectReference Include="..\..\ext\CompactJson\src\CompactJson\CompactJson.csproj" />
+    <ProjectReference Include="..\..\ext\dotliquid\src\DotLiquid\DotLiquid.csproj" />
   </ItemGroup>
 
 </Project>
