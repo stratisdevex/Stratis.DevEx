@@ -27,7 +27,7 @@
         {
             Runtime.Initialize("Stratis.CodeAnalysis.Cs", "ROSLYN");
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze);
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             attrCount = 0;
             context.RegisterCompilationStartAction(ctx =>
             {
@@ -43,6 +43,7 @@
                 {
                     Runtime.Info("No analyzer configuration file found, using default configuration...");
                 }
+               
                 Validator.CompilationConfiguration.AddOrUpdate(ctx.Compilation, cfg, (_,_) => cfg);
                 if (AnalyzerSetting(ctx.Compilation, "Analyzer", "Enabled", true))
                 {
