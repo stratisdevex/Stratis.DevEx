@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using Microsoft.Msagl.Drawing;
-using HandlebarsDotNet;
 
 namespace Stratis.DevEx.Drawing.VisJS
 {

@@ -7,13 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Handlebars.Net" Version="2.1.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\ext\AGL\AGL.Drawing.NETStandard\AGL.Drawing.NETStandard.csproj" />
     <ProjectReference Include="..\..\ext\AGL\AGL.NETStandard\AGL.NETStandard.csproj" />
+    <ProjectReference Include="..\..\ext\CompactJson\src\CompactJson\CompactJson.csproj" />
   </ItemGroup>
 
 </Project>

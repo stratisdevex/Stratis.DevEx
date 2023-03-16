@@ -1,205 +1,205 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-using Newtonsoft.Json;
+using CompactJson;
 
 namespace Stratis.DevEx.Drawing.VisJS
 {
     public class Network
     {
-        [JsonProperty("options")]
+        [JsonProperty("options"), JsonSuppressDefaultValue]
         public NetworkOptions? Options { get; set; } = new NetworkOptions() { Width = "100%", Height = "600px" };
 
-        [JsonProperty("nodes")]
+        [JsonProperty("nodes"), JsonSuppressDefaultValue]
         public List<NetworkNode>? Nodes { get; set; }
 
-        [JsonProperty("edges")]
+        [JsonProperty("edges"), JsonSuppressDefaultValue]
         public List<NetworkEdge>? Edges { get; set; }
 
-        [JsonIgnore]
+        [JsonIgnoreMember]
         public string Width => Options?.Width ?? "100%";
 
-        [JsonIgnore]
+        [JsonIgnoreMember]
         public string Height => Options?.Height ?? "600px";
 
-        public static Network Load(string data) => JsonConvert.DeserializeObject<Network>(data)!;
+        public static Network Load(string data) => Serializer.Parse<Network>(data)!;
 
-        public static Network LoadFrom(string f) => JsonConvert.DeserializeObject<Network>(File.ReadAllText(f))!;
+        public static Network LoadFrom(string f) => Serializer.Parse<Network>(File.ReadAllText(f))!;
     }
 
     public class NetworkEdge
     {
-        [JsonProperty("from", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("from"), JsonSuppressDefaultValue]
         public string? From { get; set; }
 
-        [JsonProperty("to", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("to"), JsonSuppressDefaultValue]
         public string? To { get; set; }
 
-        [JsonProperty("arrows", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("arrows"), JsonSuppressDefaultValue]
         public string? Arrows { get; set; }
 
-        [JsonProperty("physics", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("physics"), JsonSuppressDefaultValue]
         public bool? Physics { get; set; }
 
-        [JsonProperty("smooth", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("smooth"), JsonSuppressDefaultValue]
         public NetworkSmooth? Smooth { get; set; }
     }
 
     public class NetworkFont
     {
-        [JsonProperty("face", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("face"), JsonSuppressDefaultValue]
         public string? Face { get; set; }
 
-        [JsonProperty("align", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("align"), JsonSuppressDefaultValue]
         public string? Align { get; set; }
     }
 
     public class NetworkHierarchical
     {
-        [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("enabled"), JsonSuppressDefaultValue]
         public bool? Enabled { get; set; }
 
-        [JsonProperty("sortMethod", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("sortMethod"), JsonSuppressDefaultValue]
         public string? SortMethod { get; set; }
 
-        [JsonProperty("direction", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("direction"), JsonSuppressDefaultValue]
         public string? Direction { get; set; }
 
-        [JsonProperty("nodeSpacing", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("nodeSpacing"), JsonSuppressDefaultValue]
         public int? NodeSpacing { get; set; }
 
-        [JsonProperty("levelSeparation", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("levelSeparation"), JsonSuppressDefaultValue]
         public int? LevelSeparation { get; set; }
     }
 
     public class NetworkHierarchicalRepulsion
     {
-        [JsonProperty("nodeDistance", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("nodeDistance"), JsonSuppressDefaultValue]
         public int? NodeDistance { get; set; }
 
-        [JsonProperty("avoidOverlap", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("avoidOverlap"), JsonSuppressDefaultValue]
         public double? AvoidOverlap { get; set; }
     }
 
     public class NetworkLayout
     {
-        [JsonProperty("improvedLayout", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("improvedLayout"), JsonSuppressDefaultValue]
         public bool? ImprovedLayout { get; set; }
 
-        [JsonProperty("hierarchical", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("hierarchical"), JsonSuppressDefaultValue]
         public NetworkHierarchical? Hierarchical { get; set; }
     }
 
     public class NetworkNode
     {
-        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("id"), JsonSuppressDefaultValue]
         public string? Id { get; set; }
 
-        [JsonProperty("size", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("size"), JsonSuppressDefaultValue]
         public int? Size { get; set; }
 
-        [JsonProperty("label", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("label"), JsonSuppressDefaultValue]
         public string? Label { get; set; }
 
-        [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("title"), JsonSuppressDefaultValue]
         public string? Title { get; set; }
 
-        [JsonProperty("level", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("level"), JsonSuppressDefaultValue]
         public int? Level { get; set; }
 
-        [JsonProperty("color", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("color"), JsonSuppressDefaultValue]
         public NetworkColor? Color { get; set; }
 
-        [JsonProperty("shape", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("shape"), JsonSuppressDefaultValue]
         public string? Shape { get; set; }
 
-        [JsonProperty("font", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("font"), JsonSuppressDefaultValue]
         public NetworkFont? Font { get; set; }
     }
 
     public class NetworkOptions
     {
-        [JsonProperty("autoResize", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("autoResize"), JsonSuppressDefaultValue]
         public bool? AutoResize { get; set; }
 
-        [JsonProperty("manipulation", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("manipulation"), JsonSuppressDefaultValue]
         public bool Manipulation { get; set; }
 
-        [JsonProperty("width", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("width"), JsonSuppressDefaultValue]
         public string? Width { get; set; }
 
-        [JsonProperty("height", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("height"), JsonSuppressDefaultValue]
         public string? Height { get; set; }
 
-        [JsonProperty("layout", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("layout"), JsonSuppressDefaultValue]
         public NetworkLayout? Layout { get; set; }
 
-        [JsonProperty("physics", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("physics"), JsonSuppressDefaultValue]
         public NetworkPhysics? Physics { get; set; }
 
-        [JsonProperty("edges", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("edges"), JsonSuppressDefaultValue]
         public NetworkEdgesOptions? Edges { get; set; }
 
-        [JsonProperty("interaction", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("interaction"), JsonSuppressDefaultValue]
         public NetworkInteraction? Interaction { get; set; }
     }
 
     public class NetworkPhysics
     {
-        [JsonProperty("hierarchicalRepulsion", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("hierarchicalRepulsion"), JsonSuppressDefaultValue]
         public NetworkHierarchicalRepulsion? HierarchicalRepulsion { get; set; }
     }
 
     public class NetworkSmooth
     {
-        [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("enabled"), JsonSuppressDefaultValue]
         public bool? Enabled { get; set; }
 
-        [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("type"), JsonSuppressDefaultValue]
         public string? Type { get; set; }
     }
 
     public class NetworkEdgeArrows
     {
-        [JsonProperty("to", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("to"), JsonSuppressDefaultValue]
         public NetworkEdgeTo? To { get; set; }
     }
 
     public class NetworkEdgesOptions
     {
-        [JsonProperty("arrows", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("arrows"), JsonSuppressDefaultValue]
         public NetworkEdgeArrows? Arrows { get; set; }
 
-        [JsonProperty("smooth", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("smooth"), JsonSuppressDefaultValue]
         public NetworkSmooth? Smooth { get; set; }
     }
 
 
     public class NetworkEdgeTo
     {
-        [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("enabled"), JsonSuppressDefaultValue]
         public bool? Enabled { get; set; }
     }
 
 
     public class NetworkInteraction
     {
-        [JsonProperty("navigationButtons", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("navigationButtons"), JsonSuppressDefaultValue]
         public bool? NavigationButtons { get; set; }
 
-        [JsonProperty("keyboard", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("keyboard"), JsonSuppressDefaultValue]
         public NetworkInteractionKeyboard? Keyboard { get; set; }
     }
 
     public class NetworkInteractionKeyboard
     {
-        [JsonProperty("enabled", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("enabled"), JsonSuppressDefaultValue]
         public bool? Enabled { get; set; }
 
-        [JsonProperty("speed", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("speed"), JsonSuppressDefaultValue]
         public NetworkInteractionKeyboardSpeed? Speed { get; set; }
 
-        [JsonProperty("bindToWindow", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("bindToWindow"), JsonSuppressDefaultValue]
         public bool? BindToWindow { get; set; }
     }
 
@@ -219,34 +219,34 @@ namespace Stratis.DevEx.Drawing.VisJS
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class NetworkColorHighlight
     {
-        [JsonProperty("border", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("border"), JsonSuppressDefaultValue]
         public string? Border { get; set; }
 
-        [JsonProperty("background", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("background"), JsonSuppressDefaultValue]
         public string? Background { get; set; }
     }
 
     public class NetworkColorHover
     {
-        [JsonProperty("border", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("border"), JsonSuppressDefaultValue]
         public string? Border { get; set; }
 
-        [JsonProperty("background", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("background"), JsonSuppressDefaultValue]
         public string? Background { get; set; }
     }
 
     public class NetworkColor
     {
-        [JsonProperty("border", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("border"), JsonSuppressDefaultValue]
         public string? Border { get; set; }
 
-        [JsonProperty("background", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("background"), JsonSuppressDefaultValue]
         public string? Background { get; set; }
 
-        [JsonProperty("highlight", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("highlight"), JsonSuppressDefaultValue]
         public NetworkColorHighlight? Highlight { get; set; }
 
-        [JsonProperty("hover", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("hover"), JsonSuppressDefaultValue]
         public NetworkColorHover? Hover { get; set; }
     }
 
