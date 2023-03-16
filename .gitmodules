@@ -13,3 +13,6 @@
 [submodule "ext/CompactJson"]
 	path = ext/CompactJson
 	url = https://github.com/stratisdevex/CompactJson.git
+[submodule "ext/dotliquid"]
+	path = ext/dotliquid
+	url = https://github.com/stratisdevex/dotliquid.git
