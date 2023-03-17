@@ -11,6 +11,7 @@
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
     using Microsoft.CodeAnalysis.Operations;
+    using Microsoft.CodeAnalysis.FlowAnalysis;
 
     using SharpConfig;
 
@@ -47,6 +48,8 @@
                 Validator.CompilationConfiguration.AddOrUpdate(ctx.Compilation, cfg, (_,_) => cfg);
                 if (AnalyzerSetting(ctx.Compilation, "Analyzer", "Enabled", true))
                 {
+                    #region Gui
+
                     if (AnalyzerSetting(ctx.Compilation, "Gui", "Enabled", false))
                     {
                         Runtime.Info("GUI enabled for compilation, registering action to send compilation message...");
@@ -57,6 +60,8 @@
                             SendGuiMessage(cctx.Compilation);
                         });
                     }
+                    #endregion
+
                     #region Smart contract validation
                     //ctx.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
                     ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
@@ -93,6 +98,22 @@
                                 break;
                         }
                     }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
+                    #endregion
+
+                    #region Control-flow analysis;
+                    ctx.RegisterOperationAction(cctx =>
+                    {
+                        switch (cctx.Operation)
+                        {
+                            case IMethodBodyOperation methodBody:
+                                var cfg = ControlFlowGraph.Create(methodBody);
+                                //cfg.
+                                //cfg.Blocks.First().
+                                break;
+                            default:
+                                break;
+                        }
+                    }, OperationKind.MethodBody);
                     #endregion
                 }
                 else
@@ -172,7 +193,7 @@
                 {
                     try
                     {
-                        pipeClient = new PipeClient<Message>("stratis_devexgui") { AutoReconnect = false };
+                        pipeClient = new PipeClient<MessagePack>("stratis_devexgui") { AutoReconnect = false };
                         op.Complete();
                     }
                     catch (Exception e)
@@ -188,7 +209,7 @@
             {
                 try
                 {
-                    var m = new Message()
+                    var m = new CompilationMessage()
                     {
                         CompilationId = c.GetHashCode(),
                         EditorEntryAssembly = Runtime.EntryAssembly?.FullName ?? "(none)",
@@ -202,7 +223,8 @@
                     }
                     if (GuiProcessRunning() && pipeClient.IsConnected)
                     {
-                        pipeClient.WriteAsync(m).Wait();
+                        var mp = MessageUtils.Pack(m);
+                        pipeClient.WriteAsync(mp).Wait();
                         op.Complete();
                     }
                     else
@@ -218,6 +240,7 @@
                 }
             }
         }
+
 
         protected static bool GuiProcessRunning()
         {
@@ -265,7 +288,7 @@
 
         #region Fields
         internal int attrCount = 0;
-        protected PipeClient<Message> pipeClient;
+        protected PipeClient<MessagePack> pipeClient;
         #endregion
     }
 }

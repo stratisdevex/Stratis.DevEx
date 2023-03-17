@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+
+using CompactJson;
+using DotLiquid;
 
 using Microsoft.Msagl.Drawing;
 
@@ -8,9 +12,10 @@ namespace Stratis.DevEx.Drawing.VisJS
     public class VisJS
     {
         #region Properties
-        public static string HtmlPageTemplate = "<html>\n<head>\n<title>\n{{title}}\n</title>\n<script type=\"text/javascript\" src=\"https://unpkg.com/vis-network/standalone/umd/vis-network.min.js\"></script>\n</head>\n<body>\n</body>\n{{body}}</html>";
+        public static Template HtmlPageTemplate = Template.Parse("<html>\n<head>\n<title>\n{{title}}\n</title>\n<script type=\"text/javascript\" src=\"https://unpkg.com/vis-network/standalone/umd/vis-network.min.js\"></script>\n</head>\n<body>\n</body>\n{{body}}</html>)");
         #endregion
 
+        #region Methods
         public static Network Draw(Graph graph, string width="100%", string height="600px")
         {
             var network = new Network();
@@ -96,5 +101,14 @@ namespace Stratis.DevEx.Drawing.VisJS
             network.Options = options;
             return network;
         }
+
+        public static string Draw(Network network)
+        {
+            using var sw = new StringWriter();
+            Serializer.Write(network, sw, true);
+            var json = sw.ToString();
+            return HtmlPageTemplate.Render(Hash.FromDictionary(null));
+        }
+        #endregion
     }
 }

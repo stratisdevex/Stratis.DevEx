@@ -32,7 +32,17 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Methods
-        public void ReadMessage(Message m)
+        public void ReadMessage(MessagePack m)
+        {
+
+        }
+        
+        public void ReadMessage(CompilationMessage m)
+        {
+
+        }
+
+        public void ReadMessage(ControlFlowGraphMessage m)
         {
 
         }

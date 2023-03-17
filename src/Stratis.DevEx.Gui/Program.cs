@@ -28,7 +28,7 @@ namespace Stratis.DevEx.Gui
                 Info("Debug mode enabled.");                
             }
 
-            PipeServer = new PipeServer<Message>("stratis_devexgui") { WaitFreePipe = true };
+            PipeServer = new PipeServer<MessagePack>("stratis_devexgui") { WaitFreePipe = true };
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
             PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
 
@@ -41,8 +41,20 @@ namespace Stratis.DevEx.Gui
                 GuiApp.Terminating += (sender, e) => Shutdown();
                 PipeServer.MessageReceived += (sender, e) => GuiApp.Invoke(() =>
                 {
-                    Info("Message received: {msg}", MessageUtils.PrettyPrint(e.Message));
-                    GuiApp.ReadMessage(e.Message);
+                    switch(e.Message.Type)
+                    {
+                        case MessageType.COMPILATION_MESSAGE:
+                            var cm = MessageUtils.Deserialize<CompilationMessage>(e.Message.MessageBytes);
+                            Info("Message received: {msg}", MessageUtils.PrettyPrint(cm));
+                            GuiApp.ReadMessage(cm);
+                            break;
+
+                        case MessageType.CONTROL_FLOW_GRAPH_MESSAGE:
+                            var cfgm = MessageUtils.Deserialize<ControlFlowGraphMessage>(e.Message.MessageBytes);
+                            Info("Message received: {msg}", MessageUtils.PrettyPrint(cfgm));
+                            GuiApp.ReadMessage(cfgm);
+                            break;
+                    }
                 });
                 WriteRunFile();
                 GuiApp.Run(new MainForm());
@@ -51,7 +63,18 @@ namespace Stratis.DevEx.Gui
             {
                 PipeServer.MessageReceived += (sender, e) =>
                 {
-                    Info("Message received: {msg}", MessageUtils.PrettyPrint(e.Message));
+                    switch (e.Message.Type)
+                    {
+                        case MessageType.COMPILATION_MESSAGE:
+                            var cm = MessageUtils.Deserialize<CompilationMessage>(e.Message.MessageBytes);
+                            Info("Message received: {msg}", MessageUtils.PrettyPrint(cm));
+                            break;
+
+                        case MessageType.CONTROL_FLOW_GRAPH_MESSAGE:
+                            var cfgm = MessageUtils.Deserialize<ControlFlowGraphMessage>(e.Message.MessageBytes);
+                            Info("Message received: {msg}", MessageUtils.PrettyPrint(cfgm));
+                            break;
+                    }
                 };
                 PipeServer.StartAsync().Wait();
                 WriteRunFile();
@@ -91,7 +114,7 @@ namespace Stratis.DevEx.Gui
 
         #region Properties
         public static GuiApp? GuiApp { get; private set; }
-        public static PipeServer<Message>? PipeServer { get; private set; }
+        public static PipeServer<MessagePack>? PipeServer { get; private set; }
         #endregion
     }
 }

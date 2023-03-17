@@ -76,6 +76,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompactJson", "..\ext\Compa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotLiquid", "..\ext\dotliquid\src\DotLiquid\DotLiquid.csproj", "{9731C77F-8B1F-4F0D-9E66-13B8E6DE078A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.DevEx.Drawing.Test", "..\tests\Stratis.DevEx.Drawing.Test\Stratis.DevEx.Drawing.Test.csproj", "{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -467,6 +469,24 @@ Global
 		{9731C77F-8B1F-4F0D-9E66-13B8E6DE078A}.Sources|arm64.Build.0 = Debug|Any CPU
 		{9731C77F-8B1F-4F0D-9E66-13B8E6DE078A}.Sources|x86.ActiveCfg = Debug|Any CPU
 		{9731C77F-8B1F-4F0D-9E66-13B8E6DE078A}.Sources|x86.Build.0 = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Debug|arm64.Build.0 = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Debug|x86.Build.0 = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Release|arm64.ActiveCfg = Release|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Release|arm64.Build.0 = Release|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Release|x86.ActiveCfg = Release|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Release|x86.Build.0 = Release|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Sources|Any CPU.ActiveCfg = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Sources|Any CPU.Build.0 = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Sources|arm64.ActiveCfg = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Sources|arm64.Build.0 = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Sources|x86.ActiveCfg = Debug|Any CPU
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F}.Sources|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -495,6 +515,7 @@ Global
 		{35849097-F08B-40D6-879F-9FE8090B9374} = {1A0F0987-AEA7-44D2-A9A4-4D9BE6FC0365}
 		{45D56C3E-5D8C-490D-88F7-AADDDD017BEC} = {A0717F4C-8EED-4659-B72F-50DB73E1F64E}
 		{9731C77F-8B1F-4F0D-9E66-13B8E6DE078A} = {A0717F4C-8EED-4659-B72F-50DB73E1F64E}
+		{D06A26D9-6E72-44F5-8BBE-39425FBA6E4F} = {86A6FC48-CF63-4A0F-A842-A4B96CAF4EDF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {602325FF-1BC0-4A57-8252-3F0471EA4151}
