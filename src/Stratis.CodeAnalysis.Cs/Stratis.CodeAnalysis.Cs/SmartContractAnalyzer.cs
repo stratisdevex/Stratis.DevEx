@@ -32,31 +32,29 @@
             attrCount = 0;
             context.RegisterCompilationStartAction(ctx =>
             {
-                Runtime.Debug("Compilation start...");
+                Debug("Compilation start...");
+                ctx.RegisterCompilationEndAction(_ => Runtime.Info("Compilation end."));
                 var cfg = CreateDefaultAnalyzerConfig();
                 if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path.EndsWith("stratisdev.cfg")))
                 {
                     var cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path.EndsWith("stratisdev.cfg")).Path;
-                    Runtime.Info("Loading analyzer configuration from {0}...", cfgFile);
+                    Info("Loading analyzer configuration from {0}...", cfgFile);
                     cfg = Runtime.LoadConfig(cfgFile);
                 }
                 else
                 {
-                    Runtime.Info("No analyzer configuration file found, using default configuration...");
+                    Info("No analyzer configuration file found, using default configuration...");
                 }
                
                 Validator.CompilationConfiguration.AddOrUpdate(ctx.Compilation, cfg, (_,_) => cfg);
                 if (AnalyzerSetting(ctx.Compilation, "Analyzer", "Enabled", true))
                 {
                     #region Gui
-
                     if (AnalyzerSetting(ctx.Compilation, "Gui", "Enabled", false))
                     {
                         Runtime.Info("GUI enabled for compilation, registering action to send compilation message...");
-                        
                         ctx.RegisterCompilationEndAction(cctx =>
                         {
-                            Runtime.Info("Compilation end.");
                             SendGuiMessage(cctx.Compilation);
                         });
                     }
@@ -106,7 +104,16 @@
                         switch (cctx.Operation)
                         {
                             case IMethodBodyOperation methodBody:
-                                var cfg = ControlFlowGraph.Create(methodBody);
+                                Debug("Method-body operation has syntax parent {parentkind}.", methodBody.Syntax.Parent.Kind().ToString());
+                                string identifier = methodBody.Syntax switch
+                                {
+                                    MethodDeclarationSyntax mds => mds.Identifier.Text,
+                                    AccessorDeclarationSyntax ads => ads.Parent.Parent.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).Text + ((ads.Kind() == SyntaxKind.SetAccessorDeclaration) ? "_Set" : "_Get"),
+                                    _ => ""
+                                };
+                                
+                                Info("Analyzing control-flow of method: {ident}.", identifier);
+                                //var cfg = ControlFlowGraph.Create(methodBody);
                                 //cfg.
                                 //cfg.Blocks.First().
                                 break;
@@ -125,6 +132,29 @@
         #endregion
 
         #region Methods
+
+        #region Logging
+        [DebuggerStepThrough]
+        public static void Info(string messageTemplate, params object[] args) => Runtime.Info(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Debug(string messageTemplate, params object[] args) => Runtime.Debug(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Error(string messageTemplate, params object[] args) => Runtime.Error(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Error(Exception ex, string messageTemplate, params object[] args) => Runtime.Error(ex, messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Warn(string messageTemplate, params object[] args) => Runtime.Warn(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Fatal(string messageTemplate, params object[] args) => Runtime.Fatal(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static Logger.Op Begin(string messageTemplate, params object[] args) => Runtime.Begin(messageTemplate, args);
+        #endregion
 
         #region Syntactic analysis
         public void AnalyzeClassDecl(ClassDeclarationSyntax node, SyntaxNodeAnalysisContext ctx)
@@ -176,6 +206,8 @@
             var cfg = Validator.CompilationConfiguration[c];
             return cfg[section][setting].IsEmpty ? defaultval! : cfg[section][setting].GetValueOrDefault(defaultval!, setDefault);
         }
+
+        public static T AnalyzerSetting<T>(Compilation c, string section, string setting) => AnalyzerSetting<T>(c, section, setting, default(T));
         #endregion
 
         #region Gui
