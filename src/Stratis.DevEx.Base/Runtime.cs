@@ -17,7 +17,7 @@ namespace Stratis.DevEx
             EntryAssembly = Assembly.GetEntryAssembly();
             IsUnitTestRun = EntryAssembly?.FullName.StartsWith("testhost") ?? false;
             SessionId = Rng.Next(0, 99999);            
-            Logger = new ConsoleLogger();
+            Logger = new ConsoleLogger2();
         }
 
         public Runtime(CancellationToken ct)

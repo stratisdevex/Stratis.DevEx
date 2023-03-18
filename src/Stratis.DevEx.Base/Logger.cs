@@ -250,4 +250,108 @@ namespace Stratis.DevEx
         FileLogger l;
     }
     #endregion
+
+    #region NLog console logger
+    public class ConsoleLogger2 : Logger
+    {
+        public ConsoleLogger2(bool debug = false, string logname = "DevEx", bool logToConsole = false) : base()
+        {
+            var config = new LoggingConfiguration();
+          
+            if (debug)
+            {
+                config.Variables["logLevel"] = "Debug";
+            }
+            var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole");
+            config.AddTarget(logconsole);
+            config.AddRule(new LoggingRule("*", LogLevel.Info, logconsole));
+            config.AddRule(new LoggingRule("*", LogLevel.Warn, logconsole));
+            config.AddRule(new LoggingRule("*", LogLevel.Error, logconsole));
+            config.AddRule(new LoggingRule("*", LogLevel.Fatal, logconsole));
+            config.AddRule(new LoggingRule("*", LogLevel.Debug, logconsole));
+            
+
+            /*
+            var highlightRule = new NLog.Targets.ConsoleRowHighlightingRule();
+            highlightRule.Condition = NLog.Conditions.ConditionParser.ParseExpression("level == LogLevel.Info");
+            highlightRule.ForegroundColor = NLog.Targets.ConsoleOutputColor.Green;
+            logconsole.RowHighlightingRules.Add(highlightRule);
+            */
+
+            LogManager.Configuration = config;
+            this.logger = LogManager.GetLogger(logname);
+        }
+
+        #region Overriden methods
+        public override void Info(string messageTemplate, params object[] args) => logger.Info(messageTemplate, args);
+
+        public override void Debug(string messageTemplate, params object[] args) => logger.Debug(messageTemplate, args);
+
+        public override void Error(string messageTemplate, params object[] args) => logger.Error(messageTemplate, args);
+
+        public override void Error(Exception ex, string messageTemplate, params object[] args) => logger.Error(ex, messageTemplate, args);
+
+        public override void Warn(string messageTemplate, params object[] args) => logger.Warn(messageTemplate, args);
+
+        public override void Fatal(string messageTemplate, params object[] args) => logger.Fatal(messageTemplate, args);
+
+        public override Op Begin(string messageTemplate, params object[] args) => new ConsoleLogger2Op(this, String.Format(messageTemplate, args));
+
+        public override void Close()
+        {
+            LogManager.Flush();
+            LogManager.Shutdown();
+        }
+
+        public override void SetLogLevelDebug()
+        {
+            var config = LogManager.Configuration;
+            config.Variables["logLevel"] = "Debug";
+            LogManager.ReconfigExistingLoggers();
+        }
+        #endregion
+
+        #region Fields
+        protected NLog.Logger logger;
+        #endregion
+    }
+
+    public class ConsoleLogger2Op : Logger.Op
+    {
+        public ConsoleLogger2Op(ConsoleLogger2 l, string opName) : base(l)
+        {
+            this.opName = opName;
+            timer.Start();
+            this.l = l;
+            l.Info(opName + "...");
+        }
+
+        public override void Complete()
+        {
+            timer.Stop();
+            l.Info("{0} completed in {1}ms.", opName, timer.ElapsedMilliseconds);
+            isCompleted = true;
+        }
+
+        public override void Abandon()
+        {
+            timer.Stop();
+            isAbandoned = true;
+            l.Error("{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
+        }
+
+        public override void Dispose()
+        {
+            if (timer.IsRunning) timer.Stop();
+            if (!(isCompleted || isAbandoned))
+            {
+                l.Error("{0} abandoned after {1}ms.", opName, timer.ElapsedMilliseconds);
+            }
+        }
+
+        string opName;
+        Stopwatch timer = new Stopwatch();
+        ConsoleLogger2 l;
+    }
+    #endregion
 }

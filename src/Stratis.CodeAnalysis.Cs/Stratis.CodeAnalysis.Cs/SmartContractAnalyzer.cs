@@ -111,10 +111,14 @@
                                     AccessorDeclarationSyntax ads => ads.Parent.Parent.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).Text + ((ads.Kind() == SyntaxKind.SetAccessorDeclaration) ? "_Set" : "_Get"),
                                     _ => ""
                                 };
-                                
-                                Info("Analyzing control-flow of method: {ident}.", identifier);
-                                //var cfg = ControlFlowGraph.Create(methodBody);
-                                //cfg.
+                                if (identifier.IsEmpty())
+                                {
+                                    Error("Unknown method-body syntax: {kind}. Aborting control-flow analysis.", methodBody.Syntax.Kind());
+                                    return;
+                                }
+                                Info("Analyzing control-flow of method: {ident}...", identifier);
+                                var cfg = ControlFlowGraph.Create(methodBody);
+                                Info("{ident} has {len} basic blocks.", identifier, cfg.Blocks.Length);
                                 //cfg.Blocks.First().
                                 break;
                             default:
