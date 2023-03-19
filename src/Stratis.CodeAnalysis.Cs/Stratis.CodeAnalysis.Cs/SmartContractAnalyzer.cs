@@ -105,7 +105,7 @@
                         {
                             case IMethodBodyOperation methodBody:
                                 Debug("Method-body operation has syntax parent {synparentkind}.", methodBody.Syntax.Parent.Kind().ToString());
-                                GraphAnalysis.Analyze(cctx.Compilation, methodBody);
+                                GraphAnalysis.Analyze(cfg, cctx.Compilation, methodBody);
                                 break;
                             default:
                                 break;

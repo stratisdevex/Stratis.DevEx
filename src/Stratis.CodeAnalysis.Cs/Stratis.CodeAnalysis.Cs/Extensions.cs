@@ -3,6 +3,7 @@ using System.Linq;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Stratis.CodeAnalysis.Cs
@@ -22,6 +23,10 @@ namespace Stratis.CodeAnalysis.Cs
         public static bool IsUserStruct(this ITypeSymbol t) => t != null && t.SpecialType == SpecialType.None && t.IsValueType;
 
         public static ITypeSymbol GetRootType(this ITypeSymbol t) => t.BaseType == null || t.BaseType.IsObject() ? t : GetRootType(t.BaseType);
+
+        public static ITypeSymbol GetDeclaringType(this MethodDeclarationSyntax node, SemanticModel model) => model.GetDeclaredSymbol(node.Parent) as ITypeSymbol;
+
+        public static ITypeSymbol GetDeclaringType(this AccessorDeclarationSyntax node, SemanticModel model) => model.GetDeclaredSymbol(node.Parent.Parent) as ITypeSymbol;
 
         public static bool IsAttribute(this ITypeSymbol t) => t != null && (t.ToDisplayString() == "System.Attribute" || t.GetRootType().ToDisplayString() == "System.Attribute");
 

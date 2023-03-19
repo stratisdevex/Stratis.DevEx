@@ -11,13 +11,15 @@ using Microsoft.CodeAnalysis.FlowAnalysis;
 
 using Microsoft.Msagl.Drawing;
 
+using SharpConfig;
+
 using Stratis.DevEx;
 
 namespace Stratis.CodeAnalysis.Cs
 {
     public class GraphAnalysis : Runtime
     {
-        public static void Analyze(Compilation compilation, IMethodBodyOperation methodBody)
+        public static void Analyze(Configuration config, Compilation compilation, IMethodBodyOperation methodBody)
         {
             string identifier = methodBody.Syntax switch
             {
@@ -30,7 +32,13 @@ namespace Stratis.CodeAnalysis.Cs
                 Error("Unknown method-body syntax: {kind}. Aborting control-flow analysis.", methodBody.Syntax.Kind());
                 return;
             }
-            Info("Analyzing control-flow of method: {ident}...", identifier);
+            var classtype = methodBody.Syntax switch
+            {
+                MethodDeclarationSyntax mds => mds.GetDeclaringType(methodBody.SemanticModel),
+                AccessorDeclarationSyntax ads => ads.GetDeclaringType(methodBody.SemanticModel),
+                _ => throw new Exception("Unknown syntax node kind")
+            };
+            Info("Analyzing control-flow of method: {ident} in class {c}...", identifier, classtype.ToDisplayString());
             var cfg = ControlFlowGraph.Create(methodBody);
             Debug("{ident} has {len} basic blocks.", identifier, cfg.Blocks.Length);
             return;

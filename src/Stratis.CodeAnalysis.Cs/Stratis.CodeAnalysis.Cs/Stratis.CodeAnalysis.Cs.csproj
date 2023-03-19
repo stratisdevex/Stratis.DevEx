@@ -15,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ext\AGL\AGL.Drawing.NETStandard\AGL.Drawing.NETStandard.csproj" />
     <ProjectReference Include="..\..\..\ext\Stratis.SmartContracts\Stratis.SmartContracts\Stratis.SmartContracts.csproj" />
     <ProjectReference Include="..\..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
+    <ProjectReference Include="..\..\Stratis.DevEx.Drawing\Stratis.DevEx.Drawing.csproj" />
     <ProjectReference Include="..\..\Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj" />
   </ItemGroup>
 
