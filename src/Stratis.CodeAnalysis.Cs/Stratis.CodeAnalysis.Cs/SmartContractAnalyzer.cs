@@ -104,22 +104,8 @@
                         switch (cctx.Operation)
                         {
                             case IMethodBodyOperation methodBody:
-                                Debug("Method-body operation has syntax parent {parentkind}.", methodBody.Syntax.Parent.Kind().ToString());
-                                string identifier = methodBody.Syntax switch
-                                {
-                                    MethodDeclarationSyntax mds => mds.Identifier.Text,
-                                    AccessorDeclarationSyntax ads => ads.Parent.Parent.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).Text + ((ads.Kind() == SyntaxKind.SetAccessorDeclaration) ? "_Set" : "_Get"),
-                                    _ => ""
-                                };
-                                if (identifier.IsEmpty())
-                                {
-                                    Error("Unknown method-body syntax: {kind}. Aborting control-flow analysis.", methodBody.Syntax.Kind());
-                                    return;
-                                }
-                                Info("Analyzing control-flow of method: {ident}...", identifier);
-                                var cfg = ControlFlowGraph.Create(methodBody);
-                                Info("{ident} has {len} basic blocks.", identifier, cfg.Blocks.Length);
-                                //cfg.Blocks.First().
+                                Debug("Method-body operation has syntax parent {synparentkind}.", methodBody.Syntax.Parent.Kind().ToString());
+                                GraphAnalysis.Analyze(cctx.Compilation, methodBody);
                                 break;
                             default:
                                 break;
