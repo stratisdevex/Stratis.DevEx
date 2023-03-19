@@ -29,6 +29,10 @@ namespace Stratis.DevEx
 
         public bool IsDebug { get; protected set; } = false;
 
+        public static string NLogDebugLayout = "${longdate}${pad:padding=6:inner=${level:uppercase=true}} ${logger}(${threadid}) ${callsite:skipFrames=2:includeNamespace=false}: ${message:withexception=true}";
+
+        public static string NLogLayout = "${longdate}${pad:padding=6:inner=${level:uppercase=true}} ${logger}(${threadid}) ${message:withexception=true}";
+        
         public abstract void Info(string messageTemplate, params object[] args);
 
         public abstract void Debug(string messageTemplate, params object[] args);
@@ -123,13 +127,12 @@ namespace Stratis.DevEx
     {
         public FileLogger(string logFileName, bool debug = false, string logname = "DevEx", bool logToConsole = false) : base()
         {
+            this.logToConsole = logToConsole;
             var config = new LoggingConfiguration();
             var logfile = new NLog.Targets.FileTarget("logfile")
             {
                 FileName = logFileName,
-                Layout = debug ? "${longdate} ${pad:padding=5:inner=${level:uppercase=true}} ${logger} ${callsite:skipFrames=2:includeNamespace=false}: ${message:withexception=true}" :
-                                 "${longdate} ${pad:padding=5:inner=${level:uppercase=true}} ${logger} ${message:withexception=true}"
-
+                Layout = debug ? NLogDebugLayout : NLogLayout
             };
             config.AddTarget(logfile);
             config.AddRule(new LoggingRule("*", LogLevel.Info, logfile));
@@ -141,9 +144,14 @@ namespace Stratis.DevEx
             {
                 config.Variables["logLevel"] = "Debug";
             }
-            var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole");
+           
             if (logToConsole || (Runtime.EntryAssembly?.FullName.StartsWith("OmniSharp") ?? false))
             {
+                this.logToConsole = true;
+                var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole")
+                {
+                    Layout = debug ? NLogDebugLayout : NLogLayout
+                };
                 config.AddTarget(logconsole);
                 config.AddRule(new LoggingRule("*", LogLevel.Info, logconsole));
                 config.AddRule(new LoggingRule("*", LogLevel.Warn, logconsole));
@@ -190,10 +198,11 @@ namespace Stratis.DevEx
         {
             var config = LogManager.Configuration;
             config.RemoveTarget("logfile");
+            if (config.AllTargets.Any(t => t.Name == "logconsole")) config.RemoveTarget("logconsole");
             var logfile = new NLog.Targets.FileTarget("logfile")
             {
                 FileName = this.logFileName,
-                Layout = "${longdate} ${level:uppercase=true} ${logger} ${callsite:skipFrames=2:includeNamespace=false}: ${message:withexception=true}"
+                Layout = NLogDebugLayout
             };
             config.AddTarget(logfile);
             config.AddRule(new LoggingRule("*", LogLevel.Info, logfile));
@@ -201,13 +210,28 @@ namespace Stratis.DevEx
             config.AddRule(new LoggingRule("*", LogLevel.Error, logfile));
             config.AddRule(new LoggingRule("*", LogLevel.Fatal, logfile));
             config.AddRule(new LoggingRule("*", LogLevel.Debug, logfile));
+            if (this.logToConsole)
+            {
+                var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole")
+                {
+                    Layout = NLogDebugLayout
+                };               
+                config.AddTarget(logconsole);
+                config.AddRule(new LoggingRule("*", LogLevel.Info, logconsole));
+                config.AddRule(new LoggingRule("*", LogLevel.Warn, logconsole));
+                config.AddRule(new LoggingRule("*", LogLevel.Error, logconsole));
+                config.AddRule(new LoggingRule("*", LogLevel.Fatal, logconsole));
+                config.AddRule(new LoggingRule("*", LogLevel.Debug, logconsole));
+            }
             config.Variables["logLevel"] = "Debug";
+            this.IsDebug = true;
             LogManager.ReconfigExistingLoggers();
         }
         #endregion
 
         #region Fields
         protected string logFileName;
+        protected bool logToConsole;
         protected NLog.Logger logger;
         #endregion
     }
@@ -254,7 +278,7 @@ namespace Stratis.DevEx
     #region NLog console logger
     public class ConsoleLogger2 : Logger
     {
-        public ConsoleLogger2(bool debug = false, string logname = "DevEx", bool logToConsole = false) : base()
+        public ConsoleLogger2(bool debug = false, string logname = "BASE", bool logToConsole = false) : base()
         {
             var config = new LoggingConfiguration();
           
@@ -262,7 +286,10 @@ namespace Stratis.DevEx
             {
                 config.Variables["logLevel"] = "Debug";
             }
-            var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole");
+            var logconsole = new NLog.Targets.ColoredConsoleTarget("logconsole")
+            {
+                Layout = debug ? NLogDebugLayout : NLogLayout
+            };
             config.AddTarget(logconsole);
             config.AddRule(new LoggingRule("*", LogLevel.Info, logconsole));
             config.AddRule(new LoggingRule("*", LogLevel.Warn, logconsole));
@@ -270,7 +297,6 @@ namespace Stratis.DevEx
             config.AddRule(new LoggingRule("*", LogLevel.Fatal, logconsole));
             config.AddRule(new LoggingRule("*", LogLevel.Debug, logconsole));
             
-
             /*
             var highlightRule = new NLog.Targets.ConsoleRowHighlightingRule();
             highlightRule.Condition = NLog.Conditions.ConditionParser.ParseExpression("level == LogLevel.Info");
