@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Collections.Concurrent;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -47,13 +48,13 @@
                     Info("No analyzer configuration file found, using default configuration...");
                 }
                
-                Validator.CompilationConfiguration.AddOrUpdate(ctx.Compilation, cfg, (_,_) => cfg);
+                CompilationConfiguration.AddOrUpdate(ctx.Compilation.GetHashCode(), cfg, (_,_) => cfg);
                 if (AnalyzerSetting(ctx.Compilation, "Analyzer", "Enabled", true))
                 {
                     #region Gui
                     if (AnalyzerSetting(ctx.Compilation, "Gui", "Enabled", false))
                     {
-                        Runtime.Info("GUI enabled for compilation, registering action to send compilation message...");
+                        Info("GUI enabled for compilation, registering action to send compilation message...");
                         ctx.RegisterCompilationEndAction(cctx =>
                         {
                             SendGuiMessage(cctx.Compilation);
@@ -152,7 +153,7 @@
         {
             var classSymbol = ctx.SemanticModel.GetDeclaredSymbol(node) as ITypeSymbol;
             var attrs = node.AttributeLists.Select(al => al.Attributes).SelectMany(x => x);
-            Runtime.Debug("Class {0} with attributes {1} declared at {2}.", classSymbol.ToDisplayString(), attrs.Select(a => a.Name.ToString()).JoinWithSpaces(), node.GetLineLocation());
+            Debug("Class {0} with attributes {1} declared at {2}.", classSymbol.ToDisplayString(), attrs.Select(a => a.Name.ToString()).JoinWithSpaces(), node.GetLineLocation());
             foreach(var a in attrs)
             {
                 if (a.Name.ToString() == "Deploy")
@@ -194,7 +195,7 @@
 
         public static T AnalyzerSetting<T>(Compilation c, string section, string setting, T defaultval, bool setDefault = false)
         {
-            var cfg = Validator.CompilationConfiguration[c];
+            var cfg = CompilationConfiguration[c.GetHashCode()];
             return cfg[section][setting].IsEmpty ? defaultval! : cfg[section][setting].GetValueOrDefault(defaultval!, setDefault);
         }
 
@@ -312,6 +313,7 @@
         #region Fields
         internal int attrCount = 0;
         protected PipeClient<MessagePack> pipeClient;
+        internal static ConcurrentDictionary<int, Configuration> CompilationConfiguration = new();
         #endregion
     }
 }

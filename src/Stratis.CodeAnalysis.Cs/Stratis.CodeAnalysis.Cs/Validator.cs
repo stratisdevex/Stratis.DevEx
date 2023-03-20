@@ -621,7 +621,6 @@ namespace Stratis.CodeAnalysis.Cs
 
         internal static string[] AllowedAssemblyReferencesNames;
 
-        internal static ConcurrentDictionary<Compilation, Configuration> CompilationConfiguration = new();
         /// <summary>
         /// The set of Assemblies that a <see cref="SmartContract"/> is required to reference
         /// </summary>
