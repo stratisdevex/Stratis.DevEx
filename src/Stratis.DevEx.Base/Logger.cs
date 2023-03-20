@@ -33,6 +33,8 @@ namespace Stratis.DevEx
 
         public static string NLogLayout = "${longdate}${pad:padding=6:inner=${level:uppercase=true}} ${logger}(${threadid}) ${message:withexception=true}";
         
+        
+
         public abstract void Info(string messageTemplate, params object[] args);
 
         public abstract void Debug(string messageTemplate, params object[] args);
@@ -185,7 +187,7 @@ namespace Stratis.DevEx
 
         public override void Fatal(string messageTemplate, params object[] args) => logger.Fatal(messageTemplate, args);
 
-        public override Op Begin(string messageTemplate, params object[] args) => new FileLoggerOp(this, String.Format(messageTemplate, args));
+        public override Op Begin(string messageTemplate, params object[] args) => new FileLoggerOp(this, messageTemplate, args);
 
         public override void Close()
         {
@@ -229,6 +231,14 @@ namespace Stratis.DevEx
         }
         #endregion
 
+        #region Methods
+        public string NLogFormatMessage(string messageTemplate, params object[] args)
+        {
+            var ev = LogEventInfo.Create(LogLevel.Info, "none", this.logger.Factory.DefaultCultureInfo, messageTemplate, args);
+            return ev.FormattedMessage;
+        }
+        #endregion
+
         #region Fields
         protected string logFileName;
         protected bool logToConsole;
@@ -238,12 +248,12 @@ namespace Stratis.DevEx
 
     public class FileLoggerOp : Logger.Op
     {
-        public FileLoggerOp(FileLogger l, string opName) : base(l)
+        public FileLoggerOp(FileLogger l, string opName, params object[] args) : base(l)
         {
-            this.opName = opName;
+            this.opName = l.NLogFormatMessage(opName, args);
             timer.Start();
             this.l = l;
-            l.Info(opName + "...");
+            l.Info(this.opName + "...");
         }
 
         public override void Complete()
@@ -337,6 +347,14 @@ namespace Stratis.DevEx
         }
         #endregion
 
+        #region Methods
+        public string NLogFormatMessage(string messageTemplate, params object[] args)
+        {
+            var ev = LogEventInfo.Create(LogLevel.Info, "none", this.logger.Factory.DefaultCultureInfo, messageTemplate, args);
+            return ev.FormattedMessage;
+        }
+        #endregion
+
         #region Fields
         protected NLog.Logger logger;
         #endregion
@@ -344,12 +362,13 @@ namespace Stratis.DevEx
 
     public class ConsoleLogger2Op : Logger.Op
     {
-        public ConsoleLogger2Op(ConsoleLogger2 l, string opName) : base(l)
+        public ConsoleLogger2Op(ConsoleLogger2 l, string opName, params object[] args) : base(l)
         {
-            this.opName = opName;
+           
+            this.opName = l.NLogFormatMessage(opName, args);
             timer.Start();
             this.l = l;
-            l.Info(opName + "...");
+            l.Info(this.opName + "...");
         }
 
         public override void Complete()

@@ -77,7 +77,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static void AnalyzeControlFlow(Configuration config, SemanticModel model)
         {
-            Info("Analyzing control-flow of source document {doc} using configuration {cfg}.", model.SyntaxTree.FilePath, config["General"]["ConfigFile"].StringValue);
+            using var top = Begin("Analyzing control-flow of source document {doc} using configuration {cfg}.", model.SyntaxTree.FilePath, config["General"]["ConfigFile"].StringValue);
             var projectDir = Path.GetDirectoryName(config["General"]["ConfigFile"].StringValue);
             var graph = new Graph();
             SyntaxNode[] methods = model.SyntaxTree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()
@@ -116,19 +116,17 @@ namespace Stratis.CodeAnalysis.Cs
                 var mbop = (IMethodBodyOperation)op;
                 var cfg = ControlFlowGraph.Create(mbop);
                 Debug("{ident} has {len} basic block(s).", method.Identifier, cfg.Blocks.Where(bb => bb.Kind == BasicBlockKind.Block).Count());
-                
-                Debug("Created graph...");
-
                 for (int j = 0; j < cfg.Blocks.Length; j++)
                 {
                     var bb = cfg.Blocks[j];
-                    if (cfg.Blocks[j].Kind == BasicBlockKind.Exit) continue;
+                    if (bb.Kind == BasicBlockKind.Exit) continue;
                     var nid = method.Identifier + "::" + method.Type + "_" + bb.Ordinal.ToString();
                     var node = graph.FindNode(nid);
                     if (node is null)
                     {
                         node = new Node(nid);
-                        node.LabelText = bb.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine) ?? "";
+                        node.LabelText = 
+                            bb.Kind == BasicBlockKind.Entry ? method.Identifier + "::" + method.Type : bb.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine) ?? "";
                         graph.AddNode(node);
                     }
                     for (int k = 0; k < bb.Predecessors.Length; k++)
@@ -140,7 +138,8 @@ namespace Stratis.CodeAnalysis.Cs
                     }
                 }
             }
-            Debug("Finished creating graph: {n} nodes, {e} edges.", graph.NodeCount, graph.EdgeCount);
+            top.Complete();
+            Debug("Control-flow graph of source document {doc} has {n} nodes, {e} edges.", model.SyntaxTree.FilePath, graph.NodeCount, graph.EdgeCount);
             var ss = projectDir.CombinePath(DateTime.Now.Millisecond + ".dgml");
             Debug("Finished creating graph {ss}.", ss);
             try
