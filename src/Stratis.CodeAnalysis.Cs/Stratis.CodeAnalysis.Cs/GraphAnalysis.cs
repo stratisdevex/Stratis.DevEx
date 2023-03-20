@@ -73,5 +73,40 @@ namespace Stratis.CodeAnalysis.Cs
             //graph.AddNode()
             return;
         }
+
+        public static void AnalyzeControlFlow(Configuration config, SemanticModel model)
+        {
+            Info("Analyzing control-flow of source document {doc}.", model.SyntaxTree.FilePath);
+            SyntaxNode[] methods = model.SyntaxTree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()
+                                   .Cast<SyntaxNode>()
+                                   .Concat(model.SyntaxTree.GetRoot().DescendantNodes().OfType<AccessorDeclarationSyntax>().Cast<SyntaxNode>())
+                                   .ToArray();
+            for (int i = 0;  i < methods.Length; i++)
+            {
+                var m = methods[i];
+                var isscmethod = m switch {
+                    MethodDeclarationSyntax mds => mds.IsSmartContractMethod(model),
+                    AccessorDeclarationSyntax ads => ads.IsSmartContractProperty(model),
+                    _ => false
+                };
+                if (!isscmethod) continue;
+                string identifier = m switch
+                {
+                    MethodDeclarationSyntax mds => mds.Identifier.Text,
+                    AccessorDeclarationSyntax ads => ads.Parent.Parent.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).Text + ((ads.Kind() == SyntaxKind.SetAccessorDeclaration) ? "_Set" : "_Get"),
+                    _ => throw new Exception()
+                };
+               
+                var classtype = m switch
+                {
+                    MethodDeclarationSyntax mds => mds.GetDeclaringType(model),
+                    AccessorDeclarationSyntax ads => ads.GetDeclaringType(model),
+                    _ => throw new Exception()
+                };
+                Info("Analyzing control-flow of method: {ident} in class {c} using config {config}...", identifier, classtype.ToDisplayString(), config["General"]["ConfigFile"].StringValue);
+                //var cfa = model.AnalyzeControlFlow(m.ChildNodes().OfType<StatementSyntax>().First(), m.ChildNodes().OfType<StatementSyntax>().Last());
+                //cfa.
+            }
+        }
     }
 }

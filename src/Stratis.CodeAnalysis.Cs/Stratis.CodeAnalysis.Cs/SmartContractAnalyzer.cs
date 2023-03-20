@@ -101,6 +101,11 @@
                     #endregion
 
                     #region Control-flow analysis;
+                    ctx.RegisterSemanticModelAction(sma =>
+                    {
+                        GraphAnalysis.AnalyzeControlFlow(cfg, sma.SemanticModel);
+                    });
+                    /*
                     ctx.RegisterOperationAction(cctx =>
                     {
                         switch (cctx.Operation)
@@ -113,6 +118,7 @@
                                 break;
                         }
                     }, OperationKind.MethodBody);
+                    */
                     #endregion
                 }
                 else

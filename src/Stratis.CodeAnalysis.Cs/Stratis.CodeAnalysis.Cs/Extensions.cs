@@ -26,7 +26,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static ITypeSymbol GetDeclaringType(this MethodDeclarationSyntax node, SemanticModel model) => model.GetDeclaredSymbol(node.Parent) as ITypeSymbol;
 
-        public static ITypeSymbol GetDeclaringType(this AccessorDeclarationSyntax node, SemanticModel model) => model.GetDeclaredSymbol(node.Parent.Parent) as ITypeSymbol;
+        public static ITypeSymbol GetDeclaringType(this AccessorDeclarationSyntax node, SemanticModel model) => model.GetDeclaredSymbol(node.Parent.Parent.Parent) as ITypeSymbol;
 
         public static bool IsAttribute(this ITypeSymbol t) => t != null && (t.ToDisplayString() == "System.Attribute" || t.GetRootType().ToDisplayString() == "System.Attribute");
 
@@ -49,6 +49,10 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static bool IsWhitelistedPropertyName(this ITypeSymbol t, string propname) => 
             Validator.WhitelistedPropertyNames.ContainsKey(t.ToDisplayString()) && Validator.WhitelistedPropertyNames[t.ToDisplayString()].Contains(propname);
+
+        public static bool IsSmartContractMethod(this MethodDeclarationSyntax node, SemanticModel model) => node.GetDeclaringType(model).IsSmartContract();
+
+        public static bool IsSmartContractProperty(this AccessorDeclarationSyntax node, SemanticModel model) => node.GetDeclaringType(model).IsSmartContract();
 
         public static FileLinePositionSpan GetLineLocation(this SyntaxNode s) => s.GetLocation().GetLineSpan();
 
