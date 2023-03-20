@@ -331,7 +331,7 @@ namespace Stratis.DevEx
 
         public override void Fatal(string messageTemplate, params object[] args) => logger.Fatal(messageTemplate, args);
 
-        public override Op Begin(string messageTemplate, params object[] args) => new ConsoleLogger2Op(this, String.Format(messageTemplate, args));
+        public override Op Begin(string messageTemplate, params object[] args) => new ConsoleLogger2Op(this, messageTemplate, args);
 
         public override void Close()
         {

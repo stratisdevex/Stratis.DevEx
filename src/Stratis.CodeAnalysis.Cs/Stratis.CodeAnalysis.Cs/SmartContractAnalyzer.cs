@@ -216,24 +216,9 @@
                 Runtime.Error("Did not detect GUI process running, not sending message.");
                 return;
             }
+
+            if (this.pipeClient is null) this.pipeClient = Gui.CreatePipeClient();
             
-            if (this.pipeClient is null)
-            {
-                using (var op = Runtime.Begin("Creating GUI pipe client"))
-                {
-                    try
-                    {
-                        pipeClient = new PipeClient<MessagePack>("stratis_devexgui") { AutoReconnect = false };
-                        op.Complete();
-                    }
-                    catch (Exception e)
-                    {
-                        op.Abandon();
-                        Runtime.Error(e, "Error creating GUI pipe client.");
-                        return;
-                    }
-                }
-            }
 
             using (var op = Runtime.Begin("Sending compilation message"))
             {

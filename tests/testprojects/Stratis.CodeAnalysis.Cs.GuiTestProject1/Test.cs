@@ -13,4 +13,6 @@ using Stratis.SmartContracts;
             //b.Clone();
             //var v = NLog.Common.InternalLogger.IncludeTimestamp;
         }
+
+        
     }

@@ -1,6 +1,6 @@
 ﻿using System;
-
-using Microsoft.Msagl.Drawing;
+using System.Collections.Generic;
+using System.Linq;
 
 using Stratis.DevEx.Pipes.Formatters;
 
@@ -35,11 +35,31 @@ namespace Stratis.DevEx.Pipes
     }
 
     [Serializable]
+    public struct NodeData
+    {
+        public string Id { get; set; }
+
+        public string Label { get; set; }
+    }
+
+    [Serializable]
+    public struct EdgeData
+    {
+        public string SourceId { get; set; }
+
+        public string TargetId { get; set; }
+
+        public string Label { get; set; }
+    }
+    
+    [Serializable]
     public class ControlFlowGraphMessage : Message
     {
         public string Document { get; set; } = string.Empty;
 
-        public Graph CFG { get; set; } = new Graph();
+        public NodeData[] Nodes { get; set; } = Array.Empty<NodeData>();
+
+        public EdgeData[] Edges { get; set; } = Array.Empty<EdgeData>();
     }
 
     public class MessageUtils
@@ -65,13 +85,13 @@ namespace Stratis.DevEx.Pipes
         public static string PrettyPrint(CompilationMessage m)
         {
             var n = Environment.NewLine;
-            return $"{{{n}\tCompilation ID: {m.CompilationId}\n\tEditor Entry Assembly:{m.EditorEntryAssembly}\n\tAssemblyName:{m.AssemblyName}{n}\tDocuments:{m.Documents.JoinWithSpaces()}{n}}}";
+            return $"{{{n}\tCompilation ID: {m.CompilationId}\n\tEditor Entry Assembly: {m.EditorEntryAssembly}\n\tAssemblyName: {m.AssemblyName}{n}\tDocuments: {m.Documents.JoinWithSpaces()}{n}}}";
         }
 
         public static string PrettyPrint(ControlFlowGraphMessage m)
         {
             var n = Environment.NewLine;
-            return $"{{{n}\tCompilation ID: {m.CompilationId}\n\tEditor Entry Assembly:{m.EditorEntryAssembly}\n\tAssemblyName:{m.AssemblyName}{n}}}";
+            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tGraph: {m.Nodes.Length} nodes, {m.Edges.Length} edges{n}}}";
         }
     }
 }
