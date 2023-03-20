@@ -34,6 +34,7 @@ namespace Stratis.CodeAnalysis.Cs
                 Error("Unknown method-body syntax: {kind}. Aborting control-flow analysis.", methodBody.Syntax.Kind());
                 return;
             }
+
             var classtype = methodBody.Syntax switch
             {
                 MethodDeclarationSyntax mds => mds.GetDeclaringType(methodBody.SemanticModel),
@@ -76,7 +77,9 @@ namespace Stratis.CodeAnalysis.Cs
 
         public static void AnalyzeControlFlow(Configuration config, SemanticModel model)
         {
-            Info("Analyzing control-flow of source document {doc}.", model.SyntaxTree.FilePath);
+            Info("Analyzing control-flow of source document {doc} using configuration {cfg}.", model.SyntaxTree.FilePath, config["General"]["ConfigFile"].StringValue);
+            var projectDir = Path.GetDirectoryName(config["General"]["ConfigFile"].StringValue);
+            var graph = new Graph();
             SyntaxNode[] methods = model.SyntaxTree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>()
                                    .Cast<SyntaxNode>()
                                    .Concat(model.SyntaxTree.GetRoot().DescendantNodes().OfType<AccessorDeclarationSyntax>().Cast<SyntaxNode>())
@@ -90,23 +93,71 @@ namespace Stratis.CodeAnalysis.Cs
                     _ => false
                 };
                 if (!isscmethod) continue;
-                string identifier = m switch
+                var identifier = m switch
                 {
                     MethodDeclarationSyntax mds => mds.Identifier.Text,
                     AccessorDeclarationSyntax ads => ads.Parent.Parent.ChildTokens().First(t => t.IsKind(SyntaxKind.IdentifierToken)).Text + ((ads.Kind() == SyntaxKind.SetAccessorDeclaration) ? "_Set" : "_Get"),
                     _ => throw new Exception()
                 };
-               
+                var returntype = m switch
+                {
+                    MethodDeclarationSyntax mds => model.GetSymbolInfo(mds.ReturnType).Symbol.ToDisplayString(),
+                    AccessorDeclarationSyntax ads => "prop",//((PropertyDeclarationSyntax)ads.Parent.Parent).Type.ToString(),
+                    _ => throw new Exception()
+                };
                 var classtype = m switch
                 {
                     MethodDeclarationSyntax mds => mds.GetDeclaringType(model),
                     AccessorDeclarationSyntax ads => ads.GetDeclaringType(model),
                     _ => throw new Exception()
                 };
-                Info("Analyzing control-flow of method: {ident} in class {c} using config {config}...", identifier, classtype.ToDisplayString(), config["General"]["ConfigFile"].StringValue);
+                Info("Analyzing control-flow of method: {ident} in class {c}...", identifier, classtype.ToDisplayString());
+                var op = model.GetOperation(m);
+                if (op is null || op is not IMethodBodyOperation)
+                {
+                    Error("Could not get semantic model operation for method {ident}.", identifier);
+                    continue;
+                }
+                var mbop = (IMethodBodyOperation)op;
                 //var cfa = model.AnalyzeControlFlow(m.ChildNodes().OfType<StatementSyntax>().First(), m.ChildNodes().OfType<StatementSyntax>().Last());
-                //cfa.
+                var cfg = ControlFlowGraph.Create(mbop);
+                Debug("{ident} has {len} basic block(s).", identifier, cfg.Blocks.Where(bb => bb.Kind == BasicBlockKind.Block).Count());
+                
+                Debug("Created graph...");
+
+                for (int j = 0; j < cfg.Blocks.Length; j++)
+                {
+                    var bb = cfg.Blocks[j];
+                    if (cfg.Blocks[j].Kind == BasicBlockKind.Exit) continue;
+                    var nid = identifier + "::" + returntype + "_" + bb.Ordinal.ToString();
+                    var node = graph.FindNode(nid);
+                    if (node is null)
+                    {
+                        node = new Node(nid);
+                        node.LabelText = bb.Operations.Select(o => o?.ToString().Replace("Microsoft.CodeAnalysis.Operations.", "") ?? "").JoinWith(Environment.NewLine) ?? "";
+                        graph.AddNode(node);
+                    }
+                    for (int k = 0; k < bb.Predecessors.Length; k++)
+                    {
+                        var pb = bb.Predecessors[k];
+                        var pid  = identifier + "::" + returntype + "_" + pb.Source.Ordinal.ToString();
+                        var pred = graph.FindNode(pid);
+                        graph.AddEdge(pred.Id, node.Id);
+                    }
+                }
             }
+            Debug("Finished creating graph: {n} nodes, {e} edges.", graph.NodeCount, graph.EdgeCount);
+            var ss = projectDir.CombinePath(DateTime.Now.Millisecond + ".dgml");
+            Debug("Finished creating graph {ss}.", ss);
+            try
+            {
+                Drawing.Draw(graph, ss, GraphFormat.DGML);
+            }
+            catch (Exception e)
+            {
+                Error(e, "Drawing error");
+            }
+            Debug("Wrote graph {ss}.", ss);
         }
     }
 }
