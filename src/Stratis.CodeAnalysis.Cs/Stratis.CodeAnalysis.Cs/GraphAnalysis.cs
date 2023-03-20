@@ -58,17 +58,18 @@ namespace Stratis.CodeAnalysis.Cs
                     graph.AddNode(node);
                 }
             }
-            var ss = projectDir.CombinePath(identifier + "_" + DateTime.Now.Millisecond + ".svg");
-            Debug("Finished creating graph {ss}.", ss);
-            try
-            {
-                Drawing.Draw(graph, ss, GraphFormat.SVG);
-            }
-            catch (Exception e)
-            {
-                Error(e, "Drawing error");
-            }
-            Debug("Wrote graph {ss}.", ss);
+            Debug("Finished creating graph.");
+            //var ss = projectDir.CombinePath(identifier + "_" + DateTime.Now.Millisecond + ".svg");
+            //Debug("Finished creating graph {ss}.", ss);
+            //try
+            //{
+            //    Drawing.Draw(graph, ss, GraphFormat.SVG);
+            //}
+            //catch (Exception e)
+            //{
+            //    Error(e, "Drawing error");
+            //}
+            //Debug("Wrote graph {ss}.", ss);
             //graph.AddNode()
             return;
         }
