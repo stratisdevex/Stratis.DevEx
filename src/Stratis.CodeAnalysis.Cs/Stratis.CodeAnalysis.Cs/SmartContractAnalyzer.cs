@@ -40,6 +40,7 @@
                     var cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path.EndsWith("stratisdev.cfg")).Path;
                     Info("Loading analyzer configuration from {0}...", cfgFile);
                     cfg = Runtime.LoadConfig(cfgFile);
+                    cfg["General"]["ConfigFile"].SetValue(cfgFile);
                 }
                 else
                 {
