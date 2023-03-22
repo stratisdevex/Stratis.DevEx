@@ -53,7 +53,7 @@ namespace Stratis.CodeAnalysis.Cs
                     _ => throw new Exception()
                 };
 
-                Info("Analyzing control-flow of method: {ident} in class {c}...", method.Identifier, method.ClassType.ToDisplayString());
+                Info("Analyzing control-flow of method: {ident}...", method.Identifier);
                 var op = model.GetOperation(m);
                 if (op is null || op is not IMethodBodyOperation)
                 {
@@ -87,9 +87,12 @@ namespace Stratis.CodeAnalysis.Cs
             }
             top.Complete();
             Debug("Control-flow graph of source document {doc} has {n} nodes, {e} edges.", model.SyntaxTree.FilePath, graph.NodeCount, graph.EdgeCount);
-            //var pipeClient = Gui.CreatePipeClient();
-            //Gui.SendGuiMessage(model.Compilation, model.SyntaxTree.FilePath, graph, pipeClient);
-            //pipeClient.Dispose();
+            if (config["Gui"]["Enabled"].BoolValue)
+            {
+                var pipeClient = Gui.CreatePipeClient();
+                Gui.SendGuiMessage(model.Compilation, model.SyntaxTree.FilePath, graph, pipeClient);
+                pipeClient.Dispose();
+            }
         }
     }
 }

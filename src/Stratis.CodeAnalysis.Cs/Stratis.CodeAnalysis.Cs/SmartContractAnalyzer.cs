@@ -47,84 +47,71 @@
                 {
                     Info("No analyzer configuration file found, using default configuration...");
                 }
-               
-                CompilationConfiguration.AddOrUpdate(ctx.Compilation.GetHashCode(), cfg, (_,_) => cfg);
-                if (AnalyzerSetting(ctx.Compilation, "Analyzer", "Enabled", true))
+
+                if (!cfg["Analyzer"]["Enabled"].GetValueOrDefault(true))
                 {
-                    #region Gui
-                    if (AnalyzerSetting(ctx.Compilation, "Gui", "Enabled", false))
+                    Runtime.Info("Analyzer disabled in configuration file...not registering analyzer actions.");
+                    return;
+                }
+
+                #region Gui
+                if (cfg["Gui"]["Enabled"].BoolValue)
+                {
+                    Info("GUI enabled for compilation, registering action to send compilation message...");
+                    ctx.RegisterCompilationEndAction(cctx =>
                     {
-                        Info("GUI enabled for compilation, registering action to send compilation message...");
-                        ctx.RegisterCompilationEndAction(cctx =>
-                        {
-                            SendGuiMessage(cctx.Compilation);
-                        });
+                        SendGuiMessage(cctx.Compilation);
+                    });
+                }
+                #endregion
+
+                #region Smart contract validation
+                //ctx.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
+                ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
+                ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
+                ctx.RegisterSyntaxNodeAction(ctx => AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
+                ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeStructDecl((StructDeclarationSyntax)ctx.Node, ctx), SyntaxKind.StructDeclaration);
+                ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeConstructorDecl((ConstructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ConstructorDeclaration);
+                ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeFieldDecl((FieldDeclarationSyntax)ctx.Node, ctx), SyntaxKind.FieldDeclaration);
+                ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeMethodDecl((MethodDeclarationSyntax)ctx.Node, ctx), SyntaxKind.MethodDeclaration);
+                ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeDestructorDecl((DestructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.DestructorDeclaration);
+                ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeTryStmt((TryStatementSyntax)ctx.Node, ctx), SyntaxKind.TryStatement);
+
+                ctx.RegisterOperationAction(cctx =>
+                {
+                    switch (cctx.Operation)
+                    {
+                        case IObjectCreationOperation objectCreation:
+                            Validator.AnalyzeObjectCreation(objectCreation, cctx);
+                            break;
+
+                        case IPropertyReferenceOperation propReference:
+                            Validator.AnalyzePropertyReference(propReference, cctx);
+                            break;
+
+                        case IInvocationOperation methodInvocation:
+                            Validator.AnalyzeMethodInvocation(methodInvocation, cctx);
+                            Validator.AnalyzeAssertConditionConstant(methodInvocation, cctx);
+                            Validator.AnalyzeAssertMessageNotProvided(methodInvocation, cctx);
+                            Validator.AnalyzeAssertMessageEmpty(methodInvocation, cctx);
+                            break;
+
+                        case IVariableDeclaratorOperation variableDeclarator:
+                            Validator.AnalyzeVariableDeclaration(variableDeclarator, cctx);
+                            break;
                     }
-                    #endregion
+                }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
+                #endregion
 
-                    #region Smart contract validation
-                    //ctx.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
-                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeUsingDirective((UsingDirectiveSyntax)ctx.Node, ctx), SyntaxKind.UsingDirective);
-                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeNamespaceDecl((NamespaceDeclarationSyntax)ctx.Node, ctx), SyntaxKind.NamespaceDeclaration);
-                    ctx.RegisterSyntaxNodeAction(ctx => AnalyzeClassDecl((ClassDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ClassDeclaration);
-                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeStructDecl((StructDeclarationSyntax)ctx.Node, ctx), SyntaxKind.StructDeclaration);
-                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeConstructorDecl((ConstructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.ConstructorDeclaration);
-                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeFieldDecl((FieldDeclarationSyntax)ctx.Node, ctx), SyntaxKind.FieldDeclaration);
-                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeMethodDecl((MethodDeclarationSyntax)ctx.Node, ctx), SyntaxKind.MethodDeclaration);
-                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeDestructorDecl((DestructorDeclarationSyntax)ctx.Node, ctx), SyntaxKind.DestructorDeclaration);
-                    ctx.RegisterSyntaxNodeAction(ctx => Validator.AnalyzeTryStmt((TryStatementSyntax)ctx.Node, ctx), SyntaxKind.TryStatement);
-
-                    ctx.RegisterOperationAction(cctx =>
-                    {
-                        switch (cctx.Operation)
-                        {
-                            case IObjectCreationOperation objectCreation:
-                                Validator.AnalyzeObjectCreation(objectCreation, cctx);
-                                break;
-
-                            case IPropertyReferenceOperation propReference:
-                                Validator.AnalyzePropertyReference(propReference, cctx);
-                                break;
-
-                            case IInvocationOperation methodInvocation:
-                                Validator.AnalyzeMethodInvocation(methodInvocation, cctx);
-                                Validator.AnalyzeAssertConditionConstant(methodInvocation, cctx);
-                                Validator.AnalyzeAssertMessageNotProvided(methodInvocation, cctx);
-                                Validator.AnalyzeAssertMessageEmpty(methodInvocation, cctx);
-                                break;
-
-                            case IVariableDeclaratorOperation variableDeclarator:
-                                Validator.AnalyzeVariableDeclaration(variableDeclarator, cctx);
-                                break;
-                        }
-                    }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
-                    #endregion
-
-                    #region Control-flow analysis;
+                #region Control-flow analysis;
+                if (cfg["ControlFlowAnalysis"]["Enabled"].BoolValue)
+                {
                     ctx.RegisterSemanticModelAction(sma =>
                     {
                         GraphAnalysis.AnalyzeControlFlow(cfg, sma.SemanticModel);
                     });
-                    /*
-                    ctx.RegisterOperationAction(cctx =>
-                    {
-                        switch (cctx.Operation)
-                        {
-                            case IMethodBodyOperation methodBody:
-                                Debug("Method-body operation has syntax parent {synparentkind}.", methodBody.Syntax.Parent.Kind().ToString());
-                                GraphAnalysis.Analyze(cfg, cctx.Compilation, methodBody);
-                                break;
-                            default:
-                                break;
-                        }
-                    }, OperationKind.MethodBody);
-                    */
-                    #endregion
                 }
-                else
-                {
-                    Runtime.Info("Analyzer disabled in configuration file...not registering analyzer actions.");
-                }
+                #endregion
             });
         }
         #endregion
@@ -195,6 +182,7 @@
         {
             var cfg = new Configuration();
             var analyzer = cfg.Add("Analyzer");
+            analyzer.Add("Enabled", true);
             analyzer.Add("Debug", false);
             return cfg;
         }
@@ -255,7 +243,6 @@
                 }
             }
         }
-
 
         protected static bool GuiProcessRunning()
         {
