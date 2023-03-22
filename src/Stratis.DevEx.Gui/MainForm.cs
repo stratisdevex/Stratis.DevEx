@@ -248,7 +248,7 @@ namespace Stratis.DevEx.Gui
 
 
 		#region Fields
-		protected static Icon TestIcon => Icon.FromResource("Stratis.DevEx.Gui.Images.TestIcon.ico");
+		protected static readonly Icon TestIcon = Icon.FromResource("Stratis.DevEx.Gui.Images.TestIcon.ico");
 		#pragma warning disable CS0618 // Type or member is obsolete
 		protected TreeView navigation;
 		#pragma warning restore CS0618 // Type or member is obsolete
