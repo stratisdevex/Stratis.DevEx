@@ -14,5 +14,8 @@ using Stratis.SmartContracts;
             //var v = NLog.Common.InternalLogger.IncludeTimestamp;
         }
 
-        
+        public void Foo()
+        {
+             byte[] b = {};
+        }
     }

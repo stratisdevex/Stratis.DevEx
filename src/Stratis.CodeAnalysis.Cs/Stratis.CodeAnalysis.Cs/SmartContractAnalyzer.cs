@@ -111,6 +111,10 @@
                         GraphAnalysis.AnalyzeControlFlow(cfg, sma.SemanticModel);
                     });
                 }
+                else
+                {
+                    Info("Control-flow analysis not enabled in analyzer configuration.");
+                }
                 #endregion
             });
         }

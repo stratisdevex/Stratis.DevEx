@@ -12,9 +12,9 @@ namespace Stratis.DevEx.Gui
         #region Constructors
         public MainForm()
         {
-#pragma warning disable CS0618 // Type or member is obsolete
+            #pragma warning disable CS0618 // Type or member is obsolete
             navigation = new TreeView()
-#pragma warning restore CS0618 // Type or member is obsolete
+            #pragma warning restore CS0618 // Type or member is obsolete
             {
                 Size = new Size(100, 150)
             };
@@ -92,9 +92,9 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Fields
-#pragma warning disable CS0618 // Type or member is obsolete
+        #pragma warning disable CS0618 // Type or member is obsolete
         protected TreeView navigation;
-#pragma warning restore CS0618 // Type or member is obsolete
+        #pragma warning restore CS0618 // Type or member is obsolete
         protected List<WebView> projectViews;
         protected Splitter splitter;
         #endregion

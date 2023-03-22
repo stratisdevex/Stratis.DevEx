@@ -19,38 +19,14 @@ namespace Stratis.DevEx.Gui
             : this(Platform.Detect) {}
 
         public GuiApp(Platform platform)
-            : base(platform)
-        {
-        }
+            : base(platform) {}
         #endregion
 
         #region Overriden members
-        protected override void OnInitialized(EventArgs e)
-        {
-            this.MainForm = new MainForm();
-            base.OnInitialized(e);
-        }
+        
         #endregion
 
         #region Methods
-        public void ReadMessage(MessagePack m)
-        {
-            switch (m.Type)
-            {
-                case MessageType.COMPILATION_MESSAGE:
-                    var cm = MessageUtils.Deserialize<CompilationMessage>(m.MessageBytes);
-                    Info("Message received: {msg}", MessageUtils.PrettyPrint(cm));
-                    ReadMessage(cm);
-                    break;
-
-                case MessageType.CONTROL_FLOW_GRAPH_MESSAGE:
-                    var cfgm = MessageUtils.Deserialize<ControlFlowGraphMessage>(m.MessageBytes);
-                    Info("Message received: {msg}", MessageUtils.PrettyPrint(cfgm));
-                    ReadMessage(cfgm);
-                    break;
-            }
-        }
-        
         public static void ReadMessage(CompilationMessage m)
         {
 

@@ -39,31 +39,18 @@ namespace Stratis.DevEx.Gui
                 GuiApp = new GuiApp(Eto.Platform.Detect);
                 GuiApp.Initialized += (sender, e) => GuiApp.AsyncInvoke(async () => await PipeServer.StartAsync());
                 GuiApp.Terminating += (sender, e) => Shutdown();
-                PipeServer.MessageReceived += (sender, e) => GuiApp.Invoke(() => GuiApp.ReadMessage(e.Message));
+                PipeServer.MessageReceived += (sender, e) => GuiApp.Invoke(() => ReadMessage(e.Message, GuiApp.ReadMessage, GuiApp.ReadMessage));
                 WriteRunFile();
                 GuiApp.Run(new MainForm());
             }
             else
             {
-                PipeServer.MessageReceived += (sender, e) =>
-                {
-                    switch (e.Message.Type)
-                    {
-                        case MessageType.COMPILATION_MESSAGE:
-                            var cm = MessageUtils.Deserialize<CompilationMessage>(e.Message.MessageBytes);
-                            Info("Message received: {msg}", MessageUtils.PrettyPrint(cm));
-                            break;
-
-                        case MessageType.CONTROL_FLOW_GRAPH_MESSAGE:
-                            var cfgm = MessageUtils.Deserialize<ControlFlowGraphMessage>(e.Message.MessageBytes);
-                            Info("Message received: {msg}", MessageUtils.PrettyPrint(cfgm));
-                            break;
-                    }
-                };
+                Info("Not starting GUI..."); 
+                PipeServer.MessageReceived += (sender, e) => ReadMessage(e.Message);
                 PipeServer.StartAsync().Wait();
                 WriteRunFile();
                 Console.CancelKeyPress += (sender, e) => Shutdown();
-                Info("Not starting GUI. Press Ctrl-C to exit...");
+                Info("Press Ctrl-C to exit...");
                 while (true)
                 {
                     System.Threading.Thread.Sleep(100);
@@ -81,6 +68,23 @@ namespace Stratis.DevEx.Gui
             Info("Wrote run file {runfile}.", RunFile);
         }
 
+        public static void ReadMessage(MessagePack m, Action<CompilationMessage>? cma = null, Action<ControlFlowGraphMessage>? cfgma = null)
+        {
+            switch (m.Type)
+            {
+                case MessageType.COMPILATION:
+                    var cm = MessageUtils.Deserialize<CompilationMessage>(m.MessageBytes);
+                    Info("Message received: \n{msg}", MessageUtils.PrettyPrint(cm));
+                    cma?.Invoke(cm);
+                    break;
+
+                case MessageType.CONTROL_FLOW_GRAPH:
+                    var cfgm = MessageUtils.Deserialize<ControlFlowGraphMessage>(m.MessageBytes);
+                    Info("Message received: \n{msg}", MessageUtils.PrettyPrint(cfgm));
+                    cfgma?.Invoke(cfgm);
+                    break;
+            }
+        }
         public static void Shutdown()
         {
             Info("Shutting down...");

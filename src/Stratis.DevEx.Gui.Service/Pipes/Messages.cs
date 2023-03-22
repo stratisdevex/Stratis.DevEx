@@ -9,8 +9,8 @@ namespace Stratis.DevEx.Pipes
     [Serializable]
     public enum MessageType
     {
-        COMPILATION_MESSAGE,
-        CONTROL_FLOW_GRAPH_MESSAGE
+        COMPILATION,
+        CONTROL_FLOW_GRAPH
     }
     
     [Serializable]
@@ -72,13 +72,13 @@ namespace Stratis.DevEx.Pipes
 
         public static MessagePack Pack(CompilationMessage m) => new MessagePack()
         {
-            Type = MessageType.COMPILATION_MESSAGE,
+            Type = MessageType.COMPILATION,
             MessageBytes = Serialize(m)
         };
         
         public static MessagePack Pack(ControlFlowGraphMessage m) => new MessagePack()
         {
-            Type = MessageType.CONTROL_FLOW_GRAPH_MESSAGE,
+            Type = MessageType.CONTROL_FLOW_GRAPH,
             MessageBytes = Serialize(m)
         };
 
