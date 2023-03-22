@@ -12,13 +12,20 @@ namespace Stratis.DevEx.Gui
         #region Constructors
         public MainForm()
         {
-            #pragma warning disable CS0618 // Type or member is obsolete
-            navigation = new TreeView()
+			Style = "main";
+			MinimumSize = new Size(900, 600);
+			Title = "Stratis DevEx";
+			#pragma warning disable CS0618 // Type or member is obsolete
+			navigation = new TreeView()
             #pragma warning restore CS0618 // Type or member is obsolete
             {
                 Size = new Size(100, 150)
             };
-            navigation.DataStore = CreateTreeItem(0, "Item");
+			navigation.DataStore = new TreeItem(
+				new TreeItem() { Image = Globe, Text = "About" },
+				new TreeItem() { Image = TestIcon, Text = "Projects"}
+			);
+			//CreateTreeItem(0, "Item");
             projectViews = new List<WebView>();
             projectViews.Add(new WebView());
             projectViews[0].LoadHtml(@"<html>
@@ -175,11 +182,11 @@ namespace Stratis.DevEx.Gui
 </body>
 
 </html>");
-            splitter = new Splitter();
-            splitter.Panel1 = navigation;
+			splitter = new Splitter();
+			splitter.Panel1 = navigation;
 			splitter.Panel2 = projectViews[0];
-            Title = "Stratis DevEx";
-            MinimumSize = new Size(200, 200);
+			splitter.Panel1MinimumSize = 300;
+			splitter.Panel2MinimumSize = 600;
             Content = splitter;
             /*
             Content = new StackLayout
@@ -222,7 +229,7 @@ namespace Stratis.DevEx.Gui
             };
 
             // create toolbar			
-            ToolBar = new ToolBar { Items = { clickMe } };
+            //ToolBar = new ToolBar { Items = { clickMe } };
         }
         #endregion
 
@@ -249,7 +256,8 @@ namespace Stratis.DevEx.Gui
 
 		#region Fields
 		protected static readonly Icon TestIcon = Icon.FromResource("Stratis.DevEx.Gui.Images.TestIcon.ico");
-		#pragma warning disable CS0618 // Type or member is obsolete
+		protected static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
+#pragma warning disable CS0618 // Type or member is obsolete
 		protected TreeView navigation;
 		#pragma warning restore CS0618 // Type or member is obsolete
 		
