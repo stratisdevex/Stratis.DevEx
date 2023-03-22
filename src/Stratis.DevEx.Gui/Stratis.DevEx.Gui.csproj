@@ -7,7 +7,7 @@
   -->
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
     <BuildPlatform>Windows</BuildPlatform>
@@ -18,6 +18,16 @@
     <Product>Stratis.DevEx</Product>
     <Version>0.1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\TestIcon.ico" />
+    <None Remove="Images\TestImage.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Images\TestIcon.ico" />
+    <EmbeddedResource Include="Images\TestImage.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Eto.Platform.Windows" Version="2.7.1" />

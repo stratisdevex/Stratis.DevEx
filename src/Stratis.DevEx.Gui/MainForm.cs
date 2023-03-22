@@ -233,7 +233,7 @@ namespace Stratis.DevEx.Gui
             {
                 Text = name,
                 //Expanded = expanded++ % 2 == 0,
-                //Image = image
+                Image = TestIcon
             };
             if (level < 4)
             {
@@ -244,14 +244,16 @@ namespace Stratis.DevEx.Gui
             }
             return item;
         }
-        #endregion
+		#endregion
 
-        
-        #region Fields
-        #pragma warning disable CS0618 // Type or member is obsolete
-        protected TreeView navigation;
-        #pragma warning restore CS0618 // Type or member is obsolete
-        protected List<WebView> projectViews;
+
+		#region Fields
+		protected static Icon TestIcon => Icon.FromResource("Stratis.DevEx.Gui.Images.TestIcon.ico");
+		#pragma warning disable CS0618 // Type or member is obsolete
+		protected TreeView navigation;
+		#pragma warning restore CS0618 // Type or member is obsolete
+		
+		protected List<WebView> projectViews;
         protected Splitter splitter;
         #endregion
     }
