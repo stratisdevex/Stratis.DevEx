@@ -6,7 +6,7 @@ set ERROR_CODE=0
 REM From Alec Mev https://superuser.com/questions/35698/how-to-supress-terminate-batch-job-y-n-confirmation/715798#715798
 IF [%JUSTTERMINATE%] == [OKAY] (
     SET JUSTTERMINATE=
-    src\Stratis.DevEx.Gui\bin\Windows\Debug\net48\Stratis.DevEx.Gui.exe %*
+    src\Stratis.DevEx.Gui\bin\Windows\Debug\netcoreapp3.1-windows\Stratis.DevEx.Gui.exe %*
 ) ELSE (
     SET JUSTTERMINATE=OKAY
     CALL %0 %* <NUL
