@@ -2,7 +2,6 @@
 
 using Microsoft.Msagl.Drawing;
 
-
 namespace Stratis.DevEx.Drawing
 {
     public class Drawing : Runtime
@@ -29,7 +28,6 @@ namespace Stratis.DevEx.Drawing
                     break;
 
                 case GraphFormat.SVG:
-
                     var svg = AGL.Drawing.Drawing.DrawSvg(graph, width, height);
                     File.WriteAllText(filename, svg);
                     break;

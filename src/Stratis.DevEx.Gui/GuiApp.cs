@@ -27,14 +27,16 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Methods
-        public static void ReadMessage(CompilationMessage m)
+        public void ReadMessage(CompilationMessage m)
         {
-
+            var mainform = (MainForm)this.MainForm;
+            mainform.ReadMessage(m);
         }
 
-        public static void ReadMessage(ControlFlowGraphMessage m)
+        public void ReadMessage(ControlFlowGraphMessage m)
         {
-
+            var mainform = (MainForm)this.MainForm;
+            mainform.ReadMessage(m);
         }
 
         #region Logging
@@ -60,6 +62,9 @@ namespace Stratis.DevEx.Gui
         public static Logger.Op Begin(string messageTemplate, params object[] args) => Runtime.Begin(messageTemplate, args);
         #endregion
 
+        #endregion
+
+        #region Fields
         #endregion
     }
 }

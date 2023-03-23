@@ -20,11 +20,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\jetbrainsrider.png" />
     <None Remove="Images\TestIcon.ico" />
     <None Remove="Images\TestImage.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Images\jetbrainsrider.png" />
     <EmbeddedResource Include="Images\TestIcon.ico" />
     <EmbeddedResource Include="Images\TestImage.png" />
   </ItemGroup>

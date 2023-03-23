@@ -108,7 +108,14 @@
                 {
                     ctx.RegisterSemanticModelAction(sma =>
                     {
-                        GraphAnalysis.AnalyzeControlFlow(cfg, sma.SemanticModel);
+                        if (!sma.SemanticModel.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+                        {
+                            GraphAnalysis.AnalyzeControlFlow(cfg, sma.SemanticModel);
+                        }
+                        else
+                        {
+                            Debug("Compilation has errors, not running graph analysis.");
+                        }
                     });
                 }
                 else
