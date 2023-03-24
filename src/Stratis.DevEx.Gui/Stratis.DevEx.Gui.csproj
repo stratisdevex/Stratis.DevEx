@@ -23,12 +23,16 @@
     <None Remove="Images\jetbrainsrider.png" />
     <None Remove="Images\TestIcon.ico" />
     <None Remove="Images\TestImage.png" />
+    <None Remove="Images\Visual_Studio_Icon_2022_200.png" />
+    <None Remove="Images\vscode.png" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Images\jetbrainsrider.png" />
     <EmbeddedResource Include="Images\TestIcon.ico" />
     <EmbeddedResource Include="Images\TestImage.png" />
+    <EmbeddedResource Include="Images\Visual_Studio_Icon_2022_200.png" />
+    <EmbeddedResource Include="Images\vscode.png" />
   </ItemGroup>
 
   <ItemGroup>

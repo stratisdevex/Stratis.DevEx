@@ -26,21 +26,17 @@ namespace Stratis.DevEx.Gui
 				new TreeItem() { Image = Globe, Text = "About" },
 				new TreeItem() { Image = TestIcon, Text = "Projects"}
 			);
+            navigation.Activated += Navigation_NodeMouseClick;
+            navigation.NodeMouseClick += Navigation_NodeMouseClick; ;
 			//CreateTreeItem(0, "Item");
             projectViews = new List<WebView>();
             projectViews.Add(new WebView());
-            projectViews[0].LoadHtml(@"<html>
-<head><title>Hello!</title></head>
-<body>
-
-</body>
-
-</html>");
+            projectViews[0].LoadHtml(@"<html><head><title>Hello!</title></head><body></body></html>");
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;
 			splitter.Panel2 = projectViews[0];
-			//splitter.Panel1MinimumSize = 300;
-			//splitter.Panel2MinimumSize = 600;
+			splitter.Panel1MinimumSize = 300;
+			splitter.Panel2MinimumSize = 600;
             Content = splitter;
            
             // create a few commands that can be used for the menu and toolbar
@@ -75,6 +71,11 @@ namespace Stratis.DevEx.Gui
             // create toolbar			
             //ToolBar = new ToolBar { Items = { clickMe } };
         }
+
+       
+
+
+
         #endregion
 
         #region Methods
@@ -88,18 +89,24 @@ namespace Stratis.DevEx.Gui
             var projects = (TreeItem) navigation.DataStore[1];
             projects.Children.Add(new TreeItem
             {
+                Key = m.EditorEntryAssembly + m.AssemblyName + m.CompilationId.ToString(),
                 Text = m.AssemblyName,
-                Image = JetbrainsRider
+                Image = m.AssemblyName switch
+                {
+                   var x when x.StartsWith("OmniSharp") => VSCode,
+                   var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
+                   _ => Globe
+                }
             });
             navigation.RefreshItem(projects);
         }
 
         #endregion
 
-
         #region Fields
         protected static readonly Icon TestIcon = Icon.FromResource("Stratis.DevEx.Gui.Images.TestIcon.ico");
         protected static readonly Icon JetbrainsRider = Icon.FromResource("Stratis.DevEx.Gui.Images.jetbrainsrider.png");
+        protected static readonly Icon VSCode = Icon.FromResource("Stratis.DevEx.Gui.Images.vscode.png");
         protected static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
         #pragma warning disable CS0618 // Type or member is obsolete
 		internal TreeView navigation;
@@ -107,6 +114,20 @@ namespace Stratis.DevEx.Gui
 		
 		internal List<WebView> projectViews;
         protected Splitter splitter;
+        #endregion
+
+        #region Event Handlers
+        private void Navigation_Activated(object? sender, TreeViewItemEventArgs e)
+        {
+            MessageBox.Show(this, "I was clicked!: " + e.Item.Key);
+        }
+
+
+        private void Navigation_NodeMouseClick(object? sender, TreeViewItemEventArgs e)
+        {
+            MessageBox.Show(this, "I was clicked!: " + e.Item.Key);
+        }
+
         #endregion
     }
 }
