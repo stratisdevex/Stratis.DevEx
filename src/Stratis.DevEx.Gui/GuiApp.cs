@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Msagl.Drawing;
 using Eto;
 using Eto.Forms;
 
@@ -62,9 +63,6 @@ namespace Stratis.DevEx.Gui
         public static Logger.Op Begin(string messageTemplate, params object[] args) => Runtime.Begin(messageTemplate, args);
         #endregion
 
-        #endregion
-
-        #region Fields
         #endregion
     }
 }

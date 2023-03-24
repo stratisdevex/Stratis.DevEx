@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 using Eto.Drawing;
 using Eto.Forms;
@@ -83,21 +85,70 @@ namespace Stratis.DevEx.Gui
 
         public void ReadMessage(ControlFlowGraphMessage m)
         {
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projects = (TreeItem) navigation.DataStore[1];
-            projects.Children.Add(new TreeItem
+            if (projects.Children.Any(c => c.Key == projectid))
             {
-                Key = m.EditorEntryAssembly + m.AssemblyName,
-                Text = m.AssemblyName,
-                Image = m.EditorEntryAssembly switch
+                Debug("Project {proj} already exists in tree, updating...", projectid);
+                var p = (TreeItem)projects.Children.First(c => c.Key == projectid);
+                if (!p.Children.Any(c => c.Key == m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.Document))
                 {
-                   var x when x.StartsWith("VBCSCompiler") => VisualStudio,
-                   var x when x.StartsWith("OmniSharp") => VSCode,
-                   var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
-                   _ => Globe
+                    p.Children.Add(new TreeItem()
+                    {
+                        Key = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.Document,
+                        Text = m.Document,
+                        Image = CSharp
+                    });
                 }
-            });
+            }
+            else
+            {
+                Debug("Project {proj} does not exists in tree, adding...", projectid);
+                var doc = new TreeItem()
+                {
+                    Key = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.Document,
+                    Text = m.Document,
+                    Image = CSharp
+                };
+                projects.Children.Add(new TreeItem(doc)
+                {
+                    Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
+                    Text = m.AssemblyName,
+                    Image = m.EditorEntryAssembly switch
+                    {
+                        var x when x.StartsWith("VBCSCompiler") => VisualStudio,
+                        var x when x.StartsWith("OmniSharp") => VSCode,
+                        var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
+                        _ => Globe
+                    },
+                    
+                });
+            }
             navigation.RefreshItem(projects);
         }
+
+        #region Logging
+        [DebuggerStepThrough]
+        public static void Info(string messageTemplate, params object[] args) => Runtime.Info(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Debug(string messageTemplate, params object[] args) => Runtime.Debug(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Error(string messageTemplate, params object[] args) => Runtime.Error(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Error(Exception ex, string messageTemplate, params object[] args) => Runtime.Error(ex, messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Warn(string messageTemplate, params object[] args) => Runtime.Warn(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static void Fatal(string messageTemplate, params object[] args) => Runtime.Fatal(messageTemplate, args);
+
+        [DebuggerStepThrough]
+        public static Logger.Op Begin(string messageTemplate, params object[] args) => Runtime.Begin(messageTemplate, args);
+        #endregion
 
         #endregion
 
@@ -106,6 +157,7 @@ namespace Stratis.DevEx.Gui
         protected static readonly Icon JetbrainsRider = Icon.FromResource("Stratis.DevEx.Gui.Images.jetbrainsrider.png");
         protected static readonly Icon VisualStudio = Icon.FromResource("Stratis.DevEx.Gui.Images.visualstudio.png");
         protected static readonly Icon VSCode = Icon.FromResource("Stratis.DevEx.Gui.Images.vscode.png");
+        protected static readonly Icon CSharp = Icon.FromResource("Stratis.DevEx.Gui.Images.csharp.png");
         protected static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
         #pragma warning disable CS0618 // Type or member is obsolete
 		internal TreeView navigation;
