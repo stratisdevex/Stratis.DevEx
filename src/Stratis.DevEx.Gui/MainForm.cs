@@ -73,9 +73,6 @@ namespace Stratis.DevEx.Gui
         }
 
        
-
-
-
         #endregion
 
         #region Methods
@@ -89,10 +86,11 @@ namespace Stratis.DevEx.Gui
             var projects = (TreeItem) navigation.DataStore[1];
             projects.Children.Add(new TreeItem
             {
-                Key = m.EditorEntryAssembly + m.AssemblyName + m.CompilationId.ToString(),
+                Key = m.EditorEntryAssembly + m.AssemblyName,
                 Text = m.AssemblyName,
-                Image = m.AssemblyName switch
+                Image = m.EditorEntryAssembly switch
                 {
+                   var x when x.StartsWith("VBCSCompiler") => VisualStudio,
                    var x when x.StartsWith("OmniSharp") => VSCode,
                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
                    _ => Globe
@@ -106,6 +104,7 @@ namespace Stratis.DevEx.Gui
         #region Fields
         protected static readonly Icon TestIcon = Icon.FromResource("Stratis.DevEx.Gui.Images.TestIcon.ico");
         protected static readonly Icon JetbrainsRider = Icon.FromResource("Stratis.DevEx.Gui.Images.jetbrainsrider.png");
+        protected static readonly Icon VisualStudio = Icon.FromResource("Stratis.DevEx.Gui.Images.visualstudio.png");
         protected static readonly Icon VSCode = Icon.FromResource("Stratis.DevEx.Gui.Images.vscode.png");
         protected static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
         #pragma warning disable CS0618 // Type or member is obsolete
@@ -117,12 +116,6 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Event Handlers
-        private void Navigation_Activated(object? sender, TreeViewItemEventArgs e)
-        {
-            MessageBox.Show(this, "I was clicked!: " + e.Item.Key);
-        }
-
-
         private void Navigation_NodeMouseClick(object? sender, TreeViewItemEventArgs e)
         {
             MessageBox.Show(this, "I was clicked!: " + e.Item.Key);
