@@ -45,9 +45,9 @@ namespace Stratis.DevEx.Gui
             }
             else
             {
-                Info("Not starting GUI..."); 
-                PipeServer.MessageReceived += (sender, e) => ReadMessage(e.Message);
+                Info("Not starting GUI...");
                 PipeServer.StartAsync().Wait();
+                PipeServer.MessageReceived += (sender, e) => ReadMessage(e.Message);
                 WriteRunFile();
                 Console.CancelKeyPress += (sender, e) => Shutdown();
                 Info("Press Ctrl-C to exit...");

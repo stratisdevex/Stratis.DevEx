@@ -92,6 +92,7 @@ namespace Stratis.CodeAnalysis.Cs
                 var pipeClient = Gui.CreatePipeClient();
                 Gui.SendGuiMessage(model.Compilation, model.SyntaxTree.FilePath, graph, pipeClient);
                 pipeClient.Dispose();
+                //File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Html.DrawControlFlowGraph(graph));
             }
         }
     }

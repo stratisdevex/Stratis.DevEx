@@ -1,10 +1,11 @@
-﻿using System.IO;
-
+﻿using System;
+using System.IO;
+using System.Text;
 using Microsoft.Msagl.Drawing;
 
 namespace Stratis.DevEx.Drawing
 {
-    public class Drawing : Runtime
+    public class Graphs : Runtime
     {
         public static void Draw(Graph graph, string filename, GraphFormat format, int width = 2000, int height = 2000, double rotateBy = 0.0)
         {

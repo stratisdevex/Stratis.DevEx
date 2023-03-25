@@ -6,6 +6,7 @@ using System.Linq;
 using Eto.Drawing;
 using Eto.Forms;
 
+using Microsoft.Msagl.Drawing;
 using Stratis.DevEx.Pipes;
 
 namespace Stratis.DevEx.Gui
@@ -31,12 +32,12 @@ namespace Stratis.DevEx.Gui
             navigation.Activated += Navigation_NodeMouseClick;
             navigation.NodeMouseClick += Navigation_NodeMouseClick; ;
 			//CreateTreeItem(0, "Item");
-            projectViews = new List<WebView>();
-            projectViews.Add(new WebView());
-            projectViews[0].LoadHtml(@"<html><head><title>Hello!</title></head><body></body></html>");
+            projectViews = new Dictionary<string, WebView>();
+            projectViews.Add("About", new WebView());
+            projectViews["About"].LoadHtml(@"<html><head><title>Hello!</title></head><body></body></html>");
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;
-			splitter.Panel2 = projectViews[0];
+			splitter.Panel2 = projectViews["About"];
 			splitter.Panel1MinimumSize = 300;
 			splitter.Panel2MinimumSize = 600;
             Content = splitter;
@@ -110,6 +111,7 @@ namespace Stratis.DevEx.Gui
                     Text = m.Document,
                     Image = CSharp
                 };
+               
                 projects.Children.Add(new TreeItem(doc)
                 {
                     Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
@@ -127,6 +129,36 @@ namespace Stratis.DevEx.Gui
             navigation.RefreshItem(projects);
         }
 
+        public Graph CreateGraph(ControlFlowGraphMessage m)
+        {
+            var graph = new Graph();
+            graph.Kind = "cfg";
+            foreach (var node in m.Nodes)
+            {
+                if (graph.FindNode(node.Id) is null)
+                {
+                    graph.AddNode(new Node(node.Id) { LabelText = node.Label });
+                }
+            }
+            foreach (var edge in m.Edges)
+            {
+                if (graph.FindNode(edge.SourceId) is null)
+                {
+                    Error("Source node {s} of edge does not exist in graph.", edge.SourceId);
+                    continue;
+                }
+                else if (graph.FindNode(edge.TargetId) is null)
+                {
+                    Error("Target node {t} of edge does not exist in graph.", edge.TargetId);
+                    continue;
+                }
+                else
+                {
+                    graph.AddEdge(edge.SourceId, edge.Label, edge.TargetId);
+                }
+            }
+            return graph;
+        }
         #region Logging
         [DebuggerStepThrough]
         public static void Info(string messageTemplate, params object[] args) => Runtime.Info(messageTemplate, args);
@@ -163,7 +195,7 @@ namespace Stratis.DevEx.Gui
 		internal TreeView navigation;
 		#pragma warning restore CS0618 // Type or member is obsolete
 		
-		internal List<WebView> projectViews;
+		internal Dictionary<string, WebView> projectViews;
         protected Splitter splitter;
         #endregion
 

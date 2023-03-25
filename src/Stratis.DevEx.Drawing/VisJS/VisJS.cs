@@ -7,7 +7,7 @@ using DotLiquid;
 
 using Microsoft.Msagl.Drawing;
 
-namespace Stratis.DevEx.Drawing.VisJS
+namespace Stratis.DevEx.Drawing
 {
     public class VisJS
     {
@@ -16,7 +16,7 @@ namespace Stratis.DevEx.Drawing.VisJS
         #endregion
 
         #region Methods
-        public static Network Draw(Graph graph, string width="100%", string height="600px")
+        public static Network Draw(Microsoft.Msagl.Drawing.Graph graph, string width="100%", string height="600px")
         {
             var network = new Network();
             var options = new NetworkOptions();

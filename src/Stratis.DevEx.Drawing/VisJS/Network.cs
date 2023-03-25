@@ -3,7 +3,7 @@ using System.IO;
 
 using CompactJson;
 
-namespace Stratis.DevEx.Drawing.VisJS
+namespace Stratis.DevEx.Drawing
 {
     public class Network
     {
@@ -21,6 +21,34 @@ namespace Stratis.DevEx.Drawing.VisJS
 
         [JsonIgnoreMember]
         public string Height => Options?.Height ?? "600px";
+
+        public string Serialize()
+        {
+            var sw = new StringWriter();
+            Serializer.Write(this, sw, true);
+            return sw.ToString();
+        }
+
+        public string SerializeNodes()
+        {
+            var sw = new StringWriter();
+            Serializer.Write(this.Nodes, sw, true);
+            return sw.ToString();
+        }
+
+        public string SerializeEdges()
+        {
+            var sw = new StringWriter();
+            Serializer.Write(this.Edges, sw, true);
+            return sw.ToString();
+        }
+
+        public string SerializeOptions()
+        {
+            var sw = new StringWriter();
+            Serializer.Write(this.Options, sw, true);
+            return sw.ToString();
+        }
 
         public static Network Load(string data) => Serializer.Parse<Network>(data)!;
 
