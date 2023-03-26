@@ -20,7 +20,6 @@ namespace Stratis.DevEx.Gui
         {
             Info("This is the UI thread.");
             Eto.WinForms.Forms.Controls.WebView2Loader.EnsureWebView2Runtime(); 
-
             Style = "main";
 			MinimumSize = new Size(900, 600);
 			Title = "Stratis DevEx";
@@ -126,20 +125,7 @@ namespace Stratis.DevEx.Gui
                 };
                 projectViews.Add(projid, new Dictionary<string, object>() { { docid + "_" + "CFG", Html.DrawControlFlowGraph(cfg) } });
                 var xx = (string)projectViews[projid][docid + "_" + "CFG"];
-                
-                GuiApp.Instance.AsyncInvoke(() =>
-                {
-                    //projectView.LoadHtml(@"<html><head><title>Hello!</title></head><body><h1>Hi22!</h1></body></html>");
-                    //projectView.Invalidate();
-                    projectView.LoadHtml(xx);
-                });//LoadHtml(@"<html><head><title>Hello!</title></head><body><h1>Hi22!</h1></body></html>",);
-                //projectView.Reload();
-                //projectView.Invalidate();
-                
-                //projectView.Visible = false;
-                //projectView.Visible = true;
-                //@"<html><head><title>Hello!</title></head><body><h1>Hi!</h1></body></html>"
-                
+                App.AsyncInvoke(() => projectView.LoadHtml(xx)); 
                 projects.Children.Add(new TreeItem(doc)
                 {
                     Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
@@ -213,6 +199,10 @@ namespace Stratis.DevEx.Gui
 
         #endregion
 
+        #region Properties
+        protected GuiApp App => (GuiApp) Application.Instance;
+        #endregion
+
         #region Fields
         protected static readonly Icon TestIcon = Icon.FromResource("Stratis.DevEx.Gui.Images.TestIcon.ico");
         protected static readonly Icon JetbrainsRider = Icon.FromResource("Stratis.DevEx.Gui.Images.jetbrainsrider.png");
@@ -235,10 +225,6 @@ namespace Stratis.DevEx.Gui
             MessageBox.Show(this, "I was clicked!: " + e.Item.Key);
         }
 
-        #endregion
-
-        #region On
-        //public override 
         #endregion
     }
 }
