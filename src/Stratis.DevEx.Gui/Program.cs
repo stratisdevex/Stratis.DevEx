@@ -3,8 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-using CommandLine;
-using CommandLine.Text;
+using Microsoft.Msagl.Drawing;
 
 using SharpConfig;
 
@@ -97,6 +96,37 @@ namespace Stratis.DevEx.Gui
                 File.Delete(RunFile);
             }
             Environment.Exit(0);
+        }
+
+        public static Graph CreateGraph(ControlFlowGraphMessage m)
+        {
+            var graph = new Graph();
+            graph.Kind = "cfg";
+            foreach (var node in m.Nodes)
+            {
+                if (graph.FindNode(node.Id) is null)
+                {
+                    graph.AddNode(new Node(node.Id) { LabelText = node.Label });
+                }
+            }
+            foreach (var edge in m.Edges)
+            {
+                if (graph.FindNode(edge.SourceId) is null)
+                {
+                    Error("Source node {s} of edge does not exist in graph.", edge.SourceId);
+                    continue;
+                }
+                else if (graph.FindNode(edge.TargetId) is null)
+                {
+                    Error("Target node {t} of edge does not exist in graph.", edge.TargetId);
+                    continue;
+                }
+                else
+                {
+                    graph.AddEdge(edge.SourceId, edge.Label, edge.TargetId);
+                }
+            }
+            return graph;
         }
         #endregion
 

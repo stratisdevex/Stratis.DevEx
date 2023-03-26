@@ -100,84 +100,74 @@ namespace Stratis.DevEx.Gui
         public void ReadMessage(ControlFlowGraphMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var docid = projectid + "_" + m.Document;
             var projects = (TreeItem) navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
             {
                 Debug("Project {proj} already exists in tree, updating...", projectid);
-                var p = (TreeItem)projects.Children.First(c => c.Key == projectid);
-                if (!p.Children.Any(c => c.Key == m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.Document))
-                {
-                    p.Children.Add(new TreeItem()
-                    {
-                        Key = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.Document,
-                        Text = m.Document,
-                        Image = CSharp
-                    });
-                }
+                UpdateProjectDocsTree(m);
+                App.AsyncInvoke(() => projectView.LoadHtml((string)projectViews[projectid][docid + "_" + "CFG"]));
             }
             else
             {
                 Debug("Project {proj} does not exists in tree, adding...", projectid);
-                var projid = m.EditorEntryAssembly + "_" + m.AssemblyName;
-                var docid = projid + "_" + m.Document;
-                var cfg = CreateGraph(m);
-                var doc = new TreeItem()
+                AddProjectToTree(m);
+                App.AsyncInvoke(() => projectView.LoadHtml((string)projectViews[projectid][docid + "_" + "CFG"])); 
+            }
+            navigation.RefreshItem(projects);
+        }
+
+        public void AddProjectToTree(ControlFlowGraphMessage m)
+        {
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var docid = projectid + "_" + m.Document;
+            var cfg = Program.CreateGraph(m);
+            var doc = new TreeItem()
+            {
+                Key = docid,
+                Text = m.Document,
+                Image = CSharp
+            };
+            projectViews.Add(projectid, new Dictionary<string, object>() { { docid + "_" + "CFG", Html.DrawControlFlowGraph(cfg) } });
+            Projects.Children.Add(new TreeItem(doc)
+            {
+                Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
+                Text = m.AssemblyName,
+                Image = m.EditorEntryAssembly switch
+                {
+                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
+                    var x when x.StartsWith("OmniSharp") => VSCode,
+                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
+                    _ => Globe
+                },
+            });
+        }
+
+        public void UpdateProjectDocsTree(ControlFlowGraphMessage m)
+        {
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var docid = projectid + "_" + m.Document;
+            var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
+            var cfg = Program.CreateGraph(m);
+            projectViews[projectid][docid + "_" + "CFG"] = Html.DrawControlFlowGraph(cfg);
+            if (project.Children.Any(c => c.Key == docid))
+            {
+                Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
+            }
+            else
+            {
+                Debug("Document {doc} does not exist in project {proj}, adding...", docid, projectid);
+                projectViews[projectid][docid + "_" + "CFG"] = Html.DrawControlFlowGraph(cfg);
+                TreeItem doc = new TreeItem()
                 {
                     Key = docid,
                     Text = m.Document,
                     Image = CSharp
                 };
-                projectViews.Add(projid, new Dictionary<string, object>() { { docid + "_" + "CFG", Html.DrawControlFlowGraph(cfg) } });
-                var xx = (string)projectViews[projid][docid + "_" + "CFG"];
-                App.AsyncInvoke(() => projectView.LoadHtml(xx)); 
-                projects.Children.Add(new TreeItem(doc)
-                {
-                    Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
-                    Text = m.AssemblyName,
-                    Image = m.EditorEntryAssembly switch
-                    {
-                        var x when x.StartsWith("VBCSCompiler") => VisualStudio,
-                        var x when x.StartsWith("OmniSharp") => VSCode,
-                        var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
-                        _ => Globe
-                    },
-                    
-                });
+                project.Children.Add(doc);
             }
-            navigation.RefreshItem(projects);
-            //this.
         }
 
-        public Graph CreateGraph(ControlFlowGraphMessage m)
-        {
-            var graph = new Graph();
-            graph.Kind = "cfg";
-            foreach (var node in m.Nodes)
-            {
-                if (graph.FindNode(node.Id) is null)
-                {
-                    graph.AddNode(new Node(node.Id) { LabelText = node.Label });
-                }
-            }
-            foreach (var edge in m.Edges)
-            {
-                if (graph.FindNode(edge.SourceId) is null)
-                {
-                    Error("Source node {s} of edge does not exist in graph.", edge.SourceId);
-                    continue;
-                }
-                else if (graph.FindNode(edge.TargetId) is null)
-                {
-                    Error("Target node {t} of edge does not exist in graph.", edge.TargetId);
-                    continue;
-                }
-                else
-                {
-                    graph.AddEdge(edge.SourceId, edge.Label, edge.TargetId);
-                }
-            }
-            return graph;
-        }
         #region Logging
         [DebuggerStepThrough]
         public static void Info(string messageTemplate, params object[] args) => Runtime.Info(messageTemplate, args);
@@ -205,6 +195,7 @@ namespace Stratis.DevEx.Gui
 
         #region Properties
         protected GuiApp App => (GuiApp) Application.Instance;
+        protected TreeItem Projects => (TreeItem)navigation.DataStore[1];
         #endregion
 
         #region Fields
