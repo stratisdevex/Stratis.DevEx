@@ -19,6 +19,10 @@
     <Version>0.1.0</Version>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(BuildPlatform)'=='Windows'">
+    <DefineConstants>Windows</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Images\csharp.png" />
     <None Remove="Images\jetbrainsrider.png" />

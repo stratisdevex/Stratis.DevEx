@@ -19,7 +19,11 @@ namespace Stratis.DevEx.Gui
         public MainForm()
         {
             Info("This is the UI thread.");
-            Eto.WinForms.Forms.Controls.WebView2Loader.EnsureWebView2Runtime(); 
+            
+            #if Windows
+            Eto.WinForms.Forms.Controls.WebView2Loader.EnsureWebView2Runtime();
+            #endif
+
             Style = "main";
 			MinimumSize = new Size(900, 600);
 			Title = "Stratis DevEx";
