@@ -24,7 +24,7 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Overriden members
-        
+        //public override 
         #endregion
 
         #region Methods

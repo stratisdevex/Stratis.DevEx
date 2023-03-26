@@ -39,11 +39,13 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1661.34" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\ext\SharpConfig\Src\SharpConfig.csproj" />
     <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
+    <ProjectReference Include="..\Stratis.DevEx.Drawing\Stratis.DevEx.Drawing.csproj" />
     <ProjectReference Include="..\Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj" />
   </ItemGroup>
 

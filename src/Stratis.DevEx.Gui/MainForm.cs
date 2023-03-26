@@ -7,6 +7,8 @@ using Eto.Drawing;
 using Eto.Forms;
 
 using Microsoft.Msagl.Drawing;
+
+using Stratis.DevEx.Drawing;
 using Stratis.DevEx.Pipes;
 
 namespace Stratis.DevEx.Gui
@@ -16,7 +18,10 @@ namespace Stratis.DevEx.Gui
         #region Constructors
         public MainForm()
         {
-			Style = "main";
+            Info("This is the UI thread.");
+            Eto.WinForms.Forms.Controls.WebView2Loader.EnsureWebView2Runtime(); 
+
+            Style = "main";
 			MinimumSize = new Size(900, 600);
 			Title = "Stratis DevEx";
 			#pragma warning disable CS0618 // Type or member is obsolete
@@ -31,15 +36,15 @@ namespace Stratis.DevEx.Gui
 			);
             navigation.Activated += Navigation_NodeMouseClick;
             navigation.NodeMouseClick += Navigation_NodeMouseClick; ;
-			//CreateTreeItem(0, "Item");
-            projectViews = new Dictionary<string, WebView>();
-            projectViews.Add("About", new WebView());
-            projectViews["About"].LoadHtml(@"<html><head><title>Hello!</title></head><body></body></html>");
+            projectView = new WebView();
+            projectView.DocumentLoaded += ProjectView_DocumentLoaded;
+            projectView.LoadHtml(@"<html><head><title>Hello!</title></head><body><h1>Hi!</h1></body></html>");
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;
-			splitter.Panel2 = projectViews["About"];
+			splitter.Panel2 = projectView;
 			splitter.Panel1MinimumSize = 300;
 			splitter.Panel2MinimumSize = 600;
+            projectViews = new Dictionary<string, Dictionary<string, object>>();
             Content = splitter;
            
             // create a few commands that can be used for the menu and toolbar
@@ -75,7 +80,12 @@ namespace Stratis.DevEx.Gui
             //ToolBar = new ToolBar { Items = { clickMe } };
         }
 
-       
+        private void ProjectView_DocumentLoaded(object? sender, WebViewLoadedEventArgs e)
+        {
+            Info("WebView loaded {url}.", e.Uri);
+        }
+
+
         #endregion
 
         #region Methods
@@ -105,13 +115,31 @@ namespace Stratis.DevEx.Gui
             else
             {
                 Debug("Project {proj} does not exists in tree, adding...", projectid);
+                var projid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+                var docid = projid + "_" + m.Document;
+                var cfg = CreateGraph(m);
                 var doc = new TreeItem()
                 {
-                    Key = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.Document,
+                    Key = docid,
                     Text = m.Document,
                     Image = CSharp
                 };
-               
+                projectViews.Add(projid, new Dictionary<string, object>() { { docid + "_" + "CFG", Html.DrawControlFlowGraph(cfg) } });
+                var xx = (string)projectViews[projid][docid + "_" + "CFG"];
+                
+                GuiApp.Instance.AsyncInvoke(() =>
+                {
+                    //projectView.LoadHtml(@"<html><head><title>Hello!</title></head><body><h1>Hi22!</h1></body></html>");
+                    //projectView.Invalidate();
+                    projectView.LoadHtml(xx);
+                });//LoadHtml(@"<html><head><title>Hello!</title></head><body><h1>Hi22!</h1></body></html>",);
+                //projectView.Reload();
+                //projectView.Invalidate();
+                
+                //projectView.Visible = false;
+                //projectView.Visible = true;
+                //@"<html><head><title>Hello!</title></head><body><h1>Hi!</h1></body></html>"
+                
                 projects.Children.Add(new TreeItem(doc)
                 {
                     Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
@@ -127,6 +155,7 @@ namespace Stratis.DevEx.Gui
                 });
             }
             navigation.RefreshItem(projects);
+            //this.
         }
 
         public Graph CreateGraph(ControlFlowGraphMessage m)
@@ -195,8 +224,9 @@ namespace Stratis.DevEx.Gui
 		internal TreeView navigation;
 		#pragma warning restore CS0618 // Type or member is obsolete
 		
-		internal Dictionary<string, WebView> projectViews;
+		internal WebView projectView;
         protected Splitter splitter;
+        internal Dictionary<string, Dictionary<string, object>> projectViews;
         #endregion
 
         #region Event Handlers
@@ -205,6 +235,10 @@ namespace Stratis.DevEx.Gui
             MessageBox.Show(this, "I was clicked!: " + e.Item.Key);
         }
 
+        #endregion
+
+        #region On
+        //public override 
         #endregion
     }
 }
