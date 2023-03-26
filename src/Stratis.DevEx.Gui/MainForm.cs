@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 using Eto.Drawing;
@@ -27,6 +28,7 @@ namespace Stratis.DevEx.Gui
             Style = "main";
 			MinimumSize = new Size(900, 600);
 			Title = "Stratis DevEx";
+            CreateMenuAndToolbar();
 			#pragma warning disable CS0618 // Type or member is obsolete
 			navigation = new TreeView()
             #pragma warning restore CS0618 // Type or member is obsolete
@@ -45,11 +47,24 @@ namespace Stratis.DevEx.Gui
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;
 			splitter.Panel2 = projectView;
-			splitter.Panel1MinimumSize = 300;
-			splitter.Panel2MinimumSize = 600;
+			//splitter.Panel1MinimumSize = 400;
+			//splitter.Panel2MinimumSize = 400;
+            splitter.Position = 300;
             projectViews = new Dictionary<string, Dictionary<string, object>>();
             Content = splitter;
-           
+        }
+
+        private void ProjectView_DocumentLoaded(object? sender, WebViewLoadedEventArgs e)
+        {
+            Info("WebView loaded {url}.", e.Uri);
+        }
+
+
+        #endregion
+
+        #region Methods
+        public void CreateMenuAndToolbar()
+        {
             // create a few commands that can be used for the menu and toolbar
             var clickMe = new Command { MenuText = "Click Me!", ToolBarText = "Click Me!" };
             clickMe.Executed += (sender, e) => MessageBox.Show(this, "I was clicked!");
@@ -60,6 +75,12 @@ namespace Stratis.DevEx.Gui
             var aboutCommand = new Command { MenuText = "About..." };
             aboutCommand.Executed += (sender, e) => new AboutDialog().ShowDialog(this);
 
+            var refreshCommand = new Command((_, e) => App.AsyncInvoke(() => projectView.Reload()))
+            {
+                MenuText = "Refresh",
+                ToolBarText = "Refresh",
+                Image = Refresh
+            };
             // create menu
             Menu = new MenuBar
             {
@@ -80,18 +101,9 @@ namespace Stratis.DevEx.Gui
             };
 
             // create toolbar			
-            //ToolBar = new ToolBar { Items = { clickMe } };
+            ToolBar = new ToolBar { Items = { refreshCommand } };
         }
 
-        private void ProjectView_DocumentLoaded(object? sender, WebViewLoadedEventArgs e)
-        {
-            Info("WebView loaded {url}.", e.Uri);
-        }
-
-
-        #endregion
-
-        #region Methods
         public void ReadMessage(CompilationMessage m)
         {
 
@@ -120,12 +132,13 @@ namespace Stratis.DevEx.Gui
         public void AddProjectToTree(ControlFlowGraphMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var docid = projectid + "_" + m.Document;
             var cfg = Program.CreateGraph(m);
             var doc = new TreeItem()
             {
                 Key = docid,
-                Text = m.Document,
+                Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
                 Image = CSharp
             };
             projectViews.Add(projectid, new Dictionary<string, object>() { { docid + "_" + "CFG", Html.DrawControlFlowGraph(cfg) } });
@@ -146,6 +159,7 @@ namespace Stratis.DevEx.Gui
         public void UpdateProjectDocsTree(ControlFlowGraphMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var docid = projectid + "_" + m.Document;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
             var cfg = Program.CreateGraph(m);
@@ -161,7 +175,7 @@ namespace Stratis.DevEx.Gui
                 TreeItem doc = new TreeItem()
                 {
                     Key = docid,
-                    Text = m.Document,
+                    Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
                     Image = CSharp
                 };
                 project.Children.Add(doc);
@@ -205,8 +219,9 @@ namespace Stratis.DevEx.Gui
         protected static readonly Icon VSCode = Icon.FromResource("Stratis.DevEx.Gui.Images.vscode.png");
         protected static readonly Icon CSharp = Icon.FromResource("Stratis.DevEx.Gui.Images.csharp.png");
         protected static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
-        #pragma warning disable CS0618 // Type or member is obsolete
-		internal TreeView navigation;
+        protected static readonly Icon Refresh = Icon.FromResource("Stratis.DevEx.Gui.Images.refresh.png");
+#pragma warning disable CS0618 // Type or member is obsolete
+        internal TreeView navigation;
 		#pragma warning restore CS0618 // Type or member is obsolete
 		
 		internal WebView projectView;
@@ -217,7 +232,7 @@ namespace Stratis.DevEx.Gui
         #region Event Handlers
         private void Navigation_NodeMouseClick(object? sender, TreeViewItemEventArgs e)
         {
-            MessageBox.Show(this, "I was clicked!: " + e.Item.Key);
+            //MessageBox.Show(this, "I was clicked!: " + e.Item.Key);
         }
 
         #endregion

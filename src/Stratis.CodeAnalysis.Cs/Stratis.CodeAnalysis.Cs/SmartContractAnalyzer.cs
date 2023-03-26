@@ -36,9 +36,10 @@
                 Debug("Compilation start...");
                 ctx.RegisterCompilationEndAction(_ => Runtime.Info("Compilation end."));
                 var cfg = CreateDefaultAnalyzerConfig();
+                string cfgFile = "";
                 if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path.EndsWith("stratisdev.cfg")))
                 {
-                    var cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path.EndsWith("stratisdev.cfg")).Path;
+                    cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path.EndsWith("stratisdev.cfg")).Path;
                     Info("Loading analyzer configuration from {0}...", cfgFile);
                     cfg = Runtime.LoadConfig(cfgFile);
                     cfg["General"]["ConfigFile"].SetValue(cfgFile);
@@ -110,7 +111,7 @@
                     {
                         if (!sma.SemanticModel.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
                         {
-                            GraphAnalysis.AnalyzeControlFlow(cfg, sma.SemanticModel);
+                            GraphAnalysis.AnalyzeControlFlow(cfgFile, cfg, sma.SemanticModel);
                         }
                         else
                         {

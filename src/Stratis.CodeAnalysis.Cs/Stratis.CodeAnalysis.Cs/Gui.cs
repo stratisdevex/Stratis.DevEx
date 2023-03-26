@@ -120,7 +120,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        public static void SendGuiMessage(Compilation c, string document, Graph graph, PipeClient<MessagePack> pipeClient)
+        public static void SendGuiMessage(string cfgfile, Compilation c, string document, Graph graph, PipeClient<MessagePack> pipeClient)
         {
             if (!GuiProcessRunning())
             {
@@ -133,6 +133,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 var m = new ControlFlowGraphMessage()
                 {
+                    ConfigFile = cfgfile,
                     CompilationId = c.GetHashCode(),
                     EditorEntryAssembly = EntryAssembly?.FullName ?? "(none)",
                     AssemblyName = c.AssemblyName,
@@ -154,13 +155,13 @@ namespace Stratis.CodeAnalysis.Cs
                 else
                 {
                     op.Abandon();
-                    Runtime.Error("GUI is not running or pipe client disconnected. Error sending control-flow graph message to GUI.");
+                    Error("GUI is not running or pipe client disconnected. Error sending control-flow graph message to GUI.");
                 }
             }
             catch (Exception e)
             {
                 op.Abandon();
-                Runtime.Error(e, "Error sending control-flow graph message to GUI.");
+                Error(e, "Error sending control-flow graph message to GUI.");
             }
             
         }

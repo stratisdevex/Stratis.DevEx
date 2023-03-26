@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Stratis.DevEx.Pipes.Formatters;
 
@@ -23,6 +21,8 @@ namespace Stratis.DevEx.Pipes
     [Serializable]
     public class Message
     {
+
+        public string ConfigFile { get; set; } = "";
         public long CompilationId { get; set; }
         public string EditorEntryAssembly { get; set; } = "";
         public string AssemblyName { get; set; } = "";

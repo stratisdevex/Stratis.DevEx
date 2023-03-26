@@ -26,6 +26,7 @@
   <ItemGroup>
     <None Remove="Images\csharp.png" />
     <None Remove="Images\jetbrainsrider.png" />
+    <None Remove="Images\refresh.png" />
     <None Remove="Images\TestIcon.ico" />
     <None Remove="Images\TestImage.png" />
     <None Remove="Images\visualstudio.png" />
@@ -35,6 +36,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Images\csharp.png" />
     <EmbeddedResource Include="Images\jetbrainsrider.png" />
+    <EmbeddedResource Include="Images\refresh.png" />
     <EmbeddedResource Include="Images\TestIcon.ico" />
     <EmbeddedResource Include="Images\TestImage.png" />
     <EmbeddedResource Include="Images\visualstudio.png" />

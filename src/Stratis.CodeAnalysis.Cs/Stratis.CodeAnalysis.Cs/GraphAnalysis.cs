@@ -22,7 +22,7 @@ namespace Stratis.CodeAnalysis.Cs
 {
     public class GraphAnalysis : Runtime
     {
-        public static void AnalyzeControlFlow(Configuration config, SemanticModel model)
+        public static void AnalyzeControlFlow(string cfgFile, Configuration config, SemanticModel model)
         {
             using var top = Begin("Analyzing control-flow of source document {doc} using configuration {cfg}.", model.SyntaxTree.FilePath, config["General"]["ConfigFile"].StringValue);
             var projectDir = Path.GetDirectoryName(config["General"]["ConfigFile"].StringValue);
@@ -90,7 +90,7 @@ namespace Stratis.CodeAnalysis.Cs
             if (config["Gui"]["Enabled"].BoolValue)
             {
                 var pipeClient = Gui.CreatePipeClient();
-                Gui.SendGuiMessage(model.Compilation, model.SyntaxTree.FilePath, graph, pipeClient);
+                Gui.SendGuiMessage(cfgFile, model.Compilation, model.SyntaxTree.FilePath, graph, pipeClient);
                 pipeClient.Dispose();
                 //File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Html.DrawControlFlowGraph(graph));
             }
