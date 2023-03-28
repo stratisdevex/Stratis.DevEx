@@ -36,21 +36,52 @@ namespace Stratis.DevEx.Gui
                 Size = new Size(100, 150)
             };
 			navigation.DataStore = new TreeItem(
-				new TreeItem() { Image = Globe, Text = "About" },
-				new TreeItem() { Image = TestIcon, Text = "Projects"}
+				new TreeItem() { Image = Globe, Text = "About", Key = "About" },
+				new TreeItem() { Image = TestIcon, Text = "Projects", Key = "Projects"}
 			);
             navigation.Activated += Navigation_NodeMouseClick;
             navigation.NodeMouseClick += Navigation_NodeMouseClick; ;
-            projectView = new WebView();
-            projectView.DocumentLoaded += ProjectView_DocumentLoaded;
-            projectView.LoadHtml(@"<html><head><title>Hello!</title></head><body><h1>Hi!</h1></body></html>");
+            projectView = new TabControl();
+            projectViews = new Dictionary<string, object>()
+            {
+                {"Projects",  @"<html><head><title>Projects</title></head><body><h1>Projects</h1></body></html>"}, 
+                {"About",  @"<html><head><title>About</title></head><body><h1>About</h1></body></html>"}
+            };
+
+            projectControlFlowView = new WebView();
+            projectControlFlowViewPage = new TabPage(projectControlFlowView)
+            {
+                Text = "Control Flow",
+            };
+            projectCHAView = new WebView();
+            projectCHAViewPage = new TabPage(projectCHAView)
+            {
+                Text = "Class Hierarchy"
+            };
+            projectDisassemblyView = new WebView();
+            projectDisassemblyViewPage = new TabPage(projectDisassemblyView)
+            {
+                Text = "Disassembly"
+            };
+            projectSourceView = new WebView();
+            projectSourceViewPage = new TabPage(projectSourceView)
+            {
+                Text = "Source"
+            };
+
+            
+            projectView.Pages.Add(projectControlFlowViewPage);
+            projectView.Pages.Add(projectCHAViewPage);
+            projectView.Pages.Add(projectDisassemblyViewPage);
+            projectView.Pages.Add(projectSourceViewPage);
+
+            projectControlFlowView.LoadHtml(@"<html><head><title>Hello!</title></head><body><h1>Hi!</h1></body></html>");
+            projectView.SelectedPage = projectControlFlowViewPage;
+
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;
 			splitter.Panel2 = projectView;
-			//splitter.Panel1MinimumSize = 400;
-			//splitter.Panel2MinimumSize = 400;
-            splitter.Position = 300;
-            projectViews = new Dictionary<string, Dictionary<string, object>>();
+            splitter.Position = 200;
             Content = splitter;
         }
 
@@ -58,7 +89,6 @@ namespace Stratis.DevEx.Gui
         {
             Info("WebView loaded {url}.", e.Uri);
         }
-
 
         #endregion
 
@@ -75,7 +105,7 @@ namespace Stratis.DevEx.Gui
             var aboutCommand = new Command { MenuText = "About..." };
             aboutCommand.Executed += (sender, e) => new AboutDialog().ShowDialog(this);
 
-            var refreshCommand = new Command((_, e) => App.AsyncInvoke(() => projectView.Reload()))
+            var refreshCommand = new Command((_, _) => App.AsyncInvoke(() => projectControlFlowView.Reload()))
             {
                 MenuText = "Refresh",
                 ToolBarText = "Refresh",
@@ -118,13 +148,14 @@ namespace Stratis.DevEx.Gui
             {
                 Debug("Project {proj} already exists in tree, updating...", projectid);
                 UpdateProjectDocsTree(m);
-                App.AsyncInvoke(() => projectView.LoadHtml((string)projectViews[projectid][docid + "_" + "CFG"]));
+                App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"]));
             }
             else
             {
                 Debug("Project {proj} does not exists in tree, adding...", projectid);
                 AddProjectToTree(m);
-                App.AsyncInvoke(() => projectView.LoadHtml((string)projectViews[projectid][docid + "_" + "CFG"])); 
+                App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"])); 
+                //projectView.sw
             }
             navigation.RefreshItem(projects);
         }
@@ -141,7 +172,8 @@ namespace Stratis.DevEx.Gui
                 Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
                 Image = CSharp
             };
-            projectViews.Add(projectid, new Dictionary<string, object>() { { docid + "_" + "CFG", Html.DrawControlFlowGraph(cfg) } });
+            projectViews.Add(projectid, @"<html><head><title>Control Flow</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
+            projectViews.Add(docid + "_" + "ControlFlow", Html.DrawControlFlowGraph(cfg)); 
             Projects.Children.Add(new TreeItem(doc)
             {
                 Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
@@ -163,7 +195,7 @@ namespace Stratis.DevEx.Gui
             var docid = projectid + "_" + m.Document;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
             var cfg = Program.CreateGraph(m);
-            projectViews[projectid][docid + "_" + "CFG"] = Html.DrawControlFlowGraph(cfg);
+            projectViews[docid + "_" + "ControlFlow"] = Html.DrawControlFlowGraph(cfg);
             if (project.Children.Any(c => c.Key == docid))
             {
                 Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
@@ -171,7 +203,6 @@ namespace Stratis.DevEx.Gui
             else
             {
                 Debug("Document {doc} does not exist in project {proj}, adding...", docid, projectid);
-                projectViews[projectid][docid + "_" + "CFG"] = Html.DrawControlFlowGraph(cfg);
                 TreeItem doc = new TreeItem()
                 {
                     Key = docid,
@@ -212,6 +243,21 @@ namespace Stratis.DevEx.Gui
         protected TreeItem Projects => (TreeItem)navigation.DataStore[1];
         #endregion
 
+        #region Event Handlers
+        private void Navigation_NodeMouseClick(object? sender, TreeViewItemEventArgs e)
+        {
+            switch (e.Item.Key)
+            {
+                case var x when x.EndsWith(".cs"):
+                    App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[e.Item.Key + "_ControlFlow"]));
+                    break;
+                default:
+                    App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[e.Item.Key]));
+                    break;
+            }
+        }
+        #endregion
+
         #region Fields
         protected static readonly Icon TestIcon = Icon.FromResource("Stratis.DevEx.Gui.Images.TestIcon.ico");
         protected static readonly Icon JetbrainsRider = Icon.FromResource("Stratis.DevEx.Gui.Images.jetbrainsrider.png");
@@ -220,21 +266,22 @@ namespace Stratis.DevEx.Gui
         protected static readonly Icon CSharp = Icon.FromResource("Stratis.DevEx.Gui.Images.csharp.png");
         protected static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
         protected static readonly Icon Refresh = Icon.FromResource("Stratis.DevEx.Gui.Images.refresh.png");
-#pragma warning disable CS0618 // Type or member is obsolete
+        #pragma warning disable CS0618 // Type or member is obsolete
         internal TreeView navigation;
-		#pragma warning restore CS0618 // Type or member is obsolete
-		
-		internal WebView projectView;
+        #pragma warning restore CS0618 // Type or member is obsolete
+
+        protected TabControl projectView;
         protected Splitter splitter;
-        internal Dictionary<string, Dictionary<string, object>> projectViews;
-        #endregion
+        internal Dictionary<string, object> projectViews;
 
-        #region Event Handlers
-        private void Navigation_NodeMouseClick(object? sender, TreeViewItemEventArgs e)
-        {
-            //MessageBox.Show(this, "I was clicked!: " + e.Item.Key);
-        }
-
+        protected WebView projectControlFlowView;
+        protected TabPage projectControlFlowViewPage;
+        protected WebView projectCHAView;
+        protected TabPage projectCHAViewPage;
+        protected WebView projectSourceView;
+        protected TabPage projectSourceViewPage;
+        protected WebView projectDisassemblyView;
+        protected TabPage projectDisassemblyViewPage;
         #endregion
     }
 }

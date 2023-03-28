@@ -16,7 +16,7 @@ namespace Stratis.DevEx.Drawing
         #endregion
 
         #region Methods
-        public static Network Draw(Microsoft.Msagl.Drawing.Graph graph, string width="100%", string height="600px")
+        public static Network Draw(Graph graph, string width="100%", string height="600px")
         {
             var network = new Network();
             var options = new NetworkOptions();
@@ -38,8 +38,8 @@ namespace Stratis.DevEx.Drawing
                             Enabled = true,
                             SortMethod = "directed",
                             Direction = "UD",
-                            NodeSpacing = 300,
-                            LevelSeparation = 300,
+                            NodeSpacing = 150,
+                            LevelSeparation = 150,
                         }
                     };
                     var physics = new NetworkPhysics()
@@ -47,7 +47,7 @@ namespace Stratis.DevEx.Drawing
                         HierarchicalRepulsion = new NetworkHierarchicalRepulsion()
                         {
                             AvoidOverlap = 1.0,
-                            NodeDistance = 300
+                            NodeDistance = 150
                         }
                     };
                     var edgesOptions = new NetworkEdgesOptions()
@@ -64,7 +64,7 @@ namespace Stratis.DevEx.Drawing
                     options.Edges = edgesOptions;
                     options.Interaction = interaction;
                     nodeshape = "box";
-                    nodesize = 150;
+                    nodesize = 300;
                     break;
             }
 
@@ -102,13 +102,6 @@ namespace Stratis.DevEx.Drawing
             return network;
         }
 
-        public static string Draw(Network network)
-        {
-            using var sw = new StringWriter();
-            Serializer.Write(network, sw, true);
-            var json = sw.ToString();
-            return HtmlPageTemplate.Render(Hash.FromDictionary(null));
-        }
         #endregion
     }
 }
