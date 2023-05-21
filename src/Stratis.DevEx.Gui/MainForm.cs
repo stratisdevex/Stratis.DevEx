@@ -75,7 +75,7 @@ namespace Stratis.DevEx.Gui
             projectView.Pages.Add(projectDisassemblyViewPage);
             projectView.Pages.Add(projectSourceViewPage);
 
-            projectControlFlowView.LoadHtml(@"<html><head><title>Hello!</title></head><body><h1>Hi!</h1></body></html>");
+            projectControlFlowView.LoadHtml(@"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>");
             projectView.SelectedPage = projectControlFlowViewPage;
 
 			splitter = new Splitter();
@@ -141,6 +141,11 @@ namespace Stratis.DevEx.Gui
 
         public void ReadMessage(ControlFlowGraphMessage m)
         {
+            if (m.EditorEntryAssembly == "(none)")
+            {
+                Info("Not processing message from unknown editor assembly for document {doc}.", m.Document);
+                return;
+            }
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var docid = projectid + "_" + m.Document;
             var projects = (TreeItem) navigation.DataStore[1];
@@ -155,7 +160,6 @@ namespace Stratis.DevEx.Gui
                 Debug("Project {proj} does not exists in tree, adding...", projectid);
                 AddProjectToTree(m);
                 App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"])); 
-                //projectView.sw
             }
             navigation.RefreshItem(projects);
         }
@@ -173,8 +177,8 @@ namespace Stratis.DevEx.Gui
                 Image = CSharp
             };
             projectViews.Add(projectid, @"<html><head><title>Control Flow</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
-            projectViews.Add(docid + "_" + "ControlFlow", Html.DrawControlFlowGraph(cfg)); 
-            Projects.Children.Add(new TreeItem(doc)
+            projectViews.Add(docid + "_" + "ControlFlow", Html.DrawControlFlowGraph(cfg));
+            var child = new TreeItem(doc)
             {
                 Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
                 Text = m.AssemblyName,
@@ -185,7 +189,8 @@ namespace Stratis.DevEx.Gui
                     var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
                     _ => Globe
                 },
-            });
+            };
+            Projects.Children.Add(child);
         }
 
         public void UpdateProjectDocsTree(ControlFlowGraphMessage m)
