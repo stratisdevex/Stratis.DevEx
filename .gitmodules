@@ -16,3 +16,6 @@
 [submodule "ext/dotliquid"]
 	path = ext/dotliquid
 	url = https://github.com/stratisdevex/dotliquid.git
+[submodule "ext/CirrusSmartContracts"]
+	path = ext/CirrusSmartContracts
+	url = https://github.com/stratisproject/CirrusSmartContracts.git
