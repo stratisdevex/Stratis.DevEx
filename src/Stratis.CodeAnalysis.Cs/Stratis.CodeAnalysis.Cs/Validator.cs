@@ -250,6 +250,11 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return NoDiagnostic;
             }
+            else if (type.IsValueType && type.Locations.All(l => l.SourceTree.FilePath == node.GetLocation().SourceTree.FilePath))
+            {
+                Info("Method {0} has struct return type {1} declared in this file.", methodname, type);
+                return NoDiagnostic;
+            }
             else 
             {
                 return CreateDiagnostic("SC0014", node.ReturnType.GetLocation(), typename);

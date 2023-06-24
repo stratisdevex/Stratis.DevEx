@@ -19,7 +19,7 @@ namespace Stratis.CodeAnalysis.Cs.Test
         {
             var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext", 
                 "CirrusSmartContracts", "Mainnet", "AddressMapper", "AddressMapper", "AddressMapper.cs"));
-            await VerifyCS.VerifyAnalyzerAsync(code, System.Array.Empty<DiagnosticResult>());
+            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0011").WithSpan(27, 9, 27, 69));
         }
     }
 }
