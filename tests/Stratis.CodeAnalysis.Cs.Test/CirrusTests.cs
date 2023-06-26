@@ -21,5 +21,44 @@ namespace Stratis.CodeAnalysis.Cs.Test
                 "CirrusSmartContracts", "Mainnet", "AddressMapper", "AddressMapper", "AddressMapper.cs"));
             await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0011").WithSpan(27, 9, 27, 69));
         }
+
+        [TestMethod]
+        public async Task CanValidateDAOContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "DAOContract", "DAOContract", "DAOContract.cs"));
+            await VerifyCS.VerifyAnalyzerAsync(code);
+        }
+
+        [TestMethod]
+        public async Task CanValidateIdentityContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "Identity", "IdentityContracts", "IdentityProvider.cs"));
+           
+            await VerifyCS.VerifyAnalyzerAsync(code);
+        }
+
+        [TestMethod]
+        public async Task CanValidateInterFluxStandardTokenContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "InterFluxStandardToken", "InterFluxStandardToken", "InterFluxStandardToken.cs"));
+            var sources = new[] 
+            {
+                Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "InterFluxStandardToken", "InterFluxStandardToken", "IBurnable.cs")
+            };
+            await VerifyCS.VerifyAnalyzerAsync(code);
+        }
+
+        [TestMethod]
+        public async Task CanValidateMultisigContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "Multisig", "Multisig", "MultisigContract.cs"));
+
+            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0010").WithSpan(258, 32, 258, 37).WithArguments("False"));
+        }
     }
 }

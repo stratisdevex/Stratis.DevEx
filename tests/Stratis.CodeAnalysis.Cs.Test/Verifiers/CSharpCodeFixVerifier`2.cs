@@ -33,6 +33,42 @@ namespace Stratis.CodeAnalysis.Cs.Test
                 TestCode = source,
             };
             test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.SmartContract).Assembly);
+            test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.Standards.IStandardToken).Assembly);
+            //test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.Standards.IStandardToken256).Assembly);
+            test.ExpectedDiagnostics.AddRange(expected);
+            await test.RunAsync(CancellationToken.None);
+        }
+
+        public static async Task VerifyAnalyzerAsync(string source, System.Reflection.Assembly[] references, params DiagnosticResult[] expected)
+        {
+            var test = new Test
+            {
+                TestCode = source,
+            };
+            test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.SmartContract).Assembly);
+            test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.Standards.IStandardToken).Assembly);
+            foreach (var r in references)
+            {
+                test.TestState.AdditionalReferences.Add(r);
+            }
+            //test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.Standards.IStandardToken256).Assembly);
+            test.ExpectedDiagnostics.AddRange(expected);
+            await test.RunAsync(CancellationToken.None);
+        }
+
+        public static async Task VerifyAnalyzerAsync(string source, string[] sources, params DiagnosticResult[] expected)
+        {
+            var test = new Test
+            {
+                TestCode = source,
+            };
+            test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.SmartContract).Assembly);
+            test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.Standards.IStandardToken).Assembly);
+            foreach (var s in sources)
+            {
+                test.TestState.Sources.Add(s);
+            }
+            //test.TestState.AdditionalReferences.Add(typeof(Stratis.SmartContracts.Standards.IStandardToken256).Assembly);
             test.ExpectedDiagnostics.AddRange(expected);
             await test.RunAsync(CancellationToken.None);
         }

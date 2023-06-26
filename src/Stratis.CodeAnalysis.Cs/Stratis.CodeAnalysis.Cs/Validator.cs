@@ -212,10 +212,10 @@ namespace Stratis.CodeAnalysis.Cs
         public static Diagnostic AnalyzeMethodDecl(MethodDeclarationSyntax node, SemanticModel model)
         {
             var methodname = node.Identifier.Text;
-            var type = (ITypeSymbol) model.GetSymbolInfo(node.ReturnType).Symbol;
+            var type = (ITypeSymbol)model.GetSymbolInfo(node.ReturnType).Symbol;
             var typename = type.ToDisplayString();
             var parent = node.Parent;
-            
+
             var parentSymbol = model.GetDeclaredSymbol(parent) as ITypeSymbol;
             Debug("Method {0}{1} of return type {2} in {3} {4} declared at {5}.", methodname, node.ParameterList, typename, parent.TypeDeclLabel(), parentSymbol.ToDisplayString(), node.ReturnType.GetLineLocation());
 
@@ -229,9 +229,9 @@ namespace Stratis.CodeAnalysis.Cs
                 return CreateDiagnostic("SC0021", node.GetLocation(), parentSymbol.ToDisplayString(), methodname);
             }
 
-            Func<ITypeSymbol, bool> typetest = node.Modifiers.Any(m => m.Kind() == SyntaxKind.PublicKeyword) ? 
+            Func<ITypeSymbol, bool> typetest = node.Modifiers.Any(m => m.Kind() == SyntaxKind.PublicKeyword) ?
                 t => t.IsWhitelistedMethodReturnType() : t => t.IsWhitelistedMethodReturnType() || t.IsValueType || t.IsWhitelistedArrayType();
-            
+
             foreach (var p in node.ParameterList.Parameters)
             {
                 var pt = model.GetDeclaredSymbol(p).Type;
@@ -245,8 +245,8 @@ namespace Stratis.CodeAnalysis.Cs
                 }
             }
 
-             
-            if (typetest(type)) 
+
+            if (typetest(type))
             {
                 return NoDiagnostic;
             }
@@ -255,12 +255,12 @@ namespace Stratis.CodeAnalysis.Cs
                 Info("Method {0} has struct return type {1} declared in this file.", methodname, type);
                 return NoDiagnostic;
             }
-            else 
+            else
             {
                 return CreateDiagnostic("SC0014", node.ReturnType.GetLocation(), typename);
             }
         }
-
+       
         // SC0015 A smart contract class cannnot declare a destructor or finalizer.
         public static Diagnostic AnalyzeDestructorDecl(DestructorDeclarationSyntax node, SemanticModel model)
         {
@@ -367,21 +367,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 return NoDiagnostic;
             }
-            for (int i = 0; i < method.Parameters.Length; i++)
-            {
-                var t = method.Parameters[i].Type;
-                var tn = t.ToDisplayString();
-                if (t.IsEnum() || t.IsUserStruct() || t.IsPrimitiveType() || t.IsSmartContract() || t.IsWhitelistedArrayType())
-                {
-                    continue;
-                }
-                else 
-                {
-                    return CreateDiagnostic("SC0013", method.Parameters[i].Locations.First(), method.Name, typename);
-                }
-            }
-
-            if (type.IsSmartContract() || type.IsEnum() || type.IsUserStruct() || PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename))
+            else if (type.IsSmartContract() || PrimitiveTypeNames.Contains(typename) || SmartContractTypeNames.Contains(typename))
             {
                 return NoDiagnostic;
             }
