@@ -49,7 +49,11 @@ namespace Stratis.CodeAnalysis.Cs.Test
                 Path.Combine("..", "..", "..", "..", "..", "ext",
                 "CirrusSmartContracts", "Mainnet", "InterFluxStandardToken", "InterFluxStandardToken", "IBurnable.cs")
             };
-            await VerifyCS.VerifyAnalyzerAsync(code);
+            await VerifyCS.VerifyAnalyzerAsync(code,
+                DiagnosticResult.CompilerError("CS0246").WithSpan(8, 73, 8, 81).WithArguments("IOwnable"),
+                DiagnosticResult.CompilerError("CS0246").WithSpan(8, 83, 8, 92).WithArguments("IMintable"),
+                DiagnosticResult.CompilerError("CS0246").WithSpan(8, 94, 8, 103).WithArguments("IBurnable"),
+                DiagnosticResult.CompilerError("CS0246").WithSpan(8, 105, 8, 126).WithArguments("IBurnableWithMetadata"));
         }
 
         [TestMethod]
