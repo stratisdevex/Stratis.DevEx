@@ -64,5 +64,14 @@ namespace Stratis.CodeAnalysis.Cs.Test
 
             await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0010").WithSpan(258, 32, 258, 37).WithArguments("False"));
         }
+
+        [TestMethod]
+        public async Task CanValidateNFTAuctionStoreContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "NFTAuctionStore", "NFTAuctionStore", "NFTAuctionStore.cs"));
+
+            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0011").WithSpan(77, 9, 77, 27));
+        }
     }
 }
