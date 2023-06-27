@@ -109,5 +109,32 @@ namespace Stratis.CodeAnalysis.Cs.Test
 
             await VerifyCS.VerifyAnalyzerAsync(code);
         }
+
+        [TestMethod]
+        public async Task CanValidateNonFungibleTokenTicketContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "NonFungibleToken-Ticket", "NonFungibleToken", "NonFungibleToken.cs"));
+
+            await VerifyCS.VerifyAnalyzerAsync(code);
+        }
+
+        [TestMethod]
+        public async Task CanValidatePrivateYesNoVoteContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "PrivateYesNoVote", "PrivateYesNoVote", "PrivateYesNoVote.cs"));
+
+            await VerifyCS.VerifyAnalyzerAsync(code);
+        }
+
+        [TestMethod]
+        public async Task CanValidateStandardTokenContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "StandardToken", "StandardToken", "StandardToken.cs"));
+
+            await VerifyCS.VerifyAnalyzerAsync(code);
+        }
     }
 }
