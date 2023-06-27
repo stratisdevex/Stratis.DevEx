@@ -604,7 +604,7 @@ namespace Stratis.CodeAnalysis.Cs
             { "System.Array", WhitelistedArrayMethodNames}
         };
 
-        internal static string[] WhitelistedMethodReturnTypeNames = PrimitiveTypeNames.Concat(new[] { typeof(byte[]).FullName, "byte[]", typeof(UInt128[]).FullName, typeof(UInt256[]).FullName, typeof(Address).FullName }).ToArray();
+        internal static string[] WhitelistedMethodReturnTypeNames = PrimitiveTypeNames.Concat(new[] { typeof(byte[]).FullName, "byte[]", typeof(object[]).FullName, "object[]", typeof(UInt128[]).FullName, typeof(UInt256[]).FullName, typeof(Address).FullName }).ToArray();
 
         internal static readonly string[] WhitelistedNamespaces = { "System", "Stratis.SmartContracts", "Stratis.SmartContracts.Standards" };
 

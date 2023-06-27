@@ -73,5 +73,41 @@ namespace Stratis.CodeAnalysis.Cs.Test
 
             await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0011").WithSpan(77, 9, 77, 27));
         }
+
+        [TestMethod]
+        public async Task CanValidateNFTAuctionStoreRoyaltiesContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "NFTAuctionStore-Royalties", "NFTAuctionStore", "NFTAuctionStore.cs"));
+
+            await VerifyCS.VerifyAnalyzerAsync(code, VerifyCS.Diagnostic("SC0011").WithSpan(68, 9, 68, 27));
+        }
+
+        [TestMethod]
+        public async Task CanValidateNonFungibleTokenContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "NonFungibleToken", "NonFungibleToken", "NonFungibleToken.cs"));
+
+            await VerifyCS.VerifyAnalyzerAsync(code);
+        }
+
+        [TestMethod]
+        public async Task CanValidateNonFungibleTokenManualTokenIdStrategyContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "NonFungibleToken-ManualTokenIdStrategy", "NonFungibleToken", "NonFungibleToken.cs"));
+
+            await VerifyCS.VerifyAnalyzerAsync(code);
+        }
+
+        [TestMethod]
+        public async Task CanValidateNonFungibleTokenRoyaltiesContract()
+        {
+            var code = File.ReadAllText(Path.Combine("..", "..", "..", "..", "..", "ext",
+                "CirrusSmartContracts", "Mainnet", "NonFungibleToken-Royalties", "NonFungibleToken", "NonFungibleToken.cs"));
+
+            await VerifyCS.VerifyAnalyzerAsync(code);
+        }
     }
 }
