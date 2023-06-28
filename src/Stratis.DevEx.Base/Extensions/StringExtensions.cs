@@ -85,6 +85,14 @@ namespace Stratis.DevEx
             Uri.TryCreate(u, UriKind.Absolute, out var uri) && uri.Host == "github.com" ? true : false;
 
         public static string CombinePath(this string s1, string s2) => Path.Combine(s1, s2);
+
+        public static string Last(this StringBuilder sb)
+        {
+            var lines = sb.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            return lines.Length == 0 ?  "" : lines.Last();
+                    
+        }
+        
     }
 
 }

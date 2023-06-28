@@ -67,7 +67,7 @@ namespace Stratis.DevEx.Gui
             Info("Wrote run file {runfile}.", RunFile);
         }
 
-        public static void ReadMessage(MessagePack m, Action<CompilationMessage>? cma = null, Action<ControlFlowGraphMessage>? cfgma = null)
+        public static void ReadMessage(MessagePack m, Action<CompilationMessage>? cma = null, Action<ControlFlowGraphMessage>? cfgma = null, Action<SummaryMessage>? sma = null)
         {
             switch (m.Type)
             {
@@ -81,6 +81,12 @@ namespace Stratis.DevEx.Gui
                     var cfgm = MessageUtils.Deserialize<ControlFlowGraphMessage>(m.MessageBytes);
                     Info("Message received: \n{msg}", MessageUtils.PrettyPrint(cfgm));
                     cfgma?.Invoke(cfgm);
+                    break;
+
+                case MessageType.SUMMARY:
+                    var sm = MessageUtils.Deserialize<SummaryMessage>(m.MessageBytes);
+                    Info("Message received: \n{msg}", MessageUtils.PrettyPrint(sm));
+                    sma?.Invoke(sm);
                     break;
             }
         }

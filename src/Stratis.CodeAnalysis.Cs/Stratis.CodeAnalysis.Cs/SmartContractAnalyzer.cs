@@ -104,6 +104,14 @@
                 }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
                 #endregion
 
+                ctx.RegisterSemanticModelAction(sma =>
+                {
+                    if (!sma.SemanticModel.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+                    {
+                        SummaryAnalysis.Analyze(cfgFile, cfg, sma.SemanticModel);
+                    }
+                });
+
                 #region Control-flow analysis;
                 if (cfg["ControlFlowAnalysis"]["Enabled"].BoolValue)
                 {
@@ -123,6 +131,7 @@
                 {
                     Info("Control-flow analysis not enabled in analyzer configuration.");
                 }
+                
                 #endregion
             });
         }

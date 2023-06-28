@@ -8,7 +8,8 @@ namespace Stratis.DevEx.Pipes
     public enum MessageType
     {
         COMPILATION,
-        CONTROL_FLOW_GRAPH
+        CONTROL_FLOW_GRAPH,
+        SUMMARY
     }
     
     [Serializable]
@@ -62,6 +63,14 @@ namespace Stratis.DevEx.Pipes
         public EdgeData[] Edges { get; set; } = Array.Empty<EdgeData>();
     }
 
+    [Serializable]
+    public class SummaryMessage : Message
+    {
+        public string Document { get; set; } = string.Empty;
+
+        public string Summary { get; set; } = string.Empty;
+    }
+
     public class MessageUtils
     {
         public static BinaryFormatter Formatter { get; } = new BinaryFormatter();
@@ -82,6 +91,12 @@ namespace Stratis.DevEx.Pipes
             MessageBytes = Serialize(m)
         };
 
+        public static MessagePack Pack(SummaryMessage m) => new MessagePack()
+        {
+            Type = MessageType.SUMMARY,
+            MessageBytes = Serialize(m)
+        };
+
         public static string PrettyPrint(CompilationMessage m)
         {
             var n = Environment.NewLine;
@@ -92,6 +107,12 @@ namespace Stratis.DevEx.Pipes
         {
             var n = Environment.NewLine;
             return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tGraph: {m.Nodes.Length} nodes, {m.Edges.Length} edges{n}}}";
+        }
+
+        public static string PrettyPrint(SummaryMessage m)
+        {
+            var n = Environment.NewLine;
+            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tSummary: {m.Summary}}}";
         }
     }
 }
