@@ -25,6 +25,8 @@ namespace Stratis.CodeAnalysis.Cs
             var projectDir = Path.GetDirectoryName(config["General"]["ConfigFile"].StringValue);
             ClassDeclarationSyntax[] classdecls = model.SyntaxTree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>()
                                    .ToArray();
+            StructDeclarationSyntax[] structdecls = model.SyntaxTree.GetRoot().DescendantNodes().OfType<StructDeclarationSyntax>()
+                                   .ToArray();
             var builder = new StringBuilder();
             builder.AppendLine("classDiagram");
             foreach (var c in classdecls)
@@ -96,7 +98,24 @@ namespace Stratis.CodeAnalysis.Cs
                     Debug("{m}", builder.Last());
                 }
             }
-            top.Complete();
+
+            foreach (var c in structdecls)
+            {
+                var t = model.GetDeclaredSymbol(c);
+                var className = t.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+                builder.AppendLineFormat("class {0}", className);
+                Debug("{cls}", builder.Last());
+                builder.AppendLineFormat("<<struct>> {0}".Replace("<", "&lt;").Replace(">", "&gt;"), className);
+                foreach (var f in t.GetMembers().Where(m => m.Kind == SymbolKind.Field && m.DeclaredAccessibility == Accessibility.Public).Cast<IFieldSymbol>())
+                {
+                    builder.AppendFormat("{0} : ", className);
+                    builder.AppendFormat("+");
+                    builder.AppendFormat(f.Name);
+                    builder.AppendFormat(Environment.NewLine);
+                    Debug("{m}", builder.Last());
+                }
+            }
+                top.Complete();
             var pipeClient = Gui.CreatePipeClient();
             Gui.SendGuiMessage(cfgFile, model.Compilation, model.SyntaxTree.FilePath, builder.ToString(), pipeClient);
             pipeClient.Dispose();

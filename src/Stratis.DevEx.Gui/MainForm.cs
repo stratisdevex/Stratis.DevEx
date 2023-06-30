@@ -47,16 +47,15 @@ namespace Stratis.DevEx.Gui
                 {"Projects",  @"<html><head><title>Projects</title></head><body><h1>Projects</h1></body></html>"}, 
                 {"About",  @"<html><head><title>About</title></head><body><h1>About</h1></body></html>"}
             };
-
-            projectControlFlowView = new WebView();
-            projectControlFlowViewPage = new TabPage(projectControlFlowView)
-            {
-                Text = "Control Flow",
-            };
             projectSummaryView = new WebView();
             projectSummaryViewPage = new TabPage(projectSummaryView)
             {
                 Text = "Summary"
+            };
+            projectControlFlowView = new WebView();
+            projectControlFlowViewPage = new TabPage(projectControlFlowView)
+            {
+                Text = "Control Flow",
             };
             projectDisassemblyView = new WebView();
             projectDisassemblyViewPage = new TabPage(projectDisassemblyView)
@@ -69,14 +68,13 @@ namespace Stratis.DevEx.Gui
                 Text = "Source"
             };
 
-            
-            projectView.Pages.Add(projectControlFlowViewPage);
             projectView.Pages.Add(projectSummaryViewPage);
+            projectView.Pages.Add(projectControlFlowViewPage);
             projectView.Pages.Add(projectDisassemblyViewPage);
             projectView.Pages.Add(projectSourceViewPage);
 
             projectControlFlowView.LoadHtml(@"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>");
-            projectView.SelectedPage = projectControlFlowViewPage;
+            projectView.SelectedPage = projectSummaryViewPage;
 
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;
@@ -332,10 +330,10 @@ namespace Stratis.DevEx.Gui
             switch (e.Item.Key)
             {
                 case var x when x.EndsWith(".cs"):
-                    App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[e.Item.Key + "_ControlFlow"]));
+                    App.AsyncInvoke(() => projectSummaryView.LoadHtml((string)projectViews[e.Item.Key + "_Summary"]));
                     break;
                 default:
-                    App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[e.Item.Key]));
+                    App.AsyncInvoke(() => projectSummaryView.LoadHtml((string)projectViews[e.Item.Key]));
                     break;
             }
         }
