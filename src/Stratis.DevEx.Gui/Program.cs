@@ -38,7 +38,7 @@ namespace Stratis.DevEx.Gui
                 GuiApp = new GuiApp(Eto.Platform.Detect);
                 GuiApp.Initialized += (sender, e) => GuiApp.InvokeAsync(async () => await PipeServer.StartAsync());
                 GuiApp.Terminating += (sender, e) => Shutdown();
-                PipeServer.MessageReceived += (sender, e) => GuiApp.AsyncInvoke(() => ReadMessage(e.Message, GuiApp.ReadMessage, GuiApp.ReadMessage));
+                PipeServer.MessageReceived += (sender, e) => GuiApp.AsyncInvoke(() => ReadMessage(e.Message, GuiApp.ReadMessage, GuiApp.ReadMessage, GuiApp.ReadMessage));
                 WriteRunFile();
                 GuiApp.Run(new MainForm());
             }

@@ -30,5 +30,27 @@ namespace Stratis.DevEx.Drawing
             op.Complete();
             return stringBuilder.ToString();
         }
-    }
+
+        public static string DrawSummary(string summary)
+        {
+            var op = Begin("Drawing summary to HTML");
+            var stringBuilder = new StringBuilder();
+            var divId = Guid.NewGuid().ToString("N");
+            stringBuilder.AppendLine("<html lang=\"en\"><head><title>Title</title><body>");
+            stringBuilder.AppendLine($"<pre id=\"{divId}\" class=\"mermaid\" style=\"height:1000px; width:100%\">");
+            stringBuilder.AppendLine(summary);
+            stringBuilder.AppendLine("</pre>");
+            stringBuilder.AppendLine("<script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>");
+            stringBuilder.AppendLine("<script type=\"text/JavaScript\">");
+            stringBuilder.AppendLine("mermaid.initialize({ startOnLoad: true });");
+            stringBuilder.AppendLine("</script>");
+            //stringBuilder.AppendLine("<script type=\"module\">");
+            //stringBuilder.AppendLine("import mermaid from \"https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs\";");
+            //stringBuilder.AppendLine("</script>");
+            stringBuilder.AppendLine("</body></html>");
+            op.Complete();
+            return stringBuilder.ToString();
+        }
+    }   
 }
+

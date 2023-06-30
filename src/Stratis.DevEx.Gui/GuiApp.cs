@@ -40,6 +40,12 @@ namespace Stratis.DevEx.Gui
             mainform.ReadMessage(m);
         }
 
+        public void ReadMessage(SummaryMessage m)
+        {
+            var mainform = (MainForm)this.MainForm;
+            mainform.ReadMessage(m);
+        }
+
         #region Logging
         [DebuggerStepThrough]
         public static void Info(string messageTemplate, params object[] args) => Runtime.Info(messageTemplate, args);

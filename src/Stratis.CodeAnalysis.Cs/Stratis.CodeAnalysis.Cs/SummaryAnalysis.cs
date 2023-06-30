@@ -26,13 +26,14 @@ namespace Stratis.CodeAnalysis.Cs
             ClassDeclarationSyntax[] classdecls = model.SyntaxTree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>()
                                    .ToArray();
             var builder = new StringBuilder();
+            builder.AppendLine("classDiagram");
             foreach (var c in classdecls)
             {
                 var t = model.GetDeclaredSymbol(c);
-                var className = t.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var className = t.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
                 builder.AppendLineFormat("class {0}", className);
                 Debug("{cls}", builder.Last());
-                if (t.IsSmartContract()) builder.AppendLineFormat("<<contract>> {0}", className);
+                if (t.IsSmartContract()) builder.AppendLineFormat("<<contract>> {0}".Replace("<", "&lt;").Replace(">", "&gt;"), className);
                 foreach (var method in t.GetMembers().Where(m => m.Kind == SymbolKind.Method && m.DeclaredAccessibility == Accessibility.Public).Cast<IMethodSymbol>())
                 {
                     builder.AppendFormat("{0} : ", className);
@@ -99,6 +100,7 @@ namespace Stratis.CodeAnalysis.Cs
             var pipeClient = Gui.CreatePipeClient();
             Gui.SendGuiMessage(cfgFile, model.Compilation, model.SyntaxTree.FilePath, builder.ToString(), pipeClient);
             pipeClient.Dispose();
+            //File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Stratis.DevEx.Drawing.Html.DrawSummary(builder.ToString()));
         }
     }
 }

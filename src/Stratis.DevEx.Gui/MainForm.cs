@@ -53,10 +53,10 @@ namespace Stratis.DevEx.Gui
             {
                 Text = "Control Flow",
             };
-            projectCHAView = new WebView();
-            projectCHAViewPage = new TabPage(projectCHAView)
+            projectSummaryView = new WebView();
+            projectSummaryViewPage = new TabPage(projectSummaryView)
             {
-                Text = "Class Hierarchy"
+                Text = "Summary"
             };
             projectDisassemblyView = new WebView();
             projectDisassemblyViewPage = new TabPage(projectDisassemblyView)
@@ -71,7 +71,7 @@ namespace Stratis.DevEx.Gui
 
             
             projectView.Pages.Add(projectControlFlowViewPage);
-            projectView.Pages.Add(projectCHAViewPage);
+            projectView.Pages.Add(projectSummaryViewPage);
             projectView.Pages.Add(projectDisassemblyViewPage);
             projectView.Pages.Add(projectSourceViewPage);
 
@@ -164,6 +164,31 @@ namespace Stratis.DevEx.Gui
             navigation.RefreshItem(projects);
         }
 
+        public void ReadMessage(SummaryMessage m)
+        {
+            if (m.EditorEntryAssembly == "(none)")
+            {
+                Info("Not processing message from unknown editor assembly for document {doc}.", m.Document);
+                return;
+            }
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var docid = projectid + "_" + m.Document;
+            var projects = (TreeItem)navigation.DataStore[1];
+            if (projects.Children.Any(c => c.Key == projectid))
+            {
+                Debug("Project {proj} already exists in tree, updating...", projectid);
+                UpdateProjectDocsTree(m);
+                App.AsyncInvoke(() => projectSummaryView.LoadHtml((string)projectViews[docid + "_" + "Summary"]));
+            }
+            else
+            {
+                Debug("Project {proj} does not exists in tree, adding...", projectid);
+                AddProjectToTree(m);
+                App.AsyncInvoke(() => projectSummaryView.LoadHtml((string)projectViews[docid + "_" + "Summary"]));
+            }
+            navigation.RefreshItem(projects);
+        }
+        
         public void AddProjectToTree(ControlFlowGraphMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
@@ -193,6 +218,34 @@ namespace Stratis.DevEx.Gui
             Projects.Children.Add(child);
         }
 
+        public void AddProjectToTree(SummaryMessage m)
+        {
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
+            var docid = projectid + "_" + m.Document;
+            var doc = new TreeItem()
+            {
+                Key = docid,
+                Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
+                Image = CSharp
+            };
+            projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
+            projectViews.Add(docid + "_" + "Summary", Html.DrawSummary(m.Summary));
+            var child = new TreeItem(doc)
+            {
+                Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
+                Text = m.AssemblyName,
+                Image = m.EditorEntryAssembly switch
+                {
+                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
+                    var x when x.StartsWith("OmniSharp") => VSCode,
+                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
+                    _ => Globe
+                },
+            };
+            Projects.Children.Add(child);
+        }
+
         public void UpdateProjectDocsTree(ControlFlowGraphMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
@@ -201,6 +254,31 @@ namespace Stratis.DevEx.Gui
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
             var cfg = Program.CreateGraph(m);
             projectViews[docid + "_" + "ControlFlow"] = Html.DrawControlFlowGraph(cfg);
+            if (project.Children.Any(c => c.Key == docid))
+            {
+                Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
+            }
+            else
+            {
+                Debug("Document {doc} does not exist in project {proj}, adding...", docid, projectid);
+                TreeItem doc = new TreeItem()
+                {
+                    Key = docid,
+                    Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
+                    Image = CSharp
+                };
+                project.Children.Add(doc);
+            }
+        }
+
+        public void UpdateProjectDocsTree(SummaryMessage m)
+        {
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
+            var docid = projectid + "_" + m.Document;
+            var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
+            
+            projectViews[docid + "_" + "Summary"] = Html.DrawSummary(m.Summary);
             if (project.Children.Any(c => c.Key == docid))
             {
                 Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
@@ -281,8 +359,8 @@ namespace Stratis.DevEx.Gui
 
         protected WebView projectControlFlowView;
         protected TabPage projectControlFlowViewPage;
-        protected WebView projectCHAView;
-        protected TabPage projectCHAViewPage;
+        protected WebView projectSummaryView;
+        protected TabPage projectSummaryViewPage;
         protected WebView projectSourceView;
         protected TabPage projectSourceViewPage;
         protected WebView projectDisassemblyView;
