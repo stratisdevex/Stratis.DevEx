@@ -45,9 +45,7 @@ namespace Stratis.CodeAnalysis.Cs
 
                     foreach (var p in method.Parameters)
                     {
-                        var mt = p.Type.Name.Replace("<", "~").Replace(">", "~") + " ";
-                        //builder.Append(t);
-                        builder.Append(p.Name);
+                        builder.AppendFormat("{0} {1}", p.Type.Name.Replace("<", "~").Replace(">", "~"), p.Name);
                         builder.Append(",");
                     }
                     if (method.Parameters.Count() > 0)
@@ -86,7 +84,7 @@ namespace Stratis.CodeAnalysis.Cs
                     builder.Append("(");
                     foreach (var p in method.Parameters)
                     {
-                        builder.Append(p.Name);
+                        builder.AppendFormat("{0} {1}", p.Type.Name, p.Name);
                         builder.Append(",");
                     }
                     if (method.Parameters.Count() > 0)
@@ -102,6 +100,7 @@ namespace Stratis.CodeAnalysis.Cs
             foreach (var c in structdecls)
             {
                 var t = model.GetDeclaredSymbol(c);
+                
                 var className = t.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
                 builder.AppendLineFormat("class {0}", className);
                 Debug("{cls}", builder.Last());
@@ -109,13 +108,18 @@ namespace Stratis.CodeAnalysis.Cs
                 foreach (var f in t.GetMembers().Where(m => m.Kind == SymbolKind.Field && m.DeclaredAccessibility == Accessibility.Public).Cast<IFieldSymbol>())
                 {
                     builder.AppendFormat("{0} : ", className);
-                    builder.AppendFormat("+");
-                    builder.AppendFormat(f.Name);
+                    builder.AppendFormat("+{0} {1}", f.Type.Name, f.Name);
+                    //builder.AppendFormat(f.Name);
                     builder.AppendFormat(Environment.NewLine);
                     Debug("{m}", builder.Last());
                 }
+                if (t.ContainingType != null)
+                {
+                    builder.AppendFormat("{0}*--{1}", className, t.ContainingType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+                    builder.AppendLine();
+                }
             }
-                top.Complete();
+            top.Complete();
             var pipeClient = Gui.CreatePipeClient();
             Gui.SendGuiMessage(cfgFile, model.Compilation, model.SyntaxTree.FilePath, builder.ToString(), pipeClient);
             pipeClient.Dispose();
