@@ -19,3 +19,6 @@
 [submodule "ext/CirrusSmartContracts"]
 	path = ext/CirrusSmartContracts
 	url = https://github.com/stratisproject/CirrusSmartContracts.git
+[submodule "ext/cci"]
+	path = ext/cci
+	url = https://github.com/allisterb/cci.git
