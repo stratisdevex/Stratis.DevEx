@@ -86,6 +86,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Cci.NETSTANDARD20
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DiaSymReader.Converter.NETSTANDARD20", "..\ext\cci\NET6\ext\symreader-converter\src\Microsoft.DiaSymReader.Converter\Microsoft.DiaSymReader.Converter.NETSTANDARD20.csproj", "{0C324937-6A74-4466-A112-22A81BFC0A65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.CodeAnalysis.IL", "Stratis.CodeAnalysis.IL\Stratis.CodeAnalysis.IL.csproj", "{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -549,6 +551,24 @@ Global
 		{0C324937-6A74-4466-A112-22A81BFC0A65}.Sources|arm64.Build.0 = Debug|Any CPU
 		{0C324937-6A74-4466-A112-22A81BFC0A65}.Sources|x86.ActiveCfg = Debug|Any CPU
 		{0C324937-6A74-4466-A112-22A81BFC0A65}.Sources|x86.Build.0 = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Debug|arm64.Build.0 = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Debug|x86.Build.0 = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Release|arm64.ActiveCfg = Release|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Release|arm64.Build.0 = Release|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Release|x86.ActiveCfg = Release|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Release|x86.Build.0 = Release|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Sources|Any CPU.ActiveCfg = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Sources|Any CPU.Build.0 = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Sources|arm64.ActiveCfg = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Sources|arm64.Build.0 = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Sources|x86.ActiveCfg = Debug|Any CPU
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C}.Sources|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -582,6 +602,7 @@ Global
 		{5A143780-ECF3-42C5-B439-57F2455A0A8A} = {A0717F4C-8EED-4659-B72F-50DB73E1F64E}
 		{056AA646-EB9B-42D1-8B54-33F11DE44AA8} = {5A143780-ECF3-42C5-B439-57F2455A0A8A}
 		{0C324937-6A74-4466-A112-22A81BFC0A65} = {5A143780-ECF3-42C5-B439-57F2455A0A8A}
+		{81881EC5-6FA9-49EE-9310-50C2C8B1EB5C} = {8DC77034-0F3C-40E6-A352-B157BCB85462}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {602325FF-1BC0-4A57-8252-3F0471EA4151}

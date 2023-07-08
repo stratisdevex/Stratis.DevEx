@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ext\cci\NET6\Microsoft.Cci\Microsoft.Cci.NETSTANDARD20.csproj" />
+    <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
+  </ItemGroup>
+
+</Project>
