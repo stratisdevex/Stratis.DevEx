@@ -30,7 +30,8 @@ jobs:
         submodules: recursive
 
     - name: Restore the SymReaderConverter solution
-      run:  ext\\cci\\NET6\\ext\\symreader-converter\\eng\\common\\Build.ps1 -restore
+      run:  Build.ps1
+      working-directory: ext\\cci\\NET6\\ext\\symreader-converter\\eng\\common
       env:
         Configuration: ${{ matrix.configuration }}
 
