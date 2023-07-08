@@ -210,5 +210,51 @@ namespace Stratis.CodeAnalysis.Cs
                 Error(e, "Error sending control-flow graph message to GUI.");
             }
         }
+
+        public static void SendCallGraphGuiMessage(string cfgfile, Compilation c, string document, Graph graph, PipeClient<MessagePack> pipeClient)
+        {
+            if (!GuiProcessRunning())
+            {
+                Error("Did not detect GUI process running, not sending message.");
+                return;
+            }
+
+            using var op = Begin("Sending call graph message");
+            try
+            {
+                var m = new CallGraphMessage()
+                {
+                    ConfigFile = cfgfile,
+                    CompilationId = c.GetHashCode(),
+                    EditorEntryAssembly = EntryAssembly?.FullName ?? "(none)",
+                    AssemblyName = c.AssemblyName,
+                    Document = document,
+                    Nodes = graph.Nodes.Select(n => new NodeData() { Id = n.Id, Label = n.LabelText }).ToArray(),
+                    Edges = graph.Edges.Select(e => new EdgeData() { SourceId = e.Source, TargetId = e.Target, Label = e.LabelText }).ToArray()
+                };
+                if (GuiProcessRunning() && !pipeClient.IsConnected)
+                {
+                    Debug("Pipe client disconnected, attempting to reconnect...");
+                    pipeClient.ConnectAsync().Wait();
+                }
+                if (GuiProcessRunning() && pipeClient.IsConnected)
+                {
+                    var mp = MessageUtils.Pack(m);
+                    pipeClient.WriteAsync(mp).Wait();
+                    op.Complete();
+                }
+                else
+                {
+                    op.Abandon();
+                    Error("GUI is not running or pipe client disconnected. Error sending control-flow graph message to GUI.");
+                }
+            }
+            catch (Exception e)
+            {
+                op.Abandon();
+                Error(e, "Error sending call graph message to GUI.");
+            }
+
+        }
     }
 }

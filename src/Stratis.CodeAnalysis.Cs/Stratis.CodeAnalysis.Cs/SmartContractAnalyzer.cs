@@ -131,7 +131,18 @@
                 {
                     Info("Control-flow analysis not enabled in analyzer configuration.");
                 }
-                
+
+                #endregion
+
+                #region Call-graph analysis
+                ctx.RegisterSemanticModelAction(sma =>
+                {
+                    if (!sma.SemanticModel.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+                    {
+                        CallGraphAnalysis.Analyze(cfgFile, cfg, sma.SemanticModel);
+                    }
+
+                });
                 #endregion
             });
         }

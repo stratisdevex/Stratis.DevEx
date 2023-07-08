@@ -9,7 +9,8 @@ namespace Stratis.DevEx.Pipes
     {
         COMPILATION,
         CONTROL_FLOW_GRAPH,
-        SUMMARY
+        SUMMARY,
+        CALL_GRAPH
     }
     
     [Serializable]
@@ -71,6 +72,16 @@ namespace Stratis.DevEx.Pipes
         public string Summary { get; set; } = string.Empty;
     }
 
+    [Serializable]
+    public class CallGraphMessage : Message
+    {
+        public string Document { get; set; } = string.Empty;
+
+        public NodeData[] Nodes { get; set; } = Array.Empty<NodeData>();
+
+        public EdgeData[] Edges { get; set; } = Array.Empty<EdgeData>();
+    }
+
     public class MessageUtils
     {
         public static BinaryFormatter Formatter { get; } = new BinaryFormatter();
@@ -97,6 +108,12 @@ namespace Stratis.DevEx.Pipes
             MessageBytes = Serialize(m)
         };
 
+        public static MessagePack Pack(CallGraphMessage m) => new MessagePack()
+        {
+            Type = MessageType.CALL_GRAPH,
+            MessageBytes = Serialize(m)
+        };
+
         public static string PrettyPrint(CompilationMessage m)
         {
             var n = Environment.NewLine;
@@ -106,13 +123,19 @@ namespace Stratis.DevEx.Pipes
         public static string PrettyPrint(ControlFlowGraphMessage m)
         {
             var n = Environment.NewLine;
-            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tGraph: {m.Nodes.Length} nodes, {m.Edges.Length} edges{n}}}";
+            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tControl-Flow Graph: {m.Nodes.Length} nodes, {m.Edges.Length} edges{n}}}";
         }
 
         public static string PrettyPrint(SummaryMessage m)
         {
             var n = Environment.NewLine;
             return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tSummary: {m.Summary}}}";
+        }
+
+        public static string PrettyPrint(CallGraphMessage m)
+        {
+            var n = Environment.NewLine;
+            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tCall Graph: {m.Nodes.Length} nodes, {m.Edges.Length} edges{n}}}";
         }
     }
 }

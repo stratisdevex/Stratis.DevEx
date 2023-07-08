@@ -31,6 +31,30 @@ namespace Stratis.DevEx.Drawing
             return stringBuilder.ToString();
         }
 
+        public static string DrawCallGraph(Graph graph)
+        {
+            var op = Begin("Drawing call graph of {0} nodes and {1} edges to HTML", graph.NodeCount, graph.EdgeCount);
+            var network = VisJS.Draw(graph);
+            var stringBuilder = new StringBuilder();
+            var divId = Guid.NewGuid().ToString("N");
+            stringBuilder.AppendLine("<html lang=\"en\"><head><script type=\"text/javascript\" src=\"https://unpkg.com/vis-network/standalone/umd/vis-network.min.js\"></script><title>Title</title><body>");
+            stringBuilder.AppendLine($"<div id=\"{divId}\" style=\"height:1000px; width:100%\"></div>");
+            stringBuilder.AppendLine("</div>");
+            stringBuilder.AppendLine("<script type=\"text/javascript\">");
+            stringBuilder.AppendLine($@"
+        let container = document.getElementById('{divId}');
+        let data = {{
+                        nodes: new vis.DataSet({network.SerializeNodes()}), 
+                        edges: new vis.DataSet({network.SerializeEdges()})
+                    }};
+        let options = {network.SerializeOptions()};
+        let network = new vis.Network(container, data, options); 
+        ");
+            stringBuilder.AppendLine("</script>");
+            stringBuilder.AppendLine("</body></html>");
+            op.Complete();
+            return stringBuilder.ToString();
+        }
         public static string DrawSummary(string summary)
         {
             var op = Begin("Drawing summary to HTML");
