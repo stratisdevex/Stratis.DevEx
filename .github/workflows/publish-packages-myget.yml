@@ -29,11 +29,6 @@ jobs:
         fetch-depth: 0
         submodules: recursive
 
-    - name: Restore the SymReaderConverter solution
-      run: ext\\cci\\NET6\\ext\\symreader-converter\\Restore.cmd 
-      env:
-        Configuration: ${{ matrix.configuration }}
-    
     - name: Restore the Stratis.DevEx solution
       run: dotnet restore "${{ env.Solution_Name }}"  /p:Configuration=$env:Configuration
       env:
