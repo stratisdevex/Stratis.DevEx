@@ -34,6 +34,10 @@ namespace Stratis.DevEx.Pipes
     public class CompilationMessage : Message
     {
         public string[] Documents { get; set; } = Array.Empty<string>();
+
+        public byte[] Assembly { get; set; } = Array.Empty<byte>();
+
+        public byte[] Pdb { get; set; } = Array.Empty<byte>();
     }
 
     [Serializable]
@@ -70,6 +74,10 @@ namespace Stratis.DevEx.Pipes
         public string Document { get; set; } = string.Empty;
 
         public string Summary { get; set; } = string.Empty;
+
+        public string Assembly { get; set; } = string.Empty;
+
+        public string Pdb { get; set; } = string.Empty;
     }
 
     [Serializable]
@@ -117,7 +125,7 @@ namespace Stratis.DevEx.Pipes
         public static string PrettyPrint(CompilationMessage m)
         {
             var n = Environment.NewLine;
-            return $"{{{n}\tCompilation ID: {m.CompilationId}\n\tEditor Entry Assembly: {m.EditorEntryAssembly}\n\tAssemblyName: {m.AssemblyName}{n}\tDocuments: {m.Documents.JoinWithSpaces()}{n}}}";
+            return $"{{{n}\tCompilation ID: {m.CompilationId}\n\tEditor Entry Assembly: {m.EditorEntryAssembly}\n\tAssemblyName: {m.AssemblyName}{n}\tDocuments: {m.Documents.JoinWithSpaces()}{n}\tAssembly: {m.Assembly.Length} bytes{n}\tPdb: {m.Pdb.Length} bytes{n}}}";
         }
 
         public static string PrettyPrint(ControlFlowGraphMessage m)

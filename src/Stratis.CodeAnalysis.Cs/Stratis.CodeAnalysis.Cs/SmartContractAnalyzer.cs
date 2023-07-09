@@ -11,6 +11,7 @@
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using Microsoft.CodeAnalysis.Emit;
     using Microsoft.CodeAnalysis.Operations;
     using Microsoft.CodeAnalysis.FlowAnalysis;
 
@@ -31,10 +32,35 @@
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             attrCount = 0;
+            if (!assemblyCacheDir.Exists)
+            {
+                assemblyCacheDir.Create();
+            }
+            
+            context.RegisterCompilationAction(ctx =>
+            {
+                Debug("Compilation end.");
+                var cfg = CreateDefaultAnalyzerConfig();
+                string cfgFile = "";
+                if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path.EndsWith("stratisdev.cfg")))
+                {
+                    cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path.EndsWith("stratisdev.cfg")).Path;
+                    cfg = Runtime.LoadConfig(cfgFile);
+                    cfg["General"]["ConfigFile"].SetValue(cfgFile);
+                }
+                if (!cfg["Analyzer"]["Enabled"].GetValueOrDefault(true))
+                {
+                    return;
+                }
+                if (!ctx.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+                {
+                    SendCompilationMessage(ctx.Compilation);
+                }
+            });
+
             context.RegisterCompilationStartAction(ctx =>
             {
                 Debug("Compilation start...");
-                ctx.RegisterCompilationEndAction(_ => Runtime.Info("Compilation end."));
                 var cfg = CreateDefaultAnalyzerConfig();
                 string cfgFile = "";
                 if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path.EndsWith("stratisdev.cfg")))
@@ -54,17 +80,6 @@
                     Runtime.Info("Analyzer disabled in configuration file...not registering analyzer actions.");
                     return;
                 }
-
-                #region Gui
-                if (cfg["Gui"]["Enabled"].BoolValue)
-                {
-                    Info("GUI enabled for compilation, registering action to send compilation message...");
-                    ctx.RegisterCompilationEndAction(cctx =>
-                    {
-                        SendGuiMessage(cctx.Compilation);
-                    });
-                }
-                #endregion
 
                 #region Smart contract validation
                 //ctx.RegisterCompilationAction(ctx => Validator.AnalyzeCompilation(ctx.Compilation).ForEach(d => ctx.ReportDiagnostic(d)));
@@ -229,7 +244,7 @@
         #endregion
 
         #region Gui
-        protected void SendGuiMessage(Compilation c)
+        protected void SendCompilationMessage(Compilation c)
         {
             if (!GuiProcessRunning())
             {
@@ -239,17 +254,27 @@
 
             if (this.pipeClient is null) this.pipeClient = Gui.CreatePipeClient();
             
-
             using (var op = Runtime.Begin("Sending compilation message"))
             {
                 try
                 {
+                    MemoryStream asm = new MemoryStream();
+                    MemoryStream pdb = new MemoryStream();
+                    var r = c.Emit(asm, pdb);
+                    if (!r.Success)
+                    {
+                        Error("Error emitting assembly: {err}", r.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Select(d => d.Descriptor.Description));
+                        op.Abandon();
+                        return;
+                    }
                     var m = new CompilationMessage()
                     {
                         CompilationId = c.GetHashCode(),
                         EditorEntryAssembly = Runtime.EntryAssembly?.FullName ?? "(none)",
                         AssemblyName = c.AssemblyName,
-                        Documents = c.SyntaxTrees.Select(st => st.FilePath).ToArray()
+                        Documents = c.SyntaxTrees.Select(st => st.FilePath).ToArray(),
+                        Assembly = asm.ToArray(),
+                        Pdb = pdb.ToArray()
                     };
                     if (GuiProcessRunning() && !pipeClient.IsConnected)
                     {
@@ -324,6 +349,7 @@
         internal int attrCount = 0;
         protected PipeClient<MessagePack> pipeClient;
         internal static ConcurrentDictionary<int, Configuration> CompilationConfiguration = new();
+        internal static DirectoryInfo assemblyCacheDir = new DirectoryInfo(Path.Combine(Runtime.StratisDevDir, "asmcache"));
         #endregion
     }
 }

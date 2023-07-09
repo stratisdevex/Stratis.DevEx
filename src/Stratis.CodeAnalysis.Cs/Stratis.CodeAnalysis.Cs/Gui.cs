@@ -166,7 +166,7 @@ namespace Stratis.CodeAnalysis.Cs
             
         }
 
-        public static void SendGuiMessage(string cfgfile, Compilation c, string document, string summary, PipeClient<MessagePack> pipeClient)
+        public static void SendSummaryGuiMessage(string cfgfile, Compilation c, string document, string summary, string assembly, string pdb, PipeClient<MessagePack> pipeClient)
         {
             if (!GuiProcessRunning())
             {
@@ -184,8 +184,9 @@ namespace Stratis.CodeAnalysis.Cs
                     EditorEntryAssembly = EntryAssembly?.FullName ?? "(none)",
                     AssemblyName = c.AssemblyName,
                     Document = document,
-                    Summary = summary
-                   
+                    Summary = summary,
+                    Assembly = assembly,
+                    Pdb = pdb
                 };
                 if (GuiProcessRunning() && !pipeClient.IsConnected)
                 {
