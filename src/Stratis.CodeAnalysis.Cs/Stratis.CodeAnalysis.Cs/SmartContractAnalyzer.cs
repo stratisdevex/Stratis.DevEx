@@ -54,7 +54,9 @@
                 }
                 if (!ctx.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
                 {
-                    SendCompilationMessage(ctx.Compilation);
+                    var pipeClient = Gui.CreatePipeClient();
+                    Gui.SendCompilationMessage(ctx.Compilation, pipeClient);
+                    pipeClient.Dispose();
                 }
             });
 
@@ -243,106 +245,6 @@
         public static T AnalyzerSetting<T>(Compilation c, string section, string setting) => AnalyzerSetting<T>(c, section, setting, default(T));
         #endregion
 
-        #region Gui
-        protected void SendCompilationMessage(Compilation c)
-        {
-            if (!GuiProcessRunning())
-            {
-                Runtime.Error("Did not detect GUI process running, not sending message.");
-                return;
-            }
-
-            if (this.pipeClient is null) this.pipeClient = Gui.CreatePipeClient();
-            
-            using (var op = Runtime.Begin("Sending compilation message"))
-            {
-                try
-                {
-                    MemoryStream asm = new MemoryStream();
-                    MemoryStream pdb = new MemoryStream();
-                    var r = c.Emit(asm, pdb);
-                    if (!r.Success)
-                    {
-                        Error("Error emitting assembly: {err}", r.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Select(d => d.Descriptor.Description));
-                        op.Abandon();
-                        return;
-                    }
-                    var m = new CompilationMessage()
-                    {
-                        CompilationId = c.GetHashCode(),
-                        EditorEntryAssembly = Runtime.EntryAssembly?.FullName ?? "(none)",
-                        AssemblyName = c.AssemblyName,
-                        Documents = c.SyntaxTrees.Select(st => st.FilePath).ToArray(),
-                        Assembly = asm.ToArray(),
-                        Pdb = pdb.ToArray()
-                    };
-                    if (GuiProcessRunning() && !pipeClient.IsConnected)
-                    {
-                        Runtime.Debug("Pipe client disconnected, attempting to reconnect...");
-                        pipeClient.ConnectAsync().Wait();
-                    }
-                    if (GuiProcessRunning() && pipeClient.IsConnected)
-                    {
-                        var mp = MessageUtils.Pack(m);
-                        pipeClient.WriteAsync(mp).Wait();
-                        op.Complete();
-                    }
-                    else
-                    {
-                        op.Abandon();
-                        Runtime.Error("GUI is not running or pipe client disconnected. Error sending compilation message to GUI.");
-                    }
-                }
-                catch (Exception e)
-                {
-                    op.Abandon();
-                    Runtime.Error(e, "Error sending compilation message to GUI.");
-                }
-            }
-        }
-
-        protected static bool GuiProcessRunning()
-        {
-            var f = Runtime.StratisDevDir.CombinePath("Stratis.DevEx.Gui.run");
-            if (!File.Exists(f))
-            {
-                Runtime.Debug("{0} does not exist.", f);
-                return false;
-            }
-            else
-            {
-                var c = Configuration.LoadFromFile(f);
-                var pid = c["Process"]["ProcessId"].GetValueOrDefault(0);
-                if (pid == 0)
-                {
-                    Runtime.Error("Could not read process ID from Stratis.DevEx.Gui.run.");
-                    return false;
-                }
-                else
-                {
-                    try
-                    {
-                        var p = Process.GetProcessById(pid);
-                        if (p.ProcessName.Contains("Stratis.DevEx.Gui"))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            Runtime.Debug("Process {pid} is not Stratis.DevEx.Gui.", pid);
-                            return false;
-                        }
-                    }
-                    catch 
-                    {
-                        Runtime.Debug("Exception thrown getting process id {pid}.", pid);
-                        return false;
-                    }
-                }
-            }
-        }
-        #endregion
-        
         #endregion
 
         #region Fields

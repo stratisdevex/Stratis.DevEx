@@ -74,10 +74,6 @@ namespace Stratis.DevEx.Pipes
         public string Document { get; set; } = string.Empty;
 
         public string Summary { get; set; } = string.Empty;
-
-        public string Assembly { get; set; } = string.Empty;
-
-        public string Pdb { get; set; } = string.Empty;
     }
 
     [Serializable]

@@ -166,7 +166,7 @@ namespace Stratis.CodeAnalysis.Cs
             
         }
 
-        public static void SendSummaryGuiMessage(string cfgfile, Compilation c, string document, string summary, string assembly, string pdb, PipeClient<MessagePack> pipeClient)
+        public static void SendSummaryGuiMessage(string cfgfile, Compilation c, string document, string summary, PipeClient<MessagePack> pipeClient)
         {
             if (!GuiProcessRunning())
             {
@@ -185,8 +185,6 @@ namespace Stratis.CodeAnalysis.Cs
                     AssemblyName = c.AssemblyName,
                     Document = document,
                     Summary = summary,
-                    Assembly = assembly,
-                    Pdb = pdb
                 };
                 if (GuiProcessRunning() && !pipeClient.IsConnected)
                 {
@@ -256,6 +254,60 @@ namespace Stratis.CodeAnalysis.Cs
                 Error(e, "Error sending call graph message to GUI.");
             }
 
+        }
+
+        public static void SendCompilationMessage(Compilation c, PipeClient<MessagePack> pipeClient)
+        {
+            if (!GuiProcessRunning())
+            {
+                Error("Did not detect GUI process running, not sending message.");
+                return;
+            }
+            using (var op = Runtime.Begin("Sending compilation message"))
+            {
+                try
+                {
+                    MemoryStream asm = new MemoryStream();
+                    MemoryStream pdb = new MemoryStream();
+                    var r = c.Emit(asm, pdb);
+                    if (!r.Success)
+                    {
+                        Error("Error emitting assembly: {err}", r.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Select(d => d.Descriptor.Description));
+                        op.Abandon();
+                        return;
+                    }
+                    var m = new CompilationMessage()
+                    {
+                        CompilationId = c.GetHashCode(),
+                        EditorEntryAssembly = Runtime.EntryAssembly?.FullName ?? "(none)",
+                        AssemblyName = c.AssemblyName,
+                        Documents = c.SyntaxTrees.Select(st => st.FilePath).ToArray(),
+                        Assembly = asm.ToArray(),
+                        Pdb = pdb.ToArray()
+                    };
+                    if (GuiProcessRunning() && !pipeClient.IsConnected)
+                    {
+                        Debug("Pipe client disconnected, attempting to reconnect...");
+                        pipeClient.ConnectAsync().Wait();
+                    }
+                    if (GuiProcessRunning() && pipeClient.IsConnected)
+                    {
+                        var mp = MessageUtils.Pack(m);
+                        pipeClient.WriteAsync(mp).Wait();
+                        op.Complete();
+                    }
+                    else
+                    {
+                        op.Abandon();
+                        Error("GUI is not running or pipe client disconnected. Error sending compilation message to GUI.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    op.Abandon();
+                    Error(e, "Error sending compilation message to GUI.");
+                }
+            }
         }
     }
 }

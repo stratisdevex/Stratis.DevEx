@@ -121,7 +121,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
             top.Complete();
             var pipeClient = Gui.CreatePipeClient();
-            Gui.SendSummaryGuiMessage(cfgFile, model.Compilation, model.SyntaxTree.FilePath, builder.ToString(), pe, pdb, pipeClient);
+            Gui.SendSummaryGuiMessage(cfgFile, model.Compilation, model.SyntaxTree.FilePath, builder.ToString(), pipeClient);
             pipeClient.Dispose();
             //File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Stratis.DevEx.Drawing.Html.DrawSummary(builder.ToString()));
         }
