@@ -26,7 +26,10 @@ namespace Stratis.DevEx.Gui
                 Logger.SetLogLevelDebug();
                 Info("Debug mode enabled.");                
             }
-
+            if (!assemblyCacheDir.Exists)
+            {
+                assemblyCacheDir.Create();
+            }
             PipeServer = new PipeServer<MessagePack>("stratis_devexgui") { WaitFreePipe = true };
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
             PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
@@ -139,6 +142,8 @@ namespace Stratis.DevEx.Gui
         #region Properties
         public static GuiApp? GuiApp { get; private set; }
         public static PipeServer<MessagePack>? PipeServer { get; private set; }
+
+        public static DirectoryInfo assemblyCacheDir = new DirectoryInfo(Path.Combine(Runtime.StratisDevDir, "asmcache"));
         #endregion
     }
 }

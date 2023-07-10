@@ -11,6 +11,7 @@ using Microsoft.Msagl.Drawing;
 
 using Stratis.DevEx.Drawing;
 using Stratis.DevEx.Pipes;
+using Stratis.DevEx.CodeAnalysis.IL;
 
 namespace Stratis.DevEx.Gui
 {
@@ -134,7 +135,25 @@ namespace Stratis.DevEx.Gui
 
         public void ReadMessage(CompilationMessage m)
         {
-
+            if (m.EditorEntryAssembly == "(none)")
+            {
+                Info("Not processing message from unknown editor assembly for assembly {asm}.", m.AssemblyName);
+                return;
+            }
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.CompilationId.ToString();
+            var projects = (TreeItem)navigation.DataStore[1];
+            if (projects.Children.Any(c => c.Key == projectid))
+            {
+                Debug("Project {proj} already exists in tree, updating...", projectid);
+                UpdateProjectDocsTree(m);
+                App.AsyncInvoke(() => projectDisassemblyView.LoadHtml((string)projectViews[projectid + "_" + "Disassembly"]));
+            }
+            else
+            {
+                Debug("Project {proj} does not exists in tree, adding...", projectid);
+                AddProjectToTree(m);
+                App.AsyncInvoke(() => projectDisassemblyView.LoadHtml((string)projectViews[projectid + "_" + "Disassembly"]));
+            }
         }
 
         public void ReadMessage(ControlFlowGraphMessage m)
@@ -244,6 +263,35 @@ namespace Stratis.DevEx.Gui
             Projects.Children.Add(child);
         }
 
+        public void AddProjectToTree(CompilationMessage m)
+        {
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.CompilationId.ToString();
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
+          
+            projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
+            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
+            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
+            File.WriteAllBytes(asm, m.Assembly);
+            File.WriteAllBytes(pdb, m.Pdb);
+            var output = new MonochromeSourceEmitterOutput();
+            Disassembler.Run(asm, output);
+            var docid = projectid + "_" + "Disassembly";
+            projectViews[docid] = output.Data;
+            var child = new TreeItem()
+            {
+                Key = projectid,
+                Text = m.AssemblyName,
+                Image = m.EditorEntryAssembly switch
+                {
+                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
+                    var x when x.StartsWith("OmniSharp") => VSCode,
+                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
+                    _ => Globe
+                },
+            };
+            Projects.Children.Add(child);
+        }
+
         public void UpdateProjectDocsTree(ControlFlowGraphMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
@@ -292,6 +340,21 @@ namespace Stratis.DevEx.Gui
                 };
                 project.Children.Add(doc);
             }
+        }
+
+        public void UpdateProjectDocsTree(CompilationMessage m)
+        {
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.CompilationId.ToString();
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
+            var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
+            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
+            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
+            File.WriteAllBytes(asm, m.Assembly);
+            File.WriteAllBytes(pdb, m.Pdb);
+            var output = new MonochromeSourceEmitterOutput();
+            Disassembler.Run(asm, output);
+            var docid = projectid + "_" + "Disassembly";
+            projectViews[docid] = output.Data;
         }
 
         #region Logging

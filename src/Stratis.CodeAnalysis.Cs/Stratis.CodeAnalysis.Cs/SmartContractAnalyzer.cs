@@ -32,11 +32,6 @@
             if (!Debugger.IsAttached) context.EnableConcurrentExecution();
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             attrCount = 0;
-            if (!assemblyCacheDir.Exists)
-            {
-                assemblyCacheDir.Create();
-            }
-            
             context.RegisterCompilationAction(ctx =>
             {
                 Debug("Compilation end.");
@@ -251,7 +246,6 @@
         internal int attrCount = 0;
         protected PipeClient<MessagePack> pipeClient;
         internal static ConcurrentDictionary<int, Configuration> CompilationConfiguration = new();
-        internal static DirectoryInfo assemblyCacheDir = new DirectoryInfo(Path.Combine(Runtime.StratisDevDir, "asmcache"));
         #endregion
     }
 }
