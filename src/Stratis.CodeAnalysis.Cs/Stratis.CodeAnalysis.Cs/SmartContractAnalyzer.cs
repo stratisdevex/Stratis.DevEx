@@ -147,6 +147,7 @@
                 #endregion
 
                 #region Call-graph analysis
+                /*
                 ctx.RegisterSemanticModelAction(sma =>
                 {
                     if (!sma.SemanticModel.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
@@ -155,6 +156,7 @@
                     }
 
                 });
+                */
                 #endregion
             });
         }
