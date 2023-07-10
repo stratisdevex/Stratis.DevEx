@@ -140,7 +140,7 @@ namespace Stratis.DevEx.Gui
                 Info("Not processing message from unknown editor assembly for assembly {asm}.", m.AssemblyName);
                 return;
             }
-            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.CompilationId.ToString();
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projects = (TreeItem)navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
             {
@@ -265,7 +265,7 @@ namespace Stratis.DevEx.Gui
 
         public void AddProjectToTree(CompilationMessage m)
         {
-            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.CompilationId.ToString();
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
           
             projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
@@ -276,7 +276,7 @@ namespace Stratis.DevEx.Gui
             var output = new MonochromeSourceEmitterOutput();
             Disassembler.Run(asm, output);
             var docid = projectid + "_" + "Disassembly";
-            projectViews[docid] = output.Data;
+            projectViews[docid] = Html.DrawDisassembly(output.Data);
             var child = new TreeItem()
             {
                 Key = projectid,
@@ -344,7 +344,7 @@ namespace Stratis.DevEx.Gui
 
         public void UpdateProjectDocsTree(CompilationMessage m)
         {
-            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName + "_" + m.CompilationId.ToString();
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
             var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
@@ -354,7 +354,7 @@ namespace Stratis.DevEx.Gui
             var output = new MonochromeSourceEmitterOutput();
             Disassembler.Run(asm, output);
             var docid = projectid + "_" + "Disassembly";
-            projectViews[docid] = output.Data;
+            projectViews[docid] = Html.DrawDisassembly(output.Data);
         }
 
         #region Logging
