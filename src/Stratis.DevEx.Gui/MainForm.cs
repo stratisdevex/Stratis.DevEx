@@ -141,6 +141,12 @@ namespace Stratis.DevEx.Gui
                 return;
             }
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
+            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
+            File.WriteAllBytes(asm, m.Assembly);
+            File.WriteAllBytes(pdb, m.Pdb);
+            Info("Updated assembly {asm} at {now}.", asm, DateTime.Now);
+            
             var projects = (TreeItem)navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
             {
@@ -266,13 +272,11 @@ namespace Stratis.DevEx.Gui
         public void AddProjectToTree(CompilationMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
-            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
-          
+           
+         
             projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
             var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
             var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
-            File.WriteAllBytes(asm, m.Assembly);
-            File.WriteAllBytes(pdb, m.Pdb);
             var output = new MonochromeSourceEmitterOutput();
             Disassembler.Run(asm, output);
             var docid = projectid + "_" + "Disassembly";
@@ -349,8 +353,6 @@ namespace Stratis.DevEx.Gui
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
             var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
             var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
-            File.WriteAllBytes(asm, m.Assembly);
-            File.WriteAllBytes(pdb, m.Pdb);
             var output = new MonochromeSourceEmitterOutput();
             Disassembler.Run(asm, output);
             var docid = projectid + "_" + "Disassembly";

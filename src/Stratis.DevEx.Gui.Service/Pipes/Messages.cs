@@ -74,6 +74,8 @@ namespace Stratis.DevEx.Pipes
         public string Document { get; set; } = string.Empty;
 
         public string Summary { get; set; } = string.Empty;
+
+        public string[] ClassNames = Array.Empty<string>();
     }
 
     [Serializable]
@@ -84,6 +86,14 @@ namespace Stratis.DevEx.Pipes
         public NodeData[] Nodes { get; set; } = Array.Empty<NodeData>();
 
         public EdgeData[] Edges { get; set; } = Array.Empty<EdgeData>();
+    }
+
+    [Serializable]
+    public class DisassemblyMessage : Message
+    {
+        public string Document { get; set; } = string.Empty;
+
+        public string[] ClassNames = Array.Empty<string>();
     }
 
     public class MessageUtils
@@ -133,7 +143,7 @@ namespace Stratis.DevEx.Pipes
         public static string PrettyPrint(SummaryMessage m)
         {
             var n = Environment.NewLine;
-            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tSummary: {m.Summary}}}";
+            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tSummary: {m.Summary}{n}\tClasses: {m.ClassNames.JoinWithSpaces()}{n}}}";
         }
 
         public static string PrettyPrint(CallGraphMessage m)
