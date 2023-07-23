@@ -41,7 +41,9 @@ namespace Stratis.DevEx.Gui
 				new TreeItem() { Image = TestIcon, Text = "Projects", Key = "Projects"}
 			);
             navigation.Activated += Navigation_NodeMouseClick;
-            navigation.NodeMouseClick += Navigation_NodeMouseClick; ;
+            navigation.NodeMouseClick += Navigation_NodeMouseClick;
+            aboutView = new WebView();
+            aboutView.LoadHtml(@"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>");
             projectView = new TabControl();
             projectViews = new Dictionary<string, object>()
             {
@@ -79,15 +81,12 @@ namespace Stratis.DevEx.Gui
 
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;
-			splitter.Panel2 = projectView;
+			splitter.Panel2 = aboutView;
             splitter.Position = 200;
             Content = splitter;
         }
 
-        private void ProjectView_DocumentLoaded(object? sender, WebViewLoadedEventArgs e)
-        {
-            Info("WebView loaded {url}.", e.Uri);
-        }
+        
 
         #endregion
 
@@ -146,7 +145,6 @@ namespace Stratis.DevEx.Gui
             File.WriteAllBytes(asm, m.Assembly);
             File.WriteAllBytes(pdb, m.Pdb);
             Info("Updated assembly {asm} at {now}.", asm, DateTime.Now);
-            
             var projects = (TreeItem)navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
             {
@@ -211,7 +209,78 @@ namespace Stratis.DevEx.Gui
             }
             navigation.RefreshItem(projects);
         }
-        
+
+        protected void AddProjectToTree(CompilationMessage m)
+        {
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
+            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
+            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
+            var output = new MonochromeSourceEmitterOutput();
+            Disassembler.Run(asm, output);
+            projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(output.Data);
+            var project = new TreeItem()
+            {
+                Key = projectid,
+                Text = m.AssemblyName,
+                Image = m.EditorEntryAssembly switch
+                {
+                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
+                    var x when x.StartsWith("OmniSharp") => VSCode,
+                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
+                    _ => Globe
+                },
+            };
+
+            foreach (var d in m.Documents)
+            {
+                var docid = projectid + "_" + d;
+                var c = new TreeItem()
+                {
+                    Key = docid,
+                    Text = d.Replace(projectDir + Path.DirectorySeparatorChar, ""),
+                    Image = CSharp
+                };
+                project.Children.Add(c);
+            }
+
+            Projects.Children.Add(project);
+        }
+
+        protected void UpdateProjectDocsTree(CompilationMessage m)
+        {
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
+            var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
+            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
+            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
+            var output = new MonochromeSourceEmitterOutput();
+            Disassembler.Run(asm, output);
+            projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(output.Data);
+
+            foreach (var d in m.Documents)
+            {
+                var docid = projectid + "_" + d;
+                if (!project.Children.Any(c => c.Key == docid))
+                {
+                    var c = new TreeItem()
+                    {
+                        Key = docid,
+                        Text = d.Replace(projectDir + Path.DirectorySeparatorChar, ""),
+                        Image = CSharp
+                    };
+                    project.Children.Add(c);
+                }
+            }
+            foreach (var c in project.Children)
+            {
+                if (!m.Documents.Any(d => d == projectDir + Path.DirectorySeparatorChar + c.Text))
+                {
+                    project.Children.Remove(c);
+                }
+            }
+        }
         public void AddProjectToTree(ControlFlowGraphMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
@@ -254,6 +323,7 @@ namespace Stratis.DevEx.Gui
             };
             projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
             projectViews.Add(docid + "_" + "Summary", Html.DrawSummary(m.Summary));
+            projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, m.ClassNames);
             var child = new TreeItem(doc)
             {
                 Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
@@ -269,32 +339,7 @@ namespace Stratis.DevEx.Gui
             Projects.Children.Add(child);
         }
 
-        public void AddProjectToTree(CompilationMessage m)
-        {
-            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
-           
-         
-            projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
-            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
-            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
-            var output = new MonochromeSourceEmitterOutput();
-            Disassembler.Run(asm, output);
-            var docid = projectid + "_" + "Disassembly";
-            projectViews[docid] = Html.DrawDisassembly(output.Data);
-            var child = new TreeItem()
-            {
-                Key = projectid,
-                Text = m.AssemblyName,
-                Image = m.EditorEntryAssembly switch
-                {
-                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
-                    var x when x.StartsWith("OmniSharp") => VSCode,
-                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
-                    _ => Globe
-                },
-            };
-            Projects.Children.Add(child);
-        }
+
 
         public void UpdateProjectDocsTree(ControlFlowGraphMessage m)
         {
@@ -329,6 +374,7 @@ namespace Stratis.DevEx.Gui
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
             
             projectViews[docid + "_" + "Summary"] = Html.DrawSummary(m.Summary);
+            projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, m.ClassNames);
             if (project.Children.Any(c => c.Key == docid))
             {
                 Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
@@ -346,19 +392,51 @@ namespace Stratis.DevEx.Gui
             }
         }
 
-        public void UpdateProjectDocsTree(CompilationMessage m)
+        protected void showProjectView() => splitter.Panel2 = projectView;
+
+        protected void showAboutView() => splitter.Panel2 = aboutView;
+
+        protected string GetProjectOrDocViewHtml(string id, string component)
         {
-            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
-            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
-            var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
-            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
-            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
-            var output = new MonochromeSourceEmitterOutput();
-            Disassembler.Run(asm, output);
-            var docid = projectid + "_" + "Disassembly";
-            projectViews[docid] = Html.DrawDisassembly(output.Data);
+            var key = id + "_" + component;
+            if (projectViews.ContainsKey(key))
+            {
+                return (string)projectViews[key];
+            }
+            else
+            {
+                return @"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>";
+            }
+        }
+        protected void LoadProjectOrDocView(string id)
+        {
+            projectSummaryView.LoadHtml(GetProjectOrDocViewHtml(id, "Summary"));
+            projectControlFlowView.LoadHtml(GetProjectOrDocViewHtml(id, "ControlFlow"));
+            projectDisassemblyView.LoadHtml(GetProjectOrDocViewHtml(id, "Disassembly"));
+            projectView.SelectedPage = projectSummaryViewPage;
         }
 
+        protected string GetDisassembly(string projectid, string[] classNames)
+        {
+            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
+            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
+            if (!File.Exists(asm) || !File.Exists(pdb))
+            {
+                Info("Could not find assembly file {asm}.", asm);
+                return htmlplaceholder;
+            }
+            else if (!File.Exists(pdb))
+            {
+                Info("Could not find PDB file {pdb}.", pdb);
+                return htmlplaceholder;
+            }
+            else
+            {
+                var output = new MonochromeSourceEmitterOutput();
+                Disassembler.Run(asm, output);
+                return Html.DrawDisassembly(output.Data);
+            }
+        }
         #region Logging
         [DebuggerStepThrough]
         public static void Info(string messageTemplate, params object[] args) => Runtime.Info(messageTemplate, args);
@@ -394,13 +472,26 @@ namespace Stratis.DevEx.Gui
         {
             switch (e.Item.Key)
             {
+                case "About":
+                    showAboutView();
+                    break;
+                case "Projects":
+                    showProjectView();
+                    break;
                 case var x when x.EndsWith(".cs"):
-                    App.AsyncInvoke(() => projectSummaryView.LoadHtml((string)projectViews[e.Item.Key + "_Summary"]));
+                    showProjectView();
+                    App.AsyncInvoke(() => LoadProjectOrDocView(e.Item.Key));
                     break;
                 default:
-                    App.AsyncInvoke(() => projectSummaryView.LoadHtml((string)projectViews[e.Item.Key]));
+                    showProjectView();
+                    App.AsyncInvoke(() => LoadProjectOrDocView(e.Item.Key));
                     break;
             }
+        }
+
+        private void ProjectView_DocumentLoaded(object? sender, WebViewLoadedEventArgs e)
+        {
+            Info("WebView loaded {url}.", e.Uri);
         }
         #endregion
 
@@ -412,10 +503,13 @@ namespace Stratis.DevEx.Gui
         protected static readonly Icon CSharp = Icon.FromResource("Stratis.DevEx.Gui.Images.csharp.png");
         protected static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
         protected static readonly Icon Refresh = Icon.FromResource("Stratis.DevEx.Gui.Images.refresh.png");
+
+        protected const string htmlplaceholder = @"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>";
         #pragma warning disable CS0618 // Type or member is obsolete
         internal TreeView navigation;
         #pragma warning restore CS0618 // Type or member is obsolete
 
+        protected WebView aboutView;
         protected TabControl projectView;
         protected Splitter splitter;
         internal Dictionary<string, object> projectViews;
