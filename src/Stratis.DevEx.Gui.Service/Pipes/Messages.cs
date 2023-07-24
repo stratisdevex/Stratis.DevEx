@@ -148,7 +148,12 @@ namespace Stratis.DevEx.Pipes
         public static string PrettyPrint(SummaryMessage m)
         {
             var n = Environment.NewLine;
-            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tSummary: {m.Summary}{n}\tClasses: {m.ClassNames.JoinWithSpaces()}{n}\tInvocations: {m.Invocations.Select(d => "{" + d.Select(kv => kv.Key + ":" + (string) kv.Value).JoinWithSpaces() + "}").JoinWith(",")}{n}}}";
+            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}" +
+                $"\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tSummary: {m.Summary}{n}\tClasses: {m.ClassNames.JoinWithSpaces()}{n}" +
+                $"\tInherits: {"{" + m.Inherits.Select(d => (string)d["class"] + "<:" + (string)d["base"]).JoinWith(", ") + "}"}{n}" +
+                $"\tInvocations: {"{" + m.Invocations.Select(d =>(string) d["name"] + " in " + (string)d["method"]).JoinWith(", ") + "}"}{n}" +
+                
+                $"}}";
         }
 
         public static string PrettyPrint(ControlFlowGraphMessage m)
