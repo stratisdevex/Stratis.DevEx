@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -166,7 +167,9 @@ namespace Stratis.CodeAnalysis.Cs
             
         }
 
-        public static void SendSummaryGuiMessage(string cfgfile, Compilation c, string document, string summary, string[] classNames, PipeClient<MessagePack> pipeClient)
+        public static void SendSummaryGuiMessage(string cfgfile, Compilation c, string document, string summary, string[] classNames, 
+            List<Dictionary<string, object>> implements, List<Dictionary<string, object>> invocations, List<Dictionary<string, object>> inherits,
+            List<Dictionary<string, object>> classcreatedobjects, List<Dictionary<string, object>> methodcreatedobjects, PipeClient<MessagePack> pipeClient)
         {
             if (!GuiProcessRunning())
             {
@@ -185,7 +188,12 @@ namespace Stratis.CodeAnalysis.Cs
                     AssemblyName = c.AssemblyName,
                     Document = document,
                     Summary = summary,
-                    ClassNames = classNames
+                    ClassNames = classNames,
+                    Implements = implements,
+                    Invocations = invocations,
+                    Inherits = inherits,
+                    ClassCreatedObjects = classcreatedobjects,
+                    MethodCreatedObjects = methodcreatedobjects
                 };
                 if (GuiProcessRunning() && !pipeClient.IsConnected)
                 {

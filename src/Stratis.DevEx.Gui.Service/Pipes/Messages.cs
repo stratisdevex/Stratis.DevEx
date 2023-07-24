@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Linq;
 using Stratis.DevEx.Pipes.Formatters;
 
 namespace Stratis.DevEx.Pipes
@@ -73,6 +74,16 @@ namespace Stratis.DevEx.Pipes
     {
         public string Document { get; set; } = string.Empty;
 
+        public List<Dictionary<string, object>> Implements { get; set; } = new();
+
+        public List<Dictionary<string, object>> Invocations { get; set; } = new();
+
+        public List<Dictionary<string, object>> Inherits { get; set; } = new();
+
+        public List<Dictionary<string, object>> ClassCreatedObjects { get; set; } = new();
+
+        public List<Dictionary<string, object>> MethodCreatedObjects { get; set; } = new();
+
         public string Summary { get; set; } = string.Empty;
 
         public string[] ClassNames = Array.Empty<string>();
@@ -134,16 +145,16 @@ namespace Stratis.DevEx.Pipes
             return $"{{{n}\tCompilation ID: {m.CompilationId}\n\tEditor Entry Assembly: {m.EditorEntryAssembly}\n\tAssemblyName: {m.AssemblyName}{n}\tDocuments: {m.Documents.JoinWithSpaces()}{n}\tAssembly: {m.Assembly.Length} bytes{n}\tPdb: {m.Pdb.Length} bytes{n}}}";
         }
 
+        public static string PrettyPrint(SummaryMessage m)
+        {
+            var n = Environment.NewLine;
+            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tSummary: {m.Summary}{n}\tClasses: {m.ClassNames.JoinWithSpaces()}{n}\tInvocations: {m.Invocations.Select(d => "{" + d.Select(kv => kv.Key + ":" + (string) kv.Value).JoinWithSpaces() + "}").JoinWith(",")}{n}}}";
+        }
+
         public static string PrettyPrint(ControlFlowGraphMessage m)
         {
             var n = Environment.NewLine;
             return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tControl-Flow Graph: {m.Nodes.Length} nodes, {m.Edges.Length} edges{n}}}";
-        }
-
-        public static string PrettyPrint(SummaryMessage m)
-        {
-            var n = Environment.NewLine;
-            return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tSummary: {m.Summary}{n}\tClasses: {m.ClassNames.JoinWithSpaces()}{n}}}";
         }
 
         public static string PrettyPrint(CallGraphMessage m)

@@ -27,11 +27,101 @@ namespace Stratis.CodeAnalysis.Cs
                                    .ToArray();
             StructDeclarationSyntax[] structdecls = model.SyntaxTree.GetRoot().DescendantNodes().OfType<StructDeclarationSyntax>()
                                    .ToArray();
+            
+            var implementsList = new List<Dictionary<string, object>>(); //Method Implementations
+            var invocationList = new List<Dictionary<string, object>>(); //Method Invocations
+            var inheritsList = new List<Dictionary<string, object>>();//Class Heirarchy
+            var classCreatedObjects = new List<Dictionary<string, object>>(); //Objects created by classes
+            var methodCreatedObjects = new List<Dictionary<string, object>>();//Objects created by methods
+
             var builder = new StringBuilder();
             var classNames = new List<string>();
             builder.AppendLine("classDiagram");
             foreach (var c in classdecls)
             {
+                var classSymbol = model.GetDeclaredSymbol(c);
+                var classPath = classSymbol.Name;
+                if (classSymbol.ContainingNamespace != null)
+                    classPath = classSymbol.ContainingNamespace.Name + '.' + classSymbol.Name;
+
+                var classinfo = new Dictionary<string, object>();
+                classinfo["name"] = classPath;
+                classinfo["location"] = c.GetLocation().ToString();
+
+                /*
+                 * If this Class is a Subclass, Collet Inheritance Info
+                 */
+                if (c.BaseList != null)
+                {
+                    foreach (SimpleBaseTypeSyntax typ in c.BaseList.Types)
+                    {
+                        var symInfo = model.GetTypeInfo(typ.Type);
+
+                        var baseClassPath = symInfo.Type.Name;
+                        if (symInfo.Type.ContainingNamespace != null)
+                            baseClassPath = symInfo.Type.ContainingNamespace.Name + '.' + symInfo.Type.Name;
+
+                        var inheritInfo = new Dictionary<string, object>();
+                        inheritInfo["class"] = classPath;
+                        inheritInfo["base"] = baseClassPath;
+
+                        inheritsList.Add(inheritInfo);
+                    }
+                }
+                var methods = c.SyntaxTree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>();
+                foreach (var method in methods)
+                {
+                    var symbol = model.GetDeclaredSymbol(method);
+
+                    //Collect Method Information
+                    var methoddata = new Dictionary<string, object>();
+                    methoddata["name"] = symbol.MetadataName;
+                    if (symbol.ContainingNamespace != null)
+                        methoddata["name"] = symbol.ContainingNamespace.Name + "." + symbol.MetadataName;
+                    methoddata["location"] = c.GetLocation().ToString();
+                    methoddata["class"] = classinfo["name"];
+
+                    implementsList.Add(methoddata);
+
+                    var invocations = method.SyntaxTree.GetRoot().DescendantNodes().OfType<InvocationExpressionSyntax>();
+
+                    //For each invocation within our method, collect information
+                    foreach (var invocation in invocations)
+                    {
+                        var invokedSymbol = model.GetSymbolInfo(invocation).Symbol;
+
+                        if (invokedSymbol == null)
+                            continue;
+
+                        var invocationInfo = new Dictionary<string, object>();
+                        invocationInfo["name"] = invokedSymbol.MetadataName;
+                        if (symbol.ContainingNamespace != null)
+                            invocationInfo["name"] = invokedSymbol.ContainingNamespace.Name + "." + invokedSymbol.MetadataName;
+                        if (invokedSymbol.Locations.Length == 1)
+                            invocationInfo["location"] = invocation.GetLocation().ToString();
+                        invocationInfo["method"] = methoddata["name"];
+
+                        invocationList.Add(invocationInfo);
+                    }
+
+                    //For each object creation within our method, collect information
+                    var methodCreates = method.SyntaxTree.GetRoot().DescendantNodes().OfType<ObjectCreationExpressionSyntax>();
+                    foreach (var creation in methodCreates)
+                    {
+                        var typeInfo = model.GetTypeInfo(creation);
+                        var createInfo = new Dictionary<string, object>();
+
+                        var typeName = typeInfo.Type.Name;
+                        if (typeInfo.Type.ContainingNamespace != null)
+                            typeName = typeInfo.Type.ContainingNamespace.Name + "." + typeInfo.Type.Name;
+
+                        createInfo["method"] = methoddata["name"];
+                        createInfo["creates"] = typeName;
+                        createInfo["location"] = creation.GetLocation().ToString();
+
+                        methodCreatedObjects.Add(createInfo);
+                    }
+                }
                 var t = model.GetDeclaredSymbol(c);
                 var className = t.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
                 builder.AppendLineFormat("class {0}", className);
@@ -97,6 +187,23 @@ namespace Stratis.CodeAnalysis.Cs
                     builder.AppendFormat(Environment.NewLine);
                     Debug("{m}", builder.Last());
                 }
+
+                //For each object created within the class, collect information
+                var creates = c.SyntaxTree.GetRoot().DescendantNodes().OfType<ObjectCreationExpressionSyntax>();
+                foreach (var creation in creates)
+                {
+                    var typeInfo = model.GetTypeInfo(creation);
+                    var createInfo = new Dictionary<string, object>();
+
+                    var typeName = typeInfo.Type.Name;
+                    if (typeInfo.Type.ContainingNamespace != null)
+                        typeName = typeInfo.Type.ContainingNamespace.Name + "." + typeInfo.Type.Name;
+
+                    createInfo["class"] = classPath;
+                    createInfo["creates"] = typeName;
+                    createInfo["location"] = creation.GetLocation().ToString();
+                    classCreatedObjects.Add(createInfo);
+                }
             }
 
             foreach (var c in structdecls)
@@ -123,7 +230,9 @@ namespace Stratis.CodeAnalysis.Cs
             }
             top.Complete();
             var pipeClient = Gui.CreatePipeClient();
-            Gui.SendSummaryGuiMessage(cfgFile, model.Compilation, model.SyntaxTree.FilePath, builder.ToString(), classNames.ToArray(), pipeClient);
+            Gui.SendSummaryGuiMessage(cfgFile, model.Compilation, model.SyntaxTree.FilePath, builder.ToString(), classNames.ToArray(), 
+                implementsList, invocationList, inheritsList, classCreatedObjects, methodCreatedObjects, 
+                pipeClient);
             pipeClient.Dispose();
             //File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Stratis.DevEx.Drawing.Html.DrawSummary(builder.ToString()));
         }
