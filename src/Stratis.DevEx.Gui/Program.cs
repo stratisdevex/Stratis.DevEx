@@ -76,19 +76,19 @@ namespace Stratis.DevEx.Gui
             {
                 case MessageType.COMPILATION:
                     var cm = MessageUtils.Deserialize<CompilationMessage>(m.MessageBytes);
-                    Info("Message received: \n{msg}", MessageUtils.PrettyPrint(cm));
+                    Info("Compilation message received: \n{msg}", MessageUtils.PrettyPrint(cm));
                     cma?.Invoke(cm);
                     break;
 
                 case MessageType.CONTROL_FLOW_GRAPH:
                     var cfgm = MessageUtils.Deserialize<ControlFlowGraphMessage>(m.MessageBytes);
-                    Info("Message received: \n{msg}", MessageUtils.PrettyPrint(cfgm));
+                    Info("Control-flow message received: \n{msg}", MessageUtils.PrettyPrint(cfgm));
                     cfgma?.Invoke(cfgm);
                     break;
 
                 case MessageType.SUMMARY:
                     var sm = MessageUtils.Deserialize<SummaryMessage>(m.MessageBytes);
-                    Info("Message received: \n{msg}", MessageUtils.PrettyPrint(sm));
+                    Info("Summary message received: \n{msg}", MessageUtils.PrettyPrint(sm));
                     sma?.Invoke(sm);
                     break;
             }

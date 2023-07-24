@@ -85,9 +85,6 @@ namespace Stratis.DevEx.Gui
             splitter.Position = 200;
             Content = splitter;
         }
-
-        
-
         #endregion
 
         #region Methods
@@ -273,44 +270,21 @@ namespace Stratis.DevEx.Gui
                     project.Children.Add(c);
                 }
             }
+            List<ITreeItem> toremove = new List<ITreeItem>();
             foreach (var c in project.Children)
             {
                 if (!m.Documents.Any(d => d == projectDir + Path.DirectorySeparatorChar + c.Text))
                 {
-                    project.Children.Remove(c);
+                    toremove.Add(c);
                 }
             }
-        }
-        public void AddProjectToTree(ControlFlowGraphMessage m)
-        {
-            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
-            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
-            var docid = projectid + "_" + m.Document;
-            var cfg = Program.CreateGraph(m);
-            var doc = new TreeItem()
+            foreach(var c in toremove)
             {
-                Key = docid,
-                Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
-                Image = CSharp
-            };
-            projectViews.Add(projectid, @"<html><head><title>Control Flow</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
-            projectViews.Add(docid + "_" + "ControlFlow", Html.DrawControlFlowGraph(cfg));
-            var child = new TreeItem(doc)
-            {
-                Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
-                Text = m.AssemblyName,
-                Image = m.EditorEntryAssembly switch
-                {
-                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
-                    var x when x.StartsWith("OmniSharp") => VSCode,
-                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
-                    _ => Globe
-                },
-            };
-            Projects.Children.Add(child);
+                project.Children.Remove(c);
+            }
         }
 
-        public void AddProjectToTree(SummaryMessage m)
+        protected void AddProjectToTree(SummaryMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
@@ -339,16 +313,15 @@ namespace Stratis.DevEx.Gui
             Projects.Children.Add(child);
         }
 
-
-
-        public void UpdateProjectDocsTree(ControlFlowGraphMessage m)
+        protected void UpdateProjectDocsTree(SummaryMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var docid = projectid + "_" + m.Document;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
-            var cfg = Program.CreateGraph(m);
-            projectViews[docid + "_" + "ControlFlow"] = Html.DrawControlFlowGraph(cfg);
+
+            projectViews[docid + "_" + "Summary"] = Html.DrawSummary(m.Summary);
+            projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, m.ClassNames);
             if (project.Children.Any(c => c.Key == docid))
             {
                 Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
@@ -365,16 +338,43 @@ namespace Stratis.DevEx.Gui
                 project.Children.Add(doc);
             }
         }
+        protected void AddProjectToTree(ControlFlowGraphMessage m)
+        {
+            var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
+            var docid = projectid + "_" + m.Document;
+            var cfg = Program.CreateGraph(m);
+            var doc = new TreeItem()
+            {
+                Key = docid,
+                Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
+                Image = CSharp
+            };
+            projectViews.Add(projectid, @"<html><head><title>Control Flow</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
+            projectViews.Add(docid + "_" + "ControlFlow", Html.DrawControlFlowGraph(cfg));
+            var child = new TreeItem(doc)
+            {
+                Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
+                Text = m.AssemblyName,
+                Image = m.EditorEntryAssembly switch
+                {
+                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
+                    var x when x.StartsWith("OmniSharp") => VSCode,
+                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
+                    _ => Globe
+                },
+            };
+            Projects.Children.Add(child);
+        }
 
-        public void UpdateProjectDocsTree(SummaryMessage m)
+        protected void UpdateProjectDocsTree(ControlFlowGraphMessage m)
         {
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var docid = projectid + "_" + m.Document;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
-            
-            projectViews[docid + "_" + "Summary"] = Html.DrawSummary(m.Summary);
-            projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, m.ClassNames);
+            var cfg = Program.CreateGraph(m);
+            projectViews[docid + "_" + "ControlFlow"] = Html.DrawControlFlowGraph(cfg);
             if (project.Children.Any(c => c.Key == docid))
             {
                 Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
