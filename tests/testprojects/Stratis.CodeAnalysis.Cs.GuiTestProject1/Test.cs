@@ -9,7 +9,7 @@ using Stratis.SmartContracts;
             : base(state)
         {
             
-            //byte[] b = { };
+            byte[] b = { };
             //b.Clone();
             //var v = NLog.Common.InternalLogger.IncludeTimestamp;
         }

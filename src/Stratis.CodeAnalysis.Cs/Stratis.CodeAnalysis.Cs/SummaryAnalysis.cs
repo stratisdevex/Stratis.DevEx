@@ -41,7 +41,7 @@ namespace Stratis.CodeAnalysis.Cs
             {
                 var classSymbol = model.GetDeclaredSymbol(c);
                 var classPath = classSymbol.Name;
-                if (classSymbol.ContainingNamespace != null)
+                if (classSymbol.ContainingNamespace is not null && !string.IsNullOrEmpty(classSymbol.ContainingNamespace.Name))
                     classPath = classSymbol.ContainingNamespace.Name + '.' + classSymbol.Name;
 
                 var classinfo = new Dictionary<string, object>();
@@ -58,7 +58,7 @@ namespace Stratis.CodeAnalysis.Cs
                         var symInfo = model.GetTypeInfo(typ.Type);
 
                         var baseClassPath = symInfo.Type.Name;
-                        if (symInfo.Type.ContainingNamespace != null)
+                        if (symInfo.Type.ContainingNamespace != null && !string.IsNullOrEmpty(symInfo.Type.ContainingNamespace.Name))
                             baseClassPath = symInfo.Type.ContainingNamespace.Name + '.' + symInfo.Type.Name;
 
                         var inheritInfo = new Dictionary<string, object>();
@@ -76,7 +76,7 @@ namespace Stratis.CodeAnalysis.Cs
                     //Collect Method Information
                     var methoddata = new Dictionary<string, object>();
                     methoddata["name"] = symbol.MetadataName;
-                    if (symbol.ContainingNamespace != null)
+                    if (symbol.ContainingNamespace != null && !string.IsNullOrEmpty(symbol.ContainingNamespace.Name))
                         methoddata["name"] = symbol.ContainingNamespace.Name + "." + symbol.MetadataName;
                     methoddata["location"] = c.GetLocation().ToString();
                     methoddata["class"] = classinfo["name"];
@@ -95,7 +95,7 @@ namespace Stratis.CodeAnalysis.Cs
 
                         var invocationInfo = new Dictionary<string, object>();
                         invocationInfo["name"] = invokedSymbol.MetadataName;
-                        if (symbol.ContainingNamespace != null)
+                        if (symbol.ContainingNamespace != null && !string.IsNullOrEmpty(symbol.ContainingNamespace.Name))
                             invocationInfo["name"] = invokedSymbol.ContainingNamespace.Name + "." + invokedSymbol.MetadataName;
                         if (invokedSymbol.Locations.Length == 1)
                             invocationInfo["location"] = invocation.GetLocation().ToString();
@@ -112,7 +112,7 @@ namespace Stratis.CodeAnalysis.Cs
                         var createInfo = new Dictionary<string, object>();
 
                         var typeName = typeInfo.Type.Name;
-                        if (typeInfo.Type.ContainingNamespace != null)
+                        if (typeInfo.Type.ContainingNamespace != null && !string.IsNullOrEmpty(typeInfo.Type.ContainingNamespace.Name))
                             typeName = typeInfo.Type.ContainingNamespace.Name + "." + typeInfo.Type.Name;
 
                         createInfo["method"] = methoddata["name"];
@@ -196,7 +196,7 @@ namespace Stratis.CodeAnalysis.Cs
                     var createInfo = new Dictionary<string, object>();
 
                     var typeName = typeInfo.Type.Name;
-                    if (typeInfo.Type.ContainingNamespace != null)
+                    if (typeInfo.Type.ContainingNamespace != null && !string.IsNullOrEmpty(typeInfo.Type.ContainingNamespace.Name))
                         typeName = typeInfo.Type.ContainingNamespace.Name + "." + typeInfo.Type.Name;
 
                     createInfo["class"] = classPath;
