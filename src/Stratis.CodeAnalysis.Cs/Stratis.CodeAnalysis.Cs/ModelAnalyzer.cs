@@ -17,7 +17,7 @@ using SharpConfig;
 using Stratis.DevEx;
 namespace Stratis.CodeAnalysis.Cs
 {
-    public class SummaryAnalysis : Runtime
+    public class ModelAnalyzer : Runtime
     {
         public static void Analyze(string cfgFile, Configuration config, SemanticModel model)
         {
@@ -115,6 +115,11 @@ namespace Stratis.CodeAnalysis.Cs
                         if (invokedSymbol == null)
                             continue;
 
+                        var n = invokedSymbol.ContainingSymbol.Name + "::" + invokedSymbol.MetadataName;
+                        
+                        if (invocationList.Any(i => (string)i["method"] == (string)methoddata["name"] && (string)i["name"] == n))
+                            continue;
+                        
                         var invocationInfo = new Dictionary<string, object>();
                         invocationInfo["name"] = invokedSymbol.ContainingSymbol.Name + "::" + invokedSymbol.MetadataName;
                         

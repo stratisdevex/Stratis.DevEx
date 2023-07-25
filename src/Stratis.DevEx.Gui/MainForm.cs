@@ -189,8 +189,12 @@ namespace Stratis.DevEx.Gui
                 Info("Not processing message from unknown editor assembly for document {doc}.", m.Document);
                 return;
             }
+            var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var docid = projectid + "_" + m.Document;
+            Graph cg = Program.CreateCallGraph(m.Implements, m.Invocations);
+            
+            File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Html.DrawCallGraph(cg));
             var projects = (TreeItem)navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
             {

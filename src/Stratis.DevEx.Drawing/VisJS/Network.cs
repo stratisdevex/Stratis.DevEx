@@ -8,7 +8,7 @@ namespace Stratis.DevEx.Drawing
     public class Network
     {
         [JsonProperty("options"), JsonSuppressDefaultValue]
-        public NetworkOptions? Options { get; set; } = new NetworkOptions() { Width = "100%", Height = "600px" };
+        public NetworkOptions? Options { get; set; } = new NetworkOptions() { Width = "100%", Height = "100%" };
 
         [JsonProperty("nodes"), JsonSuppressDefaultValue]
         public List<NetworkNode>? Nodes { get; set; }
@@ -20,7 +20,7 @@ namespace Stratis.DevEx.Drawing
         public string Width => Options?.Width ?? "100%";
 
         [JsonIgnoreMember]
-        public string Height => Options?.Height ?? "600px";
+        public string Height => Options?.Height ?? "100%";
 
         public string Serialize()
         {

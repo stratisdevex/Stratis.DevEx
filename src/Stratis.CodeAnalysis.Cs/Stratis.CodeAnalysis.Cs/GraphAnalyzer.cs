@@ -20,7 +20,7 @@ using Stratis.DevEx.Pipes;
 
 namespace Stratis.CodeAnalysis.Cs
 {
-    public class GraphAnalysis : Runtime
+    public class GraphAnalyzer : Runtime
     {
         public static void AnalyzeControlFlow(string cfgFile, Configuration config, SemanticModel model)
         {

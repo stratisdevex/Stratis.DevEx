@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -134,6 +135,28 @@ namespace Stratis.DevEx.Gui
                 {
                     graph.AddEdge(edge.SourceId, edge.Label, edge.TargetId);
                 }
+            }
+            return graph;
+        }
+
+        public static Graph CreateCallGraph(List<Dictionary<string, object>> methods, List<Dictionary<string, object>> invocations)
+        {
+            Graph graph = new Graph();
+            graph.Kind = "cg";
+            foreach(var m in methods)
+            {
+                var nid = (string)m["name"];
+                if (graph.FindNode(nid) == null)
+                {
+                    var node = new Node(nid);
+                    var s = (string)m["signature"];
+                    node.LabelText = nid + s.Replace(",", ",\n");
+                    graph.AddNode(node);
+                }
+            }
+            foreach(var i in invocations)
+            {
+                graph.AddEdge((string)i["method"], (string)i["name"]);
             }
             return graph;
         }

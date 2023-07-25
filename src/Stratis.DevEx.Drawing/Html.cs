@@ -49,6 +49,8 @@ namespace Stratis.DevEx.Drawing
                     }};
         let options = {network.SerializeOptions()};
         let network = new vis.Network(container, data, options); 
+        network.fit();
+
         ");
             stringBuilder.AppendLine("</script>");
             stringBuilder.AppendLine("</body></html>");

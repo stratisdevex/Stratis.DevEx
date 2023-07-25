@@ -16,12 +16,12 @@ namespace Stratis.DevEx.Drawing
         #endregion
 
         #region Methods
-        public static Network Draw(Graph graph, string width="100%", string height="600px")
+        public static Network Draw(Graph graph, string width="100%", string height="100%")
         {
             var network = new Network();
             var options = new NetworkOptions();
             options.Width = width;
-            options.Height = height;
+            options.Height = "1200px";
             string? nodeshape = null;
             int? nodesize = null;
             
@@ -29,10 +29,11 @@ namespace Stratis.DevEx.Drawing
             {
                 case "cfg":
                 case "cg":
-                    options.AutoResize = false;
+                    options.AutoResize = true;
                     var layout = new NetworkLayout()
                     {
                         ImprovedLayout = true,
+                        
                         Hierarchical = new NetworkHierarchical()
                         {
                             Enabled = true,
@@ -47,7 +48,7 @@ namespace Stratis.DevEx.Drawing
                         HierarchicalRepulsion = new NetworkHierarchicalRepulsion()
                         {
                             AvoidOverlap = 1.0,
-                            NodeDistance = 150
+                            NodeDistance = 150,
                         }
                     };
                     var edgesOptions = new NetworkEdgesOptions()

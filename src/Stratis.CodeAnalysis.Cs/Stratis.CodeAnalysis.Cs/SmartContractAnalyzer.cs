@@ -116,12 +116,12 @@
                 }, OperationKind.ObjectCreation, OperationKind.Invocation, OperationKind.PropertyReference, OperationKind.VariableDeclarator);
                 #endregion
 
-                #region Summary analysis
+                #region Class analysis
                 ctx.RegisterSemanticModelAction(sma =>
                 {
                     if (!sma.SemanticModel.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
                     {
-                        SummaryAnalysis.Analyze(cfgFile, cfg, sma.SemanticModel);
+                        ModelAnalyzer.Analyze(cfgFile, cfg, sma.SemanticModel);
                     }
                 });
                 #endregion
@@ -133,7 +133,7 @@
                     {
                         if (!sma.SemanticModel.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
                         {
-                            GraphAnalysis.AnalyzeControlFlow(cfgFile, cfg, sma.SemanticModel);
+                            GraphAnalyzer.AnalyzeControlFlow(cfgFile, cfg, sma.SemanticModel);
                         }
                         else
                         {
@@ -146,19 +146,6 @@
                     Info("Control-flow analysis not enabled in analyzer configuration.");
                 }
 
-                #endregion
-
-                #region Call-graph analysis
-                /*
-                ctx.RegisterSemanticModelAction(sma =>
-                {
-                    if (!sma.SemanticModel.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
-                    {
-                        CallGraphAnalysis.Analyze(cfgFile, cfg, sma.SemanticModel);
-                    }
-
-                });
-                */
                 #endregion
             });
         }
