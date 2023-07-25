@@ -151,6 +151,7 @@ namespace Stratis.DevEx.Pipes
             return $"{{{n}\tCompilation ID: {m.CompilationId}{n}\tEditor Entry Assembly: {m.EditorEntryAssembly}{n}" +
                 $"\tAssemblyName: {m.AssemblyName}{n}\tDocument: {m.Document}{n}\tSummary: {m.Summary}{n}\tClasses: {m.ClassNames.JoinWithSpaces()}{n}" +
                 $"\tInherits: {"{" + m.Inherits.Select(d => (string)d["class"] + "<:" + (string)d["base"]).JoinWith(", ") + "}"}{n}" +
+                $"\tMethods: {"{" + m.Implements.Select(d => (string)d["name"]+ (string)d["signature"]).JoinWith(", ") + "}"}{n}" +
                 $"\tInvocations: {"{" + m.Invocations.Select(d =>(string) d["name"] + " in " + (string)d["method"]).JoinWith(", ") + "}"}{n}" +
                 $"\tClass Created Objects: {"{" + m.ClassCreatedObjects.Select(d => (string)d["class"] + " creates " + (string)d["creates"]).JoinWith(", ") + "}"}{n}" +
                 $"\tMethod Created Objects: {"{" + m.MethodCreatedObjects.Select(d => (string)d["method"] + " creates " + (string)d["creates"]).JoinWith(", ") + "}"}{n}" +

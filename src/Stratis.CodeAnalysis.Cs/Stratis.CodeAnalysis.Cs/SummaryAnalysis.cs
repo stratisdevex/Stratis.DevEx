@@ -35,6 +35,7 @@ namespace Stratis.CodeAnalysis.Cs
             var methodCreatedObjects = new List<Dictionary<string, object>>();//Objects created by methods
 
             var builder = new StringBuilder();
+            var paramBuilder = new StringBuilder();
             var classNames = new List<string>();
             builder.AppendLine("classDiagram");
             foreach (var c in classdecls)
@@ -68,62 +69,7 @@ namespace Stratis.CodeAnalysis.Cs
                         inheritsList.Add(inheritInfo);
                     }
                 }
-                /*
-                var methods = c.SyntaxTree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>();
-                foreach (var method in methods)
-                {
-                    var symbol = model.GetDeclaredSymbol(method);
-
-                    //Collect Method Information
-                    var methoddata = new Dictionary<string, object>();
-                    methoddata["name"] = symbol.MetadataName;
-                    if (symbol.ContainingNamespace != null && !string.IsNullOrEmpty(symbol.ContainingNamespace.Name))
-                        methoddata["name"] = symbol.ContainingNamespace.Name + "." + symbol.MetadataName;
-                    methoddata["location"] = c.GetLocation().ToString();
-                    methoddata["class"] = classinfo["name"];
-
-                    implementsList.Add(methoddata);
-
-                    var invocations = method.SyntaxTree.GetRoot().DescendantNodes().OfType<InvocationExpressionSyntax>();
-
-                    //For each invocation within our method, collect information
-                    foreach (var invocation in invocations)
-                    {
-                        var invokedSymbol = model.GetSymbolInfo(invocation).Symbol;
-
-                        if (invokedSymbol == null)
-                            continue;
-
-                        var invocationInfo = new Dictionary<string, object>();
-                        invocationInfo["name"] = invokedSymbol.MetadataName;
-                        if (symbol.ContainingNamespace != null && !string.IsNullOrEmpty(symbol.ContainingNamespace.Name))
-                            invocationInfo["name"] = invokedSymbol.ContainingNamespace.Name + "." + invokedSymbol.MetadataName;
-                        if (invokedSymbol.Locations.Length == 1)
-                            invocationInfo["location"] = invocation.GetLocation().ToString();
-                        invocationInfo["method"] = methoddata["name"];
-
-                        invocationList.Add(invocationInfo);
-                    }
-
-                    //For each object creation within our method, collect information
-                    var methodCreates = method.SyntaxTree.GetRoot().DescendantNodes().OfType<ObjectCreationExpressionSyntax>();
-                    foreach (var creation in methodCreates)
-                    {
-                        var typeInfo = model.GetTypeInfo(creation);
-                        var createInfo = new Dictionary<string, object>();
-
-                        var typeName = typeInfo.Type.Name;
-                        if (typeInfo.Type.ContainingNamespace != null && !string.IsNullOrEmpty(typeInfo.Type.ContainingNamespace.Name))
-                            typeName = typeInfo.Type.ContainingNamespace.Name + "." + typeInfo.Type.Name;
-
-                        createInfo["method"] = methoddata["name"];
-                        createInfo["creates"] = typeName;
-                        createInfo["location"] = creation.GetLocation().ToString();
-
-                        methodCreatedObjects.Add(createInfo);
-                    }
-                }
-                */
+               
                 var t = model.GetDeclaredSymbol(c);
                 var className = t.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
                 builder.AppendLineFormat("class {0}", className);
@@ -131,15 +77,35 @@ namespace Stratis.CodeAnalysis.Cs
                 Debug("{cls}", builder.Last());
                 if (t.IsSmartContract()) builder.AppendLineFormat("<<contract>> {0}".Replace("<", "&lt;").Replace(">", "&gt;"), className);
                 
-                foreach (var method in t.GetMembers().Where(m => m.Kind == SymbolKind.Method && m.DeclaredAccessibility == Accessibility.Public).Cast<IMethodSymbol>())
+                foreach (var method in t.GetMembers().Where(m => m.Kind == SymbolKind.Method).Cast<IMethodSymbol>())
                 {
                     // Collect Method Information
                     var methoddata = new Dictionary<string, object>();
                     methoddata["name"] = method.MetadataName;
                     if (method.ContainingNamespace != null && !string.IsNullOrEmpty(method.ContainingNamespace.Name))
                         methoddata["name"] = method.ContainingNamespace.Name + "." + method.MetadataName;
+                    methoddata["name"] = className + "::" + (string)methoddata["name"];
+                    
+                    paramBuilder.Clear();
+                    paramBuilder.Append("(");
+                    foreach (var p in method.Parameters)
+                    {
+                        paramBuilder.AppendFormat("{0} {1}", p.Type.Name, p.Name);
+                        paramBuilder.Append(",");
+                    }
+                    if (method.Parameters.Count() > 0)
+                    {
+                        paramBuilder.Remove(paramBuilder.Length - 1, 1);
+                    }
+                    paramBuilder.Append(")");
+                    methoddata["signature"] = paramBuilder.ToString();
+                    
                     methoddata["location"] = c.GetLocation().ToString();
                     methoddata["class"] = classinfo["name"];
+
+
+                    implementsList.Add(methoddata);
+
                     var invocations = method.DeclaringSyntaxReferences.First().GetSyntax().DescendantNodes().OfType<InvocationExpressionSyntax>();
                     //For each invocation within our method, collect information
                     foreach (var invocation in invocations)
@@ -150,9 +116,10 @@ namespace Stratis.CodeAnalysis.Cs
                             continue;
 
                         var invocationInfo = new Dictionary<string, object>();
-                        invocationInfo["name"] = invokedSymbol.MetadataName;
-                        if (method.ContainingNamespace != null && !string.IsNullOrEmpty(method.ContainingNamespace.Name))
-                            invocationInfo["name"] = invokedSymbol.ContainingNamespace.Name + "." + invokedSymbol.MetadataName;
+                        invocationInfo["name"] = invokedSymbol.ContainingSymbol.Name + "::" + invokedSymbol.MetadataName;
+                        
+                        //if (method.ContainingNamespace != null && !string.IsNullOrEmpty(method.ContainingNamespace.Name))
+                        //    invocationInfo["name"] = invokedSymbol.ContainingNamespace.Name + "." + invokedSymbol.MetadataName;
                         if (invokedSymbol.Locations.Length == 1)
                             invocationInfo["location"] = invocation.GetLocation().ToString();
                         invocationInfo["method"] = methoddata["name"];
@@ -178,36 +145,14 @@ namespace Stratis.CodeAnalysis.Cs
                         methodCreatedObjects.Add(createInfo);
                     }
 
-
-                    builder.AppendFormat("{0} : ", className);
-                    builder.AppendFormat("+");
-                    builder.AppendFormat(method.Name);
-                    builder.Append("(");
-
-                    foreach (var p in method.Parameters)
-                    {
-                        builder.AppendFormat("{0} {1}", p.Type.Name.Replace("<", "~").Replace(">", "~"), p.Name);
-                        builder.Append(",");
-                    }
-                    if (method.Parameters.Count() > 0)
-                    {
-                        builder.Remove(builder.Length - 1, 1);
-                    }
-                    builder.Append(")");
-                    builder.AppendFormat(Environment.NewLine);
-                    Debug("{m}", builder.Last());
-                }
-
-                foreach (var method in t.GetMembers().Where(m => m.Kind == SymbolKind.Method && m.DeclaredAccessibility != Accessibility.Public).Cast<IMethodSymbol>())
-                {
                     builder.AppendFormat("{0} : ", className);
                     switch (method.DeclaredAccessibility)
                     {
                         case Accessibility.Public:
-                            builder.AppendFormat("+");
+                            builder.Append("+");
                             break;
                         case Accessibility.Private:
-                            builder.AppendFormat("-");
+                            builder.Append("-");
                             break;
                         case Accessibility.ProtectedAndInternal:
                             builder.AppendFormat("#");
@@ -216,24 +161,13 @@ namespace Stratis.CodeAnalysis.Cs
                         //    builder.AppendFormat("~");
                         //    break;
                         default:
-                            builder.AppendFormat("-");
+                            builder.Append("-");
                             break;
                     }
 
-
-                    builder.AppendFormat(method.Name);
-                    builder.Append("(");
-                    foreach (var p in method.Parameters)
-                    {
-                        builder.AppendFormat("{0} {1}", p.Type.Name, p.Name);
-                        builder.Append(",");
-                    }
-                    if (method.Parameters.Count() > 0)
-                    {
-                        builder.Remove(builder.Length - 1, 1);
-                    }
-                    builder.Append(")");
-                    builder.AppendFormat(Environment.NewLine);
+                    builder.Append(method.Name);
+                    builder.Append(methoddata["signature"]); 
+                    builder.Append(Environment.NewLine);
                     Debug("{m}", builder.Last());
                 }
 
