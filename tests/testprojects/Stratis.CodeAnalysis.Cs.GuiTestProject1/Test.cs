@@ -10,6 +10,7 @@ using Stratis.SmartContracts;
         {
             
             byte[] b = { };
+            var kk = State.GetUInt32(nameof(PingsSent));
             //b.Clone();
             //var v = NLog.Common.InternalLogger.IncludeTimestamp;
         }
@@ -21,6 +22,13 @@ using Stratis.SmartContracts;
         }
 
         public uint PingsSent2
+        {
+            get => State.GetUInt32(nameof(PingsSent));
+            private set => State.SetUInt32(nameof(PingsSent), value);
+        }
+
+
+        public uint PingsSent3
         {
             get => State.GetUInt32(nameof(PingsSent));
             private set => State.SetUInt32(nameof(PingsSent), value);

@@ -68,6 +68,7 @@ namespace Stratis.CodeAnalysis.Cs
                         inheritsList.Add(inheritInfo);
                     }
                 }
+                /*
                 var methods = c.SyntaxTree.GetRoot().DescendantNodes().OfType<MethodDeclarationSyntax>();
                 foreach (var method in methods)
                 {
@@ -122,14 +123,62 @@ namespace Stratis.CodeAnalysis.Cs
                         methodCreatedObjects.Add(createInfo);
                     }
                 }
+                */
                 var t = model.GetDeclaredSymbol(c);
                 var className = t.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
                 builder.AppendLineFormat("class {0}", className);
                 classNames.Add(className);
                 Debug("{cls}", builder.Last());
                 if (t.IsSmartContract()) builder.AppendLineFormat("<<contract>> {0}".Replace("<", "&lt;").Replace(">", "&gt;"), className);
+                
                 foreach (var method in t.GetMembers().Where(m => m.Kind == SymbolKind.Method && m.DeclaredAccessibility == Accessibility.Public).Cast<IMethodSymbol>())
                 {
+                    // Collect Method Information
+                    var methoddata = new Dictionary<string, object>();
+                    methoddata["name"] = method.MetadataName;
+                    if (method.ContainingNamespace != null && !string.IsNullOrEmpty(method.ContainingNamespace.Name))
+                        methoddata["name"] = method.ContainingNamespace.Name + "." + method.MetadataName;
+                    methoddata["location"] = c.GetLocation().ToString();
+                    methoddata["class"] = classinfo["name"];
+                    var invocations = method.DeclaringSyntaxReferences.First().GetSyntax().DescendantNodes().OfType<InvocationExpressionSyntax>();
+                    //For each invocation within our method, collect information
+                    foreach (var invocation in invocations)
+                    {
+                        var invokedSymbol = model.GetSymbolInfo(invocation).Symbol;
+
+                        if (invokedSymbol == null)
+                            continue;
+
+                        var invocationInfo = new Dictionary<string, object>();
+                        invocationInfo["name"] = invokedSymbol.MetadataName;
+                        if (method.ContainingNamespace != null && !string.IsNullOrEmpty(method.ContainingNamespace.Name))
+                            invocationInfo["name"] = invokedSymbol.ContainingNamespace.Name + "." + invokedSymbol.MetadataName;
+                        if (invokedSymbol.Locations.Length == 1)
+                            invocationInfo["location"] = invocation.GetLocation().ToString();
+                        invocationInfo["method"] = methoddata["name"];
+
+                        invocationList.Add(invocationInfo);
+                    }
+
+                    //For each object creation within our method, collect information
+                    var methodCreates = method.DeclaringSyntaxReferences.First().GetSyntax().DescendantNodes().OfType<ObjectCreationExpressionSyntax>();
+                    foreach (var creation in methodCreates)
+                    {
+                        var typeInfo = model.GetTypeInfo(creation);
+                        var createInfo = new Dictionary<string, object>();
+
+                        var typeName = typeInfo.Type.Name;
+                        if (typeInfo.Type.ContainingNamespace != null && !string.IsNullOrEmpty(typeInfo.Type.ContainingNamespace.Name))
+                            typeName = typeInfo.Type.ContainingNamespace.Name + "." + typeInfo.Type.Name;
+
+                        createInfo["method"] = methoddata["name"];
+                        createInfo["creates"] = typeName;
+                        createInfo["location"] = creation.GetLocation().ToString();
+
+                        methodCreatedObjects.Add(createInfo);
+                    }
+
+
                     builder.AppendFormat("{0} : ", className);
                     builder.AppendFormat("+");
                     builder.AppendFormat(method.Name);

@@ -27,7 +27,7 @@
             Provisioned = 0,
             SentPing = 1,
             ReceivedPing = 2,
-            Finished = 3
+            Finished = 4
         }
 
         public uint GameState
