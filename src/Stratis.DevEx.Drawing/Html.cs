@@ -13,7 +13,7 @@ namespace Stratis.DevEx.Drawing
             var stringBuilder = new StringBuilder();
             var divId = Guid.NewGuid().ToString("N");
             stringBuilder.AppendLine("<html lang=\"en\"><head><script type=\"text/javascript\" src=\"https://unpkg.com/vis-network/standalone/umd/vis-network.min.js\"></script><title>Title</title><body>");
-            stringBuilder.AppendLine($"<div id=\"{divId}\" style=\"height:1000px; width:100%\"></div>");
+            stringBuilder.AppendLine($"<div id=\"{divId}\" style=\"height:100%; width:100%\"></div>");
             stringBuilder.AppendLine("</div>");
             stringBuilder.AppendLine("<script type=\"text/javascript\">");
             stringBuilder.AppendLine($@"
