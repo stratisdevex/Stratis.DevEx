@@ -21,7 +21,7 @@ namespace Stratis.DevEx.Drawing
             var network = new Network();
             var options = new NetworkOptions();
             options.Width = width;
-            options.Height = "1200px";
+            options.Height = height;
             string? nodeshape = null;
             int? nodesize = null;
             
@@ -29,11 +29,11 @@ namespace Stratis.DevEx.Drawing
             {
                 case "cfg":
                 case "cg":
-                    options.AutoResize = true;
+                    options.AutoResize = false;
                     var layout = new NetworkLayout()
                     {
                         ImprovedLayout = true,
-                        
+                        /*
                         Hierarchical = new NetworkHierarchical()
                         {
                             Enabled = true,
@@ -41,15 +41,17 @@ namespace Stratis.DevEx.Drawing
                             Direction = "UD",
                             NodeSpacing = 150,
                             LevelSeparation = 150,
-                        }
+                        }*/
                     };
                     var physics = new NetworkPhysics()
                     {
+                        
                         HierarchicalRepulsion = new NetworkHierarchicalRepulsion()
                         {
-                            AvoidOverlap = 1.0,
-                            NodeDistance = 150,
+                            AvoidOverlap = 2.0,
+                            NodeDistance = 250,
                         }
+                        
                     };
                     var edgesOptions = new NetworkEdgesOptions()
                     {

@@ -98,6 +98,21 @@ namespace Stratis.DevEx.Drawing
 
         [JsonProperty("levelSeparation"), JsonSuppressDefaultValue]
         public int? LevelSeparation { get; set; }
+
+        [JsonProperty("treeSpacing"), JsonSuppressDefaultValue]
+        public int TreeSpacing { get; set; }
+
+        [JsonProperty("blockShifting"), JsonSuppressDefaultValue]
+        public bool BlockShifting { get; set; }
+
+        [JsonProperty("edgeMinimization"), JsonSuppressDefaultValue]
+        public bool edgeMinimization { get; set; }
+
+        [JsonProperty("parentCentralization"), JsonSuppressDefaultValue]
+        public bool parentCentralization { get; set; }
+
+        [JsonProperty("shakeTowards"), JsonSuppressDefaultValue]
+        public string? ShakeTowards { get; set; }
     }
 
     public class NetworkHierarchicalRepulsion
@@ -116,6 +131,9 @@ namespace Stratis.DevEx.Drawing
 
         [JsonProperty("hierarchical"), JsonSuppressDefaultValue]
         public NetworkHierarchical? Hierarchical { get; set; }
+
+        [JsonProperty("clusterThreshold"), JsonSuppressDefaultValue]
+        public int ClusterThreshold { get; set; }
     }
 
     public class NetworkNode
@@ -279,6 +297,7 @@ namespace Stratis.DevEx.Drawing
     }
 
 }
+
 /*
  * // these are all options in full.
 var options = {
