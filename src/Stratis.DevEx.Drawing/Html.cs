@@ -24,6 +24,7 @@ namespace Stratis.DevEx.Drawing
                     }};
         let options = {network.SerializeOptions()};
         let network = new vis.Network(container, data, options); 
+        network.fit();
         ");
             stringBuilder.AppendLine("</script>");
             stringBuilder.AppendLine("</body></html>");
@@ -38,7 +39,7 @@ namespace Stratis.DevEx.Drawing
             var stringBuilder = new StringBuilder();
             var divId = Guid.NewGuid().ToString("N");
             stringBuilder.AppendLine("<html lang=\"en\"><head><script type=\"text/javascript\" src=\"https://unpkg.com/vis-network/standalone/umd/vis-network.min.js\"></script><title>Title</title><body>");
-            stringBuilder.AppendLine($"<div id=\"{divId}\" style=\"height:1000px; width:100%\"></div>");
+            stringBuilder.AppendLine($"<div id=\"{divId}\" style=\"height:100%; width:100%\"></div>");
             stringBuilder.AppendLine("</div>");
             stringBuilder.AppendLine("<script type=\"text/javascript\">");
             stringBuilder.AppendLine($@"
@@ -62,11 +63,10 @@ namespace Stratis.DevEx.Drawing
             var op = Begin("Drawing summary to HTML");
             var stringBuilder = new StringBuilder();
             var divId = Guid.NewGuid().ToString("N");
-            stringBuilder.AppendLine("<html lang=\"en\"><head><title>Title</title></head><body>");
-            stringBuilder.AppendLine($"<pre id=\"{divId}\" class=\"mermaid\" style=\"height:1000px; width:100%\">");
+            stringBuilder.AppendLine("<html lang=\"en\"><head><script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script><title>Title</title></head><body>");
+            stringBuilder.AppendLine($"<pre id=\"{divId}\" class=\"mermaid\" style=\"height:100%; width:100%\">");
             stringBuilder.AppendLine(summary);
             stringBuilder.AppendLine("</pre>");
-            stringBuilder.AppendLine("<script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script>");
             stringBuilder.AppendLine("<script type=\"text/JavaScript\">");
             stringBuilder.AppendLine("mermaid.initialize({ startOnLoad: true });");
             stringBuilder.AppendLine("</script>");

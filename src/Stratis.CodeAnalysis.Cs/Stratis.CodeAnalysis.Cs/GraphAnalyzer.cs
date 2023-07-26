@@ -54,14 +54,17 @@ namespace Stratis.CodeAnalysis.Cs
                 };
 
                 Info("Analyzing control-flow of method: {ident}...", method.Identifier);
+                /*
                 var op = model.GetOperation(m);
                 if (op is null || op is not IMethodBodyOperation)
                 {
                     Error("Could not get semantic model operation for method {ident}.", method.Identifier);
                     continue;
                 }
-                var mbop = (IMethodBodyOperation)op;
-                var cfg = ControlFlowGraph.Create(mbop);
+                
+                var mbop = op;
+                */
+                var cfg = ControlFlowGraph.Create(m, model);
                 Debug("{ident} has {len} basic block(s).", method.Identifier, cfg.Blocks.Where(bb => bb.Kind == BasicBlockKind.Block).Count());
                 for (int j = 0; j < cfg.Blocks.Length; j++)
                 {
@@ -72,8 +75,9 @@ namespace Stratis.CodeAnalysis.Cs
                     if (node is null)
                     {
                         node = new Node(nid);
+                        var src = bb.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine);
                         node.LabelText =
-                            bb.Kind == BasicBlockKind.Entry ? method.Identifier + "::" + method.Type : bb.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine);
+                            bb.Kind == BasicBlockKind.Entry ? method.Identifier + "::" + method.Type + Environment.NewLine + src : src;
                         graph.AddNode(node);
                     }
                     for (int k = 0; k < bb.Predecessors.Length; k++)
@@ -82,7 +86,39 @@ namespace Stratis.CodeAnalysis.Cs
                         var pid = method.Identifier + "::" + method.Type + "_" + pb.Source.Ordinal.ToString();
                         var pred = graph.FindNode(pid);
                         graph.AddEdge(pred.Id, node.Id);
+                        
                     }
+                    if (bb.ConditionalSuccessor is not null)
+                    {
+                        nid = method.Identifier + "::" + method.Type + "_" + bb.ConditionalSuccessor.Destination.Ordinal.ToString();
+                        var succ = graph.FindNode(nid);
+                        if (succ is null)
+                        {
+                            succ = new Node(nid);
+                            var src = bb.ConditionalSuccessor.Destination.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine);
+                            succ.LabelText =
+                                bb.ConditionalSuccessor.Destination.Kind == BasicBlockKind.Entry ? method.Identifier + "::" + method.Type + Environment.NewLine + src : src;
+                            graph.AddNode(succ);
+                        }
+                        graph.AddEdge(node.Id, succ.Id);
+                    }
+
+                    /*
+                    if (bb.FallThroughSuccessor is not null && bb.FallThroughSuccessor.Destination != bb.ConditionalSuccessor.Destination)
+                    {
+                        nid = method.Identifier + "::" + method.Type + "_" + bb.FallThroughSuccessor.Destination.Ordinal.ToString();
+                        var succ = graph.FindNode(nid);
+                        if (succ is null)
+                        {
+                            succ = new Node(nid);
+                            var src = bb.FallThroughSuccessor.Destination.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine);
+                            succ.LabelText =
+                                bb.FallThroughSuccessor.Destination.Kind == BasicBlockKind.Entry ? method.Identifier + "::" + method.Type + Environment.NewLine + src : src;
+                            graph.AddNode(succ);
+                        }
+                        graph.AddEdge(node.Id, succ.Id);
+                    }
+                    */
                 }
             }
             top.Complete();

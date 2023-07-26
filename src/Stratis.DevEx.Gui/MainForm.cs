@@ -194,7 +194,7 @@ namespace Stratis.DevEx.Gui
             var docid = projectid + "_" + m.Document;
             Graph cg = Program.CreateCallGraph(m.Implements, m.Invocations);
             
-            File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Html.DrawCallGraph(cg));
+            //File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Html.DrawCallGraph(cg));
             var projects = (TreeItem)navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
             {
