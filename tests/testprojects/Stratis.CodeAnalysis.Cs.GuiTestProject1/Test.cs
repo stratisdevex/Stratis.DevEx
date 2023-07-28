@@ -11,8 +11,26 @@ using Stratis.SmartContracts;
             
             byte[] b = { };
             var kk = State.GetUInt32(nameof(PingsSent));
+            Assert(kk > 10, "foo");
             //b.Clone();
             //var v = NLog.Common.InternalLogger.IncludeTimestamp;
+        }
+
+        public void Foo()
+        {
+            byte[] b = { };
+            var kk = State.GetUInt32(nameof(PingsSent));
+            
+            if (kk>3) {
+                var g = PingsSent;
+            } 
+            else
+
+            {
+                var hh = PingsSent2;
+                Assert(hh > 5, "PingsSent2 must be more than 5");
+            }
+            
         }
 
         public uint PingsSent

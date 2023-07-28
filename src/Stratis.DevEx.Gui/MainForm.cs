@@ -60,6 +60,11 @@ namespace Stratis.DevEx.Gui
             {
                 Text = "Control Flow",
             };
+            projectCallGraphView = new WebView();
+            projectCallGraphViewPage = new TabPage(projectCallGraphView)
+            {
+                Text = "Call Graph",
+            };
             projectDisassemblyView = new WebView();
             projectDisassemblyViewPage = new TabPage(projectDisassemblyView)
             {
@@ -73,6 +78,7 @@ namespace Stratis.DevEx.Gui
 
             projectView.Pages.Add(projectSummaryViewPage);
             projectView.Pages.Add(projectControlFlowViewPage);
+            projectView.Pages.Add(projectCallGraphViewPage);
             projectView.Pages.Add(projectDisassemblyViewPage);
             projectView.Pages.Add(projectSourceViewPage);
 
@@ -88,47 +94,6 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Methods
-        public void CreateMenuAndToolbar()
-        {
-            // create a few commands that can be used for the menu and toolbar
-            var clickMe = new Command { MenuText = "Click Me!", ToolBarText = "Click Me!" };
-            clickMe.Executed += (sender, e) => MessageBox.Show(this, "I was clicked!");
-
-            var quitCommand = new Command { MenuText = "Quit", Shortcut = GuiApp.Instance.CommonModifier | Keys.Q };
-            quitCommand.Executed += (sender, e) => GuiApp.Instance.Quit();
-
-            var aboutCommand = new Command { MenuText = "About..." };
-            aboutCommand.Executed += (sender, e) => new AboutDialog().ShowDialog(this);
-
-            var refreshCommand = new Command((_, _) => App.AsyncInvoke(() => projectControlFlowView.Reload()))
-            {
-                MenuText = "Refresh",
-                ToolBarText = "Refresh",
-                Image = Refresh
-            };
-            // create menu
-            Menu = new MenuBar
-            {
-                Items =
-                {
-					// File submenu
-					new SubMenuItem { Text = "&File", Items = { clickMe } },
-					// new SubMenuItem { Text = "&Edit", Items = { /* commands/items */ } },
-					// new SubMenuItem { Text = "&View", Items = { /* commands/items */ } },
-				},
-                ApplicationItems =
-                {
-					// application (OS X) or file menu (others)
-					new ButtonMenuItem { Text = "&Preferences..." },
-                },
-                QuitItem = quitCommand,
-                AboutItem = aboutCommand
-            };
-
-            // create toolbar			
-            ToolBar = new ToolBar { Items = { refreshCommand } };
-        }
-
         public void ReadMessage(CompilationMessage m)
         {
             if (m.EditorEntryAssembly == "(none)")
@@ -192,22 +157,19 @@ namespace Stratis.DevEx.Gui
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var docid = projectid + "_" + m.Document;
-            Graph cg = Program.CreateCallGraph(m.Implements, m.Invocations);
-            
             //File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Html.DrawCallGraph(cg));
             var projects = (TreeItem)navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
             {
                 Debug("Project {proj} already exists in tree, updating...", projectid);
                 UpdateProjectDocsTree(m);
-                App.AsyncInvoke(() => projectSummaryView.LoadHtml((string)projectViews[docid + "_" + "Summary"]));
             }
             else
             {
                 Debug("Project {proj} does not exists in tree, adding...", projectid);
                 AddProjectToTree(m);
-                App.AsyncInvoke(() => projectSummaryView.LoadHtml((string)projectViews[docid + "_" + "Summary"]));
             }
+            App.AsyncInvoke(() => LoadProjectOrDocView(docid));
             navigation.RefreshItem(projects);
         }
 
@@ -299,8 +261,10 @@ namespace Stratis.DevEx.Gui
                 Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
                 Image = CSharp
             };
+            Graph cg = Program.CreateCallGraph(m.Implements, m.Invocations);
             projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
             projectViews.Add(docid + "_" + "Summary", Html.DrawSummary(m.Summary));
+            projectViews.Add(docid + "_" + "CallGraph", Html.DrawCallGraph(cg));
             projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, m.ClassNames);
             var child = new TreeItem(doc)
             {
@@ -323,8 +287,9 @@ namespace Stratis.DevEx.Gui
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var docid = projectid + "_" + m.Document;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
-
+            Graph cg = Program.CreateCallGraph(m.Implements, m.Invocations);
             projectViews[docid + "_" + "Summary"] = Html.DrawSummary(m.Summary);
+            projectViews[docid + "_" + "CallGraph"] = Html.DrawCallGraph(cg);
             projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, m.ClassNames);
             if (project.Children.Any(c => c.Key == docid))
             {
@@ -416,8 +381,9 @@ namespace Stratis.DevEx.Gui
         {
             projectSummaryView.LoadHtml(GetProjectOrDocViewHtml(id, "Summary"));
             projectControlFlowView.LoadHtml(GetProjectOrDocViewHtml(id, "ControlFlow"));
+            projectCallGraphView.LoadHtml(GetProjectOrDocViewHtml(id, "CallGraph"));
             projectDisassemblyView.LoadHtml(GetProjectOrDocViewHtml(id, "Disassembly"));
-            projectView.SelectedPage = projectSummaryViewPage;
+            //projectView.SelectedPage = projectSummaryViewPage;
         }
 
         protected string GetDisassembly(string projectid, string[] classNames)
@@ -441,6 +407,54 @@ namespace Stratis.DevEx.Gui
                 return Html.DrawDisassembly(output.Data);
             }
         }
+
+        protected void RefreshWebViews()
+        {
+            App.AsyncInvoke(() => projectSummaryView.Reload());
+            App.AsyncInvoke(() => projectControlFlowView.Reload());
+            App.AsyncInvoke(() => projectCallGraphView.Reload());
+        }
+        protected void CreateMenuAndToolbar()
+        {
+            // create a few commands that can be used for the menu and toolbar
+            var clickMe = new Command { MenuText = "Click Me!", ToolBarText = "Click Me!" };
+            clickMe.Executed += (sender, e) => MessageBox.Show(this, "I was clicked!");
+
+            var quitCommand = new Command { MenuText = "Quit", Shortcut = GuiApp.Instance.CommonModifier | Keys.Q };
+            quitCommand.Executed += (sender, e) => GuiApp.Instance.Quit();
+
+            var aboutCommand = new Command { MenuText = "About..." };
+            aboutCommand.Executed += (sender, e) => new AboutDialog().ShowDialog(this);
+
+            var refreshCommand = new Command((_, _) => RefreshWebViews())
+            {
+                MenuText = "Refresh",
+                ToolBarText = "Refresh",
+                Image = Refresh
+            };
+            // create menu
+            Menu = new MenuBar
+            {
+                Items =
+                {
+					// File submenu
+					new SubMenuItem { Text = "&File", Items = { clickMe } },
+					// new SubMenuItem { Text = "&Edit", Items = { /* commands/items */ } },
+					// new SubMenuItem { Text = "&View", Items = { /* commands/items */ } },
+				},
+                ApplicationItems =
+                {
+					// application (OS X) or file menu (others)
+					new ButtonMenuItem { Text = "&Preferences..." },
+                },
+                QuitItem = quitCommand,
+                AboutItem = aboutCommand
+            };
+
+            // create toolbar			
+            ToolBar = new ToolBar { Items = { refreshCommand } };
+        }
+
         #region Logging
         [DebuggerStepThrough]
         public static void Info(string messageTemplate, params object[] args) => Runtime.Info(messageTemplate, args);
@@ -520,6 +534,8 @@ namespace Stratis.DevEx.Gui
 
         protected WebView projectControlFlowView;
         protected TabPage projectControlFlowViewPage;
+        protected WebView projectCallGraphView;
+        protected TabPage projectCallGraphViewPage;
         protected WebView projectSummaryView;
         protected TabPage projectSummaryViewPage;
         protected WebView projectSourceView;

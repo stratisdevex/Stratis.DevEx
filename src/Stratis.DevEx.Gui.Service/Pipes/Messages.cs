@@ -47,6 +47,8 @@ namespace Stratis.DevEx.Pipes
         public string Id { get; set; }
 
         public string Label { get; set; }
+
+        public string Kind { get; set; }
     }
 
     [Serializable]

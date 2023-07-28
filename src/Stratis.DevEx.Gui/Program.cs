@@ -151,6 +151,26 @@ namespace Stratis.DevEx.Gui
                     var node = new Node(nid);
                     var s = (string)m["signature"];
                     node.LabelText = nid + s.Replace(",", ",\n");
+                    if (nid.Contains("::.ctor"))
+                    {
+                        node.Attr.FillColor = Color.LightYellow;
+                    }
+                    else if (nid.Contains("::get_"))
+                    {
+                        node.Attr.FillColor = Color.LightGreen;
+                    }
+                    else if (nid.Contains("::set_"))
+                    {
+                        node.Attr.FillColor = Color.Pink;
+                    }
+                    else if (nid.Contains("IPersistentState::"))
+                    {
+                        node.Attr.FillColor = Color.Pink;
+                    }
+                    else if (nid.Contains("SmartContract::"))
+                    {
+                        node.Attr.FillColor = Color.Pink;
+                    }
                     graph.AddNode(node);
                 }
             }

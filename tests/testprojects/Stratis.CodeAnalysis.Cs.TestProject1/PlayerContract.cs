@@ -17,7 +17,7 @@
             GameState = (uint)StateType.Provisioned;
             byte[] b = { };
             b.Clone();
-            var v = NLog.Common.InternalLogger.IncludeTimestamp;
+            //var v = NLog.Common.InternalLogger.IncludeTimestamp;
         }
 
 

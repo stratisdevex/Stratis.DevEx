@@ -40,8 +40,9 @@ namespace Stratis.DevEx.Drawing
                             SortMethod = "directed",
                             Direction = "UD",
                             NodeSpacing = 150,
-                            LevelSeparation = 150,
-                        }*/
+                            LevelSeparation = 50,
+                        }
+                        */
                     };
                     var physics = new NetworkPhysics()
                     {
@@ -88,6 +89,7 @@ namespace Stratis.DevEx.Drawing
                             Background = node.Attr.FillColor.ToString().Trim('"')
                         } : null
                 }); ;
+
             }
             
             foreach(var edge in graph.Edges)
