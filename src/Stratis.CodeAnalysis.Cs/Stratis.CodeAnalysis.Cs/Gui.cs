@@ -139,7 +139,7 @@ namespace Stratis.CodeAnalysis.Cs
                     EditorEntryAssembly = EntryAssembly?.FullName ?? "(none)",
                     AssemblyName = c.AssemblyName,
                     Document = document,
-                    Nodes = graph.Nodes.Select(n => new NodeData() { Id = n.Id, Label = n.LabelText }).ToArray(),
+                    Nodes = graph.Nodes.Select(n => new NodeData() { Id = n.Id, Label = n.LabelText, Kind = n.Kind }).ToArray(),
                     Edges = graph.Edges.Select(e => new EdgeData() { SourceId = e.Source, TargetId = e.Target, Label = e.LabelText}).ToArray()
                 };
                 if (GuiProcessRunning() && !pipeClient.IsConnected)

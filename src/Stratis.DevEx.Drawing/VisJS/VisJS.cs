@@ -83,13 +83,17 @@ namespace Stratis.DevEx.Drawing
                     Font = new NetworkFont() { Face = "monospace", Align = "left" },
                     Shape = nodeshape,
                     Size = nodesize,
-                    Color = node.Attr.FillColor != Color.Transparent || node.Attr.Color != Color.White ? 
-                        new NetworkColor()
-                        {
-                            Background = node.Attr.FillColor.ToString().Trim('"')
-                        } : null
-                }); ;
-
+                    Color = graph.Kind switch 
+                            {
+                                "cg" => node.Attr.FillColor != Color.Transparent || node.Attr.Color != Color.White ? 
+                                        new NetworkColor()
+                                        {
+                                            Background = node.Attr.FillColor.ToString().Trim('"')
+                                        } : null,
+                                "cfg" => GetCFGNodeColor(node),
+                                _ => null
+                            }                
+                }); 
             }
             
             foreach(var edge in graph.Edges)
@@ -107,6 +111,18 @@ namespace Stratis.DevEx.Drawing
             return network;
         }
 
+        protected static NetworkColor GetCFGNodeColor(Node node)
+        {
+            return new NetworkColor()
+            {
+                Background = (node.Kind) switch
+                {
+                    "entry" => "LightYellow",
+                    "branch" => "Blue",
+                    _ => "White"
+                }
+            };
+        }
         #endregion
     }
 }

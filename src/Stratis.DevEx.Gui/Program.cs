@@ -116,7 +116,7 @@ namespace Stratis.DevEx.Gui
             {
                 if (graph.FindNode(node.Id) is null)
                 {
-                    graph.AddNode(new Node(node.Id) { LabelText = node.Label });
+                    graph.AddNode(new Node(node.Id) { LabelText = node.Label, Kind = node.Kind });
                 }
             }
             foreach (var edge in m.Edges)
