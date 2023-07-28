@@ -90,7 +90,17 @@ namespace Stratis.CodeAnalysis.Cs
                             csnode.LabelText = bb.ConditionalSuccessor.Destination.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine) + Environment.NewLine + (bb.ConditionalSuccessor.Destination.BranchValue?.Syntax.ToString() ?? "");
                             graph.AddNode(csnode);
                         }
-                        graph.AddEdge(nid, csnid);
+                        
+                        if (bb.ConditionalSuccessor.Source != bb)
+                        {
+                            var cssnode = CreateNodeFromBasicBlock(bb.ConditionalSuccessor.Source, method.Identifier, method.Type, graph);
+                            graph.AddEdge(nid, cssnode.Id);
+                            graph.AddEdge(cssnode.Id, csnid);
+                        }
+                        else
+                        {
+                            graph.AddEdge(nid, csnid);
+                        }
                     }
 
                     if (bb.FallThroughSuccessor is not null && bb.FallThroughSuccessor.Destination.Kind != BasicBlockKind.Exit)
@@ -103,9 +113,20 @@ namespace Stratis.CodeAnalysis.Cs
                             ftnode.LabelText = bb.FallThroughSuccessor.Destination.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine) + Environment.NewLine + (bb.FallThroughSuccessor.Destination.BranchValue?.Syntax.ToString() ?? "");
                             graph.AddNode(ftnode);
                         }
-                        graph.AddEdge(nid, ftnid);
+                        
+                        if (bb.FallThroughSuccessor.Source != bb)
+                        {
+                            var ftsnode = CreateNodeFromBasicBlock(bb.FallThroughSuccessor.Source, method.Identifier, method.Type, graph);
+                            graph.AddEdge(nid, ftsnode.Id);
+                            graph.AddEdge(ftsnode.Id, ftnid);
+                        }
+                        else
+                        {
+                            graph.AddEdge(nid, ftnid);
+                        }
                     }
 
+                    /*
                     for (int k = 0; k < bb.Predecessors.Length; k++)
                     {
                         var pb = bb.Predecessors[k];
@@ -114,6 +135,7 @@ namespace Stratis.CodeAnalysis.Cs
                         graph.AddEdge(pred.Id, node.Id);
 
                     }
+                    */
                 }
             }
             top.Complete();
@@ -125,6 +147,21 @@ namespace Stratis.CodeAnalysis.Cs
                 pipeClient.Dispose();
                 //File.WriteAllText(projectDir.CombinePath(DateTime.Now.Millisecond.ToString() + ".html"), Html.DrawControlFlowGraph(graph));
             }
+        }
+
+        protected static Node CreateNodeFromBasicBlock(BasicBlock bb, string methodIdentifier, string methodType, Graph graph)
+        {
+            var nid = methodIdentifier + "::" + methodType + "_" + bb.Ordinal.ToString();
+            var node = graph.FindNode(nid);
+            if (node is null)
+            {
+                node = new Node(nid);
+                var src = bb.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine) + Environment.NewLine + (bb.BranchValue?.Syntax.ToString() ?? "");
+                node.LabelText =
+                    bb.Kind == BasicBlockKind.Entry ? methodIdentifier + "::" + methodType + Environment.NewLine + src : src;
+                graph.AddNode(node);
+            }
+            return node;
         }
     }
 }
