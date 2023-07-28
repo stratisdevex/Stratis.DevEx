@@ -178,11 +178,7 @@ namespace Stratis.DevEx.Gui
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
-            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
-            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
-            var output = new MonochromeSourceEmitterOutput();
-            Disassembler.Run(asm, output);
-            projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(output.Data);
+            projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, Array.Empty<string>());
             var project = new TreeItem()
             {
                 Key = projectid,
@@ -216,11 +212,7 @@ namespace Stratis.DevEx.Gui
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
-            var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
-            var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
-            var output = new MonochromeSourceEmitterOutput();
-            Disassembler.Run(asm, output);
-            projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(output.Data);
+            projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(GetDisassembly(projectid, Array.Empty<string>()));
 
             foreach (var d in m.Documents)
             {
@@ -402,9 +394,17 @@ namespace Stratis.DevEx.Gui
             }
             else
             {
-                var output = new MonochromeSourceEmitterOutput();
-                Disassembler.Run(asm, output);
-                return Html.DrawDisassembly(output.Data);
+                try
+                {
+                    var output = new CSharpSourceEmitter.SourceEmitterOutputString();
+                    Disassembler.Run(asm, output);
+                    return Html.DrawDisassembly(output.Data);
+                }
+                catch (Exception e)
+                {
+                    Error(e, "Exception thrown during disassembly of {asm}.", asm);
+                    return htmlplaceholder;
+                }
             }
         }
 
