@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ext\cci\NET6\Microsoft.Cci\Microsoft.Cci.NETSTANDARD20.csproj" />
+    <ProjectReference Include="..\..\ext\Nuclear.Assemblies\Nuclear.Assemblies.csproj" />
     <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
   </ItemGroup>
 
