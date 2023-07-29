@@ -16,7 +16,7 @@ namespace Nuclear.Assemblies {
         #region fields
 
         internal static ProcessorArchitecture[] _validArchitectures =
-            new ProcessorArchitecture[] { ProcessorArchitecture.MSIL, Environment.Is64BitProcess ? ProcessorArchitecture.Amd64 : ProcessorArchitecture.X86 };
+            new ProcessorArchitecture[] { ProcessorArchitecture.None, ProcessorArchitecture.MSIL, Environment.Is64BitProcess ? ProcessorArchitecture.Amd64 : ProcessorArchitecture.X86 };
 
         #endregion
 
