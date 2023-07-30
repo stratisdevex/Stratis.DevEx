@@ -12,13 +12,13 @@ namespace Stratis.DevEx.CodeAnalysis.IL
         #endregion
 
         #region Methods
-        public void WriteLine(string str, bool fIndent, Color color) => base.WriteLine(str, fIndent);
+        public virtual void WriteLine(string str, bool fIndent, Color color) => base.WriteLine(str, fIndent);
 
-        public void WriteLine(string str, Color color) => this.WriteLine(str, false, color);
+        public virtual void WriteLine(string str, Color color) => this.WriteLine(str, false, color);
 
-        public void Write(string str, bool fIndent, Color color) => base.Write(str, fIndent);
+        public virtual void Write(string str, bool fIndent, Color color) => base.Write(str, fIndent);
 
-        public void Write(string str, Color color) => this.Write(str, false, color);
+        public virtual void Write(string str, Color color) => this.Write(str, false, color);
         #endregion
 
         #region Overriden members

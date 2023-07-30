@@ -90,10 +90,19 @@ namespace Stratis.DevEx.Gui
 			splitter.Panel2 = aboutView;
             splitter.Position = 200;
             Content = splitter;
+
+            uITimer = new UITimer(UpdateUIProjectElements); ;
+            uITimer.Interval = 0.5;
+            uITimer.Start();
         }
         #endregion
 
         #region Methods
+        protected void UpdateUIProjectElements(object? sender, EventArgs e)
+        {
+
+        }
+        
         public void ReadMessage(CompilationMessage m)
         {
             if (m.EditorEntryAssembly == "(none)")
@@ -106,7 +115,7 @@ namespace Stratis.DevEx.Gui
             var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
             File.WriteAllBytes(asm, m.Assembly);
             File.WriteAllBytes(pdb, m.Pdb);
-            Info("Updated assembly {asm} at {now}.", asm, DateTime.Now);
+            Debug("Updated assembly {asm} at {now}.", asm, DateTime.Now);
             var projects = (TreeItem)navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
             {
@@ -130,6 +139,11 @@ namespace Stratis.DevEx.Gui
                 return;
             }
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
+            if (!controlFlowGraphUpdateMessages.ContainsKey(projectid))
+            {
+                controlFlowGraphUpdateMessages[projectid] = new Stack<ControlFlowGraphMessage>();
+            }
+            controlFlowGraphUpdateMessages[projectid].Push(m);
             var docid = projectid + "_" + m.Document;
             var projects = (TreeItem) navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
@@ -305,6 +319,7 @@ namespace Stratis.DevEx.Gui
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var docid = projectid + "_" + m.Document;
             var cfg = Program.CreateGraph(m);
+
             var doc = new TreeItem()
             {
                 Key = docid,
@@ -384,19 +399,19 @@ namespace Stratis.DevEx.Gui
             var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
             if (!File.Exists(asm) || !File.Exists(pdb))
             {
-                Info("Could not find assembly file {asm}.", asm);
+                Debug("Could not find assembly file {asm}.", asm);
                 return htmlplaceholder;
             }
             else if (!File.Exists(pdb))
             {
-                Info("Could not find PDB file {pdb}.", pdb);
+                Debug("Could not find PDB file {pdb}.", pdb);
                 return htmlplaceholder;
             }
             else
             {
                 try
                 {
-                    var output = new CSharpSourceEmitter.SourceEmitterOutputString();
+                    var output = new SmartContractSourceEmitterOutput();
                     Disassembler.Run(asm, output);
                     return Html.DrawDisassembly(output.Data);
                 }
@@ -527,11 +542,12 @@ namespace Stratis.DevEx.Gui
         internal TreeView navigation;
         #pragma warning restore CS0618 // Type or member is obsolete
 
+        protected UITimer uITimer;
+        protected Splitter splitter;
         protected WebView aboutView;
         protected TabControl projectView;
-        protected Splitter splitter;
-        internal Dictionary<string, object> projectViews;
-
+        
+      
         protected WebView projectControlFlowView;
         protected TabPage projectControlFlowViewPage;
         protected WebView projectCallGraphView;
@@ -542,6 +558,11 @@ namespace Stratis.DevEx.Gui
         protected TabPage projectSourceViewPage;
         protected WebView projectDisassemblyView;
         protected TabPage projectDisassemblyViewPage;
+
+        internal Dictionary<string, object> projectViews;
+        protected Dictionary<string, DateTime> projectControlFlowViewLastUpdated = new Dictionary<string, DateTime>();
+
+        protected Dictionary<string, Stack<ControlFlowGraphMessage>> controlFlowGraphUpdateMessages = new Dictionary<string, Stack<ControlFlowGraphMessage>>(); 
         #endregion
     }
 }

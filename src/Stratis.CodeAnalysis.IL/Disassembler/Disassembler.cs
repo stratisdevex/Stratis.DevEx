@@ -22,7 +22,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
 
     public class Disassembler : Runtime
     {
-        public static void Run(string fileName, ISourceEmitterOutput output, bool noIL = false, string? classPattern = null, string? methodPattern = null, bool colorful = false)
+        public static void Run(string fileName, SmartContractSourceEmitterOutput output, bool noIL = false, string? classPattern = null, string? methodPattern = null)
         {
             using var host = new PeReader.DefaultHost();
             IModule? module = host.LoadUnitFrom(FailIfFileNotFound(fileName)) as IModule;
@@ -59,17 +59,9 @@ namespace Stratis.DevEx.CodeAnalysis.IL
             }
             var options = DecompilerOptions.AnonymousDelegates | DecompilerOptions.Iterators | DecompilerOptions.Loops;
             module = Decompiler.GetCodeModelFromMetadataModel(host, module, pdbReader, options);
+            var sourceEmitter = new SmartContractSourceEmitter(output, host, pdbReader, true, noIL, classPattern, methodPattern);
+            sourceEmitter.Traverse(module);
 
-            if (!colorful)
-            {
-                var sourceEmitter = new PeToText.SourceEmitter(output, host, pdbReader, noIL, true);
-                sourceEmitter.Traverse(module);
-            }
-            else
-            {
-                var sourceEmitter = new ColorfulSourceEmitter((IColorfulSourceEmitterOutput)output, host, pdbReader, true, noIL, classPattern, methodPattern);
-                sourceEmitter.Traverse(module);
-            }
         }
     }
 }

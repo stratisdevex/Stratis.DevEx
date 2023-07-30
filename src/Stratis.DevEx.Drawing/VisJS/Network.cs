@@ -161,6 +161,9 @@ namespace Stratis.DevEx.Drawing
 
         [JsonProperty("font"), JsonSuppressDefaultValue]
         public NetworkFont? Font { get; set; }
+
+        [JsonProperty("mass"), JsonSuppressDefaultValue]
+        public int? Mass { get; set; }
     }
 
     public class NetworkOptions

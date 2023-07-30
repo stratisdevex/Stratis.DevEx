@@ -92,7 +92,13 @@ namespace Stratis.DevEx.Drawing
                                         } : null,
                                 "cfg" => GetCFGNodeColor(node),
                                 _ => null
-                            }                
+                            },
+                    Mass = node.Kind switch {
+                        "entry" => 1,
+                        "block" => 2,
+                        "branch" => 5,
+                        _ => null
+                    }
                 }); 
             }
             
