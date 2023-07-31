@@ -74,18 +74,12 @@ namespace Stratis.DevEx.Gui
             {
                 Text = "Disassembly"
             };
-            projectSourceView = new WebView();
-            projectSourceViewPage = new TabPage(projectSourceView)
-            {
-                Text = "Source"
-            };
-
+            
             projectView.Pages.Add(projectSummaryViewPage);
             projectView.Pages.Add(projectControlFlowViewPage);
             projectView.Pages.Add(projectCallGraphViewPage);
             projectView.Pages.Add(projectDisassemblyViewPage);
-            projectView.Pages.Add(projectSourceViewPage);
-
+            
             projectControlFlowView.LoadHtml(@"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>");
             projectView.SelectedPage = projectSummaryViewPage;
 
@@ -669,8 +663,6 @@ namespace Stratis.DevEx.Gui
         protected TabPage projectCallGraphViewPage;
         protected WebView projectSummaryView;
         protected TabPage projectSummaryViewPage;
-        protected WebView projectSourceView;
-        protected TabPage projectSourceViewPage;
         protected WebView projectDisassemblyView;
         protected TabPage projectDisassemblyViewPage;
 

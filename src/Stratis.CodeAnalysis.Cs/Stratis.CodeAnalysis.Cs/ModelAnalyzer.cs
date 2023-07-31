@@ -27,7 +27,8 @@ namespace Stratis.CodeAnalysis.Cs
                                    .ToArray();
             StructDeclarationSyntax[] structdecls = model.SyntaxTree.GetRoot().DescendantNodes().OfType<StructDeclarationSyntax>()
                                    .ToArray();
-            
+            InterfaceDeclarationSyntax[] interfacedecls = model.SyntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
+                                   .ToArray();
             var implementsList = new List<Dictionary<string, object>>(); //Method Implementations
             var invocationList = new List<Dictionary<string, object>>(); //Method Invocations
             var inheritsList = new List<Dictionary<string, object>>();//Class Heirarchy
@@ -218,10 +219,11 @@ namespace Stratis.CodeAnalysis.Cs
                 var t = model.GetDeclaredSymbol(c);
                 
                 var className = t.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+                classNames.Add(className);
                 builder.AppendLineFormat("class {0}", className);
                 Debug("{cls}", builder.Last());
                 builder.AppendLineFormat("<<struct>> {0}".Replace("<", "&lt;").Replace(">", "&gt;"), className);
-                foreach (var f in t.GetMembers().Where(m => m.Kind == SymbolKind.Field && m.DeclaredAccessibility == Accessibility.Public).Cast<IFieldSymbol>())
+                foreach (var f in t.GetMembers().Where(m => m.Kind == SymbolKind.Property && m.DeclaredAccessibility == Accessibility.Public).Cast<IFieldSymbol>())
                 {
                     builder.AppendFormat("{0} : ", className);
                     builder.AppendFormat("+{0} {1}", f.Type.Name, f.Name);
@@ -235,6 +237,68 @@ namespace Stratis.CodeAnalysis.Cs
                     builder.AppendLine();
                 }
             }
+
+            foreach (var c in interfacedecls)
+            {
+                var t = model.GetDeclaredSymbol(c);
+                var className = t.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+                classNames.Add(className);
+                builder.AppendLineFormat("class {0}", className);
+                Debug("{cls}", builder.Last());
+                builder.AppendLineFormat("<<interface>> {0}".Replace("<", "&lt;").Replace(">", "&gt;"), className);
+                foreach (var method in t.GetMembers().Where(m => m.Kind == SymbolKind.Method && m.DeclaredAccessibility == Accessibility.Public).Cast<IMethodSymbol>())
+                {
+                    builder.AppendFormat("{0} : ", className);
+                    switch (method.DeclaredAccessibility)
+                    {
+                        case Accessibility.Public:
+                            builder.Append("+");
+                            break;
+                        case Accessibility.Private:
+                            builder.Append("-");
+                            break;
+                        case Accessibility.ProtectedAndInternal:
+                            builder.AppendFormat("#");
+                            break;
+                        //case Microsoft.Cci.TypeMemberVisibility.Assembly:
+                        //    builder.AppendFormat("~");
+                        //    break;
+                        default:
+                            builder.Append("-");
+                            break;
+                    }
+                    paramBuilder.Clear();
+                    paramBuilder.Append("(");
+                    foreach (var p in method.Parameters)
+                    {
+                        paramBuilder.AppendFormat("{0} {1}", p.Type.Name, p.Name);
+                        paramBuilder.Append(",");
+                    }
+                    if (method.Parameters.Count() > 0)
+                    {
+                        paramBuilder.Remove(paramBuilder.Length - 1, 1);
+                    }
+                    paramBuilder.Append(")");
+                    builder.Append(method.Name); 
+                    builder.Append(paramBuilder.ToString());
+                    builder.Append(Environment.NewLine);
+                    Debug("{m}", builder.Last());
+                }
+                foreach (var f in t.GetMembers().Where(m => m.Kind == SymbolKind.Property && m.DeclaredAccessibility == Accessibility.Public).Cast<IPropertySymbol>())
+                {
+                    builder.AppendFormat("{0} : ", className);
+                    builder.AppendFormat("+{0} {1}", f.Type.Name, f.Name);
+                    //builder.AppendFormat(f.Name);
+                    builder.AppendFormat(Environment.NewLine);
+                    Debug("{m}", builder.Last());
+                }
+                if (t.ContainingType != null)
+                {
+                    builder.AppendFormat("{0}*--{1}", className, t.ContainingType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+                    builder.AppendLine();
+                }
+            }
+
             top.Complete();
             var pipeClient = Gui.CreatePipeClient();
             Gui.SendSummaryGuiMessage(cfgFile, model.Compilation, model.SyntaxTree.FilePath, builder.ToString(), classNames.ToArray(), 

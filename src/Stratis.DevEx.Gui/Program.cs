@@ -151,7 +151,7 @@ namespace Stratis.DevEx.Gui
                     }
                     else if (nid.Contains("::set_"))
                     {
-                        node.Attr.FillColor = Color.Pink;
+                        node.Attr.FillColor = Color.LightBlue;
                     }
                     else if (nid.Contains("IPersistentState::"))
                     {
