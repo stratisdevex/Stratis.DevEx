@@ -100,11 +100,30 @@ namespace Stratis.DevEx.Gui
         #region Methods
         protected void UpdateUIProjectElements(object? sender, EventArgs e)
         {
-
+            if (Program.SummaryMessages.Any())
+            {
+                ReadMessage(Program.SummaryMessages.Pop());
+                Program.SummaryMessages.Clear();
+            }
+            if (Program.ControlFlowGraphMessages.Any())
+            {
+                ReadMessage(Program.ControlFlowGraphMessages.Pop());
+                Program.ControlFlowGraphMessages.Clear();
+            }
+            if (Program.CompilationMessages.Any())
+            {
+                ReadMessage(Program.CompilationMessages.Pop());
+                Program.CompilationMessages.Clear();
+            }
         }
         
         public void ReadMessage(CompilationMessage m)
         {
+            if (lastCompilationMessageIdRead == m.CompilationId)
+            {
+                Debug("Alreading read compilation message for compilation id {id}, skipping.", m.CompilationId);
+                return;
+            }
             if (m.EditorEntryAssembly == "(none)")
             {
                 Info("Not processing message from unknown editor assembly for assembly {asm}.", m.AssemblyName);
@@ -129,6 +148,8 @@ namespace Stratis.DevEx.Gui
                 AddProjectToTree(m);
                 App.AsyncInvoke(() => projectDisassemblyView.LoadHtml((string)projectViews[projectid + "_" + "Disassembly"]));
             }
+            navigation.RefreshItem(projects);
+            lastCompilationMessageIdRead = m.CompilationId;
         }
 
         public void ReadMessage(ControlFlowGraphMessage m)
@@ -139,30 +160,25 @@ namespace Stratis.DevEx.Gui
                 return;
             }
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
-            if (!controlFlowGraphUpdateMessages.ContainsKey(projectid))
-            {
-                controlFlowGraphUpdateMessages[projectid] = new Stack<ControlFlowGraphMessage>();
-            }
-            controlFlowGraphUpdateMessages[projectid].Push(m);
             var docid = projectid + "_" + m.Document;
             var projects = (TreeItem) navigation.DataStore[1];
             if (projects.Children.Any(c => c.Key == projectid))
             {
                 Debug("Project {proj} already exists in tree, updating...", projectid);
                 UpdateProjectDocsTree(m);
-                App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"]));
+                
             }
             else
             {
                 Debug("Project {proj} does not exists in tree, adding...", projectid);
                 AddProjectToTree(m);
-                App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"])); 
             }
             navigation.RefreshItem(projects);
         }
 
         public void ReadMessage(SummaryMessage m)
         {
+           
             if (m.EditorEntryAssembly == "(none)")
             {
                 Info("Not processing message from unknown editor assembly for document {doc}.", m.Document);
@@ -183,6 +199,7 @@ namespace Stratis.DevEx.Gui
                 Debug("Project {proj} does not exists in tree, adding...", projectid);
                 AddProjectToTree(m);
             }
+            
             App.AsyncInvoke(() => LoadProjectOrDocView(docid));
             navigation.RefreshItem(projects);
         }
@@ -205,6 +222,7 @@ namespace Stratis.DevEx.Gui
                 },
             };
 
+            /*
             foreach (var d in m.Documents)
             {
                 var docid = projectid + "_" + d;
@@ -216,7 +234,7 @@ namespace Stratis.DevEx.Gui
                 };
                 project.Children.Add(c);
             }
-
+            */
             Projects.Children.Add(project);
             var dis = GetDisassembly(projectid, Array.Empty<string>());
             if (dis is not null && !string.IsNullOrEmpty(dis.Data))
@@ -232,6 +250,18 @@ namespace Stratis.DevEx.Gui
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
 
+            var dis = GetDisassembly(projectid, Array.Empty<string>());
+            if (dis is not null && !string.IsNullOrEmpty(dis.Data))
+            {
+                disassembly[projectid] = dis;
+                projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(dis.Data);
+            }
+            else
+            {
+                disassembly[projectid] = null;
+                projectViews[projectid + "_" + "Disassembly"] = htmlplaceholder;
+            }
+            /*
             foreach (var d in m.Documents)
             {
                 var docid = projectid + "_" + d;
@@ -245,19 +275,9 @@ namespace Stratis.DevEx.Gui
                     };
                     project.Children.Add(c);
                 }
-
-                var dis = GetDisassembly(projectid, Array.Empty<string>());
-                if (dis is not null && !string.IsNullOrEmpty(dis.Data))
-                {
-                    disassembly[projectid] = dis;
-                    projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(dis.Data);
-                }
-                else
-                {
-                    disassembly[projectid] = null;
-                    projectViews[projectid + "_" + "Disassembly"] = htmlplaceholder;
-                }
             }
+           
+            */
             List<ITreeItem> toremove = new List<ITreeItem>();
             foreach (var c in project.Children)
             {
@@ -266,10 +286,10 @@ namespace Stratis.DevEx.Gui
                     toremove.Add(c);
                 }
             }
-            foreach(var c in toremove)
+            foreach (var c in toremove)
             {
                 project.Children.Remove(c);
-            }    
+            }
         }
 
         protected void AddProjectToTree(SummaryMessage m)
@@ -380,6 +400,7 @@ namespace Stratis.DevEx.Gui
                 },
             };
             Projects.Children.Add(child);
+            App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"]));
         }
 
         protected void UpdateProjectDocsTree(ControlFlowGraphMessage m)
@@ -405,6 +426,7 @@ namespace Stratis.DevEx.Gui
                 };
                 project.Children.Add(doc);
             }
+            App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"]));
         }
 
         protected void showProjectView() => splitter.Panel2 = projectView;
@@ -464,9 +486,22 @@ namespace Stratis.DevEx.Gui
 
         protected void RefreshWebViews()
         {
-            App.AsyncInvoke(() => projectSummaryView.Reload());
-            App.AsyncInvoke(() => projectControlFlowView.Reload());
-            App.AsyncInvoke(() => projectCallGraphView.Reload());
+            if (projectView.SelectedPage == projectSummaryViewPage)
+            {
+                App.AsyncInvoke(() => projectSummaryView.Reload());
+            }
+            else if (projectView.SelectedPage == projectControlFlowViewPage)
+            {
+                App.AsyncInvoke(() => projectControlFlowView.Reload());
+            }
+            else if (projectView.SelectedPage == projectCallGraphViewPage)
+            {
+                App.AsyncInvoke(() => projectCallGraphView.Reload());
+            }
+            else if (projectView.SelectedPage == projectDisassemblyViewPage)
+            {
+                App.AsyncInvoke(() => projectDisassemblyView.Reload());
+            }
         }
         protected void CreateMenuAndToolbar()
         {
@@ -602,9 +637,7 @@ namespace Stratis.DevEx.Gui
         protected Dictionary<string, DateTime> projectControlFlowViewLastUpdated = new Dictionary<string, DateTime>();
 
         protected Dictionary<string, SmartContractSourceEmitterOutput?> disassembly = new Dictionary<string, SmartContractSourceEmitterOutput?>();
-        protected Dictionary<string, Stack<ControlFlowGraphMessage>> controlFlowGraphUpdateMessages = new Dictionary<string, Stack<ControlFlowGraphMessage>>(); 
-        
-        
+        protected long lastCompilationMessageIdRead = 0; 
         #endregion
     }
 }

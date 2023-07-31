@@ -44,6 +44,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
             this.scsourceEmitterOutput = sourceEmitterOutput;
             if (classPattern is not null) this.classPattern = new Regex(classPattern, RegexOptions.Singleline | RegexOptions.Compiled);
             if (methodPattern is not null) this.methodPattern = new Regex(methodPattern, RegexOptions.Singleline | RegexOptions.Compiled);
+            
         }
         #endregion
 
@@ -66,17 +67,19 @@ namespace Stratis.DevEx.CodeAnalysis.IL
             }
             else
             {
-                Runtime.Debug(Environment.NewLine + "Traversing class {0}...", namespaceTypeDefinition.GetName());
+                Runtime.Debug("Traversing class {0}...", namespaceTypeDefinition.GetName());
                 scsourceEmitterOutput.SetCurrentClass(namespaceTypeDefinition.GetName());
                 base.TraverseChildren(namespaceTypeDefinition);
             }
         }
 
+        
+
         public override void TraverseChildren(IMethodDefinition method)
         {
             if (methodPattern is not null && methodPattern.IsMatch(method.Name.Value))
             {
-                Runtime.Debug(Environment.NewLine + "Traversing method {0} that matches pattern {1}...", method.Name.Value, methodPattern);
+                Runtime.Debug("Traversing method {0} that matches pattern {1}...", method.Name.Value, methodPattern);
                 base.TraverseChildren(method);
             }
             else if (methodPattern is not null && !methodPattern.IsMatch(method.Name.Value))
@@ -86,7 +89,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
             }
             else
             {
-                Runtime.Debug(Environment.NewLine + "Traversing method {0}...", method.Name.Value);
+                Runtime.Debug("Traversing method {0}...", method.Name.Value);
                 base.TraverseChildren(method);
             }
         }
@@ -95,7 +98,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
         {
             if (methodPattern is not null && methodPattern.IsMatch(prop.Name.Value))
             {
-                Runtime.Debug(Environment.NewLine + "Traversing property {0} that matches pattern {1}...", prop.Name.Value, methodPattern);
+                Runtime.Debug("Traversing property {0} that matches pattern {1}...", prop.Name.Value, methodPattern);
                 base.TraverseChildren(prop);
             }
             else if (methodPattern is not null && !methodPattern.IsMatch(prop.Name.Value))
@@ -105,7 +108,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
             }
             else
             {
-                Runtime.Debug(Environment.NewLine + "Traversing property {0}...", prop.Name.Value);
+                Runtime.Debug("Traversing property {0}...", prop.Name.Value);
                 base.TraverseChildren(prop);
 
             }
@@ -160,6 +163,16 @@ namespace Stratis.DevEx.CodeAnalysis.IL
                 PrintTotalGasCost(gasCost);
             }
             PrintToken(CSharpToken.RightCurly);
+        }
+
+        public override void PrintTypeDefinitionLeftCurly(ITypeDefinition typeDefinition)
+        {
+            this.PrintToken(CSharpToken.LeftCurly);
+        }
+
+        public override void PrintTypeDefinitionRightCurly(ITypeDefinition typeDefinition)
+        {
+            this.PrintToken(CSharpToken.RightCurly);
         }
         #endregion
 
@@ -600,4 +613,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
         Regex? methodPattern;
         #endregion
     }
+
+
+    
 }

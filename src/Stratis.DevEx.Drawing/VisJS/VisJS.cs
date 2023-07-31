@@ -47,17 +47,19 @@ namespace Stratis.DevEx.Drawing
                     var physics = new NetworkPhysics()
                     {
                         
+                        Enabled = true,
                         HierarchicalRepulsion = new NetworkHierarchicalRepulsion()
                         {
                             AvoidOverlap = 2.0,
                             NodeDistance = 250,
-                        }
+                        },
+                        TimeStep = 0.5
                         
                     };
                     var edgesOptions = new NetworkEdgesOptions()
                     {
                         Arrows = new NetworkEdgeArrows() { To = new NetworkEdgeTo() { Enabled = true } },
-                        Smooth = new NetworkSmooth() { Enabled = true }
+                        Smooth = new NetworkSmooth() { Enabled = true, Type = "continuous" }
                     };
                     var interaction = new NetworkInteraction()
                     {
@@ -67,6 +69,13 @@ namespace Stratis.DevEx.Drawing
                     options.Physics = physics;
                     options.Edges = edgesOptions;
                     options.Interaction = interaction;
+                    options.Nodes = new NetworkNodeOptions()
+                    {
+                        ShapeProperties = new NetworkShapeProperties()
+                        {
+                            Interpolation = false
+                        }
+                    };
                     nodeshape = "box";
                     nodesize = 300;
                     break;
@@ -93,11 +102,15 @@ namespace Stratis.DevEx.Drawing
                                 "cfg" => GetCFGNodeColor(node),
                                 _ => null
                             },
-                    Mass = node.Kind switch {
-                        "entry" => 1,
-                        "block" => 2,
-                        "branch" => 5,
-                        _ => null
+                    Mass = graph.Kind switch {
+                        "cg" => 2,
+                        "cfg" => node.Kind switch { 
+                            "entry" => 1,
+                            "block" => 2,
+                            "branch" => 3,
+                            _ => null
+                        },
+                        _ => 4
                     }
                 }); 
             }

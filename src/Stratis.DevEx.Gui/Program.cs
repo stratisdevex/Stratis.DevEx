@@ -42,7 +42,7 @@ namespace Stratis.DevEx.Gui
                 GuiApp = new GuiApp(Eto.Platform.Detect);
                 GuiApp.Initialized += (sender, e) => GuiApp.InvokeAsync(async () => await PipeServer.StartAsync());
                 GuiApp.Terminating += (sender, e) => Shutdown();
-                PipeServer.MessageReceived += (sender, e) => GuiApp.AsyncInvoke(() => ReadMessage(e.Message, GuiApp.ReadMessage, GuiApp.ReadMessage, GuiApp.ReadMessage));
+                PipeServer.MessageReceived += (sender, e) => GuiApp.AsyncInvoke(() => ReadMessage(e.Message));
                 WriteRunFile();
                 GuiApp.Run(new MainForm());
             }
@@ -78,18 +78,21 @@ namespace Stratis.DevEx.Gui
                 case MessageType.COMPILATION:
                     var cm = MessageUtils.Deserialize<CompilationMessage>(m.MessageBytes);
                     Info("Compilation message received: \n{msg}", MessageUtils.PrettyPrint(cm));
+                    CompilationMessages.Push(cm);
                     cma?.Invoke(cm);
                     break;
 
                 case MessageType.CONTROL_FLOW_GRAPH:
                     var cfgm = MessageUtils.Deserialize<ControlFlowGraphMessage>(m.MessageBytes);
                     Info("Control-flow message received: \n{msg}", MessageUtils.PrettyPrint(cfgm));
+                    ControlFlowGraphMessages.Push(cfgm);
                     cfgma?.Invoke(cfgm);
                     break;
 
                 case MessageType.SUMMARY:
                     var sm = MessageUtils.Deserialize<SummaryMessage>(m.MessageBytes);
                     Info("Summary message received: \n{msg}", MessageUtils.PrettyPrint(sm));
+                    SummaryMessages.Push(sm);
                     sma?.Invoke(sm);
                     break;
             }
@@ -114,27 +117,12 @@ namespace Stratis.DevEx.Gui
             graph.Kind = "cfg";
             foreach (var node in m.Nodes)
             {
-                if (graph.FindNode(node.Id) is null)
-                {
-                    graph.AddNode(new Node(node.Id) { LabelText = node.Label, Kind = node.Kind });
-                }
+                graph.AddNode(new Node(node.Id) { LabelText = node.Label, Kind = node.Kind });
+                
             }
             foreach (var edge in m.Edges)
             {
-                if (graph.FindNode(edge.SourceId) is null)
-                {
-                    Error("Source node {s} of edge does not exist in graph.", edge.SourceId);
-                    continue;
-                }
-                else if (graph.FindNode(edge.TargetId) is null)
-                {
-                    Error("Target node {t} of edge does not exist in graph.", edge.TargetId);
-                    continue;
-                }
-                else
-                {
-                    graph.AddEdge(edge.SourceId, edge.Label, edge.TargetId);
-                }
+                graph.AddEdge(edge.SourceId, edge.Label, edge.TargetId);   
             }
             return graph;
         }
@@ -187,6 +175,10 @@ namespace Stratis.DevEx.Gui
         public static PipeServer<MessagePack>? PipeServer { get; private set; }
 
         public static DirectoryInfo assemblyCacheDir = new DirectoryInfo(Path.Combine(Runtime.StratisDevDir, "asmcache"));
+
+        public static Stack<CompilationMessage> CompilationMessages { get; private set; } = new Stack<CompilationMessage>();
+        public static Stack<SummaryMessage> SummaryMessages { get; private set; } = new Stack<SummaryMessage>();
+        public static Stack<ControlFlowGraphMessage> ControlFlowGraphMessages { get; private set; } = new Stack<ControlFlowGraphMessage>();
         #endregion
     }
 }

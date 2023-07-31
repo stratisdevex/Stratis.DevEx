@@ -24,6 +24,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
     {
         public static void Run(string fileName, SmartContractSourceEmitterOutput output, bool noIL = false, string? classPattern = null, string? methodPattern = null)
         {
+            var op = Begin("Disassembling {file}", fileName);
             using var host = new PeReader.DefaultHost();
             IModule? module = host.LoadUnitFrom(FailIfFileNotFound(fileName)) as IModule;
             if (module is null || module is Dummy)
@@ -61,7 +62,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
             module = Decompiler.GetCodeModelFromMetadataModel(host, module, pdbReader, options);
             var sourceEmitter = new SmartContractSourceEmitter(output, host, pdbReader, true, noIL, classPattern, methodPattern);
             sourceEmitter.Traverse(module);
-
+            op.Complete();
         }
     }
 }
