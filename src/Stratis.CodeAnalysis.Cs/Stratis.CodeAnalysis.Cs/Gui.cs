@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Msagl.Drawing;
@@ -77,49 +77,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
         
-        public static void SendGuiMessage(Compilation c, PipeClient<MessagePack> pipeClient)
-        {
-            if (!GuiProcessRunning())
-            {
-                Runtime.Error("Did not detect GUI process running, not sending message.");
-                return;
-            }
-
-            using (var op = Runtime.Begin("Sending compilation message"))
-            {
-                try
-                {
-                    var m = new CompilationMessage()
-                    {
-                        CompilationId = c.GetHashCode(),
-                        EditorEntryAssembly = Runtime.EntryAssembly?.FullName ?? "(none)",
-                        AssemblyName = c.AssemblyName,
-                        Documents = c.SyntaxTrees.Select(st => st.FilePath).ToArray()
-                    };
-                    if (GuiProcessRunning() && !pipeClient.IsConnected)
-                    {
-                        Runtime.Debug("Pipe client disconnected, attempting to reconnect...");
-                        pipeClient.ConnectAsync().Wait();
-                    }
-                    if (GuiProcessRunning() && pipeClient.IsConnected)
-                    {
-                        var mp = MessageUtils.Pack(m);
-                        pipeClient.WriteAsync(mp).Wait();
-                        op.Complete();
-                    }
-                    else
-                    {
-                        op.Abandon();
-                        Runtime.Error("GUI is not running or pipe client disconnected. Error sending compilation message to GUI.");
-                    }
-                }
-                catch (Exception e)
-                {
-                    op.Abandon();
-                    Runtime.Error(e, "Error sending compilation message to GUI.");
-                }
-            }
-        }
+       
 
         public static void SendGuiMessage(string cfgfile, Compilation c, string document, Graph graph, PipeClient<MessagePack> pipeClient)
         {
@@ -272,18 +230,37 @@ namespace Stratis.CodeAnalysis.Cs
                 Error("Did not detect GUI process running, not sending message.");
                 return;
             }
-            using (var op = Runtime.Begin("Sending compilation message"))
+            using (var op = Begin("Sending compilation message"))
             {
                 try
                 {
                     MemoryStream asm = new MemoryStream();
                     MemoryStream pdb = new MemoryStream();
-                    var r = c.Emit(asm, pdb);
+                    
+                    var r = c.Emit(asm, pdb, options: new Microsoft.CodeAnalysis.Emit.EmitOptions(
+                        defaultSourceFileEncoding: Encoding.UTF8, 
+                        fallbackSourceFileEncoding: Encoding.UTF8,
+                        debugInformationFormat: Microsoft.CodeAnalysis.Emit.DebugInformationFormat.PortablePdb
+                    ));
                     if (!r.Success)
                     {
-                        Error("Error emitting assembly: {err}", r.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Select(d => d.Descriptor.Description));
-                        op.Abandon();
-                        return;
+                        foreach (var tree in c.SyntaxTrees)
+                        {
+                            var encoded = CSharpSyntaxTree.Create(tree.GetRoot() as CSharpSyntaxNode,
+                                new CSharpParseOptions().WithLanguageVersion(LanguageVersion.CSharp8), tree.FilePath, Encoding.UTF8).GetRoot();
+                            c = c.ReplaceSyntaxTree(tree, encoded.SyntaxTree);
+                        }
+                        r = c.Emit(asm, pdb, options: new Microsoft.CodeAnalysis.Emit.EmitOptions(
+                            defaultSourceFileEncoding: Encoding.UTF8,
+                            fallbackSourceFileEncoding: Encoding.UTF8,
+                            debugInformationFormat: Microsoft.CodeAnalysis.Emit.DebugInformationFormat.PortablePdb
+                        ));
+                        if (!r.Success)
+                        {
+                            Error("Error emitting assembly: {err}", r.Diagnostics.Select(d => d.ToString()).JoinWithSpaces());
+                            op.Abandon();
+                            return;
+                        }
                     }
                     var m = new CompilationMessage()
                     {

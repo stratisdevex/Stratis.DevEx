@@ -192,7 +192,6 @@ namespace Stratis.DevEx.Gui
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
-            projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, Array.Empty<string>());
             var project = new TreeItem()
             {
                 Key = projectid,
@@ -219,6 +218,12 @@ namespace Stratis.DevEx.Gui
             }
 
             Projects.Children.Add(project);
+            var dis = GetDisassembly(projectid, Array.Empty<string>());
+            if (dis is not null && !string.IsNullOrEmpty(dis.Data))
+            {
+                disassembly[projectid] = dis;
+                projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(dis.Data);
+            }
         }
 
         protected void UpdateProjectDocsTree(CompilationMessage m)
@@ -226,7 +231,6 @@ namespace Stratis.DevEx.Gui
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
-            projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(GetDisassembly(projectid, Array.Empty<string>()));
 
             foreach (var d in m.Documents)
             {
@@ -241,6 +245,18 @@ namespace Stratis.DevEx.Gui
                     };
                     project.Children.Add(c);
                 }
+
+                var dis = GetDisassembly(projectid, Array.Empty<string>());
+                if (dis is not null && !string.IsNullOrEmpty(dis.Data))
+                {
+                    disassembly[projectid] = dis;
+                    projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(dis.Data);
+                }
+                else
+                {
+                    disassembly[projectid] = null;
+                    projectViews[projectid + "_" + "Disassembly"] = htmlplaceholder;
+                }
             }
             List<ITreeItem> toremove = new List<ITreeItem>();
             foreach (var c in project.Children)
@@ -253,7 +269,7 @@ namespace Stratis.DevEx.Gui
             foreach(var c in toremove)
             {
                 project.Children.Remove(c);
-            }
+            }    
         }
 
         protected void AddProjectToTree(SummaryMessage m)
@@ -271,7 +287,19 @@ namespace Stratis.DevEx.Gui
             projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
             projectViews.Add(docid + "_" + "Summary", Html.DrawSummary(m.Summary));
             projectViews.Add(docid + "_" + "CallGraph", Html.DrawCallGraph(cg));
-            projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, m.ClassNames);
+            if (disassembly.ContainsKey(projectid) && disassembly[projectid] is not null)
+            {
+                string cdishtml = "";
+                foreach (var c in m.ClassNames)
+                {
+                    if (disassembly[projectid]!.classOutput.ContainsKey(c))
+                    {
+                        cdishtml = cdishtml + Html.DrawDisassembly(disassembly[projectid]!.classOutput[c].ToString() + Environment.NewLine);
+                    }
+                }
+                projectViews[docid + "_" + "Disassembly"] = cdishtml;
+            }
+            
             var child = new TreeItem(doc)
             {
                 Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
@@ -296,7 +324,18 @@ namespace Stratis.DevEx.Gui
             Graph cg = Program.CreateCallGraph(m.Implements, m.Invocations);
             projectViews[docid + "_" + "Summary"] = Html.DrawSummary(m.Summary);
             projectViews[docid + "_" + "CallGraph"] = Html.DrawCallGraph(cg);
-            projectViews[projectid + "_" + "Disassembly"] = GetDisassembly(projectid, m.ClassNames);
+            if (disassembly.ContainsKey(projectid) && disassembly[projectid] is not null)
+            {
+                string cdishtml = "";
+                foreach (var c in m.ClassNames)
+                {
+                    if (disassembly[projectid]!.classOutput.ContainsKey(c))
+                    {
+                        cdishtml = cdishtml + Html.DrawDisassembly(disassembly[projectid]!.classOutput[c].ToString() + Environment.NewLine);
+                    }
+                }
+                projectViews[docid + "_" + "Disassembly"] = cdishtml;
+            }
             if (project.Children.Any(c => c.Key == docid))
             {
                 Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
@@ -393,19 +432,19 @@ namespace Stratis.DevEx.Gui
             //projectView.SelectedPage = projectSummaryViewPage;
         }
 
-        protected string GetDisassembly(string projectid, string[] classNames)
+        protected SmartContractSourceEmitterOutput? GetDisassembly(string projectid, string[] classNames)
         {
             var asm = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".dll");
             var pdb = Path.Combine(Program.assemblyCacheDir.FullName, projectid + ".pdb");
             if (!File.Exists(asm) || !File.Exists(pdb))
             {
                 Debug("Could not find assembly file {asm}.", asm);
-                return htmlplaceholder;
+                return null;
             }
             else if (!File.Exists(pdb))
             {
                 Debug("Could not find PDB file {pdb}.", pdb);
-                return htmlplaceholder;
+                return null;
             }
             else
             {
@@ -413,12 +452,12 @@ namespace Stratis.DevEx.Gui
                 {
                     var output = new SmartContractSourceEmitterOutput();
                     Disassembler.Run(asm, output);
-                    return Html.DrawDisassembly(output.Data);
+                    return output;
                 }
                 catch (Exception e)
                 {
                     Error(e, "Exception thrown during disassembly of {asm}.", asm);
-                    return htmlplaceholder;
+                    return null;
                 }
             }
         }
@@ -562,7 +601,10 @@ namespace Stratis.DevEx.Gui
         internal Dictionary<string, object> projectViews;
         protected Dictionary<string, DateTime> projectControlFlowViewLastUpdated = new Dictionary<string, DateTime>();
 
+        protected Dictionary<string, SmartContractSourceEmitterOutput?> disassembly = new Dictionary<string, SmartContractSourceEmitterOutput?>();
         protected Dictionary<string, Stack<ControlFlowGraphMessage>> controlFlowGraphUpdateMessages = new Dictionary<string, Stack<ControlFlowGraphMessage>>(); 
+        
+        
         #endregion
     }
 }

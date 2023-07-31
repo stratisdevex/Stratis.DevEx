@@ -14,7 +14,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
         #endregion
 
         #region Fields
-        protected Dictionary<string, StringBuilder> classOutput = new Dictionary<string, StringBuilder>();
+        public Dictionary<string, StringBuilder> classOutput = new Dictionary<string, StringBuilder>();
         public string currentClass = "";
 
         #endregion

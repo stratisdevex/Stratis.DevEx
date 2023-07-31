@@ -54,7 +54,7 @@
                     pipeClient.Dispose();
                 }
             });
-
+            
             context.RegisterCompilationStartAction(ctx =>
             {
                 Debug("Compilation start...");
