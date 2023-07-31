@@ -122,6 +122,8 @@ namespace Stratis.DevEx.Gui
             }
             foreach (var edge in m.Edges)
             {
+                graph.FindNode(edge.SourceId).edgeSourceCount++;
+                graph.FindNode(edge.TargetId).edgeTargetCount++;
                 graph.AddEdge(edge.SourceId, edge.Label, edge.TargetId);   
             }
             return graph;
@@ -138,7 +140,7 @@ namespace Stratis.DevEx.Gui
                 {
                     var node = new Node(nid);
                     var s = (string)m["signature"];
-                    node.LabelText = nid + s.Replace(",", ",\n");
+                    node.LabelText = nid.Replace(",", ",\n");
                     if (nid.Contains("::.ctor"))
                     {
                         node.Attr.FillColor = Color.LightYellow;
@@ -164,6 +166,9 @@ namespace Stratis.DevEx.Gui
             }
             foreach(var i in invocations)
             {
+                graph.FindNode((string)i["method"]).edgeSourceCount++;
+                var x = graph.FindNode((string)i["name"]);
+                if (x is not null) x.edgeTargetCount++;
                 graph.AddEdge((string)i["method"], (string)i["name"]);
             }
             return graph;

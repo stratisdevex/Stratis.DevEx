@@ -169,8 +169,7 @@ namespace Stratis.DevEx.Gui
             if (projects.Children.Any(c => c.Key == projectid))
             {
                 Debug("Project {proj} already exists in tree, updating...", projectid);
-                UpdateProjectDocsTree(m);
-                
+                UpdateProjectDocsTree(m); 
             }
             else
             {
@@ -178,6 +177,7 @@ namespace Stratis.DevEx.Gui
                 AddProjectToTree(m);
             }
             navigation.RefreshItem(projects);
+            App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"]));
         }
 
         public void ReadMessage(SummaryMessage m)
@@ -203,9 +203,8 @@ namespace Stratis.DevEx.Gui
                 Debug("Project {proj} does not exists in tree, adding...", projectid);
                 AddProjectToTree(m);
             }
-            
-            App.AsyncInvoke(() => LoadProjectOrDocView(docid));
             navigation.RefreshItem(projects);
+            App.AsyncInvoke(() => LoadProjectOrDocView(docid));
         }
 
         protected void AddProjectToTree(CompilationMessage m)
@@ -247,6 +246,11 @@ namespace Stratis.DevEx.Gui
                 projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(dis.Data);
                 Info("Set disassembly for project {id} to HTML string of length {len} bytes.", projectid, dis.Data.Length);
             }
+            else
+            {
+                disassembly[projectid] = null;
+                Info("Disassembly for project {id} failed.", projectid);
+            }
         }
 
         protected void UpdateProjectDocsTree(CompilationMessage m)
@@ -265,7 +269,6 @@ namespace Stratis.DevEx.Gui
             else
             {
                 disassembly[projectid] = null;
-                projectViews[projectid + "_" + "Disassembly"] = htmlplaceholder;
                 Info("Disassembly for project {id} failed.", projectid);
             }
             /*
@@ -283,7 +286,6 @@ namespace Stratis.DevEx.Gui
                     project.Children.Add(c);
                 }
             }
-           
             */
             List<ITreeItem> toremove = new List<ITreeItem>();
             foreach (var c in project.Children)
@@ -395,8 +397,6 @@ namespace Stratis.DevEx.Gui
             var projectid = m.EditorEntryAssembly + "_" + m.AssemblyName;
             var projectDir = Path.GetDirectoryName(m.ConfigFile)!;
             var docid = projectid + "_" + m.Document;
-            var cfg = Program.CreateGraph(m);
-
             var doc = new TreeItem()
             {
                 Key = docid,
@@ -404,7 +404,17 @@ namespace Stratis.DevEx.Gui
                 Image = CSharp
             };
             projectViews.Add(projectid, @"<html><head><title>Control Flow</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
-            projectViews.Add(docid + "_" + "ControlFlow", Html.DrawControlFlowGraph(cfg));
+            var cfg = Program.CreateGraph(m);
+            var html = Html.DrawControlFlowGraph(cfg);
+            if (!string.IsNullOrEmpty(html))
+            {
+                projectViews[docid + "_" + "ControlFlow"] = html;
+                Info("Set control-flow graph for document {id} to HTML string of length {len} bytes.", docid, html.Length);
+            }
+            else
+            {
+                Error("Failed to create control-flow graph for document {doc}.", docid);
+            }
             var child = new TreeItem(doc)
             {
                 Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
@@ -418,7 +428,6 @@ namespace Stratis.DevEx.Gui
                 },
             };
             Projects.Children.Add(child);
-            App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"]));
         }
 
         protected void UpdateProjectDocsTree(ControlFlowGraphMessage m)
@@ -428,7 +437,17 @@ namespace Stratis.DevEx.Gui
             var docid = projectid + "_" + m.Document;
             var project = (TreeItem)Projects.Children.First(c => c.Key == projectid);
             var cfg = Program.CreateGraph(m);
-            projectViews[docid + "_" + "ControlFlow"] = Html.DrawControlFlowGraph(cfg);
+            var html = Html.DrawControlFlowGraph(cfg);
+            if (!string.IsNullOrEmpty(html))
+            {
+                projectViews[docid + "_" + "ControlFlow"] = html;
+                Info("Set control-flow graph for document {id} to HTML string of length {len} bytes.", docid, html.Length);
+            }
+            else
+            {
+                Error("Failed to create control-flow graph for document {doc}.", docid);
+            }
+            
             if (project.Children.Any(c => c.Key == docid))
             {
                 Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
@@ -444,7 +463,7 @@ namespace Stratis.DevEx.Gui
                 };
                 project.Children.Add(doc);
             }
-            App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"]));
+            //App.AsyncInvoke(() => projectControlFlowView.LoadHtml((string)projectViews[docid + "_" + "ControlFlow"]));
         }
 
         protected void showProjectView() => splitter.Panel2 = projectView;
@@ -456,10 +475,13 @@ namespace Stratis.DevEx.Gui
             var key = id + "_" + component;
             if (projectViews.ContainsKey(key))
             {
-                return (string)projectViews[key];
+                var v = (string)projectViews[key];
+                Info("Key {key} in projectViews dictionary has length {len}.", key, v.Length);
+                return v;
             }
             else
             {
+                Error("Key {key} is not present in projectViews dictionary.", key);
                 return @"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>";
             }
         }

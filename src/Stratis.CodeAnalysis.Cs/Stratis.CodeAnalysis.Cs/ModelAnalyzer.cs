@@ -85,7 +85,6 @@ namespace Stratis.CodeAnalysis.Cs
                     if (method.ContainingNamespace != null && !string.IsNullOrEmpty(method.ContainingNamespace.Name))
                         methoddata["name"] = method.ContainingNamespace.Name + "." + method.MetadataName;
                     methoddata["name"] = className + "::" + (string)methoddata["name"];
-                    
                     paramBuilder.Clear();
                     paramBuilder.Append("(");
                     foreach (var p in method.Parameters)
@@ -98,6 +97,7 @@ namespace Stratis.CodeAnalysis.Cs
                         paramBuilder.Remove(paramBuilder.Length - 1, 1);
                     }
                     paramBuilder.Append(")");
+                    methoddata["name"] += paramBuilder.ToString();
                     methoddata["signature"] = paramBuilder.ToString();
                     
                     methoddata["location"] = c.GetLocation().ToString();
@@ -110,18 +110,29 @@ namespace Stratis.CodeAnalysis.Cs
                     //For each invocation within our method, collect information
                     foreach (var invocation in invocations)
                     {
-                        var invokedSymbol = model.GetSymbolInfo(invocation).Symbol;
+                        var invokedSymbol = model.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
 
-                        if (invokedSymbol == null)
-                            continue;
+                        if (invokedSymbol == null) continue;
 
-                        var n = invokedSymbol.ContainingSymbol.Name + "::" + invokedSymbol.MetadataName;
-                        
+                        var n = invokedSymbol.ContainingSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat) + "::" + invokedSymbol.MetadataName;
+                        paramBuilder.Clear();
+                        paramBuilder.Append("(");
+                        foreach (var p in invokedSymbol.Parameters)
+                        {
+                            paramBuilder.AppendFormat("{0} {1}", p.Type.Name, p.Name);
+                            paramBuilder.Append(",");
+                        }
+                        if (invokedSymbol.Parameters.Count() > 0)
+                        {
+                            paramBuilder.Remove(paramBuilder.Length - 1, 1);
+                        }
+                        paramBuilder.Append(")");
+                        n += paramBuilder.ToString();
                         if (invocationList.Any(i => (string)i["method"] == (string)methoddata["name"] && (string)i["name"] == n))
                             continue;
                         
                         var invocationInfo = new Dictionary<string, object>();
-                        invocationInfo["name"] = invokedSymbol.ContainingSymbol.Name + "::" + invokedSymbol.MetadataName;
+                        invocationInfo["name"] = n;
                         
                         //if (method.ContainingNamespace != null && !string.IsNullOrEmpty(method.ContainingNamespace.Name))
                         //    invocationInfo["name"] = invokedSymbol.ContainingNamespace.Name + "." + invokedSymbol.MetadataName;
@@ -130,6 +141,14 @@ namespace Stratis.CodeAnalysis.Cs
                         invocationInfo["method"] = methoddata["name"];
 
                         invocationList.Add(invocationInfo);
+                        if (!implementsList.Any(m => (string) m["name"] == n))
+                        {
+                            var i = new Dictionary<string, object>();
+                            i["name"] = n;
+                            i["class"] = invokedSymbol.ContainingSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+                            i["signature"] = paramBuilder.ToString();
+                            implementsList.Add(i);
+                        }
                     }
 
                     //For each object creation within our method, collect information

@@ -68,16 +68,16 @@ namespace Stratis.CodeAnalysis.Cs
                 {
                     var bb = cfg.Blocks[j];
                     if (bb.Kind == BasicBlockKind.Exit) continue;
-                    var node = CreateNodeFromBasicBlock(bb, method.Identifier, method.Type, graph);
-                    if (bb.ConditionalSuccessor is not null && bb.ConditionalSuccessor.Destination.Kind != BasicBlockKind.Exit)
+                    var node = CreateNodeFromBasicBlock(bb, null, method.Identifier, method.Type, graph);
+                    if (bb.ConditionalSuccessor is not null)
                     {
-                        var csnode = CreateNodeFromBasicBlock(bb.ConditionalSuccessor.Destination, method.Identifier, method.Type, graph);
+                        var csnode = CreateNodeFromBasicBlock(bb.ConditionalSuccessor.Destination, bb, method.Identifier, method.Type, graph);
                         graph.AddEdge(node.Id, csnode.Id);
                     }
 
                     if (bb.FallThroughSuccessor is not null && bb.FallThroughSuccessor.Destination.Kind != BasicBlockKind.Exit)
                     {
-                        var ftnode = CreateNodeFromBasicBlock(bb.FallThroughSuccessor.Destination, method.Identifier, method.Type, graph);
+                        var ftnode = CreateNodeFromBasicBlock(bb.FallThroughSuccessor.Destination, bb, method.Identifier, method.Type, graph);
                         graph.AddEdge(node.Id, ftnode.Id);
                     }
                 }
@@ -93,7 +93,7 @@ namespace Stratis.CodeAnalysis.Cs
             }
         }
 
-        protected static Node CreateNodeFromBasicBlock(BasicBlock bb, string methodIdentifier, string methodType, Graph graph)
+        protected static Node CreateNodeFromBasicBlock(BasicBlock bb, BasicBlock pred, string methodIdentifier, string methodType, Graph graph)
         {
             var nid = methodIdentifier + "::" + methodType + "_" + bb.Ordinal.ToString();
             var node = graph.FindNode(nid);
@@ -103,7 +103,7 @@ namespace Stratis.CodeAnalysis.Cs
                 var src = bb.Operations.Select(o => o?.Syntax.ToString() ?? "").JoinWith(Environment.NewLine) + Environment.NewLine + (bb.BranchValue?.Syntax.ToString() ?? "");
                 node.LabelText =
                     bb.Kind == BasicBlockKind.Entry ? methodIdentifier + "::" + methodType + Environment.NewLine + src : src;
-                node.Kind = bb.Kind == BasicBlockKind.Entry ? "entry" : bb.BranchValue is not null && bb.ConditionalSuccessor is not null && bb.ConditionKind != ControlFlowConditionKind.None  ? "branch" : "block";
+                node.Kind = bb.Kind == BasicBlockKind.Entry ? "entry" : bb.BranchValue is not null && bb.ConditionalSuccessor is not null && bb.FallThroughSuccessor is not null && bb.ConditionKind != ControlFlowConditionKind.None  ? "branch" : "block";
                 graph.AddNode(node);
             }
             return node;
