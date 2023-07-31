@@ -34,24 +34,31 @@
             attrCount = 0;
             context.RegisterCompilationAction(ctx =>
             {
-                Debug("Compilation end.");
-                var cfg = CreateDefaultAnalyzerConfig();
-                string cfgFile = "";
-                if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path.EndsWith("stratisdev.cfg")))
-                {
-                    cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path.EndsWith("stratisdev.cfg")).Path;
-                    cfg = Runtime.LoadConfig(cfgFile);
-                    cfg["General"]["ConfigFile"].SetValue(cfgFile);
-                }
-                if (!cfg["Analyzer"]["Enabled"].GetValueOrDefault(true))
-                {
-                    return;
-                }
                 if (!ctx.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+                { 
+                    Debug("Compilation end.");
+                    var cfg = CreateDefaultAnalyzerConfig();
+                    string cfgFile = "";
+                    if (ctx.Options.AdditionalFiles != null && ctx.Options.AdditionalFiles.Any(f => f.Path.EndsWith("stratisdev.cfg")))
+                    {
+                        cfgFile = ctx.Options.AdditionalFiles.First(f => f.Path.EndsWith("stratisdev.cfg")).Path;
+                        cfg = Runtime.LoadConfig(cfgFile);
+                        cfg["General"]["ConfigFile"].SetValue(cfgFile);
+                    }
+                    if (!cfg["Analyzer"]["Enabled"].GetValueOrDefault(true))
+                    {
+                        return;
+                    }
+                    if (!ctx.Compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+                    {
+                        var pipeClient = Gui.CreatePipeClient();
+                        Gui.SendCompilationMessage(cfgFile, ctx.Compilation, pipeClient);
+                        pipeClient.Dispose();
+                    }
+                }
+                else
                 {
-                    var pipeClient = Gui.CreatePipeClient();
-                    Gui.SendCompilationMessage(ctx.Compilation, pipeClient);
-                    pipeClient.Dispose();
+                    Debug("Compilation has errors, not sending end-of-compilation message.");
                 }
             });
             

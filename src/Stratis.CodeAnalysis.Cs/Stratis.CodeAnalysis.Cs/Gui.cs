@@ -223,7 +223,7 @@ namespace Stratis.CodeAnalysis.Cs
 
         }
 
-        public static void SendCompilationMessage(Compilation c, PipeClient<MessagePack> pipeClient)
+        public static void SendCompilationMessage(string cfgfile, Compilation c, PipeClient<MessagePack> pipeClient)
         {
             if (!GuiProcessRunning())
             {
@@ -247,8 +247,8 @@ namespace Stratis.CodeAnalysis.Cs
                         foreach (var tree in c.SyntaxTrees)
                         {
                             var encoded = CSharpSyntaxTree.Create(tree.GetRoot() as CSharpSyntaxNode,
-                                new CSharpParseOptions().WithLanguageVersion(LanguageVersion.CSharp8), tree.FilePath, Encoding.UTF8).GetRoot();
-                            c = c.ReplaceSyntaxTree(tree, encoded.SyntaxTree);
+                                new CSharpParseOptions().WithLanguageVersion(LanguageVersion.CSharp8), tree.FilePath, Encoding.UTF8);
+                            c = c.ReplaceSyntaxTree(tree, encoded);
                         }
                         r = c.Emit(asm, pdb, options: new Microsoft.CodeAnalysis.Emit.EmitOptions(
                             defaultSourceFileEncoding: Encoding.UTF8,
@@ -264,10 +264,11 @@ namespace Stratis.CodeAnalysis.Cs
                     }
                     var m = new CompilationMessage()
                     {
+                        ConfigFile = cfgfile,
                         CompilationId = c.GetHashCode(),
                         EditorEntryAssembly = Runtime.EntryAssembly?.FullName ?? "(none)",
                         AssemblyName = c.AssemblyName,
-                        Documents = c.SyntaxTrees.Select(st => st.FilePath).ToArray(),
+                        Documents = c.SyntaxTrees.Where(st => !(st.FilePath.EndsWith("AssemblyInfo.cs") || st.FilePath.EndsWith("AssemblyAttributes.cs"))).Select(st => st.FilePath).ToArray(),
                         Assembly = asm.ToArray(),
                         Pdb = pdb.ToArray()
                     };
