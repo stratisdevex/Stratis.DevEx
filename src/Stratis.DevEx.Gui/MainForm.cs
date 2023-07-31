@@ -51,21 +51,25 @@ namespace Stratis.DevEx.Gui
                 {"About",  @"<html><head><title>About</title></head><body><h1>About</h1></body></html>"}
             };
             projectSummaryView = new WebView();
+            projectSummaryView.BrowserContextMenuEnabled = true;
             projectSummaryViewPage = new TabPage(projectSummaryView)
             {
                 Text = "Summary"
             };
             projectControlFlowView = new WebView();
+            projectControlFlowView.BrowserContextMenuEnabled = true;
             projectControlFlowViewPage = new TabPage(projectControlFlowView)
             {
                 Text = "Control Flow",
             };
             projectCallGraphView = new WebView();
+            projectCallGraphView.BrowserContextMenuEnabled = true;
             projectCallGraphViewPage = new TabPage(projectCallGraphView)
             {
                 Text = "Call Graph",
             };
             projectDisassemblyView = new WebView();
+            projectDisassemblyView.BrowserContextMenuEnabled = true;
             projectDisassemblyViewPage = new TabPage(projectDisassemblyView)
             {
                 Text = "Disassembly"
@@ -241,6 +245,7 @@ namespace Stratis.DevEx.Gui
             {
                 disassembly[projectid] = dis;
                 projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(dis.Data);
+                Info("Set disassembly for project {id} to HTML string of length {len} bytes.", projectid, dis.Data.Length);
             }
         }
 
@@ -255,11 +260,13 @@ namespace Stratis.DevEx.Gui
             {
                 disassembly[projectid] = dis;
                 projectViews[projectid + "_" + "Disassembly"] = Html.DrawDisassembly(dis.Data);
+                Info("Set disassembly for project {id} to HTML string of length {len} bytes.", projectid, dis.Data.Length);
             }
             else
             {
                 disassembly[projectid] = null;
                 projectViews[projectid + "_" + "Disassembly"] = htmlplaceholder;
+                Info("Disassembly for project {id} failed.", projectid);
             }
             /*
             foreach (var d in m.Documents)
@@ -318,8 +325,13 @@ namespace Stratis.DevEx.Gui
                     }
                 }
                 projectViews[docid + "_" + "Disassembly"] = cdishtml;
+                Info("Set disassembly for document {id} to HTML string of length {len} bytes.", docid, cdishtml.Length);
             }
-            
+            else
+            {
+                Error("Disassembly of document {id} failed.", docid);
+            }
+
             var child = new TreeItem(doc)
             {
                 Key = m.EditorEntryAssembly + "_" + m.AssemblyName,
@@ -355,7 +367,13 @@ namespace Stratis.DevEx.Gui
                     }
                 }
                 projectViews[docid + "_" + "Disassembly"] = cdishtml;
+                Info("Set disassembly for document {id} to HTML string of length {len} bytes.", docid, cdishtml.Length);
             }
+            else
+            {
+                Error("Disassembly of document {id} failed.", docid);
+            }
+
             if (project.Children.Any(c => c.Key == docid))
             {
                 Debug("Document {doc} exists in project {proj}, updating...", docid, projectid);
@@ -503,6 +521,7 @@ namespace Stratis.DevEx.Gui
                 App.AsyncInvoke(() => projectDisassemblyView.Reload());
             }
         }
+
         protected void CreateMenuAndToolbar()
         {
             // create a few commands that can be used for the menu and toolbar

@@ -103,14 +103,17 @@ namespace Stratis.DevEx.Drawing
                                 _ => null
                             },
                     Mass = graph.Kind switch {
-                        "cg" => 2,
+                        "cg" => node.Label switch {
+                            var l when l.Text.StartsWith("SmartContract::") => 3,
+                            _ => 2
+                        },
                         "cfg" => node.Kind switch { 
                             "entry" => 1,
                             "block" => 2,
                             "branch" => 3,
                             _ => null
                         },
-                        _ => 4
+                        _ => 2
                     }
                 }); 
             }
