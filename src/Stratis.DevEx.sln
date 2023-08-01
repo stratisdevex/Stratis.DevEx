@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33027.164
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33103.201
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.CodeAnalysis.Cs", "Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs\Stratis.CodeAnalysis.Cs.csproj", "{C37F3131-9C5E-4B79-B277-45E0A0150757}"
 EndProject
@@ -69,6 +69,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QUT.ShiftReduceParser", "..
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{38EA346F-6659-4991-9878-FB96FB3FCBCF}"
 	ProjectSection(SolutionItems) = preProject
+		..\build.cmd = ..\build.cmd
+		..\build.sh = ..\build.sh
 		..\devex-gui = ..\devex-gui
 		..\devex-gui.cmd = ..\devex-gui.cmd
 	EndProjectSection

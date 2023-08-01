@@ -7,10 +7,12 @@
   -->
 
   <PropertyGroup>
+    <Windows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</Windows>
+    <Linux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</Linux>
+    <OSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</OSX>
     <TargetFramework>net6.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
-    <BuildPlatform>Windows</BuildPlatform>
     <AssemblyVersion>0.1.0.0</AssemblyVersion>
     <FileVersion>0.1.0.0</FileVersion>
     <Company></Company>
@@ -19,8 +21,12 @@
     <Version>0.1.0</Version>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(BuildPlatform)'=='Windows'">
-    <DefineConstants>Windows</DefineConstants>
+  <PropertyGroup Condition="'$(Windows)'=='true'">
+    <BuildPlatform>Windows</BuildPlatform>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Linux)'=='true'">
+    <BuildPlatform>Gtk</BuildPlatform>
   </PropertyGroup>
 
   <ItemGroup>
@@ -59,7 +65,7 @@
     <ProjectReference Include="..\Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj" />
   </ItemGroup>
 
-  <Target Name="SetOutputToExe" BeforeTargets="BeforeBuild" Condition="'$(Configuration)'=='Debug'">
+  <Target Name="SetOutputToExe" BeforeTargets="BeforeBuild">
     <PropertyGroup>
       <OutputType>Exe</OutputType>
     </PropertyGroup>
