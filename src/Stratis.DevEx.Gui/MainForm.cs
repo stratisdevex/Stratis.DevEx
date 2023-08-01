@@ -138,13 +138,13 @@ namespace Stratis.DevEx.Gui
             {
                 Debug("Project {proj} already exists in tree, updating...", projectid);
                 UpdateProjectDocsTree(m);
-                App.AsyncInvoke(() => projectDisassemblyView.LoadHtml((string)projectViews[projectid + "_" + "Disassembly"]));
+                App.AsyncInvoke(() => projectDisassemblyView.LoadHtml(GetProjectOrDocViewHtml(projectid, "Disassembly")));
             }
             else
             {
                 Debug("Project {proj} does not exists in tree, adding...", projectid);
                 AddProjectToTree(m);
-                App.AsyncInvoke(() => projectDisassemblyView.LoadHtml((string)projectViews[projectid + "_" + "Disassembly"]));
+                App.AsyncInvoke(() => projectDisassemblyView.LoadHtml(GetProjectOrDocViewHtml(projectid, "Disassembly")));
             }
             navigation.RefreshItem(projects);
             lastCompilationMessageIdRead = m.CompilationId;

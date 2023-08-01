@@ -40,21 +40,21 @@ namespace Stratis.DevEx.CodeAnalysis.IL
                     AssemblyMetadata.TryResolve(ar, Path.Combine(System.Environment.GetEnvironmentVariable("ProgramFiles"), "dotnet\\packs\\Microsoft.NETCore.App.Ref\\3.1.0\\ref\\netcoreapp3.1")) : AssemblyMetadata.TryResolve(ar);
                 if (rd is null)
                 {
-                    Error("Could not resolve assembly reference {ar} using NuGet resolver. Exiting.", ar.ToString());
-                    return;
+                    Error("Could not resolve assembly reference {ar} using NuGet resolver.", ar.ToString());
                 }
                 else
                 {
                     if (!File.Exists(rd.File.FullName))
                     {
                         Error("Could not find the assembly file {f} for assembly reference {ar}. Exiting.", rd.File.FullName, ar.ToString());
-                        return;
                     }
-                    var mr = host.LoadUnitFrom(rd.File.FullName);
-                    if (module is null || module is Dummy)
+                    else
                     {
-                        Error("{0} is not a PE file containing a CLR module or assembly. Could not load assembly reference {ar}. Exiting.", rd.File.FullName, ar.ToString());
-                        return;
+                        var mr = host.LoadUnitFrom(rd.File.FullName);
+                        if (module is null || module is Dummy)
+                        {
+                            Error("{0} is not a PE file containing a CLR module or assembly. Could not load assembly reference {ar}. Exiting.", rd.File.FullName, ar.ToString());
+                        }
                     }
                 }
             }
