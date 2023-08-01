@@ -102,11 +102,23 @@ namespace Stratis.DevEx.Drawing
                                 "cfg" => GetCFGNodeColor(node),
                                 _ => null
                             },
-                    Mass = node.edgeSourceCount + node.edgeTargetCount switch {
-                        var c when c <= 2 => 1.5,
-                        var c when c > 2 && c <= 4 => 2.0, 
-                        var c when c > 4 && c <= 6 => 3.0,
-                        _ => 4.0
+                    Mass = graph.Kind switch
+                    {
+                        "cfg" => node.edgeSourceCount + node.edgeTargetCount switch 
+                        {
+                            var c when c <= 2 => 1.5,
+                            var c when c > 2 && c <= 4 => 2.0, 
+                            var c when c > 4 && c <= 6 => 3.0,
+                            _ => 4.0
+                        },
+                        "cg" => node.edgeSourceCount + node.edgeTargetCount switch
+                        {
+                            var c when c <= 2 => 1.5,
+                            var c when c > 2 && c <= 4 => 2.0,
+                            var c when c > 4 && c <= 6 => 3.0,
+                            _ => 4.0
+                        },
+                        _ => 1.0
                     }
                 }); 
             }
@@ -134,10 +146,10 @@ namespace Stratis.DevEx.Drawing
                 "branch" => "LightBlue",
                 _ => "White"
             };
-            if (node.LabelText.StartsWith("SmartContract::") || node.LabelText.StartsWith("IPersistentState::") || node.LabelText.StartsWith("Assery"))
-            {
-                bkgn = "LightPink";
-            }
+            //if (node.LabelText.StartsWith("SmartContract::") || node.LabelText.StartsWith("IPersistentState::") || node.LabelText.StartsWith("Assert"))
+            //{
+            //    bkgn = "LightPink";
+            //}
             return new NetworkColor()
             {
                 Background = bkgn,

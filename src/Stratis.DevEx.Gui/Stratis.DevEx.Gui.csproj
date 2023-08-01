@@ -1,4 +1,4 @@
-﻿<Project Sdk="Eto.Forms/2.7.1">
+﻿<Project Sdk="Eto.Forms/2.7.5">
 
   <!--
     Set the BuildPlatform property to the Eto platform you wish to build for.
@@ -7,7 +7,7 @@
   -->
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
     <BuildPlatform>Windows</BuildPlatform>
@@ -48,7 +48,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(BuildPlatform)'=='Windows'">
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1661.34" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1901.177" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,5 +64,13 @@
       <OutputType>Exe</OutputType>
     </PropertyGroup>
   </Target>
+
+  <ItemGroup>
+    <PackageReference Update="Eto.Forms" Version="2.7.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Eto.Platform.Windows" Version="2.7.5" />
+  </ItemGroup>
    
 </Project>
