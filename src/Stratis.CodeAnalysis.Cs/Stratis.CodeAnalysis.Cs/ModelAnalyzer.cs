@@ -169,7 +169,7 @@ namespace Stratis.CodeAnalysis.Cs
 
                         methodCreatedObjects.Add(createInfo);
                     }
-
+                   
                     builder.AppendFormat("{0} : ", className);
                     switch (method.DeclaredAccessibility)
                     {
@@ -189,7 +189,7 @@ namespace Stratis.CodeAnalysis.Cs
                             builder.Append("-");
                             break;
                     }
-
+                    builder.AppendFormat("{0} ", method.ReturnType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
                     builder.Append(method.Name);
                     builder.Append(methoddata["signature"]); 
                     builder.Append(Environment.NewLine);
@@ -223,11 +223,10 @@ namespace Stratis.CodeAnalysis.Cs
                 builder.AppendLineFormat("class {0}", className);
                 Debug("{cls}", builder.Last());
                 builder.AppendLineFormat("<<struct>> {0}".Replace("<", "&lt;").Replace(">", "&gt;"), className);
-                foreach (var f in t.GetMembers().Where(m => m.Kind == SymbolKind.Property && m.DeclaredAccessibility == Accessibility.Public).Cast<IFieldSymbol>())
+                foreach (var f in t.GetMembers().Where(m => m.Kind == SymbolKind.Field && m.DeclaredAccessibility == Accessibility.Public).Cast<IFieldSymbol>())
                 {
                     builder.AppendFormat("{0} : ", className);
                     builder.AppendFormat("+{0} {1}", f.Type.Name, f.Name);
-                    //builder.AppendFormat(f.Name);
                     builder.AppendFormat(Environment.NewLine);
                     Debug("{m}", builder.Last());
                 }
@@ -246,7 +245,7 @@ namespace Stratis.CodeAnalysis.Cs
                 builder.AppendLineFormat("class {0}", className);
                 Debug("{cls}", builder.Last());
                 builder.AppendLineFormat("<<interface>> {0}".Replace("<", "&lt;").Replace(">", "&gt;"), className);
-                foreach (var method in t.GetMembers().Where(m => m.Kind == SymbolKind.Method && m.DeclaredAccessibility == Accessibility.Public).Cast<IMethodSymbol>())
+                foreach (var method in t.GetMembers().Where(m => m.Kind == SymbolKind.Method).Cast<IMethodSymbol>())
                 {
                     builder.AppendFormat("{0} : ", className);
                     switch (method.DeclaredAccessibility)
@@ -279,19 +278,13 @@ namespace Stratis.CodeAnalysis.Cs
                         paramBuilder.Remove(paramBuilder.Length - 1, 1);
                     }
                     paramBuilder.Append(")");
+                    builder.AppendFormat("{0} ", method.ReturnType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
                     builder.Append(method.Name); 
                     builder.Append(paramBuilder.ToString());
                     builder.Append(Environment.NewLine);
                     Debug("{m}", builder.Last());
                 }
-                foreach (var f in t.GetMembers().Where(m => m.Kind == SymbolKind.Property && m.DeclaredAccessibility == Accessibility.Public).Cast<IPropertySymbol>())
-                {
-                    builder.AppendFormat("{0} : ", className);
-                    builder.AppendFormat("+{0} {1}", f.Type.Name, f.Name);
-                    //builder.AppendFormat(f.Name);
-                    builder.AppendFormat(Environment.NewLine);
-                    Debug("{m}", builder.Last());
-                }
+                
                 if (t.ContainingType != null)
                 {
                     builder.AppendFormat("{0}*--{1}", className, t.ContainingType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
