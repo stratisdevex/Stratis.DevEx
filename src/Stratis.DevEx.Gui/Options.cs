@@ -15,6 +15,9 @@ namespace Stratis.DevEx.Gui
         [Option("no-gui", Required = false, HelpText = "Disable GUI.")]
         public bool NoGui { get; set; }
 
+        [Option("dotnet-sdk-3.1-path", Required = false, HelpText = "Any additional options for the selected operation.")]
+        public string DotNetSdk31Path { get; set; } = String.Empty;
+
         [Option("options", Required = false, HelpText = "Any additional options for the selected operation.")]
         public string AdditionalOptions { get; set; } = String.Empty;
 

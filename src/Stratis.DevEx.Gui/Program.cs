@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Msagl.Drawing;
 
 using SharpConfig;
-
+using CommandLine;
 using Stratis.DevEx.Pipes;
 
 namespace Stratis.DevEx.Gui
@@ -35,30 +35,33 @@ namespace Stratis.DevEx.Gui
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
             PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
 
-            //ParserResult<Options> result = new Parser().ParseArguments<Options>(args);
-            if (!args.Contains("--no-gui"))
+            ParserResult<Options> result = new Parser().ParseArguments<Options>(args).WithParsed(o =>
             {
-                Info("Starting GUI...");
-                GuiApp = new GuiApp(Eto.Platform.Detect);
-                GuiApp.Initialized += (sender, e) => GuiApp.InvokeAsync(async () => await PipeServer.StartAsync());
-                GuiApp.Terminating += (sender, e) => Shutdown();
-                PipeServer.MessageReceived += (sender, e) => GuiApp.AsyncInvoke(() => ReadMessage(e.Message));
-                WriteRunFile();
-                GuiApp.Run(new MainForm());
-            }
-            else
-            {
-                Info("Not starting GUI...");
                 PipeServer.StartAsync().Wait();
                 PipeServer.MessageReceived += (sender, e) => ReadMessage(e.Message);
-                WriteRunFile();
-                Console.CancelKeyPress += (sender, e) => Shutdown();
-                Info("Press Ctrl-C to exit...");
-                while (true)
+                if (o.NoGui)
                 {
-                    System.Threading.Thread.Sleep(100);
+                    Info("Not starting GUI...");
+                    WriteRunFile();
+                    Console.CancelKeyPress += (sender, e) => Shutdown();
+                    Info("Press Ctrl-C to exit...");
+                    while (true)
+                    {
+                        System.Threading.Thread.Sleep(100);
+                    }
                 }
-            }
+                else
+                {
+                    Info("Starting GUI...");
+                    GuiApp = new GuiApp(Eto.Platform.Detect);
+                    //GuiApp.Initialized += (sender, e) => GuiApp.InvokeAsync(async () => await PipeServer.StartAsync());
+                    GuiApp.Terminating += (sender, e) => Shutdown();
+                    //PipeServer.MessageReceived += (sender, e) => GuiApp.AsyncInvoke(() => ReadMessage(e.Message));
+                    WriteRunFile();
+                    GuiApp.Run(new MainForm());
+                }
+            });
+            
         }
         #endregion
 

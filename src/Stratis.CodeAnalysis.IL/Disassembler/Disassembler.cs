@@ -7,6 +7,7 @@ using CSharpSourceEmitter;
 using Microsoft.Cci;
 using Microsoft.Cci.Contracts;
 using Microsoft.Cci.ILToCodeModel;
+using Microsoft.Cci.Immutable;
 using Microsoft.Cci.MetadataReader;
 
 public enum DisassemblerLang
@@ -34,10 +35,12 @@ namespace Stratis.DevEx.CodeAnalysis.IL
             }
             string pdbFile = Path.ChangeExtension(module.Location, "pdb");
             using var pdbReader = new PdbReader(fileName, pdbFile, host, true);
-            foreach(var ar in module.AssemblyReferences.Where(ar => ar.ResolvedAssembly == Dummy.Assembly))
+            var dotnetsdkrootpath = System.Environment.OSVersion.Platform == System.PlatformID.Win32NT ? 
+                System.Environment.GetEnvironmentVariable("ProgramFiles") : 
+                Path.Combine(System.Environment.GetEnvironmentVariable("HOME"), "dotnet-sdk-3.1");
+            foreach (var ar in module.AssemblyReferences.Where(ar => ar.ResolvedAssembly == Dummy.Assembly))
             {
-                var rd = System.Environment.OSVersion.Platform == System.PlatformID.Win32NT ? 
-                    AssemblyMetadata.TryResolve(ar, Path.Combine(System.Environment.GetEnvironmentVariable("ProgramFiles"), "dotnet\\packs\\Microsoft.NETCore.App.Ref\\3.1.0\\ref\\netcoreapp3.1")) : AssemblyMetadata.TryResolve(ar);
+                var rd = AssemblyMetadata.TryResolve(ar, Path.Combine(dotnetsdkrootpath, "dotnet", "packs", "Microsoft.NETCore.App.Ref", "3.1.0", "ref", "netcoreapp3.1"));
                 if (rd is null)
                 {
                     Error("Could not resolve assembly reference {ar} using NuGet resolver.", ar.ToString());
