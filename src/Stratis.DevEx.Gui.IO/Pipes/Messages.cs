@@ -44,23 +44,95 @@ namespace Stratis.DevEx.Pipes
     [Serializable]
     public struct NodeData
     {
-        public string Id { get; set; }
+        public string Id;
 
-        public string Label { get; set; }
+        public string Label;
 
-        public string Kind { get; set; }
+        public string Kind;
     }
 
     [Serializable]
     public struct EdgeData
     {
-        public string SourceId { get; set; }
+        public string SourceId;
 
-        public string TargetId { get; set; }
+        public string TargetId;
 
-        public string Label { get; set; }
+        public string Label;
     }
-    
+
+    [Serializable]
+    public struct CallGraph
+    {
+        public NodeData[] Nodes;
+
+        public EdgeData[] Edges;
+    }
+
+    [Serializable]
+    public struct CFG
+    {
+        public NodeData[] Nodes;
+
+        public EdgeData[] Edges;
+    }
+
+    [Serializable]
+    public struct Method
+    {
+        public string Visibility;
+        public string Name;
+        public string Signature;
+        public string Type;
+    }
+
+    [Serializable]
+    public struct Field
+    {
+        public string Visibility;
+        public string Name;
+        public string Type;
+    }
+
+    [Serializable]
+    public struct ClassInfo
+    {
+        public string Name;
+
+        public Method[] Methods;
+        
+        public Field[] Fields;
+
+        public CallGraph CallGraph { get; set; }
+
+        public CFG ControlFlowGraph { get; }
+    }
+
+    [Serializable]
+    public struct StructInfo
+    {
+        public Field[] Fields;
+    }
+
+    [Serializable]
+    public struct InterfaceInfo
+    {
+        public Method[] Methods;
+        public Field[] Fields;
+    }
+
+    [Serializable]
+    public struct Document 
+    {
+        public string Path;
+
+        public ClassInfo[] Classes;
+
+        public StructInfo[] Structs;
+
+        public InterfaceInfo[] Interfaces;
+    }
+
     [Serializable]
     public class ControlFlowGraphMessage : Message
     {
@@ -101,6 +173,15 @@ namespace Stratis.DevEx.Pipes
         public EdgeData[] Edges { get; set; } = Array.Empty<EdgeData>();
     }
 
+    [Serializable]
+    public class CompilationMessage2 : Message 
+    {
+        public Document[] Documents { get; set; } = Array.Empty<Document>(); 
+
+        public byte[] Assembly { get; set; } 
+
+        public byte[] Pdb { get; set; }
+    }
     [Serializable]
     public class DisassemblyMessage : Message
     {

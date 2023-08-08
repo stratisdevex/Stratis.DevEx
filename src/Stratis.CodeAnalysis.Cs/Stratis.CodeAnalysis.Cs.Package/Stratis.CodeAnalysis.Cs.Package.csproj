@@ -55,7 +55,7 @@
     <None Include="$(OutputPath)\Stratis.SmartContracts.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(OutputPath)\Stratis.DevEx.Base.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(OutputPath)\Stratis.DevEx.Drawing.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="$(OutputPath)\Stratis.DevEx.Gui.Service.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)\Stratis.DevEx.Gui.IO.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     
   </ItemGroup>
   
