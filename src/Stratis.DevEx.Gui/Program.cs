@@ -35,7 +35,16 @@ namespace Stratis.DevEx.Gui
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
             PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
 
-            ParserResult<Options> result = new Parser().ParseArguments<Options>(args).WithParsed(o =>
+            ParserResult<Options> result = new Parser().ParseArguments<Options>(args)
+            .WithNotParsed(errors =>
+            {
+                 foreach (var e in errors)
+                 {
+                     Error("{err}", e.Tag);
+                     Environment.Exit(1);
+                 }
+            })
+            .WithParsed(o =>
             {
                 PipeServer.StartAsync().Wait();
                 PipeServer.MessageReceived += (sender, e) => ReadMessage(e.Message);

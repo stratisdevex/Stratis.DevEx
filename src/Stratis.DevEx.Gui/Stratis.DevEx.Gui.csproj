@@ -62,7 +62,7 @@
     <ProjectReference Include="..\Stratis.CodeAnalysis.IL\Stratis.CodeAnalysis.IL.csproj" />
     <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
     <ProjectReference Include="..\Stratis.DevEx.Drawing\Stratis.DevEx.Drawing.csproj" />
-    <ProjectReference Include="..\Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj" />
+    <ProjectReference Include="..\Stratis.DevEx.Gui.IO\Stratis.DevEx.Gui.IO.csproj" />
   </ItemGroup>
 
   <Target Name="SetOutputToExe" BeforeTargets="BeforeBuild">

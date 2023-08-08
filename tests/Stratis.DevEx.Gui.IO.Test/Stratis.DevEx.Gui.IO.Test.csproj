@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
-    <ProjectReference Include="..\..\src\Stratis.DevEx.Gui.Service\Stratis.DevEx.Gui.Service.csproj" />
+    <ProjectReference Include="..\..\src\Stratis.DevEx.Gui.IO\Stratis.DevEx.Gui.IO.csproj" />
   </ItemGroup>
 
 </Project>
