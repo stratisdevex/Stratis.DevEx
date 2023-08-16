@@ -33,17 +33,17 @@ namespace Stratis.DevEx.CodeAnalysis.IL
     public class SmartContractSourceEmitter : SourceEmitter
     {
         #region Constructor
-        public SmartContractSourceEmitter(SmartContractSourceEmitterOutput sourceEmitterOutput, IMetadataHost host, PdbReader? pdbReader, bool printCompilerGeneratedMembers, bool noIL, string? classPattern, string? methodPattern)
+        public SmartContractSourceEmitter(SmartContractSourceEmitterOutput sourceEmitterOutput, IMetadataHost host, PdbReader? pdbReader, bool printCompilerGeneratedMembers)
           : base(sourceEmitterOutput)
         {
             this.host = host;
             this.pdbReader = pdbReader;
-            this.noIL = noIL;
+            this.noIL = false;
             this.printCompilerGeneratedMembers = printCompilerGeneratedMembers;
             //this.scsourceEmitterOutput = sourceEmitterOutput;
             this.scsourceEmitterOutput = sourceEmitterOutput;
-            if (classPattern is not null) this.classPattern = new Regex(classPattern, RegexOptions.Singleline | RegexOptions.Compiled);
-            if (methodPattern is not null) this.methodPattern = new Regex(methodPattern, RegexOptions.Singleline | RegexOptions.Compiled);
+            //if (classPattern is not null) this.classPattern = new Regex(classPattern, RegexOptions.Singleline | RegexOptions.Compiled);
+            //if (methodPattern is not null) this.methodPattern = new Regex(methodPattern, RegexOptions.Singleline | RegexOptions.Compiled);
             
         }
         #endregion

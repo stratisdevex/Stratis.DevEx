@@ -63,7 +63,7 @@ namespace Stratis.DevEx.CodeAnalysis.IL
             }
             var options = DecompilerOptions.AnonymousDelegates | DecompilerOptions.Iterators | DecompilerOptions.Loops;
             module = Decompiler.GetCodeModelFromMetadataModel(host, module, pdbReader, options);
-            var sourceEmitter = new SmartContractSourceEmitter(output, host, pdbReader, true, noIL, classPattern, methodPattern);
+            var sourceEmitter = new SmartContractSourceEmitter(output, host, pdbReader, true);
             sourceEmitter.Traverse(module);
             op.Complete();
         }

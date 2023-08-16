@@ -12,6 +12,7 @@ using Microsoft.Msagl.Drawing;
 using Stratis.DevEx.Drawing;
 using Stratis.DevEx.Pipes;
 using Stratis.DevEx.CodeAnalysis.IL;
+using Microsoft.Cci.Ast;
 
 namespace Stratis.DevEx.Gui
 {
@@ -38,8 +39,9 @@ namespace Stratis.DevEx.Gui
             };
 			navigation.DataStore = new TreeItem(
 				new TreeItem() { Image = Globe, Text = "About", Key = "About" },
-				new TreeItem() { Image = TestIcon, Text = "Projects", Key = "Projects"}
-			);
+				new TreeItem() { Image = TestIcon, Text = "Projects", Key = "Projects"},
+                new TreeItem() { Image = BlockchainNode, Text = "Nodes", Key = "Nodes" }
+            );
             navigation.Activated += Navigation_NodeMouseClick;
             navigation.NodeMouseClick += Navigation_NodeMouseClick;
             aboutView = new WebView();
@@ -83,6 +85,8 @@ namespace Stratis.DevEx.Gui
             projectControlFlowView.LoadHtml(@"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>");
             projectView.SelectedPage = projectSummaryViewPage;
 
+            nodeView = new TabControl();
+            this.NodesActivated += MainForm_NodesActivated;
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;
 			splitter.Panel2 = aboutView;
@@ -93,6 +97,8 @@ namespace Stratis.DevEx.Gui
             uITimer.Interval = 0.5;
             uITimer.Start();
         }
+
+        
         #endregion
 
         #region Methods
@@ -609,6 +615,10 @@ namespace Stratis.DevEx.Gui
         protected TreeItem Projects => (TreeItem)navigation.DataStore[1];
         #endregion
 
+        #region Events
+        public event EventHandler<TreeViewItemEventArgs> NodesActivated;
+        #endregion
+
         #region Event Handlers
         private void Navigation_NodeMouseClick(object? sender, TreeViewItemEventArgs e)
         {
@@ -624,11 +634,19 @@ namespace Stratis.DevEx.Gui
                     showProjectView();
                     App.AsyncInvoke(() => LoadProjectOrDocView(e.Item.Key));
                     break;
+                case "Nodes":
+                    NodesActivated?.Invoke(sender, e);
+                    break;
                 default:
                     showProjectView();
                     App.AsyncInvoke(() => LoadProjectOrDocView(e.Item.Key));
                     break;
             }
+        }
+
+        private void MainForm_NodesActivated(object? sender, TreeViewItemEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void ProjectView_DocumentLoaded(object? sender, WebViewLoadedEventArgs e)
@@ -645,6 +663,8 @@ namespace Stratis.DevEx.Gui
         protected static readonly Icon CSharp = Icon.FromResource("Stratis.DevEx.Gui.Images.csharp.png");
         protected static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
         protected static readonly Icon Refresh = Icon.FromResource("Stratis.DevEx.Gui.Images.refresh.png");
+        protected static readonly Icon Cirrus = Icon.FromResource("Stratis.DevEx.Gui.Images.cirrus.png");
+        protected static readonly Icon BlockchainNode = Icon.FromResource("Stratis.DevEx.Gui.Images.blockchainnode.png");
 
         protected const string htmlplaceholder = @"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>";
         #pragma warning disable CS0618 // Type or member is obsolete
@@ -655,7 +675,7 @@ namespace Stratis.DevEx.Gui
         protected Splitter splitter;
         protected WebView aboutView;
         protected TabControl projectView;
-        
+        protected TabControl nodeView;
       
         protected WebView projectControlFlowView;
         protected TabPage projectControlFlowViewPage;

@@ -30,6 +30,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\blockchainnode.png" />
+    <None Remove="Images\cirrus.png" />
     <None Remove="Images\csharp.png" />
     <None Remove="Images\jetbrainsrider.png" />
     <None Remove="Images\refresh.png" />
@@ -40,6 +42,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Images\blockchainnode.png" />
+    <EmbeddedResource Include="Images\cirrus.png" />
     <EmbeddedResource Include="Images\csharp.png" />
     <EmbeddedResource Include="Images\jetbrainsrider.png" />
     <EmbeddedResource Include="Images\refresh.png" />

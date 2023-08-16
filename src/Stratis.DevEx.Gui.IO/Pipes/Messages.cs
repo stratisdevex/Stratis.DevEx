@@ -99,6 +99,8 @@ namespace Stratis.DevEx.Pipes
     {
         public string Name;
 
+        public List<string> BaseTypeNames;
+
         public Method[] Methods;
         
         public Field[] Fields;
