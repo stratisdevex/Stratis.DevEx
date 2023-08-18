@@ -12,7 +12,6 @@ using Microsoft.Msagl.Drawing;
 using Stratis.DevEx.Drawing;
 using Stratis.DevEx.Pipes;
 using Stratis.DevEx.CodeAnalysis.IL;
-using Microsoft.Cci.Ast;
 
 namespace Stratis.DevEx.Gui
 {
@@ -38,9 +37,9 @@ namespace Stratis.DevEx.Gui
                 Size = new Size(100, 150)
             };
 			navigation.DataStore = new TreeItem(
-				new TreeItem() { Image = Globe, Text = "About", Key = "About" },
-				new TreeItem() { Image = TestIcon, Text = "Projects", Key = "Projects"},
-                new TreeItem() { Image = BlockchainNode, Text = "Nodes", Key = "Nodes" }
+				new TreeItem() { Image = Icons.Globe, Text = "About", Key = "About" },
+				new TreeItem() { Image = Icons.TestIcon, Text = "Projects", Key = "Projects"},
+                new TreeItem() { Image = Icons.BlockchainNode, Text = "Nodes", Key = "Nodes" }
             );
             navigation.Activated += Navigation_NodeMouseClick;
             navigation.NodeMouseClick += Navigation_NodeMouseClick;
@@ -85,8 +84,10 @@ namespace Stratis.DevEx.Gui
             projectControlFlowView.LoadHtml(@"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>");
             projectView.SelectedPage = projectSummaryViewPage;
 
-            nodeView = new TabControl();
-            this.NodesActivated += MainForm_NodesActivated;
+            this.nodeView = new TabControl();
+            Nodes.InitMainForm(this);
+            
+            
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;
 			splitter.Panel2 = aboutView;
@@ -98,7 +99,6 @@ namespace Stratis.DevEx.Gui
             uITimer.Start();
         }
 
-        
         #endregion
 
         #region Methods
@@ -218,10 +218,10 @@ namespace Stratis.DevEx.Gui
                 Text = m.AssemblyName,
                 Image = m.EditorEntryAssembly switch
                 {
-                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
-                    var x when x.StartsWith("OmniSharp") => VSCode,
-                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
-                    _ => Globe
+                    var x when x.StartsWith("VBCSCompiler") => Icons.VisualStudio,
+                    var x when x.StartsWith("OmniSharp") => Icons.VSCode,
+                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => Icons.JetbrainsRider,
+                    _ => Icons.Globe
                 },
             };
 
@@ -310,7 +310,7 @@ namespace Stratis.DevEx.Gui
             {
                 Key = docid,
                 Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
-                Image = CSharp
+                Image = Icons.CSharp
             };
             Graph cg = Program.CreateCallGraph(m.Implements, m.Invocations);
             projectViews.Add(projectid, @"<html><head><title>Summary</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
@@ -340,10 +340,10 @@ namespace Stratis.DevEx.Gui
                 Text = m.AssemblyName,
                 Image = m.EditorEntryAssembly switch
                 {
-                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
-                    var x when x.StartsWith("OmniSharp") => VSCode,
-                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
-                    _ => Globe
+                    var x when x.StartsWith("VBCSCompiler") => Icons.VisualStudio,
+                    var x when x.StartsWith("OmniSharp") => Icons.VSCode,
+                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => Icons.JetbrainsRider,
+                    _ => Icons.Globe
                 },
             };
             Projects.Children.Add(child);
@@ -387,7 +387,7 @@ namespace Stratis.DevEx.Gui
                 {
                     Key = docid,
                     Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
-                    Image = CSharp
+                    Image = Icons.CSharp
                 };
                 project.Children.Add(doc);
             }
@@ -401,7 +401,7 @@ namespace Stratis.DevEx.Gui
             {
                 Key = docid,
                 Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
-                Image = CSharp
+                Image = Icons.CSharp
             };
             projectViews.Add(projectid, @"<html><head><title>Control Flow</title></head><body><h1>" + m.AssemblyName + "</h1></body></html>");
             var cfg = Program.CreateGraph(m);
@@ -421,10 +421,10 @@ namespace Stratis.DevEx.Gui
                 Text = m.AssemblyName,
                 Image = m.EditorEntryAssembly switch
                 {
-                    var x when x.StartsWith("VBCSCompiler") => VisualStudio,
-                    var x when x.StartsWith("OmniSharp") => VSCode,
-                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => JetbrainsRider,
-                    _ => Globe
+                    var x when x.StartsWith("VBCSCompiler") => Icons.VisualStudio,
+                    var x when x.StartsWith("OmniSharp") => Icons.VSCode,
+                    var x when x.StartsWith("JetBrains.Roslyn.Worker") => Icons.JetbrainsRider,
+                    _ => Icons.Globe
                 },
             };
             Projects.Children.Add(child);
@@ -459,7 +459,7 @@ namespace Stratis.DevEx.Gui
                 {
                     Key = docid,
                     Text = m.Document.Replace(projectDir + Path.DirectorySeparatorChar, ""),
-                    Image = CSharp
+                    Image = Icons.CSharp
                 };
                 project.Children.Add(doc);
             }
@@ -560,7 +560,7 @@ namespace Stratis.DevEx.Gui
             {
                 MenuText = "Refresh",
                 ToolBarText = "Refresh",
-                Image = Refresh
+                Image = Icons.Refresh
             };
             // create menu
             Menu = new MenuBar
@@ -616,7 +616,7 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Events
-        public event EventHandler<TreeViewItemEventArgs> NodesActivated;
+        public event EventHandler<TreeViewItemEventArgs>? NodesActivated;
         #endregion
 
         #region Event Handlers
@@ -644,11 +644,6 @@ namespace Stratis.DevEx.Gui
             }
         }
 
-        private void MainForm_NodesActivated(object? sender, TreeViewItemEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void ProjectView_DocumentLoaded(object? sender, WebViewLoadedEventArgs e)
         {
             Info("WebView loaded {url}.", e.Uri);
@@ -656,41 +651,33 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Fields
-        protected static readonly Icon TestIcon = Icon.FromResource("Stratis.DevEx.Gui.Images.TestIcon.ico");
-        protected static readonly Icon JetbrainsRider = Icon.FromResource("Stratis.DevEx.Gui.Images.jetbrainsrider.png");
-        protected static readonly Icon VisualStudio = Icon.FromResource("Stratis.DevEx.Gui.Images.visualstudio.png");
-        protected static readonly Icon VSCode = Icon.FromResource("Stratis.DevEx.Gui.Images.vscode.png");
-        protected static readonly Icon CSharp = Icon.FromResource("Stratis.DevEx.Gui.Images.csharp.png");
-        protected static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
-        protected static readonly Icon Refresh = Icon.FromResource("Stratis.DevEx.Gui.Images.refresh.png");
-        protected static readonly Icon Cirrus = Icon.FromResource("Stratis.DevEx.Gui.Images.cirrus.png");
-        protected static readonly Icon BlockchainNode = Icon.FromResource("Stratis.DevEx.Gui.Images.blockchainnode.png");
+       
 
-        protected const string htmlplaceholder = @"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>";
+        internal const string htmlplaceholder = @"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>";
         #pragma warning disable CS0618 // Type or member is obsolete
         internal TreeView navigation;
         #pragma warning restore CS0618 // Type or member is obsolete
 
-        protected UITimer uITimer;
-        protected Splitter splitter;
-        protected WebView aboutView;
-        protected TabControl projectView;
-        protected TabControl nodeView;
+        internal UITimer uITimer;
+        internal Splitter splitter;
+        internal WebView aboutView;
+        internal TabControl projectView;
+        internal TabControl nodeView;
       
-        protected WebView projectControlFlowView;
-        protected TabPage projectControlFlowViewPage;
-        protected WebView projectCallGraphView;
-        protected TabPage projectCallGraphViewPage;
-        protected WebView projectSummaryView;
-        protected TabPage projectSummaryViewPage;
-        protected WebView projectDisassemblyView;
-        protected TabPage projectDisassemblyViewPage;
+        internal WebView projectControlFlowView;
+        internal TabPage projectControlFlowViewPage;
+        internal WebView projectCallGraphView;
+        internal TabPage projectCallGraphViewPage;
+        internal WebView projectSummaryView;
+        internal TabPage projectSummaryViewPage;
+        internal WebView projectDisassemblyView;
+        internal TabPage projectDisassemblyViewPage;
 
         internal Dictionary<string, object> projectViews;
-        protected Dictionary<string, DateTime> projectControlFlowViewLastUpdated = new Dictionary<string, DateTime>();
+        internal Dictionary<string, DateTime> projectControlFlowViewLastUpdated = new Dictionary<string, DateTime>();
 
-        protected Dictionary<string, SmartContractSourceEmitterOutput?> disassembly = new Dictionary<string, SmartContractSourceEmitterOutput?>();
-        protected long lastCompilationMessageIdRead = 0; 
+        internal Dictionary<string, SmartContractSourceEmitterOutput?> disassembly = new Dictionary<string, SmartContractSourceEmitterOutput?>();
+        internal long lastCompilationMessageIdRead = 0; 
         #endregion
     }
 }
