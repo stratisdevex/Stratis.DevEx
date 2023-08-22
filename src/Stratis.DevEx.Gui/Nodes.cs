@@ -1,45 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+//using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 using Eto.Forms;
 using SharpConfig;
+using Cobra.Api.Node.Cirrus;
+using Cobra.Api.Node.Cirrus.Models;
 
 namespace Stratis.DevEx.Gui
 {
     public class Nodes : Runtime
     {
         #region Types
-        public struct Node 
+        public class Node 
         {
+            #region Properties
+            [Category("Data")]
             public string name;
             public Uri url;
             public bool isdefault;
             public string? folder;
-            public Node(string name, Uri uri, bool isdefault, string? folder = null)
+            public Client client;
+            #endregion
+            public Node(string name, Uri uri, bool isdefault = false, string? folder = null)
             {
                 this.name = name;
                 this.url = uri;
                 this.isdefault = isdefault;
                 this.folder = folder;
+                this.client = new Client(this.url.ToString(), httpClient);
             }
         }
         #endregion
 
         #region Properties
+        public static GuiApp App => (GuiApp)Application.Instance;
+
+        public static MainForm MainForm => (MainForm)App.MainForm;
+
         public static Configuration Config { get; protected set; } = new Configuration();
 
-        public static List<Node> ConfigNodes { get; } = new List<Node>(); 
+        public static List<Node> GuiNodes { get; } = new List<Node>(); 
+
+        public static string[] GuiFolders() => GuiNodes.Where(n => n.folder is not null).Select(n => n.folder!).ToArray();
         #endregion
 
         #region Methods
         public static void InitMainForm(MainForm mainForm)
         {
             LoadConfig();
-            mainForm.NodesActivated += MainForm_NodesActivated;
+            foreach (var node in GuiNodes) 
+            {
+                mainForm.nodesTreeItem.Children.Add(new TreeItem() { Image = Icons.Cirrus, Text = node.name, Key = node.name + "_Node"});
+            }
+            mainForm.navigation.RefreshItem(mainForm.nodesTreeItem);
+            mainForm.NodesMouseClick += MainForm_NodesMouseClick;
         }
 
         public static void LoadConfig()
@@ -54,18 +75,16 @@ namespace Stratis.DevEx.Gui
             else
             {
                 Info("GUI nodes configuration file {file} exists, loading...", cfgfile);
-                
                 Config = Configuration.LoadFromFile(cfgfile);
                 foreach (var s in Config)
                 {
                     if (s.GetSettingsNamed("Url") is not null && s.GetSettingsNamed("Url").Any())
                     {
-                        var n = new Node();
+                        
                         var urls = s.GetSettingsNamed("Url").First().StringValue;
                         if (Uri.TryCreate(urls, UriKind.Absolute, out Uri? url))
                         {
-                            n.name = s.Name;
-                            n.url = url;
+                            var n = new Node(s.Name, url);
                             if (s.GetSettingsNamed("Folder") is not null && s.GetSettingsNamed("Folder").Any())
                             {
                                 n.folder = s.GetSettingsNamed("Folder").First().StringValue;
@@ -74,7 +93,7 @@ namespace Stratis.DevEx.Gui
                             {
                                 n.isdefault = s.GetSettingsNamed("Default").First().BoolValue;
                             }
-                            ConfigNodes.Add(n);
+                            GuiNodes.Add(n);
                         }
                         else
                         {
@@ -87,13 +106,43 @@ namespace Stratis.DevEx.Gui
             }
         }
 
+        public static async Task UpdateNodeStatus(Node node)
+        {
+            try 
+            {
+                var c = await node.client.StatusAsync(false);
+                var status = c.Result!;
+                //MainForm.nodeStore.AddOrUpdate("kk")
+                App.Invoke(MainForm.showNodeView);
+                //status.
+
+            }
+            catch (Exception e) 
+            {
+                Error(e, "Error retrieving status for node {n}.", node.name);
+            }
+            
+
+        }
         #endregion
 
         #region Event Handlers
-        private static void MainForm_NodesActivated(object? sender, TreeViewItemEventArgs e)
+        private static async void MainForm_NodesMouseClick(object? sender, TreeViewItemEventArgs e)
         {
-            throw new NotImplementedException();
+            switch (e.Item.Key)
+            {
+                case var _n when _n.EndsWith("_Node"):
+                    var node = GuiNodes.Single(n => n.name == _n.Replace("_Node", ""));
+                    await UpdateNodeStatus(node);
+                    break;
+                default:
+                    break;
+            }
         }
+        #endregion
+
+        #region Fields
+        internal static HttpClient httpClient = new HttpClient();
         #endregion
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -36,10 +37,11 @@ namespace Stratis.DevEx.Gui
             {
                 Size = new Size(100, 150)
             };
-			navigation.DataStore = new TreeItem(
+            nodesTreeItem = new TreeItem() { Image = Icons.BlockchainNode, Text = "Nodes", Key = "Nodes" };
+            navigation.DataStore = new TreeItem(
 				new TreeItem() { Image = Icons.Globe, Text = "About", Key = "About" },
 				new TreeItem() { Image = Icons.TestIcon, Text = "Projects", Key = "Projects"},
-                new TreeItem() { Image = Icons.BlockchainNode, Text = "Nodes", Key = "Nodes" }
+                nodesTreeItem
             );
             navigation.Activated += Navigation_NodeMouseClick;
             navigation.NodeMouseClick += Navigation_NodeMouseClick;
@@ -84,7 +86,11 @@ namespace Stratis.DevEx.Gui
             projectControlFlowView.LoadHtml(@"<html><head><title>Hello!</title></head><body><div style='align:centre'><h1>Stratis DevEx</h1><img src='https://avatars.githubusercontent.com/u/122446986?s=200&v=4'/></div></body></html>");
             projectView.SelectedPage = projectSummaryViewPage;
 
-            this.nodeView = new TabControl();
+            nodeSummaryView = new WebView();
+            nodeSummary = new TabPage(nodeSummaryView);
+            nodeView = new TabControl();
+            nodeView.Pages.Add(nodeSummary);
+            nodeStore = new ConcurrentDictionary<string, object>();
             Nodes.InitMainForm(this);
             
             
@@ -468,6 +474,8 @@ namespace Stratis.DevEx.Gui
 
         protected void showProjectView() => splitter.Panel2 = projectView;
 
+        internal void showNodeView() => splitter.Panel2 = nodeView;
+
         protected void showAboutView() => splitter.Panel2 = aboutView;
 
         protected string GetProjectOrDocViewHtml(string id, string component)
@@ -616,7 +624,7 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Events
-        public event EventHandler<TreeViewItemEventArgs>? NodesActivated;
+        public event EventHandler<TreeViewItemEventArgs>? NodesMouseClick;
         #endregion
 
         #region Event Handlers
@@ -635,7 +643,8 @@ namespace Stratis.DevEx.Gui
                     App.AsyncInvoke(() => LoadProjectOrDocView(e.Item.Key));
                     break;
                 case "Nodes":
-                    NodesActivated?.Invoke(sender, e);
+                case var x when x.EndsWith("_Node"):
+                    NodesMouseClick?.Invoke(sender, e);
                     break;
                 default:
                     showProjectView();
@@ -660,10 +669,10 @@ namespace Stratis.DevEx.Gui
 
         internal UITimer uITimer;
         internal Splitter splitter;
+        internal TreeItem nodesTreeItem;
         internal WebView aboutView;
+        
         internal TabControl projectView;
-        internal TabControl nodeView;
-      
         internal WebView projectControlFlowView;
         internal TabPage projectControlFlowViewPage;
         internal WebView projectCallGraphView;
@@ -673,11 +682,16 @@ namespace Stratis.DevEx.Gui
         internal WebView projectDisassemblyView;
         internal TabPage projectDisassemblyViewPage;
 
+        internal TabControl nodeView;
+        internal TabPage nodeSummary;
+        internal WebView nodeSummaryView;
         internal Dictionary<string, object> projectViews;
         internal Dictionary<string, DateTime> projectControlFlowViewLastUpdated = new Dictionary<string, DateTime>();
 
         internal Dictionary<string, SmartContractSourceEmitterOutput?> disassembly = new Dictionary<string, SmartContractSourceEmitterOutput?>();
-        internal long lastCompilationMessageIdRead = 0; 
+        internal long lastCompilationMessageIdRead = 0;
+
+        internal ConcurrentDictionary<string, object> nodeStore;
         #endregion
     }
 }

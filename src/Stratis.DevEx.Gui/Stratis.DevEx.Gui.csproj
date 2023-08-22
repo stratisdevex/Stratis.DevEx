@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <None Remove="Images\blockchainnode.png" />
+    <None Remove="Images\blockchainnode2.png" />
     <None Remove="Images\cirrus.png" />
     <None Remove="Images\csharp.png" />
     <None Remove="Images\jetbrainsrider.png" />
@@ -43,6 +44,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Images\blockchainnode.png" />
+    <EmbeddedResource Include="Images\blockchainnode2.png" />
     <EmbeddedResource Include="Images\cirrus.png" />
     <EmbeddedResource Include="Images\csharp.png" />
     <EmbeddedResource Include="Images\jetbrainsrider.png" />
@@ -62,6 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ext\Cobra.Api\Cobra.Api.csproj" />
     <ProjectReference Include="..\..\ext\SharpConfig\Src\SharpConfig.csproj" />
     <ProjectReference Include="..\Stratis.CodeAnalysis.IL\Stratis.CodeAnalysis.IL.csproj" />
     <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />

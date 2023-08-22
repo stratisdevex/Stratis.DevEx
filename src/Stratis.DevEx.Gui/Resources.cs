@@ -19,6 +19,6 @@ namespace Stratis.DevEx.Gui
         internal static readonly Icon Globe = Icon.FromResource("Stratis.DevEx.Gui.Images.TestImage.png");
         internal static readonly Icon Refresh = Icon.FromResource("Stratis.DevEx.Gui.Images.refresh.png");
         internal static readonly Icon Cirrus = Icon.FromResource("Stratis.DevEx.Gui.Images.cirrus.png");
-        internal static readonly Icon BlockchainNode = Icon.FromResource("Stratis.DevEx.Gui.Images.blockchainnode.png");
+        internal static readonly Icon BlockchainNode = Icon.FromResource("Stratis.DevEx.Gui.Images.blockchainnode2.png");
     }
 }
