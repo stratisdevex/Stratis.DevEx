@@ -106,23 +106,21 @@ namespace Stratis.DevEx.Gui
             }
         }
 
-        public static async Task UpdateNodeStatus(Node node)
+        public static async Task UpdateNodeStatus(string name)
         {
             try 
             {
+                var node = GuiNodes.Single(n => n.name == name);
                 var c = await node.client.StatusAsync(false);
-                var status = c.Result!;
-                //MainForm.nodeStore.AddOrUpdate("kk")
-                App.Invoke(MainForm.showNodeView);
-                //status.
-
+                var status = c.Result;
+                if (status is null) return;
+                nodeStore[node] = status;
+                App.AsyncInvoke(() => { MainForm.nodeSummaryPropertyGrid.SelectedObject = nodeStore[node]; MainForm.showNodeView(); });
             }
             catch (Exception e) 
             {
-                Error(e, "Error retrieving status for node {n}.", node.name);
+                Error(e, "Error retrieving status for node {n}.", name);
             }
-            
-
         }
         #endregion
 
@@ -132,8 +130,8 @@ namespace Stratis.DevEx.Gui
             switch (e.Item.Key)
             {
                 case var _n when _n.EndsWith("_Node"):
-                    var node = GuiNodes.Single(n => n.name == _n.Replace("_Node", ""));
-                    await UpdateNodeStatus(node);
+                    await UpdateNodeStatus(_n.Replace("_Node", ""));
+                    //App.Invoke(MainForm.showNodeView);
                     break;
                 default:
                     break;
@@ -143,6 +141,7 @@ namespace Stratis.DevEx.Gui
 
         #region Fields
         internal static HttpClient httpClient = new HttpClient();
+        internal static PropertyStore nodeStore = new PropertyStore();
         #endregion
     }
 }

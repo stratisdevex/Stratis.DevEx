@@ -17,13 +17,13 @@ namespace Stratis.DevEx.Gui
         /// This is used to attach/remove events
         /// </remarks>
         /// <value>The parent object</value>
-        public object Parent { get; private set; }
+        public object? Parent { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Eto.PropertyStore"/> class.
         /// </summary>
         /// <param name="parent">Parent to attach the properties to</param>
-        public PropertyStore(object parent)
+        public PropertyStore(object? parent = null)
         {
             this.Parent = parent;
         }

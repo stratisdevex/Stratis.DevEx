@@ -13,6 +13,7 @@ using Microsoft.Msagl.Drawing;
 using Stratis.DevEx.Drawing;
 using Stratis.DevEx.Pipes;
 using Stratis.DevEx.CodeAnalysis.IL;
+//using System.Windows.Forms;
 
 namespace Stratis.DevEx.Gui
 {
@@ -87,10 +88,11 @@ namespace Stratis.DevEx.Gui
             projectView.SelectedPage = projectSummaryViewPage;
 
             nodeSummaryView = new WebView();
-            nodeSummary = new TabPage(nodeSummaryView);
+            nodeSummaryPropertyGrid = new PropertyGrid();
+            nodeSummary = new TabPage(nodeSummaryPropertyGrid);
             nodeView = new TabControl();
             nodeView.Pages.Add(nodeSummary);
-            nodeStore = new ConcurrentDictionary<string, object>();
+            
             Nodes.InitMainForm(this);
             
             
@@ -685,13 +687,14 @@ namespace Stratis.DevEx.Gui
         internal TabControl nodeView;
         internal TabPage nodeSummary;
         internal WebView nodeSummaryView;
+        internal PropertyGrid nodeSummaryPropertyGrid;
         internal Dictionary<string, object> projectViews;
         internal Dictionary<string, DateTime> projectControlFlowViewLastUpdated = new Dictionary<string, DateTime>();
 
         internal Dictionary<string, SmartContractSourceEmitterOutput?> disassembly = new Dictionary<string, SmartContractSourceEmitterOutput?>();
         internal long lastCompilationMessageIdRead = 0;
 
-        internal ConcurrentDictionary<string, object> nodeStore;
+       
         #endregion
     }
 }
