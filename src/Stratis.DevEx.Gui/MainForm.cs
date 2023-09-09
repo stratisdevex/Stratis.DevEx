@@ -89,12 +89,13 @@ namespace Stratis.DevEx.Gui
 
             nodeSummaryView = new WebView();
             nodeSummaryPropertyGrid = new PropertyGrid();
-            nodeSummary = new TabPage(nodeSummaryPropertyGrid);
+            nodeSummary = new TabPage(nodeSummaryPropertyGrid)
+            {
+                Text = "Summary"
+            };
             nodeView = new TabControl();
-            nodeView.Pages.Add(nodeSummary);
-            
+
             Nodes.InitMainForm(this);
-            
             
 			splitter = new Splitter();
 			splitter.Panel1 = navigation;

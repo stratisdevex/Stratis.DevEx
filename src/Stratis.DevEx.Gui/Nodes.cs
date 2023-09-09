@@ -12,6 +12,7 @@ using Eto.Forms;
 using SharpConfig;
 using Cobra.Api.Node.Cirrus;
 using Cobra.Api.Node.Cirrus.Models;
+using System.Globalization;
 
 namespace Stratis.DevEx.Gui
 {
@@ -37,6 +38,8 @@ namespace Stratis.DevEx.Gui
                 this.client = new Client(this.url.ToString(), httpClient);
             }
         }
+
+       
         #endregion
 
         #region Properties
@@ -59,6 +62,8 @@ namespace Stratis.DevEx.Gui
             {
                 mainForm.nodesTreeItem.Children.Add(new TreeItem() { Image = Icons.Cirrus, Text = node.name, Key = node.name + "_Node"});
             }
+
+            mainForm.nodeView.Pages.Add(mainForm.nodeSummary);
             mainForm.navigation.RefreshItem(mainForm.nodesTreeItem);
             mainForm.NodesMouseClick += MainForm_NodesMouseClick;
         }
