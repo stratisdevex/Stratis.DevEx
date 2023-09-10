@@ -13,6 +13,7 @@ using SharpConfig;
 using Cobra.Api.Node.Cirrus;
 using Cobra.Api.Node.Cirrus.Models;
 using System.Globalization;
+//using System.Windows.Forms;
 
 namespace Stratis.DevEx.Gui
 {
@@ -43,7 +44,7 @@ namespace Stratis.DevEx.Gui
         #endregion
 
         #region Properties
-        public static GuiApp App => (GuiApp)Application.Instance;
+        public static GuiApp App => (GuiApp) Application.Instance;
 
         public static MainForm MainForm => (MainForm)App.MainForm;
 
@@ -120,12 +121,21 @@ namespace Stratis.DevEx.Gui
                 var status = c.Result;
                 if (status is null) return;
                 nodeStore[node] = status;
-                App.AsyncInvoke(() => { MainForm.nodeSummaryPropertyGrid.SelectedObject = nodeStore[node]; MainForm.showNodeView(); });
             }
             catch (Exception e) 
             {
                 Error(e, "Error retrieving status for node {n}.", name);
             }
+        }
+
+        public static void ShowNodeView(Node? node)
+        {
+            if (node is not null)
+            {
+                MainForm.nodeSummaryPropertyGrid.SelectedObject = nodeStore[node];
+                //MainForm.Bindings.Remove(MainForm.Bindings.First(b => b.n))
+            }
+            MainForm.splitter.Panel2 = MainForm.nodeView;
         }
         #endregion
 
@@ -135,8 +145,9 @@ namespace Stratis.DevEx.Gui
             switch (e.Item.Key)
             {
                 case var _n when _n.EndsWith("_Node"):
-                    await UpdateNodeStatus(_n.Replace("_Node", ""));
-                    //App.Invoke(MainForm.showNodeView);
+                    var name = _n.Replace("_Node", "");
+                    await UpdateNodeStatus(name);
+                    App.Invoke(()=>ShowNodeView(GuiNodes.Single(n => n.name == name))); 
                     break;
                 default:
                     break;

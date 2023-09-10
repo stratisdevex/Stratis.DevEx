@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 using Newtonsoft.Json;
@@ -42,7 +43,6 @@ namespace Cobra.Api.Node.Cirrus.Models
         [JsonProperty("outboundPeers")]
         public OutboundPeer[] OutboundPeers { get; set; } = Array.Empty<OutboundPeer>();
 
-        [JsonProperty("featuresData")]
         public FeaturesDatum[] FeaturesData { get; set; } = Array.Empty<FeaturesDatum>();
 
         [Category("Node Server")][JsonProperty("dataDirectoryPath")] public string DataDirectoryPath { get; set; } = string.Empty;
@@ -68,6 +68,7 @@ namespace Cobra.Api.Node.Cirrus.Models
         public bool InIbd { get; set; }
     }
 
+
     public partial class FeaturesDatum
     {
         [Browsable(false)] [JsonProperty("namespace")] public string Namespace { get; set; } = string.Empty;
@@ -75,7 +76,10 @@ namespace Cobra.Api.Node.Cirrus.Models
         [Browsable(false)] [JsonProperty("state")] public string State { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public string Description => Namespace + " - " + State; 
+        [Browsable(false)]
+        public string Description => Namespace + " - " + State;
+
+        public override string ToString() => Description;
     }
 
     public partial class OutboundPeer
@@ -93,7 +97,9 @@ namespace Cobra.Api.Node.Cirrus.Models
         public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
         {
 
-            if (destinationType is not null && destinationType == typeof(string))
+            if (context is null)
+                return false;
+            else if (destinationType is not null && destinationType == typeof(string))
             {
                 return true;
             }
@@ -102,7 +108,7 @@ namespace Cobra.Api.Node.Cirrus.Models
 
         public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
         {
-            if (destinationType == typeof(string) && value is FeaturesDatum fd)
+            if (context is not null && destinationType == typeof(string) && value is FeaturesDatum fd)
                 return fd.State + " = " + fd.Namespace;
             else return base.ConvertTo(context, culture, value, destinationType);
         }

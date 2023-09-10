@@ -477,7 +477,7 @@ namespace Stratis.DevEx.Gui
 
         protected void showProjectView() => splitter.Panel2 = projectView;
 
-        internal void showNodeView() => splitter.Panel2 = nodeView;
+       
 
         protected void showAboutView() => splitter.Panel2 = aboutView;
 

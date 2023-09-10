@@ -68,7 +68,7 @@ namespace Stratis.SmartContracts.TestChain
         public ulong GetBalanceInStratoshis(Base58Address address)
         {
             // In case it's a contract address
-            ulong contractBalance = this.FirstNode.SendCreateContractTransactionGetContractBalance(address);
+            ulong contractBalance = this.FirstNode.GetContractBalance(address);
             if (contractBalance > 0)
             {
                 return contractBalance;
