@@ -117,10 +117,24 @@ namespace Stratis.DevEx.Gui
             try 
             {
                 var node = GuiNodes.Single(n => n.name == name);
+                if (nodeStore.ContainsKey(node)) 
+                {
+                    var nd = (Dictionary<string, object>) nodeStore[node];
+                    if ((DateTime.Now - (DateTime) nd ["LastUpdated"]) <= TimeSpan.FromSeconds(10))
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    nodeStore[node] = new Dictionary<string, object>();
+                }
+                var n = (Dictionary<string, object>) nodeStore[node];
                 var c = await node.client.StatusAsync(false);
                 var status = c.Result;
-                if (status is null) return;
-                nodeStore[node] = status;
+                if (status is null) return;               
+                n["Status"] = status;
+                n["LastUpdated"] = DateTime.Now;
             }
             catch (Exception e) 
             {
@@ -132,7 +146,8 @@ namespace Stratis.DevEx.Gui
         {
             if (node is not null)
             {
-                MainForm.nodeSummaryPropertyGrid.SelectedObject = nodeStore[node];
+                var n = (Dictionary<string, object>)nodeStore[node];
+                MainForm.nodeSummaryPropertyGrid.SelectedObject = n["Status"];
                 //MainForm.Bindings.Remove(MainForm.Bindings.First(b => b.n))
             }
             MainForm.splitter.Panel2 = MainForm.nodeView;

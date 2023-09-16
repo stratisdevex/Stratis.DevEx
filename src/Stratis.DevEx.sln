@@ -95,7 +95,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nuclear.Assemblies", "..\ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobra.Api", "..\ext\Cobra.Api\Cobra.Api.csproj", "{75785EBD-14DC-463A-AD50-ED046F39A5AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.DevEx.TestChain", "Stratis.DevEx.TestChain\Stratis.DevEx.TestChain.csproj", "{F18BA290-AFB9-4EEF-8281-30F3F32A0265}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.TestChain", "Stratis.DevEx.TestChain\Stratis.DevEx.TestChain.csproj", "{F18BA290-AFB9-4EEF-8281-30F3F32A0265}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

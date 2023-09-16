@@ -53,15 +53,19 @@ namespace Cobra.Api.Node.Cirrus.Models
         [JsonProperty("difficulty")]
         public long Difficulty { get; set; }
 
+
+        [Category("Node")]
         [JsonProperty("protocolVersion")]
         public long ProtocolVersion { get; set; }
 
+        [Category("Node")]
         [JsonProperty("testnet")]
         public bool Testnet { get; set; }
 
         [JsonProperty("relayFee")]
         public double RelayFee { get; set; }
 
+        [Category("Node")]
         [JsonProperty("state")] public string State { get; set; } = string.Empty;
 
         [JsonProperty("inIbd")]

@@ -13,9 +13,11 @@ using Stratis.SmartContracts.Networks;
 using Stratis.SmartContracts.Tests.Common;
 using Stratis.SmartContracts.Tests.Common.MockChain;
 
+using Stratis.DevEx;
+
 namespace Stratis.SmartContracts.TestChain
 {
-    public class TestChain : IDisposable
+    public class TestChain : Runtime, IDisposable
     {
         private const int AddressesToGenerate = 5;
         private const int AmountToPreload = 100_000;
@@ -26,20 +28,23 @@ namespace Stratis.SmartContracts.TestChain
         private readonly SmartContractNodeBuilder builder;
         private readonly Func<int, CoreNode> nodeFactory;
         private readonly IMethodParameterStringSerializer paramSerializer;
-
         private MockChainNode FirstNode => this.chain.Nodes[0];
 
-        public IReadOnlyList<Base58Address> PreloadedAddresses { get; private set; }
+        public IReadOnlyList<Base58Address> PreloadedAddresses { get; private set; } = new List<Base58Address>();
 
         public TestChain()
         {
             var network = new SmartContractsPoARegTest();
             this.network = network;
             this.builder = SmartContractNodeBuilder.Create(this);
-            this.nodeFactory = (nodeIndex) => this.builder.CreateSmartContractPoANode(network, nodeIndex).Start();
+            this.nodeFactory = (nodeIndex) =>
+            {
+                Info("TestChain node #{idx} data folder is {f}.", nodeIndex, this.builder.GetNextDataFolderName());
+                this.builder.WithLogsEnabled();
+                return this.builder.CreateSmartContractPoANode(network, nodeIndex).Start();
+            };
             this.chain = new PoAMockChain(2, nodeFactory, SharedWalletMnemonic);
             this.paramSerializer = new MethodParameterStringSerializer(network); // TODO: Inject
-        
         }
 
         public TestChain Initialize()
@@ -98,7 +103,7 @@ namespace Stratis.SmartContracts.TestChain
         }
 
         public SendCreateContractResult SendCreateContractTransaction(Base58Address from, byte[] contractCode, decimal amount,
-            object[] parameters = null, ulong gasLimit = 50000, ulong gasPrice = SmartContractMempoolValidator.MinGasPrice,
+            object[]? parameters = null, ulong gasLimit = 50000, ulong gasPrice = SmartContractMempoolValidator.MinGasPrice,
             decimal feeAmount = 0.01m)
         {
             if (parameters == null)
@@ -126,7 +131,7 @@ namespace Stratis.SmartContracts.TestChain
         }
 
         public SendCallContractResult SendCallContractTransaction(Base58Address from, string methodName,
-            Base58Address contractAddress, decimal amount, object[] parameters = null, ulong gasLimit = 50000,
+            Base58Address contractAddress, decimal amount, object[]? parameters = null, ulong gasLimit = 50000,
             ulong gasPrice = SmartContractMempoolValidator.MinGasPrice, decimal feeAmount = 0.01m)
         {
             if (parameters == null)
@@ -153,7 +158,7 @@ namespace Stratis.SmartContracts.TestChain
         }
 
         public ILocalExecutionResult CallContractMethodLocally(Base58Address from, string methodName, Base58Address contractAddress,
-            decimal amount, object[] parameters = null, ulong gasLimit = 50000,
+            decimal amount, object[]? parameters = null, ulong gasLimit = 50000,
             ulong gasPrice = SmartContractMempoolValidator.MinGasPrice, double feeAmount = 0.01)
         {
             if (parameters == null)

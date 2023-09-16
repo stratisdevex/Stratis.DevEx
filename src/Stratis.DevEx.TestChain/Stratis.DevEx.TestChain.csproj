@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <LangVersion>11.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
     <RunAnalyzers>false</RunAnalyzers>
   </PropertyGroup>
@@ -15,6 +15,8 @@
     <PackageReference Include="Stratis.SmartContracts.Networks" Version="2.0.1" />
     <PackageReference Include="Stratis.SmartContracts.RuntimeObserver" Version="2.0.0" />
     <PackageReference Include="Stratis.SmartContracts.Tests.Common" Version="2.0.1" />
+    <PackageReference Include="NStratis" Version="4.0.0.80" />
+   
   </ItemGroup>
 
   <ItemGroup>
