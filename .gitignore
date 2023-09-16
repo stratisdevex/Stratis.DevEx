@@ -372,3 +372,4 @@ notebooks/*.dll
 **/ssc/*.dll
 notebooks/**/*.cs
 notebooks/**/ssc/*.ssc
+/src/TestCase/TestChain
