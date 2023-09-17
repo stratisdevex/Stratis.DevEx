@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 
-//using SharpConfig;
+using _MessagePack = Stratis.DevEx.Pipes.MessagePack;
 using Stratis.SmartContracts.TestChain;
 using Stratis.DevEx.Pipes;
 
@@ -20,10 +20,19 @@ namespace Stratis.DevEx.TestChain
             if ((args.Contains("--debug") || args.Contains("-d")) && !GlobalSetting("General", "Debug", false))
             {
                 GlobalConfig["General"]["Debug"].SetValue(true);
+                DebugEnabled = true;
                 Logger.SetLogLevelDebug();
                 Info("Debug mode enabled.");
             }
+            PipeServer = new PipeServer<_MessagePack>("stratis_testchain") { WaitFreePipe = true };
+            PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
+            PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
+            PipeServer.StartAsync().Wait();
+            PipeServer.MessageReceived += (sender, e) => ReadMessage(e.Message);
+            TestChain = new SmartContracts.TestChain.TestChain(DebugEnabled);
             TestChain.Initialize();
+            
+            var b = TestChain.builder.ConfigParameters;
             Info("here");
         }
 
@@ -36,11 +45,12 @@ namespace Stratis.DevEx.TestChain
         #endregion
 
         #region Properties
+       
         public static PipeServer<Stratis.DevEx.Pipes.MessagePack>? PipeServer { get; private set; }
         
-        public static ConcurrentQueue<Message> Messages { get; private set; } = new ConcurrentQueue<Message>();
+        public static ConcurrentQueue<Stratis.DevEx.Pipes.MessagePack> Messages { get; private set; } = new ConcurrentQueue<Stratis.DevEx.Pipes.MessagePack>();
 
-        public static Stratis.SmartContracts.TestChain.TestChain TestChain { get; private set; } = new SmartContracts.TestChain.TestChain();
+        public static Stratis.SmartContracts.TestChain.TestChain? TestChain { get; private set; } 
         #endregion
     }
 }

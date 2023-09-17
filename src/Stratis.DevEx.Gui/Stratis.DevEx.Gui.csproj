@@ -55,13 +55,24 @@
     <EmbeddedResource Include="Images\vscode.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(BuildPlatform)'=='Windows'">
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1901.177" />
   </ItemGroup>
+
+  <Target Name="SetOutputToExe" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <OutputType>Exe</OutputType>
+    </PropertyGroup>
+  </Target>
+
+  <ItemGroup>
+    <TestChain Include="..\Stratis.DevEx.TestChain\bin\Debug\net6.0\**\*.*" />
+  </ItemGroup>
+
+  <Target Name="C" AfterTargets="AfterBuild">
+    <Copy SourceFiles="@(TestChain)" DestinationFiles="@(TestChain->'$(TargetDir)\testchain\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Message Text="Copied TestChain project output to $(TargetDir)\testchain" Importance="High" />
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\..\ext\Cobra.Api\Cobra.Api.csproj" />
@@ -72,18 +83,10 @@
     <ProjectReference Include="..\Stratis.DevEx.Gui.IO\Stratis.DevEx.Gui.IO.csproj" />
   </ItemGroup>
 
-  <Target Name="SetOutputToExe" BeforeTargets="BeforeBuild">
-    <PropertyGroup>
-      <OutputType>Exe</OutputType>
-    </PropertyGroup>
-  </Target>
-
   <ItemGroup>
     <PackageReference Update="Eto.Forms" Version="2.7.5" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Update="Eto.Platform.Windows" Version="2.7.5" />
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
   </ItemGroup>
    
 </Project>

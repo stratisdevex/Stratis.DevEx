@@ -11,7 +11,8 @@ namespace Stratis.DevEx.Pipes
         COMPILATION,
         CONTROL_FLOW_GRAPH,
         SUMMARY,
-        CALL_GRAPH
+        CALL_GRAPH,
+        WALLETS
     }
     
     [Serializable]
@@ -224,6 +225,11 @@ namespace Stratis.DevEx.Pipes
             MessageBytes = Serialize(m)
         };
 
+        public static MessagePack WalletsMessage => new MessagePack()
+        {
+            Type = MessageType.WALLETS,
+            MessageBytes = Array.Empty<byte>()
+        };
         public static string PrettyPrint(CompilationMessage m)
         {
             var n = Environment.NewLine;

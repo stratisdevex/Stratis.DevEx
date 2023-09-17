@@ -23,16 +23,16 @@ namespace Stratis.SmartContracts.TestChain
         private const int AmountToPreload = 100_000;
         private static readonly Mnemonic SharedWalletMnemonic = new Mnemonic("lava frown leave wedding virtual ghost sibling able mammal liar wide wisdom");
 
-        private readonly Network network;
-        private readonly PoAMockChain chain;
-        private readonly SmartContractNodeBuilder builder;
+        public readonly Network network;
+        public readonly PoAMockChain chain;
+        public readonly SmartContractNodeBuilder builder;
         private readonly Func<int, CoreNode> nodeFactory;
         private readonly IMethodParameterStringSerializer paramSerializer;
         private MockChainNode FirstNode => this.chain.Nodes[0];
 
         public IReadOnlyList<Base58Address> PreloadedAddresses { get; private set; } = new List<Base58Address>();
 
-        public TestChain()
+        public TestChain(bool enableLogging=false)
         {
             var network = new SmartContractsPoARegTest();
             this.network = network;
@@ -40,14 +40,17 @@ namespace Stratis.SmartContracts.TestChain
             this.nodeFactory = (nodeIndex) =>
             {
                 Info("TestChain node #{idx} data folder is {f}.", nodeIndex, this.builder.GetNextDataFolderName());
-                this.builder.WithLogsEnabled();
+                if (enableLogging)
+                {
+                    this.builder.WithLogsEnabled();
+                } 
                 return this.builder.CreateSmartContractPoANode(network, nodeIndex).Start();
             };
             this.chain = new PoAMockChain(2, nodeFactory, SharedWalletMnemonic);
             this.paramSerializer = new MethodParameterStringSerializer(network); // TODO: Inject
         }
 
-        public TestChain Initialize()
+        public void Initialize()
         {
             this.chain.Build();
 
@@ -66,8 +69,7 @@ namespace Stratis.SmartContracts.TestChain
             }
 
             this.PreloadedAddresses = preloadedAddresses;
-
-            return this;
+            this.Initialized = true;
         }
 
         public ulong GetBalanceInStratoshis(Base58Address address)
