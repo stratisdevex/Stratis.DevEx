@@ -66,15 +66,6 @@
   </Target>
 
   <ItemGroup>
-    <TestChain Include="..\Stratis.DevEx.TestChain\bin\Debug\net6.0\**\*.*" />
-  </ItemGroup>
-
-  <Target Name="C" AfterTargets="AfterBuild">
-    <Copy SourceFiles="@(TestChain)" DestinationFiles="@(TestChain->'$(TargetDir)\testchain\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Message Text="Copied TestChain project output to $(TargetDir)\testchain" Importance="High" />
-  </Target>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\ext\Cobra.Api\Cobra.Api.csproj" />
     <ProjectReference Include="..\..\ext\SharpConfig\Src\SharpConfig.csproj" />
     <ProjectReference Include="..\Stratis.CodeAnalysis.IL\Stratis.CodeAnalysis.IL.csproj" />

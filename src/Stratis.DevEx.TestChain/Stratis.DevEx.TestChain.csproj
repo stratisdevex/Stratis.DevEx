@@ -8,8 +8,61 @@
     <RunAnalyzers>false</RunAnalyzers>
   </PropertyGroup>
 
+  <UsingTask TaskName="GetBuildOutput" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll" >
+    <ParameterGroup>
+      <ProjectFile ParameterType="System.String" Required="true"/>
+      <BuildOutput ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true"/>
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Xml"/>
+      <Reference Include="Microsoft.Build"/>
+      <Using Namespace="Microsoft.Build.Evaluation"/>
+      <Using Namespace="Microsoft.Build.Utilities"/>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        // The dollar-properties here get expanded to be the
+        // actual values that are present during build.
+        var properties = new Dictionary<string, string>
+        {
+          { "Configuration", "$(Configuration)" },
+          { "Platform", "$(Platform)" }
+        };
+
+        // Load the project into a separate project collection so
+        // we don't get a redundant-project-load error.
+        var collection = new ProjectCollection(properties);
+        var project = collection.LoadProject(ProjectFile);
+
+        // Dollar sign can't easily be escaped here so we use the char code.
+        var expanded = project.ExpandString(((char)36) + @"(MSBuildProjectDirectory)\" + ((char)36) + "(OutputPath)" + "\\testchain");
+        BuildOutput = new TaskItem[] { new TaskItem(expanded) };
+      ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
   <ItemGroup>
-    <PackageReference Include="Stratis.Core.Tests.Common" Version="1.0.7" />
+    <ProjectToScan Include="..\Stratis.DevEx.Gui\Stratis.DevEx.Gui.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <TestChain Include="$(TargetDir)\**\*.*" />
+  </ItemGroup>
+  <Target Name="EnumerateOutput" AfterTargets="Build">
+   
+    <!-- Call the custom task to get the output -->
+    <GetBuildOutput ProjectFile="%(ProjectToScan.FullPath)">
+      <Output ItemName="ProjectToScanOutput" TaskParameter="BuildOutput"/>
+    </GetBuildOutput>
+    
+
+    <Copy SourceFiles="@(TestChain)" DestinationFolder="%(ProjectToScanOutput.Identity)" />
+    <Message Text="Copied TestChain project output to %(ProjectToScanOutput.Identity)" Importance="High" />
+    
+  </Target>
+
+
+  <ItemGroup>
+    
     <PackageReference Include="Stratis.Features.IntegrationTests.Common" Version="1.0.7" />
     <PackageReference Include="Stratis.SmartContracts.CLR.Validation" Version="2.0.1" />
     <PackageReference Include="Stratis.SmartContracts.Networks" Version="2.0.1" />

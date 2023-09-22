@@ -34,6 +34,7 @@ namespace Stratis.SmartContracts.TestChain
 
         public TestChain(bool enableLogging=false)
         {
+            Info("here");
             var network = new SmartContractsPoARegTest();
             this.network = network;
             this.builder = SmartContractNodeBuilder.Create(this);
@@ -47,7 +48,8 @@ namespace Stratis.SmartContracts.TestChain
                 return this.builder.CreateSmartContractPoANode(network, nodeIndex).Start();
             };
             this.chain = new PoAMockChain(2, nodeFactory, SharedWalletMnemonic);
-            this.paramSerializer = new MethodParameterStringSerializer(network); // TODO: Inject
+            this.paramSerializer = new MethodParameterStringSerializer(network);
+            Info("construct testchain");// TODO: Inject
         }
 
         public void Initialize()
@@ -195,5 +197,7 @@ namespace Stratis.SmartContracts.TestChain
         {
             this.chain.Dispose();
         }
+
+        public CoreNodeState[] NodeState => chain.Nodes?.Select(n => n?.CoreNode.State ?? CoreNodeState.Starting).ToArray() ?? Array.Empty<CoreNodeState>();
     }
 }

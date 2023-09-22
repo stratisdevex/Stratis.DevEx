@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ namespace Stratis.DevEx.Gui
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
             PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
 
+
             ParserResult<Options> result = new Parser().ParseArguments<Options>(args)
             .WithNotParsed(errors =>
             {
@@ -54,6 +56,8 @@ namespace Stratis.DevEx.Gui
                     WriteRunFile();
                     Console.CancelKeyPress += (sender, e) => Shutdown();
                     Info("Press Ctrl-C to exit...");
+                    Process? p = TestChain.Run();
+                    
                     while (true)
                     {
                         System.Threading.Thread.Sleep(100);
@@ -192,7 +196,6 @@ namespace Stratis.DevEx.Gui
         public static PipeServer<MessagePack>? PipeServer { get; private set; }
 
         public static DirectoryInfo assemblyCacheDir = new DirectoryInfo(Path.Combine(Runtime.StratisDevDir, "asmcache"));
-
         public static Stack<CompilationMessage> CompilationMessages { get; private set; } = new Stack<CompilationMessage>();
         public static Stack<SummaryMessage> SummaryMessages { get; private set; } = new Stack<SummaryMessage>();
         public static Stack<ControlFlowGraphMessage> ControlFlowGraphMessages { get; private set; } = new Stack<ControlFlowGraphMessage>();

@@ -12,7 +12,9 @@ namespace Stratis.DevEx.Pipes
         CONTROL_FLOW_GRAPH,
         SUMMARY,
         CALL_GRAPH,
-        WALLETS
+        TESTCHAIN_PING,
+        TESTCHAIN_PONG,
+        TESTCHAIN_WALLETS
     }
     
     [Serializable]
@@ -227,7 +229,7 @@ namespace Stratis.DevEx.Pipes
 
         public static MessagePack WalletsMessage => new MessagePack()
         {
-            Type = MessageType.WALLETS,
+            Type = MessageType.TESTCHAIN_WALLETS,
             MessageBytes = Array.Empty<byte>()
         };
         public static string PrettyPrint(CompilationMessage m)
