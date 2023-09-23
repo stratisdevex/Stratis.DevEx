@@ -373,3 +373,4 @@ notebooks/*.dll
 notebooks/**/*.cs
 notebooks/**/ssc/*.ssc
 /src/TestCase/TestChain
+/src/Stratis.DevEx.Gui/TestCase/TestChain
