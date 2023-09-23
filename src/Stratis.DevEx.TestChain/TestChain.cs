@@ -71,6 +71,7 @@ namespace Stratis.SmartContracts.TestChain
             }
 
             this.PreloadedAddresses = preloadedAddresses;
+            Info("initialized");
             this.Initialized = true;
         }
 

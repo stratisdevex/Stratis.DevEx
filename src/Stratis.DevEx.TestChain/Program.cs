@@ -32,10 +32,10 @@ namespace Stratis.DevEx.TestChain
                 Logger.SetLogLevelDebug();
                 Info("Debug mode enabled.");
             }
-            var pc = Stratis.DevEx.Gui.IO.Gui.CreatePipeClient("stratis_devex");
+            var pc = Stratis.DevEx.Gui.IO.Gui.CreatePipeClient("stratis_devexgui");
             if (pc is null)
             {
-                Error("Could not create pipe client for pipe stratis_devex");
+                Error("Could not create pipe client for pipe stratis_devexgui");
                 Shutdown(1);
             }
             else
@@ -49,15 +49,29 @@ namespace Stratis.DevEx.TestChain
             PipeServer.MessageReceived += (sender, e) => ReadMessage(e.Message);
             
             TestChain = new SmartContracts.TestChain.TestChain(DebugEnabled);
-            var i = Task.Run(TestChain.Initialize);
-            //Info("here");
+            if (TestChain is null)
+            {
+                Error("Could not create pipe client for pipe stratis_devexgui");
+                Shutdown(1);
+            }
+            var i = Task.Run(TestChain!.Initialize);
             while (true)
             {
                 System.Threading.Thread.Sleep(100);
-                if (TestChain.NodeState.All(s => s == Bitcoin.IntegrationTests.Common.EnvironmentMockUpHelpers.CoreNodeState.Running) && TestChain.Initialized)
+                if (!Pong && TestChain!.Initialized) 
                 {
-                    Shutdown();
+                    if (TestChain.Initialized)
+                    {
+                        Gui.IO.Gui.ReconnectIfDisconnected(PipeClient);
+                    }
+                    PipeClient.WriteAsync(new _MessagePack() { Type = MessageType.TESTCHAIN_PONG }).Wait();
+                    Pong = true;
+                    Info("Pong");
                 }
+                //if (TestChain.NodeState.All(s => s == Bitcoin.IntegrationTests.Common.EnvironmentMockUpHelpers.CoreNodeState.Running) && TestChain.Initialized)
+                //{
+                //    Shutdown();
+               // }
             }
 
         }
@@ -104,6 +118,8 @@ namespace Stratis.DevEx.TestChain
         public static ConcurrentQueue<Stratis.DevEx.Pipes.MessagePack> Messages { get; private set; } = new ConcurrentQueue<Stratis.DevEx.Pipes.MessagePack>();
 
         public static Stratis.SmartContracts.TestChain.TestChain? TestChain { get; private set; }
+
+        public static bool Pong { get; private set; }
         #endregion
 
         #region Event handlers
