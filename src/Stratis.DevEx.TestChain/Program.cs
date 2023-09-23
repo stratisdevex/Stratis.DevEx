@@ -51,7 +51,7 @@ namespace Stratis.DevEx.TestChain
             TestChain = new SmartContracts.TestChain.TestChain(DebugEnabled);
             if (TestChain is null)
             {
-                Error("Could not create pipe client for pipe stratis_devexgui");
+                Error("Could not create TestChain.");
                 Shutdown(1);
             }
             var i = Task.Run(TestChain!.Initialize);

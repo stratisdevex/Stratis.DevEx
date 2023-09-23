@@ -14,6 +14,7 @@ namespace Stratis.DevEx.Pipes
         CALL_GRAPH,
         TESTCHAIN_PING,
         TESTCHAIN_PONG,
+        TESTCHAIN_SHUTDOWN,
         TESTCHAIN_WALLETS
     }
     
