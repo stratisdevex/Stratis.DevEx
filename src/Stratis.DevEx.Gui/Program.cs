@@ -35,8 +35,16 @@ namespace Stratis.DevEx.Gui
             PipeServer = new PipeServer<MessagePack>("stratis_devexgui") { WaitFreePipe = true };
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
             PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
-
-
+            var pc = IO.Gui.CreatePipeClient("stratis_testchain");
+            if (pc is null)
+            {
+                Error("Could not create pipe client for pipe stratis_testchain");
+                Shutdown();
+            }
+            else
+            {
+                TestChain.PipeClient = pc;
+            }
             ParserResult<Options> result = new Parser().ParseArguments<Options>(args)
             .WithNotParsed(errors =>
             {
@@ -56,8 +64,7 @@ namespace Stratis.DevEx.Gui
                     WriteRunFile();
                     Console.CancelKeyPress += (sender, e) => Shutdown();
                     Info("Press Ctrl-C to exit...");
-                    Process? p = TestChain.Run();
-                    
+                    TestChainProcess = TestChain.Run();
                     while (true)
                     {
                         System.Threading.Thread.Sleep(100);
@@ -111,6 +118,10 @@ namespace Stratis.DevEx.Gui
                     SummaryMessages.Push(sm);
                     sma?.Invoke(sm);
                     break;
+                case MessageType.TESTCHAIN_PONG:
+                    TestChain.IsInitialized = true;
+                    Info("TestChain initialized.");
+                    break;
             }
         }
         public static void Shutdown()
@@ -124,7 +135,43 @@ namespace Stratis.DevEx.Gui
             {
                 File.Delete(RunFile);
             }
+            if (TestChainProcess is not null && !TestChainProcess.HasExited)
+            {
+                ShutdownTestChain();
+            }
             Environment.Exit(0);
+        }
+
+        public static void ShutdownTestChain()
+        {
+            if (TestChainProcess is null || TestChainProcess.HasExited)
+            {
+                return;
+            }
+            else if (!TestChain.IsInitialized)
+            {
+                TestChainProcess.Kill();
+                return;
+            }
+            var op = Begin("Shutting down TestChain");
+            var pc = TestChain.PipeClient ?? throw new Exception();
+            Gui.IO.Gui.ReconnectIfDisconnected(pc);
+            pc.WriteAsync(new MessagePack() { Type = MessageType.TESTCHAIN_SHUTDOWN }).Wait();
+            var start = DateTime.Now;
+            while (!TestChainProcess.HasExited && DateTime.Now - start < TimeSpan.FromSeconds(1))
+            {
+                System.Threading.Thread.Sleep(100);
+
+            }
+            if (TestChainProcess.HasExited)
+            {
+                op.Complete();
+            }
+            else
+            {
+                op.Abandon();
+                TestChainProcess.Kill();
+            }
         }
 
         public static Graph CreateGraph(ControlFlowGraphMessage m)
@@ -196,6 +243,9 @@ namespace Stratis.DevEx.Gui
         public static PipeServer<MessagePack>? PipeServer { get; private set; }
 
         public static DirectoryInfo assemblyCacheDir = new DirectoryInfo(Path.Combine(Runtime.StratisDevDir, "asmcache"));
+
+        public static Process? TestChainProcess { get; private set; }
+
         public static Stack<CompilationMessage> CompilationMessages { get; private set; } = new Stack<CompilationMessage>();
         public static Stack<SummaryMessage> SummaryMessages { get; private set; } = new Stack<SummaryMessage>();
         public static Stack<ControlFlowGraphMessage> ControlFlowGraphMessages { get; private set; } = new Stack<ControlFlowGraphMessage>();

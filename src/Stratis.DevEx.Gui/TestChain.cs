@@ -12,7 +12,7 @@ namespace Stratis.DevEx.Gui
 {
     internal class TestChain : Runtime
     {
-        internal static PipeClient<MessagePack>? PipeClient { get; private set; }
+        internal static PipeClient<MessagePack>? PipeClient { get; set; }
 
         internal static Process? Run()
         {
@@ -71,5 +71,7 @@ namespace Stratis.DevEx.Gui
             }
 
         }
+
+        internal static bool IsInitialized; 
     }
 }

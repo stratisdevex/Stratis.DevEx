@@ -19,6 +19,11 @@ namespace Stratis.DevEx.TestChain
             AppDomain.CurrentDomain.UnhandledException += Program_UnhandledException;
         }
 
+        private static void CurrentDomain_ProcessExit(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         #region Entry-point
         [STAThread]
         public static void Main(string[] args)
@@ -66,7 +71,7 @@ namespace Stratis.DevEx.TestChain
                     }
                     PipeClient.WriteAsync(new _MessagePack() { Type = MessageType.TESTCHAIN_PONG }).Wait();
                     Pong = true;
-                    Info("Pong");
+                    Info("Received ping from Stratis.DevEx.Gui.");
                 }
                 //if (TestChain.NodeState.All(s => s == Bitcoin.IntegrationTests.Common.EnvironmentMockUpHelpers.CoreNodeState.Running) && TestChain.Initialized)
                 //{
@@ -88,6 +93,9 @@ namespace Stratis.DevEx.TestChain
                         Gui.IO.Gui.ReconnectIfDisconnected(pc);
                     }
                     pc.WriteAsync(new _MessagePack() { Type = MessageType.TESTCHAIN_PONG }).Wait();
+                    break;
+                case MessageType.TESTCHAIN_SHUTDOWN:
+                    Shutdown(0);
                     break;
                 default:
                     Error("Can't read message type {mt}.", m.Type);
