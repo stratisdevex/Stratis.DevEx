@@ -42,7 +42,8 @@ namespace Stratis.DevEx.Gui
             navigation.DataStore = new TreeItem(
 				new TreeItem() { Image = Icons.Globe, Text = "About", Key = "About" },
 				new TreeItem() { Image = Icons.TestIcon, Text = "Projects", Key = "Projects"},
-                nodesTreeItem
+                nodesTreeItem,
+                new TreeItem() { Image = Icons.Wallet, Text="Wallets", Key="Wallets"}
             );
             navigation.Activated += Navigation_NodeMouseClick;
             navigation.NodeMouseClick += Navigation_NodeMouseClick;

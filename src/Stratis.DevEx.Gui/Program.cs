@@ -35,16 +35,14 @@ namespace Stratis.DevEx.Gui
             PipeServer = new PipeServer<MessagePack>("stratis_devexgui") { WaitFreePipe = true };
             PipeServer.ClientConnected += (sender, e) => Info("Client connected...");
             PipeServer.ExceptionOccurred += (sender, e) => Error(e.Exception, "Exception occurred in pipe server.");
-            var pc = IO.Gui.CreatePipeClient("stratis_testchain");
-            if (pc is null)
+            TestChainProcess = TestChain.Run();
+            TestChain.PipeClient = IO.Gui.CreatePipeClient("stratis_testchain");
+            if (TestChain.PipeClient is null)
             {
                 Error("Could not create pipe client for pipe stratis_testchain");
                 Shutdown();
             }
-            else
-            {
-                TestChain.PipeClient = pc;
-            }
+            
             ParserResult<Options> result = new Parser().ParseArguments<Options>(args)
             .WithNotParsed(errors =>
             {
@@ -64,7 +62,7 @@ namespace Stratis.DevEx.Gui
                     WriteRunFile();
                     Console.CancelKeyPress += (sender, e) => Shutdown();
                     Info("Press Ctrl-C to exit...");
-                    TestChainProcess = TestChain.Run();
+                    
                     while (true)
                     {
                         System.Threading.Thread.Sleep(100);
@@ -154,14 +152,13 @@ namespace Stratis.DevEx.Gui
                 return;
             }
             var op = Begin("Shutting down TestChain");
-            var pc = TestChain.PipeClient ?? throw new Exception();
-            Gui.IO.Gui.ReconnectIfDisconnected(pc);
-            pc.WriteAsync(new MessagePack() { Type = MessageType.TESTCHAIN_SHUTDOWN }).Wait();
+            if (TestChain.PipeClient is null) throw new Exception();
+            IO.Gui.ReconnectIfDisconnected(TestChain.PipeClient);
+            TestChain.PipeClient.WriteAsync(new MessagePack() { Type = MessageType.TESTCHAIN_SHUTDOWN }).Wait();
             var start = DateTime.Now;
-            while (!TestChainProcess.HasExited && DateTime.Now - start < TimeSpan.FromSeconds(1))
+            while (!TestChainProcess.HasExited && DateTime.Now - start < TimeSpan.FromSeconds(5))
             {
                 System.Threading.Thread.Sleep(100);
-
             }
             if (TestChainProcess.HasExited)
             {
