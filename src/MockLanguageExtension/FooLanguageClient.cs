@@ -20,13 +20,17 @@ using System.ComponentModel.Composition;
 using Stratis.DevEx;
 
 namespace MockLanguageExtension
-{
+{  
     [ContentType("foo")]
     [Export(typeof(ILanguageClient))]
     [RunOnContext(RunningContext.RunOnHost)]
-    public class FooLanguageClient : ILanguageClient, ILanguageClientCustomMessage2
+    public class FooLanguageClient : Runtime, ILanguageClient, ILanguageClientCustomMessage2
     {
         
+        static FooLanguageClient()
+        {
+            Initialize("Stratis.Editor.Solidity.LanguageClient", "CL");
+        }
         public FooLanguageClient()
         {
             Instance = this;
