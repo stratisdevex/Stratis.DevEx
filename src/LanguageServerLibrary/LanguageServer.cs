@@ -13,9 +13,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
+using Stratis.DevEx;
 namespace LanguageServer
 {
-    public class LanguageServer : INotifyPropertyChanged
+    public class LanguageServer : Runtime, INotifyPropertyChanged
     {
         private int maxProblems = -1;
         private readonly JsonRpc rpc;
@@ -32,6 +33,11 @@ namespace LanguageServer
         private readonly Dictionary<VSTextDocumentIdentifier, int> diagnosticsResults;
 
         private int counter = 100;
+
+        static LanguageServer()
+        {
+            Initialize("Stratis.Editor.Solidity.LanguageServer", "LS");
+        }
 
         public LanguageServer(Stream sender, Stream reader, List<DiagnosticsInfo> initialDiagnostics = null)
         {
@@ -610,7 +616,7 @@ namespace LanguageServer
 
                         if (locationsChunk.Count == this.referencesChunkSize)
                         {
-                            Debug.WriteLine($"Reporting references of {referenceWord}");
+                            System.Diagnostics.Debug.WriteLine($"Reporting references of {referenceWord}");
                             this.rpc.TraceSource.TraceEvent(TraceEventType.Information, 0, $"Report: {JToken.FromObject(locationsChunk)}");
                             progress.Report(locationsChunk.ToArray());
                             Thread.Sleep(delay);  // Wait between chunks
@@ -620,7 +626,7 @@ namespace LanguageServer
 
                     if (token.IsCancellationRequested)
                     {
-                        Debug.WriteLine($"Cancellation Requested for {referenceWord} references");
+                        System.Diagnostics.Debug.WriteLine($"Cancellation Requested for {referenceWord} references");
                     }
 
                     token.ThrowIfCancellationRequested();

@@ -16,6 +16,9 @@ using Task = System.Threading.Tasks.Task;
 using Microsoft.VisualStudio.LanguageServer.Protocol;
 using System.ComponentModel.Composition;
 
+
+using Stratis.DevEx;
+
 namespace MockLanguageExtension
 {
     [ContentType("foo")]
@@ -23,6 +26,7 @@ namespace MockLanguageExtension
     [RunOnContext(RunningContext.RunOnHost)]
     public class FooLanguageClient : ILanguageClient, ILanguageClientCustomMessage2
     {
+        
         public FooLanguageClient()
         {
             Instance = this;
@@ -70,7 +74,8 @@ namespace MockLanguageExtension
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
             // Debugger.Launch();
-
+            //Runtime.Initialize("Stratis.Editot.Solidity", "language server");
+        
             ProcessStartInfo info = new ProcessStartInfo();
             var programPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Server", @"LanguageServerWithUI.exe");
             info.FileName = programPath;

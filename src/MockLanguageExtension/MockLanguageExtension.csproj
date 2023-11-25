@@ -67,10 +67,12 @@
 		<Reference Include="System.Design" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\..\ext\NLog\src\NLog\NLog.csproj" />
 		<ProjectReference Include="..\LanguageServerWithUI\LanguageServerWithUI.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<VsixSubPath>Server</VsixSubPath>
 		</ProjectReference>
+		<ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj" />
 	</ItemGroup>
 
 	<Target Name="IncludeLanguageServers" BeforeTargets="GetVsixSourceItems">
