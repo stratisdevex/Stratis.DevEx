@@ -18,6 +18,8 @@ using System.ComponentModel.Composition;
 
 
 using Stratis.DevEx;
+using EnvDTE;
+using System.Configuration;
 
 namespace MockLanguageExtension
 {  
@@ -34,6 +36,7 @@ namespace MockLanguageExtension
         public FooLanguageClient()
         {
             Instance = this;
+            this.MiddleLayer = new FooMiddleLayer();
         }
 
         internal static FooLanguageClient Instance
@@ -77,37 +80,46 @@ namespace MockLanguageExtension
 
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
-            // Debugger.Launch();
-            //Runtime.Initialize("Stratis.Editot.Solidity", "language server");
+            //Debugger.Launch();
         
             ProcessStartInfo info = new ProcessStartInfo();
-            var programPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Server", @"LanguageServerWithUI.exe");
+            //var programPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Server", @"LanguageServerWithUI.exe");
+            var programPath = "nomicfoundation-solidity-language-server";
             info.FileName = programPath;
             info.WorkingDirectory = Path.GetDirectoryName(programPath);
-
-            var stdInPipeName = @"output";
-            var stdOutPipeName = @"input";
+            info.Arguments = "--pipe=sol";
+            info.RedirectStandardInput = false;
+            info.RedirectStandardOutput = false;
+            info.UseShellExecute = true;
+            //info.CreateNoWindow = true;
+            //info.
+            var pipeName = @"sol";
+            //var stdOutPipeName = @"sol";
 
             var pipeAccessRule = new PipeAccessRule("Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
             var pipeSecurity = new PipeSecurity();
             pipeSecurity.AddAccessRule(pipeAccessRule);
 
             var bufferSize = 256;
-            var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
-            var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
-
-            Process process = new Process();
+            //var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
+            //var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
+            var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 256, 256, pipeSecurity);
+            var process = new System.Diagnostics.Process();
             process.StartInfo = info;
 
             if (process.Start())
             {
-                await readerPipe.WaitForConnectionAsync(token);
-                await writerPipe.WaitForConnectionAsync(token);
+                Info("Started language server process {proc}", process.StartInfo.FileName);
+                await pipe.WaitForConnectionAsync(token);
+                //await writerPipe.WaitForConnectionAsync(token);
 
-                return new Connection(readerPipe, writerPipe);
+                return new Connection(pipe, pipe);
             }
-
-            return null;
+            else
+            {
+                Info("Could not start language server process {proc}", process.StartInfo.FileName);
+                return null;
+            }
         }
 
         public async Task OnLoadedAsync()
@@ -140,6 +152,7 @@ namespace MockLanguageExtension
 
         public Task<InitializationFailureContext> OnServerInitializeFailedAsync(ILanguageClientInitializationInfo initializationState)
         {
+            Error("Language server failed to initialize.");
             string message = "Oh no! Foo Language Client failed to activate, now we can't test LSP! :(";
             string exception = initializationState.InitializationException?.ToString() ?? string.Empty;
             message = $"{message}\n {exception}";
@@ -156,16 +169,21 @@ namespace MockLanguageExtension
         {
             public bool CanHandle(string methodName)
             {
-                return methodName == Methods.TextDocumentCompletionName;
+                Info("Calling method {m}", methodName);
+                //return methodName == Methods.TextDocumentCompletionName;
+                return true;
             }
 
             public Task HandleNotificationAsync(string methodName, JToken methodParam, Func<JToken, Task> sendNotification)
             {
-                throw new NotImplementedException();
+                Info("Notification {req} {param}.", methodName, methodParam);
+                return Task.CompletedTask;
+                //throw new NotImplementedException();
             }
 
             public async Task<JToken> HandleRequestAsync(string methodName, JToken methodParam, Func<JToken, Task<JToken>> sendRequest)
             {
+                Info("Request {req} {param}.", methodName, methodParam);
                 var result = await sendRequest(methodParam);
                 return result;
             }
