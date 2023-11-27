@@ -20,6 +20,7 @@ using System.ComponentModel.Composition;
 using Stratis.DevEx;
 using EnvDTE;
 using System.Configuration;
+using System.IO.Pipelines;
 
 namespace MockLanguageExtension
 {  
@@ -44,6 +45,10 @@ namespace MockLanguageExtension
             get;
             set;
         }
+
+        internal System.Diagnostics.Process ServerProcess { get; set; }
+
+        internal NamedPipeServerStream ServerProcessPipe { get; set; }
 
         internal JsonRpc Rpc
         {
@@ -78,46 +83,67 @@ namespace MockLanguageExtension
 
         public bool ShowNotificationOnInitializeFailed => true;
 
-        public async Task<Connection> ActivateAsync(CancellationToken token)
+
+        protected string GenerateRandomPipeName()
         {
-            //Debugger.Launch();
-        
+            Random rnd = new Random();
+            Byte[] b = new Byte[16];
+            rnd.NextBytes(b);
+            var id = Convert.ToBase64String(b);
+            return "\\\\.\\pipe\\lsp-" + id + "-sock";
+        }
+
+        protected bool StartLanguageServerProcess()
+        {
             ProcessStartInfo info = new ProcessStartInfo();
             //var programPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Server", @"LanguageServerWithUI.exe");
-            var programPath = "nomicfoundation-solidity-language-server";
+            //var programPath = "nomicfoundation-solidity-language-server";
+            var programPath = "cmd.exe";
             info.FileName = programPath;
-            info.WorkingDirectory = Path.GetDirectoryName(programPath);
-            info.Arguments = "--pipe=sol";
-            info.RedirectStandardInput = false;
-            info.RedirectStandardOutput = false;
-            info.UseShellExecute = true;
-            //info.CreateNoWindow = true;
-            //info.
-            var pipeName = @"sol";
-            //var stdOutPipeName = @"sol";
-
-            var pipeAccessRule = new PipeAccessRule("Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
-            var pipeSecurity = new PipeSecurity();
-            pipeSecurity.AddAccessRule(pipeAccessRule);
-
-            var bufferSize = 256;
-            //var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
-            //var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
-            var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 256, 256, pipeSecurity);
+            //info.WorkingDirectory = Path.GetDirectoryName(programPath);
+            info.Arguments = "/c C:\\Users\\Allister\\AppData\\Roaming\\npm\\nomicfoundation-solidity-language-server.cmd --stdio";
+            info.RedirectStandardInput = true;
+            info.RedirectStandardOutput = true;
+            info.UseShellExecute = false;
+            info.CreateNoWindow = false;
+            
             var process = new System.Diagnostics.Process();
             process.StartInfo = info;
-
-            if (process.Start())
+            process.EnableRaisingEvents = true;
+            process.Exited += (e, args) =>
             {
-                Info("Started language server process {proc}", process.StartInfo.FileName);
-                await pipe.WaitForConnectionAsync(token);
-                //await writerPipe.WaitForConnectionAsync(token);
+                Info("Language server proceess exited. Restarting.");
+                process.Start();
+            };
+            ServerProcess = process;
+            return process.Start();
+        }
+        public async Task<Connection> ActivateAsync(CancellationToken token)
+        {
+            await Task.Yield();
+            //Debugger.Launch();
 
-                return new Connection(pipe, pipe);
+            //var pipeName = GenerateRandomPipeName();
+
+            //var pipeAccessRule = new PipeAccessRule("Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+            //var pipeSecurity = new PipeSecurity();
+            //pipeSecurity.AddAccessRule(pipeAccessRule);
+
+            //var bufferSize = 256;
+            //var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
+            //var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
+            //ServerProcessPipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 4, PipeTransmissionMode., System.IO.Pipes.PipeOptions.Asynchronous, 256, 256, pipeSecurity);
+
+            if (StartLanguageServerProcess())
+            {
+                Info("Started language server process {proc}", ServerProcess.StartInfo.FileName);
+    
+                //await ServerProcessPipe.WaitForConnectionAsync(token);
+                return new Connection(ServerProcess.StandardOutput.BaseStream, ServerProcess.StandardInput.BaseStream);
             }
             else
             {
-                Info("Could not start language server process {proc}", process.StartInfo.FileName);
+                Info("Could not start language server process {proc}", ServerProcess.StartInfo.FileName);
                 return null;
             }
         }
