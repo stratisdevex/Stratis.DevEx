@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="SolidityLanguageEditor2" Version="17.1" Language="en-US" Publisher="Stratis DevEx" />
-        <DisplayName>Solidity Language Extension</DisplayName>
-		<Description xml:space="preserve">Sample extension of an LSP language server.</Description>
+        <Identity Id="StratisSoliditySmartContractExtension" Version="17.1" Language="en-US" Publisher="Stratis DevEx" />
+        <DisplayName>Stratis Solidity Smart Contract Extension</DisplayName>
+		<Description xml:space="preserve">Stratis smart contracts extension.</Description>
     </Metadata>
     <Installation>
 		<InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,18.0)">

@@ -24,31 +24,29 @@ using System.IO.Pipelines;
 
 namespace MockLanguageExtension
 {  
-    [ContentType("foo")]
+    [ContentType("solidity")]
     [Export(typeof(ILanguageClient))]
     [RunOnContext(RunningContext.RunOnHost)]
-    public class FooLanguageClient : Runtime, ILanguageClient, ILanguageClientCustomMessage2
+    public class SolidityLanguageClient : Runtime, ILanguageClient, ILanguageClientCustomMessage2
     {
         
-        static FooLanguageClient()
+        static SolidityLanguageClient()
         {
-            Initialize("Stratis.Editor.Solidity.LanguageClient", "CL");
+            Initialize("Stratis.VS.Solidity", "LanguageClient");
         }
-        public FooLanguageClient()
+        public SolidityLanguageClient()
         {
             Instance = this;
             this.MiddleLayer = new FooMiddleLayer();
         }
 
-        internal static FooLanguageClient Instance
+        internal static SolidityLanguageClient Instance
         {
             get;
             set;
         }
 
         internal System.Diagnostics.Process ServerProcess { get; set; }
-
-        internal NamedPipeServerStream ServerProcessPipe { get; set; }
 
         internal JsonRpc Rpc
         {
@@ -59,7 +57,7 @@ namespace MockLanguageExtension
         public event AsyncEventHandler<EventArgs> StartAsync;
         public event AsyncEventHandler<EventArgs> StopAsync;
 
-        public string Name => "Foo Language Extension";
+        public string Name => "Solidity Language Extension";
 
         public IEnumerable<string> ConfigurationSections
         {
@@ -82,16 +80,6 @@ namespace MockLanguageExtension
         public object CustomMessageTarget => null;
 
         public bool ShowNotificationOnInitializeFailed => true;
-
-
-        protected string GenerateRandomPipeName()
-        {
-            Random rnd = new Random();
-            Byte[] b = new Byte[16];
-            rnd.NextBytes(b);
-            var id = Convert.ToBase64String(b);
-            return "\\\\.\\pipe\\lsp-" + id + "-sock";
-        }
 
         protected bool StartLanguageServerProcess()
         {
@@ -123,22 +111,9 @@ namespace MockLanguageExtension
             await Task.Yield();
             //Debugger.Launch();
 
-            //var pipeName = GenerateRandomPipeName();
-
-            //var pipeAccessRule = new PipeAccessRule("Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
-            //var pipeSecurity = new PipeSecurity();
-            //pipeSecurity.AddAccessRule(pipeAccessRule);
-
-            //var bufferSize = 256;
-            //var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
-            //var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.InOut, 4, PipeTransmissionMode.Message, PipeOptions.Asynchronous, bufferSize, bufferSize, pipeSecurity);
-            //ServerProcessPipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 4, PipeTransmissionMode., System.IO.Pipes.PipeOptions.Asynchronous, 256, 256, pipeSecurity);
-
             if (StartLanguageServerProcess())
             {
-                Info("Started language server process {proc}", ServerProcess.StartInfo.FileName);
-    
-                //await ServerProcessPipe.WaitForConnectionAsync(token);
+                Info("Started language server process {proc} {p}.", ServerProcess.StartInfo.FileName, ServerProcess.StartInfo.Arguments);
                 return new Connection(ServerProcess.StandardOutput.BaseStream, ServerProcess.StandardInput.BaseStream);
             }
             else
