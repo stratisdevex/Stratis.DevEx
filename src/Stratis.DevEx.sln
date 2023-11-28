@@ -97,7 +97,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cobra.Api", "..\ext\Cobra.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.TestChain", "Stratis.DevEx.TestChain\Stratis.DevEx.TestChain.csproj", "{F18BA290-AFB9-4EEF-8281-30F3F32A0265}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.VS.Solidity", "Stratis.VS.Solidity\Stratis.VS.Solidity.csproj", "{8DB86728-95C4-4ACD-AFBE-34919380CAF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.VS.Solidity2", "Stratis.VS.Solidity2\Stratis.VS.Solidity2.csproj", "{6546214D-9FE1-4244-BC3E-2D7CA5A65194}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -652,6 +652,24 @@ Global
 		{8DB86728-95C4-4ACD-AFBE-34919380CAF4}.Sources|arm64.Build.0 = Debug|Any CPU
 		{8DB86728-95C4-4ACD-AFBE-34919380CAF4}.Sources|x86.ActiveCfg = Debug|Any CPU
 		{8DB86728-95C4-4ACD-AFBE-34919380CAF4}.Sources|x86.Build.0 = Debug|Any CPU
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Debug|arm64.ActiveCfg = Debug|arm64
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Debug|arm64.Build.0 = Debug|arm64
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Debug|x86.ActiveCfg = Debug|x86
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Debug|x86.Build.0 = Debug|x86
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Release|arm64.ActiveCfg = Release|arm64
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Release|arm64.Build.0 = Release|arm64
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Release|x86.ActiveCfg = Release|x86
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Release|x86.Build.0 = Release|x86
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Sources|Any CPU.ActiveCfg = Debug|Any CPU
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Sources|Any CPU.Build.0 = Debug|Any CPU
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Sources|arm64.ActiveCfg = Debug|arm64
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Sources|arm64.Build.0 = Debug|arm64
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Sources|x86.ActiveCfg = Debug|x86
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194}.Sources|x86.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -690,6 +708,7 @@ Global
 		{75785EBD-14DC-463A-AD50-ED046F39A5AC} = {A0717F4C-8EED-4659-B72F-50DB73E1F64E}
 		{F18BA290-AFB9-4EEF-8281-30F3F32A0265} = {8DC77034-0F3C-40E6-A352-B157BCB85462}
 		{8DB86728-95C4-4ACD-AFBE-34919380CAF4} = {3244104A-4F62-488E-8DA9-B1FEB2E367E7}
+		{6546214D-9FE1-4244-BC3E-2D7CA5A65194} = {3244104A-4F62-488E-8DA9-B1FEB2E367E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {602325FF-1BC0-4A57-8252-3F0471EA4151}

@@ -55,9 +55,6 @@
       <Button guid="guidCustomCommandPackageCmdSet" id="CustomCommandId" priority="0x0100" type="Button">
         <Parent guid="guidCustomCommandPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
-        <CommandFlag>DefaultDisabled</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Invoke CustomCommand</ButtonText>
         </Strings>
@@ -77,15 +74,15 @@
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidCustomCommandPackage" value="{330ce502-4e1f-44b8-ab32-82a7ea71beeb}" />
+    <GuidSymbol name="guidCustomCommandPackage" value="{e0158e3d-7943-457e-a67d-c840b61533bd}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidCustomCommandPackageCmdSet" value="{6cd448f0-2967-4e12-997c-1ee5e3942541}">
+    <GuidSymbol name="guidCustomCommandPackageCmdSet" value="{7446631a-8d94-4937-b0db-6305e29d27c5}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="CustomCommandId" value="0x0100" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{dee8b518-280a-4e81-babd-2ac250f7e176}" >
+    <GuidSymbol name="guidImages" value="{7e2b0760-8375-4eb4-97bd-f8544f66b662}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

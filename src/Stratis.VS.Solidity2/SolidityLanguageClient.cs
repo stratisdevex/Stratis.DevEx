@@ -37,7 +37,7 @@ namespace MockLanguageExtension
         public SolidityLanguageClient()
         {
             Instance = this;
-            this.MiddleLayer = new FooMiddleLayer();
+            this.MiddleLayer = new SolidityLanguageClientMiddleLayer();
         }
 
         internal static SolidityLanguageClient Instance
@@ -153,8 +153,8 @@ namespace MockLanguageExtension
 
         public Task<InitializationFailureContext> OnServerInitializeFailedAsync(ILanguageClientInitializationInfo initializationState)
         {
-            Error("Language server failed to initialize.");
-            string message = "Oh no! Foo Language Client failed to activate, now we can't test LSP! :(";
+            string message = "Solidity language server failed to initialize.";
+            Error(message);
             string exception = initializationState.InitializationException?.ToString() ?? string.Empty;
             message = $"{message}\n {exception}";
 
@@ -166,25 +166,25 @@ namespace MockLanguageExtension
             return Task.FromResult(failureContext);
         }
 
-        internal class FooMiddleLayer : ILanguageClientMiddleLayer
+        internal class SolidityLanguageClientMiddleLayer : ILanguageClientMiddleLayer
         {
             public bool CanHandle(string methodName)
             {
-                Info("Calling method {m}", methodName);
+                //Info("Calling method {m}", methodName);
                 //return methodName == Methods.TextDocumentCompletionName;
                 return true;
             }
 
             public Task HandleNotificationAsync(string methodName, JToken methodParam, Func<JToken, Task> sendNotification)
             {
-                Info("Notification {req} {param}.", methodName, methodParam);
+                Info("Notification {req} {param}.", methodName, methodParam.ToString());
                 return Task.CompletedTask;
                 //throw new NotImplementedException();
             }
 
             public async Task<JToken> HandleRequestAsync(string methodName, JToken methodParam, Func<JToken, Task<JToken>> sendRequest)
             {
-                Info("Request {req} {param}.", methodName, methodParam);
+                Info("Request {req} {param}.", methodName, methodParam.ToString());
                 var result = await sendRequest(methodParam);
                 return result;
             }
