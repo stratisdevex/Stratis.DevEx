@@ -37,7 +37,7 @@ namespace Stratis.VS
         public SolidityLanguageClient()
         {
             Instance = this;
-            this.MiddleLayer = null;// new SolidityLanguageClientMiddleLayer();
+            this.MiddleLayer = new SolidityLanguageClientMiddleLayer();
         }
 
         internal static SolidityLanguageClient Instance
@@ -109,8 +109,6 @@ namespace Stratis.VS
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
             await Task.Yield();
-            throw new Exception();
-
             //Debugger.Launch();
 
             if (StartLanguageServerProcess())
