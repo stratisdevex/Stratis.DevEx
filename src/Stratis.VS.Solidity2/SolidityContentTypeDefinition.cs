@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 
-namespace MockLanguageExtension
+namespace Stratis.VS
 {
 #pragma warning disable 649
     public class SolidityContentDefinition

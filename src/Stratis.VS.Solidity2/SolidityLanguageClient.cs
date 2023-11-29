@@ -22,7 +22,7 @@ using EnvDTE;
 using System.Configuration;
 using System.IO.Pipelines;
 
-namespace MockLanguageExtension
+namespace Stratis.VS
 {  
     [ContentType("solidity")]
     [Export(typeof(ILanguageClient))]
@@ -175,10 +175,11 @@ namespace MockLanguageExtension
                 return true;
             }
 
-            public Task HandleNotificationAsync(string methodName, JToken methodParam, Func<JToken, Task> sendNotification)
+            public async Task HandleNotificationAsync(string methodName, JToken methodParam, Func<JToken, Task> sendNotification)
             {
                 Info("Notification {req} {param}.", methodName, methodParam.ToString());
-                return Task.CompletedTask;
+                await sendNotification(methodParam);
+                //return Task.CompletedTask;
                 //throw new NotImplementedException();
             }
 
