@@ -51,6 +51,9 @@
     <Compile Include="Stratis.VS.StratisEVMPackage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Grammars\Solidity.tmLanguage">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="SolidityLanguageSettings.json" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -75,6 +78,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SolidityLanguageSettings.pkgdef">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="StratisLogo200x200.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="StratisLogo64x64.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

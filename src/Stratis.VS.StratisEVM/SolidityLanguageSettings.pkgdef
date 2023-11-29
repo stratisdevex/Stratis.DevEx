@@ -1,2 +1,5 @@
 ﻿[$RootKey$\OpenFolder\Settings\VSWorkspaceSettings\SolidityLanguageExtension]
 @="$PackageFolder$\SolidityLanguageSettings.json"
+
+[$RootKey$\TextMate\Repositories]
+"Solidity"="$PackageFolder$\Grammars"

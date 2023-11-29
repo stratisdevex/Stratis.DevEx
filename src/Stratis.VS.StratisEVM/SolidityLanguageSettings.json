@@ -1,3 +1,4 @@
 ﻿{
-  "solidity.maxNumberOfProblems": -1
+  "solidity.maxNumberOfProblems": -1,
+  "solidity.trace.server": "Messages"
 }

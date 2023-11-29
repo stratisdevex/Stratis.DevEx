@@ -3,7 +3,9 @@
     <Metadata>
         <Identity Id="Stratis.VS.StratisEVM.09bed5a1-7734-4cff-9412-d17961f1a291" Version="0.1" Language="en-US" Publisher="Stratis DevEx" />
         <DisplayName>Stratis.VS.StratisEVM</DisplayName>
-        <Description xml:space="preserve">Empty VSIX Project.</Description>
+        <Description xml:space="preserve">StratisEVM smart contracts extension.</Description>
+        <Icon>StratisLogo64x64.png</Icon>
+        <PreviewImage>StratisLogo200x200.png</PreviewImage>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
