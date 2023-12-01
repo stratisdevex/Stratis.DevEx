@@ -13,10 +13,14 @@ contract WrappedHelloWorld {
     HelloWorld public inner;
 
     constructor(HelloWorld _inner) {
+        string m;
         inner = _inner;
+        m = m + le
     }
 
     function message() public view returns (string memory) {
         return inner.message();
+
+        
     }
 }
