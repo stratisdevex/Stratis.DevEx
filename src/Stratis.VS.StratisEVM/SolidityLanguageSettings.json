@@ -1,4 +1,3 @@
 ﻿{
-  "solidity.maxNumberOfProblems": -1,
-  "solidity.trace.server": "Messages"
+  "solidity.trace.server": "Verbose"
 }

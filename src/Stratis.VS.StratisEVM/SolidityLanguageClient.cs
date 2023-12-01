@@ -172,22 +172,19 @@ namespace Stratis.VS
             {
                 //Info("Calling method {m}", methodName);
                 //return methodName == Methods.TextDocumentCompletionName;
-                return false;
+                return true;
             }
 
             public async Task HandleNotificationAsync(string methodName, JToken methodParam, Func<JToken, Task> sendNotification)
             {
                 Info("Notification {req} {param}.", methodName, methodParam.ToString());
                 await sendNotification(methodParam);
-                //return Task.CompletedTask;
-                //throw new NotImplementedException();
             }
 
             public async Task<JToken> HandleRequestAsync(string methodName, JToken methodParam, Func<JToken, Task<JToken>> sendRequest)
             {
                 Info("Request {req} {param}.", methodName, methodParam.ToString());
-                var result = await sendRequest(methodParam);
-                return result;
+                return await sendRequest(methodParam);
             }
         }
     }
