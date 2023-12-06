@@ -1,35 +1,36 @@
-﻿using Microsoft.VisualStudio.LanguageServer.Client;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Utilities;
-using StreamJsonRpc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
-using System.Reflection;
+
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Threading;
-using Newtonsoft.Json.Linq;
-using Task = System.Threading.Tasks.Task;
-using Microsoft.VisualStudio.LanguageServer.Protocol;
 using System.ComponentModel.Composition;
+
+using Task = System.Threading.Tasks.Task;
+
+using Microsoft.VisualStudio.LanguageServer.Client;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio.Threading;
+using Microsoft.VisualStudio.LanguageServer.Protocol;
+using EnvDTE;
+
+using Newtonsoft.Json.Linq;
+using StreamJsonRpc;
 
 
 using Stratis.DevEx;
-using EnvDTE;
-using System.Configuration;
-using System.IO.Pipelines;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Stratis.VS
-{  
+{
     [ContentType("solidity")]
     [Export(typeof(ILanguageClient))]
     [RunOnContext(RunningContext.RunOnHost)]
     public class SolidityLanguageClient : Runtime, ILanguageClient, ILanguageClientCustomMessage2
     {
-        
+        #region Constructors
         static SolidityLanguageClient()
         {
             Initialize("Stratis.VS.Solidity", "LanguageClient");
@@ -39,6 +40,34 @@ namespace Stratis.VS
             Instance = this;
             this.MiddleLayer = new SolidityLanguageClientMiddleLayer();
         }
+        #endregion
+
+        #region Properties
+        public static string SolutionOpenFolder {get; set;}
+        
+        public string Name => "Solidity Language Extension";
+
+        public IEnumerable<string> ConfigurationSections
+        {
+            get
+            {
+                yield return "solidity";
+            }
+        }
+
+        public object InitializationOptions { get; set; } = null;
+
+        public IEnumerable<string> FilesToWatch => null;
+
+        public object MiddleLayer
+        {
+            get;
+            set;
+        }
+
+        public object CustomMessageTarget => null;
+
+        public bool ShowNotificationOnInitializeFailed => true;
 
         internal static SolidityLanguageClient Instance
         {
@@ -53,43 +82,18 @@ namespace Stratis.VS
             get;
             set;
         }
+        #endregion
 
         public event AsyncEventHandler<EventArgs> StartAsync;
         public event AsyncEventHandler<EventArgs> StopAsync;
 
-        public string Name => "Solidity Language Extension";
-
-        public IEnumerable<string> ConfigurationSections
-        {
-            get
-            {
-                yield return "solidity";
-            }
-        }
-
-        public object InitializationOptions => null;
-
-        public IEnumerable<string> FilesToWatch => null;
-
-        public object MiddleLayer
-        {
-            get;
-            set;
-        }
-
-        public object CustomMessageTarget => null;
-
-        public bool ShowNotificationOnInitializeFailed => true;
-
+        #region Methods
         protected bool StartLanguageServerProcess()
         {
             ProcessStartInfo info = new ProcessStartInfo();
-            //var programPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Server", @"LanguageServerWithUI.exe");
-            //var programPath = "nomicfoundation-solidity-language-server";
             var programPath = "cmd.exe";
             info.FileName = programPath;
-            //info.WorkingDirectory = Path.GetDirectoryName(programPath);
-            info.Arguments = "/c C:\\Users\\Allister\\AppData\\Roaming\\npm\\nomicfoundation-solidity-language-server.cmd --stdio";
+            info.Arguments = "/c " + Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "npm", "nomicfoundation-solidity-language-server.cmd") +  " --stdio";
             info.RedirectStandardInput = true;
             info.RedirectStandardOutput = true;
             info.UseShellExecute = false;
@@ -109,7 +113,14 @@ namespace Stratis.VS
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
             await Task.Yield();
-            //Debugger.Launch();
+            var solution = (IVsSolution) await ServiceProvider.GetGlobalServiceAsync(typeof(SVsSolution));
+            solution.GetSolutionInfo(out var dir, out var f, out var d);
+            Info("Solution dir is {d}", dir);
+            this.InitializationOptions = JObject.FromObject(new
+            {
+                workspaceFolders = new string[] {dir},
+                rootUri = dir
+            });
 
             if (StartLanguageServerProcess())
             {
@@ -166,12 +177,11 @@ namespace Stratis.VS
             return Task.FromResult(failureContext);
         }
 
+        #endregion
         internal class SolidityLanguageClientMiddleLayer : ILanguageClientMiddleLayer
         {
             public bool CanHandle(string methodName)
             {
-                //Info("Calling method {m}", methodName);
-                //return methodName == Methods.TextDocumentCompletionName;
                 return true;
             }
 
@@ -183,8 +193,9 @@ namespace Stratis.VS
 
             public async Task<JToken> HandleRequestAsync(string methodName, JToken methodParam, Func<JToken, Task<JToken>> sendRequest)
             {
-                Info("Request {req} {param}.", methodName, methodParam.ToString());
-                return await sendRequest(methodParam);
+                var resp = await sendRequest(methodParam); 
+                Info("Request {req} {param}: {resp}", methodName, methodParam.ToString(), resp?.ToString() ?? "(null)");
+                return resp;
             }
         }
     }

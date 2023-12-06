@@ -1,3 +1,5 @@
 ﻿{
-  "solidity.trace.server": "Verbose"
+  "solidity.trace.server": "Verbose",
+  "solidity.telemetry": true,
+  "solidity.maxNumberOfProblems": 1
 }
