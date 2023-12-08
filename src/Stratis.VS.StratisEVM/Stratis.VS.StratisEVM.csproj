@@ -47,13 +47,17 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolidityContentTypeDefinition.cs" />
+    <Compile Include="SolidityFileContextActionsProviderFactory.cs" />
+    <Compile Include="SolidityFileContextProviderFactory.cs" />
     <Compile Include="SolidityLanguageClient.cs" />
     <Compile Include="StratisEVMPackage.cs" />
+    <Compile Include="StratisEVMPackageIds.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Grammars\Solidity.tmLanguage">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\Commands.png" />
     <Content Include="SolidityLanguageSettings.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -72,6 +76,12 @@
       <Version>17.1.68</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.32112.339" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.VisualStudio.Workspace">
+      <Version>17.1.11-preview-0002</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Workspace.Extensions.VS">
+      <Version>17.1.11-preview-0002</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.1.4054">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -83,6 +93,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="StratisEVMPackage.vsct" />
     <Content Include="StratisLogo200x200.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
