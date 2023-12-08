@@ -29,10 +29,10 @@ namespace Stratis.VS.StratisEVM
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "0.1", IconResourceID = 400)]
     [Guid(StratisEVMPackage.PackageGuidString)]
-    //[ProvideAutoLoad("4646B819-1AE0-4E79-97F4-8A8176FDD664", PackageAutoLoadFlags.BackgroundLoad)]
-    [ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad("4646B819-1AE0-4E79-97F4-8A8176FDD664", PackageAutoLoadFlags.BackgroundLoad)]
+    //[ProvideAutoLoad(UIContextGuids80.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7
     {
@@ -41,7 +41,12 @@ namespace Stratis.VS.StratisEVM
         /// </summary>
         public const string PackageGuidString = "711b90a1-97e6-4b9a-91c4-3d62ccd32d4e";
 
-
+        #region Constructors
+        static StratisEVMPackage()
+        {
+            Runtime.Initialize("Stratis.VS.StratisEVM", "VS");
+        }
+        #endregion
         #region Methods
 
         #region IVsSolutionEvents7
@@ -82,7 +87,7 @@ namespace Stratis.VS.StratisEVM
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
-            Runtime.Initialize("Stratis.VS.StratisEVM", "VSPackage");
+            Runtime.Info("StratisEVM package initialized.");
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);

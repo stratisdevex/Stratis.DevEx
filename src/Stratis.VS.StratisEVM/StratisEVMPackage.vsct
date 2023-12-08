@@ -55,6 +55,8 @@
       <Button guid="guidStratisEVMPackageCmdSet" id="CmdId1" priority="0x0100" type="Button">
         <Parent guid="guidStratisEVMPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Solidity Command 1</ButtonText>
         </Strings>
@@ -62,7 +64,9 @@
 
       <Button guid="guidStratisEVMPackageCmdSet" id="CmdId2" priority="0x0101" type="Button">
         <Parent guid="guidStratisEVMPackageCmdSet" id="MyMenuGroup" />
-              <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Solidity Command 2</ButtonText>
         </Strings>

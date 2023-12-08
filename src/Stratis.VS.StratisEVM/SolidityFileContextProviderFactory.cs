@@ -6,6 +6,7 @@ using Task = System.Threading.Tasks.Task;
 
 using Microsoft.VisualStudio.Workspace;
 
+using Stratis.DevEx;
 namespace Stratis.VS.StratisEVM
 {
     /// <summary>
@@ -39,6 +40,7 @@ namespace Stratis.VS.StratisEVM
 
                 if (filePath.EndsWith(".sol"))
                 {
+                    Runtime.Info("adding file contxt");
                     fileContexts.Add(new FileContext(
                         new Guid(ProviderType),
                         new Guid(StratisEVMPackageIds.SolidityFileContextType),

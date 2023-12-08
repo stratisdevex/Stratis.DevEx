@@ -33,7 +33,7 @@ namespace Stratis.VS
         #region Constructors
         static SolidityLanguageClient()
         {
-            Initialize("Stratis.VS.Solidity", "LanguageClient");
+            Initialize("Stratis.VS.StratisEVM", "VS");
         }
         public SolidityLanguageClient()
         {
