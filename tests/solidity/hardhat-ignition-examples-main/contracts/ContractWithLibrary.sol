@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.19;
 
 library BasicLibrary {
     function addTwo(uint self) public pure returns (uint) {

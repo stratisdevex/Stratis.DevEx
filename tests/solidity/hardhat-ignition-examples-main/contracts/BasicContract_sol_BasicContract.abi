@@ -1,0 +1,1 @@
+[{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"eventArg","type":"uint256"}],"name":"BasicEvent","type":"event"},{"inputs":[{"internalType":"uint256","name":"funcArg","type":"uint256"}],"name":"basicFunction","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]
