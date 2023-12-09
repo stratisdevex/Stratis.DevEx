@@ -20,11 +20,11 @@ namespace Stratis.VS.StratisEVM
         // Unique Guid for WordCountActionProvider.
         private const string ProviderType = "e4c4063b-0682-43b6-aff5-f81dec7029a5";
 
-        private static readonly Guid ProviderCommandGroup = StratisEVMPackageIds.GuidVsPackageCmdSet;
+        private static readonly Guid ProviderCommandGroup = StratisEVMPackageIds.GuidStratisEVMPackageCmdSet;
         private static readonly IReadOnlyList<CommandID> SupportedCommands = new List<CommandID>
             {
-                new CommandID(StratisEVMPackageIds.GuidVsPackageCmdSet, StratisEVMPackageIds.Cmd1Id),
-                new CommandID(StratisEVMPackageIds.GuidVsPackageCmdSet, StratisEVMPackageIds.Cmd2Id),
+                new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd1Id),
+                new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd2Id),
             };
 
         public IFileContextActionProvider CreateProvider(IWorkspace workspaceContext)

@@ -7,7 +7,7 @@ namespace Stratis.VS.StratisEVM
         public const string SolidityFileContextType = "43fe6fd9-be70-4c39-b481-983730d28d78";
 
         // Guids from VSCT file.
-        public static readonly Guid GuidVsPackageCmdSet = new Guid("5c5677b4-3c10-4989-a49a-7af2cdc99abd");
+        public static readonly Guid GuidStratisEVMPackageCmdSet = new Guid("5e1dc4ca-7f1b-4ff0-a794-7e162ab8f421");
         public const int Cmd1Id = 0x0101;
         public const int Cmd2Id = 0x0102;
     }
