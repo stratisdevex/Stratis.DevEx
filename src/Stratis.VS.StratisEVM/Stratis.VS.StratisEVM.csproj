@@ -58,6 +58,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\Commands.png" />
+    <Content Include="Resources\solidity_16x16.png" />
     <Content Include="SolidityLanguageSettings.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -115,7 +116,7 @@
       <Name>Stratis.DevEx.Base</Name>
     </ProjectReference>
   </ItemGroup>
-<ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="StratisEVMPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>StratisEVMPackage</ManifestResourceName>

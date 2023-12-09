@@ -54,7 +54,7 @@
           If you do not want an image next to your command, remove the Icon node /> -->
       <Button guid="guidStratisEVMPackageCmdSet" id="CmdId1" priority="0x0100" type="Button">
         <Parent guid="guidStratisEVMPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="guidSolidityIcon" id="pngSolidity" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
@@ -81,6 +81,7 @@
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
       <Bitmap guid="guidImages" href="Resources\Commands.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+      <Bitmap guid="guidSolidityIcon" href="Resources\solidity_16x16.png" usedList="pngSolidity"/>
     </Bitmaps>
   </Commands>
 
@@ -102,6 +103,10 @@
       <IDSymbol name="bmpPicX" value="4" />
       <IDSymbol name="bmpPicArrows" value="5" />
       <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidSolidityIcon" value="{8c6b2f07-1d7b-4571-ae48-7316f785f751}" >
+      <IDSymbol name="pngSolidity" value="1" />
     </GuidSymbol>
 
     <!-- Solution Explorer folder mode GUIDs and IDs. -->
