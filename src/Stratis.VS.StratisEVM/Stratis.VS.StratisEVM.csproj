@@ -46,12 +46,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SolidityCompiler.cs" />
     <Compile Include="SolidityContentTypeDefinition.cs" />
     <Compile Include="SolidityFileContextActionsProviderFactory.cs" />
     <Compile Include="SolidityFileContextProviderFactory.cs" />
     <Compile Include="SolidityLanguageClient.cs" />
     <Compile Include="StratisEVMPackage.cs" />
     <Compile Include="StratisEVMPackageIds.cs" />
+    <Compile Include="VSUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Grammars\Solidity.tmLanguage">

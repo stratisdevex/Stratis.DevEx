@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.23;
 
 contract HelloWorld {
     string public message;
@@ -18,8 +18,7 @@ contract WrappedHelloWorld {
     }
 
     function message() public view returns (string memory) {
-        return inner.message();
+        return inner.message
 
-        
     }
 }

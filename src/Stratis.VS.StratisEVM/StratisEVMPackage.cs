@@ -47,6 +47,7 @@ namespace Stratis.VS.StratisEVM
             Runtime.Initialize("Stratis.VS.StratisEVM", "VS");
         }
         #endregion
+
         #region Methods
 
         #region IVsSolutionEvents7
@@ -88,15 +89,17 @@ namespace Stratis.VS.StratisEVM
         {
             await base.InitializeAsync(cancellationToken, progress);
             Runtime.Info("StratisEVM package initialized.");
-            // When initialized asynchronously, the current thread may be a background thread at this point.
-            // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
+            VSUtil.InitializeVSServices(this);
+            // When initialized asynchronously, the current thread may be a background thread at this point.
+            // Do any initialization that requires the UI thread after switching to the UI thread.
+            VSUtil.LogInfo("Stratis EVM", "log init");
+           
+
         }
-
-
-
         #endregion
+
         #endregion
     }
 }

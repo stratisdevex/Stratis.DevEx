@@ -22,6 +22,8 @@ using StreamJsonRpc;
 
 using Stratis.DevEx;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.Windows.Ink;
+using Stratis.VS.StratisEVM;
 
 namespace Stratis.VS
 {
@@ -94,6 +96,7 @@ namespace Stratis.VS
             var programPath = "cmd.exe";
             info.FileName = programPath;
             info.Arguments = "/c " + Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "npm", "nomicfoundation-solidity-language-server.cmd") +  " --stdio";
+            //info.Arguments = "/c " + "node " + "c:\\Projects\\vscode-solidity\\dist\\cli\\server.js" +  " --stdio";
             info.RedirectStandardInput = true;
             info.RedirectStandardOutput = true;
             info.UseShellExecute = false;
@@ -104,12 +107,13 @@ namespace Stratis.VS
             process.EnableRaisingEvents = true;
             process.Exited += (e, args) =>
             {
-                Info("Language server proceess exited. Restarting.");
-                process.Start();
+                Info("Language server proceess exited.");
             };
             ServerProcess = process;
             return process.Start();
         }
+
+        #region ILanguageClient, ILanguageClientCustomMessage2 implementation
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
             await Task.Yield();
@@ -118,8 +122,15 @@ namespace Stratis.VS
             Info("Solution dir is {d}", dir);
             this.InitializationOptions = JObject.FromObject(new
             {
-                workspaceFolders = new string[] {dir},
-                rootUri = dir
+                enabledAsYouTypeCompilationErrorCheck = true,
+                maxNumberOfProblems = true
+                //workspaceFolders = new string[] {dir},
+                //rootUri = dir
+                //compileUsingLocalVersion = "C:\\Users\\Allister\\Downloads\\soljson.js",
+                //enabledAsYouTypeCompilationErrorCheck = true,
+                //defaultCompiler = "local",
+                //compileUsingLocalVersion = "C:\\Users\\Allister\\Downloads\\soljson.js"
+                //compileUsingRemoteVersion = "latest",
             });
 
             if (StartLanguageServerProcess())
@@ -176,6 +187,7 @@ namespace Stratis.VS
 
             return Task.FromResult(failureContext);
         }
+        #endregion
 
         #endregion
         internal class SolidityLanguageClientMiddleLayer : ILanguageClientMiddleLayer
@@ -189,11 +201,28 @@ namespace Stratis.VS
             {
                 Info("Notification {req} {param}.", methodName, methodParam.ToString());
                 await sendNotification(methodParam);
+                /*
+                if (methodName == "textDocument/didChange")
+                {
+                   methodParam.Root["contentChanges"] = JArray.FromObject(new[] {new
+                    {
+                        text = methodParam.Root["contentChanges"][0]["text"].Value<string>(),
+                    } });
+                    Info("didchange Notification {req} {param}.", methodName, methodParam.ToString());
+                    await sendNotification(methodParam);
+                    
+                }
+                else
+                {
+                    Info("Notification {req} {param}.", methodName, methodParam.ToString());
+                    await sendNotification(methodParam);
+                }
+                */
             }
 
             public async Task<JToken> HandleRequestAsync(string methodName, JToken methodParam, Func<JToken, Task<JToken>> sendRequest)
             {
-                var resp = await sendRequest(methodParam); 
+                var resp = await sendRequest(methodParam);
                 Info("Request {req} {param}: {resp}", methodName, methodParam.ToString(), resp?.ToString() ?? "(null)");
                 return resp;
             }

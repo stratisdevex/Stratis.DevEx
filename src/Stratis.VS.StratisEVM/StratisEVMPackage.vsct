@@ -58,7 +58,7 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Solidity Command 1</ButtonText>
+          <ButtonText>Compile Solidity File</ButtonText>
         </Strings>
       </Button>
 

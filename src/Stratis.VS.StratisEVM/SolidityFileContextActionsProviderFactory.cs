@@ -55,11 +55,10 @@ namespace Stratis.VS.StratisEVM
                     new MyContextAction(
                         fileContext,
                         new Tuple<Guid, uint>(ProviderCommandGroup, StratisEVMPackageIds.Cmd1Id),
-                        "My Action" + fileContext.DisplayName,
+                        "Compile Solidity File" + fileContext.DisplayName,
                         async (fCtxt, progress, ct) =>
                         {
-                            
-                            await OutputWindowPaneAsync("command 1");
+                            await SolidityCompiler.CompileFileAsync(filePath);
                         }),
 
                     // Toggle word count type command:
@@ -91,7 +90,7 @@ namespace Stratis.VS.StratisEVM
                         windowFrame.Show();
                     }
 
-                    outputWindow.CreatePane(ActionOutputWindowPane, "Actions", 1, 1);
+                    outputWindow.CreatePane(ActionOutputWindowPane, "Solidity Compiler", 1, 1);
                     outputWindow.GetPane(ActionOutputWindowPane, out outputPane);
                     outputPane.Activate();
                 }
