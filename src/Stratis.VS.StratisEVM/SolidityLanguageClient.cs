@@ -100,8 +100,7 @@ namespace Stratis.VS
             info.RedirectStandardInput = true;
             info.RedirectStandardOutput = true;
             info.UseShellExecute = false;
-            info.CreateNoWindow = false;
-            
+            info.CreateNoWindow = true;
             var process = new System.Diagnostics.Process();
             process.StartInfo = info;
             process.EnableRaisingEvents = true;

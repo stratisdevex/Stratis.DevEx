@@ -52,7 +52,7 @@ namespace Stratis.VS.StratisEVM
                 return Task.FromResult<IReadOnlyList<IFileContextAction>>(new IFileContextAction[]
                 {
                     // Word count command:
-                    new MyContextAction(
+                    new SolidityFileContextAction(
                         fileContext,
                         new Tuple<Guid, uint>(ProviderCommandGroup, StratisEVMPackageIds.Cmd1Id),
                         "Compile Solidity File" + fileContext.DisplayName,
@@ -60,18 +60,6 @@ namespace Stratis.VS.StratisEVM
                         {
                             await SolidityCompiler.CompileFileAsync(filePath);
                         }),
-
-                    // Toggle word count type command:
-                    /*
-                    new MyContextAction(
-                        fileContext,
-                        new Tuple<Guid, uint>(ProviderCommandGroup, StratisEVMPackageIds.Cmd2Id),
-                        "My Action" + fileContext.DisplayName,
-                        async (fCtxt, progress, ct) =>
-                        {
-                            await OutputWindowPaneAsync("command 2");
-                        }),
-                    */
                 });
             }
 
@@ -100,11 +88,11 @@ namespace Stratis.VS.StratisEVM
                 outputPane?.OutputStringThreadSafe(message);
             }
 
-            internal class MyContextAction : IFileContextAction, IVsCommandItem
+            internal class SolidityFileContextAction : IFileContextAction, IVsCommandItem
             {
                 private Func<FileContext, IProgress<IFileContextActionProgressUpdate>, CancellationToken, Task> executeAction;
 
-                internal MyContextAction(
+                internal SolidityFileContextAction(
                     FileContext fileContext,
                     Tuple<Guid, uint> command,
                     string displayName,

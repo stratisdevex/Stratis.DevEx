@@ -88,15 +88,17 @@ namespace Stratis.VS.StratisEVM
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
-            Runtime.Info("StratisEVM package initialized.");
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-
-            VSUtil.InitializeVSServices(this);
+            if (VSUtil.InitializeVSServices(ServiceProvider.GlobalProvider))
+            {
+                Runtime.Info("StratisEVM package initialized.");
+            }
+            else
+            {
+                Runtime.Error("Could not initialize StratisEVM package VS services.");
+            }
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
-            VSUtil.LogInfo("Stratis EVM", "log init");
-           
-
         }
         #endregion
 

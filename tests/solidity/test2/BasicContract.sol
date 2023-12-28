@@ -18,4 +18,8 @@ contract BasicContract {
     function foo(uint s) private pure {
         s = 4;
     }
+
+    function foo2(string s) {
+        
+    }
 }

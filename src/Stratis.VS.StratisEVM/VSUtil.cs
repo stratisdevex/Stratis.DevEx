@@ -123,6 +123,30 @@ namespace Stratis.VS.StratisEVM
             return VSServicesInitialized;
         }
 
+        public static void ShowLogOutputWindowPane(IServiceProvider provider, string pane)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            IVsWindowFrame windowFrame;
+            if (uiShell != null)
+            {
+                uint flags = (uint)__VSFINDTOOLWIN.FTW_fForceCreate;
+                uiShell.FindToolWindow(flags, VSConstants.StandardToolWindows.Output, out windowFrame);
+                windowFrame.Show();
+                var p = GetLogOutputPane(pane);
+                if (p != null) 
+                {
+                    p.Activate();   
+                }
+                else
+                {
+                    Error("Could not get a reference to the VsUIShell.");
+                }
+            }
+            else
+            {
+                Error("Could not get a reference to the VsUIShell.");
+            }
+        }
         public static bool VSServicesInitialized = false;
     }
 }
