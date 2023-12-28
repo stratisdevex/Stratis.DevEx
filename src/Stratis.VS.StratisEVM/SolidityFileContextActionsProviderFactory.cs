@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.Workspace.Extensions.VS;
 namespace Stratis.VS.StratisEVM
 {
     [ExportFileContextActionProvider((FileContextActionProviderOptions)VsCommandActionProviderOptions.SupportVsCommands, ProviderType, ProviderPriority.Normal, StratisEVMPackageIds.SolidityFileContextType)]
-    public class WordCountActionProviderFactory : IWorkspaceProviderFactory<IFileContextActionProvider>, IVsCommandActionProvider
+    public class SolidityFileContextActionProviderFactory : IWorkspaceProviderFactory<IFileContextActionProvider>, IVsCommandActionProvider
     {
         // Unique Guid for WordCountActionProvider.
         private const string ProviderType = "e4c4063b-0682-43b6-aff5-f81dec7029a5";
@@ -24,12 +24,12 @@ namespace Stratis.VS.StratisEVM
         private static readonly IReadOnlyList<CommandID> SupportedCommands = new List<CommandID>
             {
                 new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd1Id),
-                new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd2Id),
+                //new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd2Id),
             };
 
         public IFileContextActionProvider CreateProvider(IWorkspace workspaceContext)
         {
-            return new WordCountActionProvider(workspaceContext);
+            return new SolidityFileContextActionProvider(workspaceContext);
         }
 
         public IReadOnlyCollection<CommandID> GetSupportedVsCommands()
@@ -37,12 +37,12 @@ namespace Stratis.VS.StratisEVM
             return SupportedCommands;
         }
 
-        internal class WordCountActionProvider : IFileContextActionProvider
+        internal class SolidityFileContextActionProvider : IFileContextActionProvider
         {
             private static readonly Guid ActionOutputWindowPane = new Guid("b9319ea3-b873-442f-abaa-3c1c1c00fd08");
             private IWorkspace workspaceContext;
 
-            internal WordCountActionProvider(IWorkspace workspaceContext)
+            internal SolidityFileContextActionProvider(IWorkspace workspaceContext)
             {
                 this.workspaceContext = workspaceContext;
             }
@@ -62,6 +62,7 @@ namespace Stratis.VS.StratisEVM
                         }),
 
                     // Toggle word count type command:
+                    /*
                     new MyContextAction(
                         fileContext,
                         new Tuple<Guid, uint>(ProviderCommandGroup, StratisEVMPackageIds.Cmd2Id),
@@ -70,6 +71,7 @@ namespace Stratis.VS.StratisEVM
                         {
                             await OutputWindowPaneAsync("command 2");
                         }),
+                    */
                 });
             }
 

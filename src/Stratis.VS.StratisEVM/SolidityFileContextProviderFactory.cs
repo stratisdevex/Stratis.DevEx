@@ -21,14 +21,14 @@ namespace Stratis.VS.StratisEVM
         /// <inheritdoc/>
         public IFileContextProvider CreateProvider(IWorkspace workspaceContext)
         {
-            return new TxtFileContextProvider(workspaceContext);
+            return new SolidityFileContextProvider(workspaceContext);
         }
 
-        private class TxtFileContextProvider : IFileContextProvider
+        private class SolidityFileContextProvider : IFileContextProvider
         {
             private IWorkspace workspaceContext;
 
-            internal TxtFileContextProvider(IWorkspace workspaceContext)
+            internal SolidityFileContextProvider(IWorkspace workspaceContext)
             {
                 this.workspaceContext = workspaceContext;
             }
@@ -40,7 +40,7 @@ namespace Stratis.VS.StratisEVM
 
                 if (filePath.EndsWith(".sol"))
                 {
-                    Runtime.Info("adding file contxt");
+                    Runtime.Debug("Adding file context for file {file}.", filePath);
                     fileContexts.Add(new FileContext(
                         new Guid(ProviderType),
                         new Guid(StratisEVMPackageIds.SolidityFileContextType),
