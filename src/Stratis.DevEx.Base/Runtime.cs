@@ -289,6 +289,129 @@ namespace Stratis.DevEx
             }
         }
 
+        public static Dictionary<string, object> RunCmd(string filename, string arguments, string workingdirectory)
+        {
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.FileName = filename;
+            info.Arguments = arguments;
+            info.WorkingDirectory = workingdirectory;
+            info.RedirectStandardOutput = true;
+            info.RedirectStandardError = true;
+            info.UseShellExecute = false;
+            info.CreateNoWindow = true;
+            var output = new Dictionary<string, object>();
+            using (var process = new Process())
+            {
+                process.StartInfo = info;
+                try
+                {
+                    if (!process.Start())
+                    {
+                        output["error"] = ("Could not start {file} {args} in {dir}.", info.FileName, info.Arguments, info.WorkingDirectory);
+                        return output;
+                    }
+                    var stdout = process.StandardOutput.ReadToEnd();
+                    var stderr = process.StandardError.ReadToEnd();
+                    if (stdout != null && stdout.Length > 0)
+                    {
+                        output["stdout"] = stdout;
+                    }
+                    if (stderr != null && stderr.Length > 0)
+                    {
+                        output["stderr"] = stderr;
+                    }
+                    return output;
+                }
+                catch (Exception ex)
+                {
+                    output["exception"] = ex;
+                    return output;
+                }
+            }
+        }
+
+        public static async Task<Dictionary<string, object>> RunCmdAsync(string filename, string arguments, string workingdirectory)
+        {
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.FileName = filename;
+            info.Arguments = arguments;
+            info.WorkingDirectory = workingdirectory;
+            info.RedirectStandardOutput = true;
+            info.RedirectStandardError = true;
+            info.UseShellExecute = false;
+            info.CreateNoWindow = true;
+            var output = new Dictionary<string, object>();
+            using (var process = new Process())
+            {
+                process.StartInfo = info;
+                try
+                {
+                    if (!process.Start())
+                    {
+                        output["error"] = ("Could not start {file} {args} in {dir}.", info.FileName, info.Arguments, info.WorkingDirectory);
+                        return output;
+                    }
+                    var stdout = await process.StandardOutput.ReadToEndAsync();
+                    var stderr = await process.StandardError.ReadToEndAsync();
+                    if (stdout != null && stdout.Length > 0)
+                    {
+                        output["stdout"] = stdout;
+                    }
+                    if (stderr != null && stderr.Length > 0)
+                    {
+                        output["stderr"] = stderr;
+                    }
+                    return output;
+                }
+                catch (Exception ex)
+                {
+                    output["exception"] = ex;
+                    return output;
+                }
+            }
+        }
+
+        public static bool CheckRunCmdOutput(Dictionary<string, object> output, string checktext)
+        {
+            if (output.ContainsKey("error") || output.ContainsKey("exception"))
+            {
+                if (output.ContainsKey("error"))
+                {
+                    Error((string)output["error"]);
+                }
+                if (output.ContainsKey("exception"))
+                {
+                    Error((Exception) output["exception"], "Exception thrown during process execution.");
+                }
+                return false;
+            }
+            else
+            {
+                if (output.ContainsKey("stderr"))
+                {
+                    var stderr = (string)output["stderr"];
+                    Info(stderr);
+                }
+                if (output.ContainsKey("stdout"))
+                {
+                    var stdout = (string)output["stdout"];
+                    Info(stdout);
+                    if (stdout.Contains(checktext))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         public static void CopyDirectory(string sourceDir, string destinationDir, bool recursive = false)
         {
             using var op = Begin("Copying {0} to {1}", sourceDir, destinationDir);

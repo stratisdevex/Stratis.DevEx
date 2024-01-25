@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -145,6 +147,47 @@ namespace Stratis.VS.StratisEVM
             else
             {
                 Error("Could not get a reference to the VsUIShell.");
+            }
+        }
+
+        public static bool CheckRunCmdOutput(Dictionary<string, object> output, string logname, string checktext)
+        {
+            if (output.ContainsKey("error") || output.ContainsKey("exception")) 
+            {
+                if (output.ContainsKey("error"))
+                {
+                    LogError(logname, (string)output["error"]);
+                }
+                if (output.ContainsKey("exception"))
+                {
+                    LogError(logname, (Exception) output["exception"]);
+                }
+                return false;
+            }
+            else
+            {
+                if (output.ContainsKey("stderr"))
+                {
+                    var stderr = (string)output["stderr"];
+                    LogInfo(logname, stderr);
+                }
+                if (output.ContainsKey("stdout"))
+                {
+                    var stdout = (string)output["stdout"];
+                    LogInfo(logname, stdout);
+                    if (stdout.Contains(checktext))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
         public static bool VSServicesInitialized = false;
