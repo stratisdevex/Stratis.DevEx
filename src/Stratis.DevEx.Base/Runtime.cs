@@ -3,6 +3,7 @@ namespace Stratis.DevEx
     using System;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Reflection;
     using System.Threading;
 
@@ -445,6 +446,40 @@ namespace Stratis.DevEx
                 }
             }
             op.Complete();
+        }
+
+        public static async Task<bool> DownloadFileAsync(string name, Uri downloadUrl, string downloadPath)
+        {
+#pragma warning disable SYSLIB0014 // Type or member is obsolete
+            using (var op = Begin("Downloading {0} from {1} to {2}", name, downloadUrl, downloadPath))
+            {
+                using (var client = new WebClient())
+                {
+                    try
+                    {
+                        var b = await client.DownloadDataTaskAsync(downloadUrl);
+                        if (b != null)
+                        {
+                            File.WriteAllBytes(downloadPath, b);
+                            op.Complete();
+                            return true;
+                        }
+                        else
+                        {
+                            op.Abandon();
+                            Error("Downloading {file} to {path} from {url} did not return any data.", name, downloadPath, downloadUrl);
+                            return false;
+                        }
+                    }
+                    catch (Exception ex) 
+                    {
+                        op.Abandon();
+                        Error(ex, "Exception thrown downloading {file} to {path} from {url}.", name, downloadPath, downloadUrl);
+                        return false;
+                    }
+                }
+            }
+#pragma warning restore SYSLIB0014 // Type or member is obsolete
         }
 
         public static string ViewFilePath(string path, string? relativeTo = null)

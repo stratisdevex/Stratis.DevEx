@@ -147,6 +147,18 @@ namespace Stratis.VS
                 if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
                 {
                     Info("VSCode Solidity language server installed.");
+                    /*
+                    if (await DownloadFileAsync("soljson-v0.8.23+commit.f704f362.js", new Uri("https://ajb.nyc3.cdn.digitaloceanspaces.com/soljson-v0.8.23+commit.f704f362.js"), Path.Combine(StratisDevDir, "soljson-v0.8.23+commit.f704f362.js")))
+                    {
+                        Info("VSCode Solidity language server installed.");
+                    }
+                    else
+                    {
+                        Error("Could not download Solidity compiler.");
+                        Error("Could not install VSCode Solidity language server.");
+                        return null;
+                    }
+                    */
                 }
                 else
                 {
