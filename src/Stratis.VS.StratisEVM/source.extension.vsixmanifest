@@ -2,10 +2,13 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
         <Identity Id="Stratis.VS.StratisEVM.09bed5a1-7734-4cff-9412-d17961f1a291" Version="0.1" Language="en-US" Publisher="Stratis DevEx" />
-        <DisplayName>Stratis.VS.StratisEVM</DisplayName>
+        <DisplayName>StratisEVM</DisplayName>
         <Description xml:space="preserve">StratisEVM smart contracts extension</Description>
+        <MoreInfo>https://github.com/stratisdevex/Stratis.DevEx/tree/master/src/Stratis.VS.StratisEVM</MoreInfo>
+        <License>LICENSE.txt</License>
         <Icon>StratisLogo64x64.png</Icon>
         <PreviewImage>StratisLogo200x200.png</PreviewImage>
+        <Preview>true</Preview>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">

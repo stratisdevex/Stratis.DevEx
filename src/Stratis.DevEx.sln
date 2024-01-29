@@ -42,6 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{F0C599CF-2317-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{8A7E8E06-DF7D-4622-8091-98FB41542C58}"
 	ProjectSection(SolutionItems) = preProject
+		..\LICENSE.txt = ..\LICENSE.txt
 		..\NOTICE = ..\NOTICE
 		..\README.md = ..\README.md
 		Stratis.CodeAnalysis.Cs\README.md = Stratis.CodeAnalysis.Cs\README.md

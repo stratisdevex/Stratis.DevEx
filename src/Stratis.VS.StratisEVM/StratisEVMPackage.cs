@@ -92,46 +92,25 @@ namespace Stratis.VS.StratisEVM
         {
             await base.InitializeAsync(cancellationToken, progress);
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            if (VSUtil.InitializeVSServices(ServiceProvider.GlobalProvider))
+            if (!VSUtil.VSServicesInitialized)
             {
-                VSUtil.LogInfo("Stratis EVM", $"Extension assembly directory is {Runtime.AssemblyLocation}. StratisEVM package initialized.");
-            }
-            else
-            {
-                Runtime.Error("Could not initialize StratisEVM package VS services.");
-                return;
-            }
-
-            /*
-            if (Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) && File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")))
-            {
-                VSUtil.LogInfo("Stratis EVM", "VSCode Solidity language server present.");
-            }
-            else
-            {
-                VSUtil.LogInfo("Stratis EVM", "VSCode Solidity language server not present, installing...");
-                
-                /*
-                ThreadPool.QueueUserWorkItem((o) =>
+                if (VSUtil.InitializeVSServices(ServiceProvider.GlobalProvider))
                 {
-                   
-                    var output = SolidityLanguageClient.InstallVSCodeSolidityLanguageServer();
-                    ThreadHelper.JoinableTaskContext.MainThread.
-
-                });
-                
-                var output = await SolidityLanguageClient.InstallVSCodeSolidityLanguageServerAsync();
-                if (VSUtil.CheckRunCmdOutput(output, "Stratis EVM", "Run `npm audit` for details."))
-                {
-                    VSUtil.LogInfo("Stratis EVM", "VSCode Solidity language server installed.");
+                    VSUtil.LogInfo("Stratis EVM", $"Extension assembly directory is {Runtime.AssemblyLocation}. StratisEVM package services initialized.");
                 }
                 else
                 {
-                    VSUtil.LogError("Stratis EVM", "Could not install VSCode Solidity language server.");
+                    Runtime.Error("Could not initialize StratisEVM package services.");
+                    return;
                 }
-            
             }
-            */
+
+
+            if (!Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) || !File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
+            {
+                VSUtil.LogInfo("Stratis EVM", "VSCode Solidity language server not present.");
+            }
+            
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
         }

@@ -48,7 +48,7 @@ namespace Stratis.VS
         #region Properties
         public static string SolutionOpenFolder { get; set; }
 
-        public string Name => "Solidity Language Extension";
+        public string Name => "Solidity Language Client";
 
         public IEnumerable<string> ConfigurationSections
         {
@@ -136,52 +136,42 @@ namespace Stratis.VS
         #region ILanguageClient, ILanguageClientCustomMessage2 implementation
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
-            await Task.Yield();
-            if (Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) && File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            //await Task.Yield();
+            if (!VSUtil.VSServicesInitialized)
             {
-                Info("VSCode Solidity language server present.");
-            }
-            else
-            {
-                var output = await InstallVSCodeSolidityLanguageServerAsync();
-                if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
+                if (VSUtil.InitializeVSServices(ServiceProvider.GlobalProvider))
                 {
-                    Info("VSCode Solidity language server installed.");
-                    /*
-                    if (await DownloadFileAsync("soljson-v0.8.23+commit.f704f362.js", new Uri("https://ajb.nyc3.cdn.digitaloceanspaces.com/soljson-v0.8.23+commit.f704f362.js"), Path.Combine(StratisDevDir, "soljson-v0.8.23+commit.f704f362.js")))
-                    {
-                        Info("VSCode Solidity language server installed.");
-                    }
-                    else
-                    {
-                        Error("Could not download Solidity compiler.");
-                        Error("Could not install VSCode Solidity language server.");
-                        return null;
-                    }
-                    */
+                    VSUtil.LogInfo("Stratis EVM", "StratisEVM package services initialized.");
                 }
                 else
                 {
-                    Error("Could not install VSCode Solidity language server.");
+                    Error("Could not initialize StratisEVM package services.");
+                    return null;
+                }
+            }
+            if (Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) && File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
+            {
+               VSUtil.LogInfo("Stratis EVM", "VSCode Solidity language server present.");
+            }
+            else
+            {
+                VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "Stratis EVM");
+                VSUtil.LogInfo("Stratis EVM", "Installing VSCode Solidity language server...");
+                var output = await ThreadHelper.JoinableTaskFactory.RunAsync(InstallVSCodeSolidityLanguageServerAsync, JoinableTaskCreationOptions.LongRunning);
+                if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
+                {
+                    VSUtil.LogInfo("Stratis EVM", "VSCode Solidity language server installed.");
+                }
+                else
+                {
+                    VSUtil.LogError("Stratis EVM", "Could not install VSCode Solidity language server.");
                     return null;
                 }
             }
             var solution = (IVsSolution)await ServiceProvider.GetGlobalServiceAsync(typeof(SVsSolution));
             solution.GetSolutionInfo(out var dir, out var f, out var d);
             Info("Solution dir is {d}", dir);
-            this.InitializationOptions = JObject.FromObject(new
-            {
-                enabledAsYouTypeCompilationErrorCheck = true,
-                maxNumberOfProblems = true
-                //workspaceFolders = new string[] {dir},
-                //rootUri = dir
-                //compileUsingLocalVersion = "C:\\Users\\Allister\\Downloads\\soljson.js",
-                //enabledAsYouTypeCompilationErrorCheck = true,
-                //defaultCompiler = "local",
-                //compileUsingLocalVersion = "C:\\Users\\Allister\\Downloads\\soljson.js"
-                //compileUsingRemoteVersion = "latest",
-            });
-
             if (StartLanguageServerProcess())
             {
                 Info("Started language server process {proc} {p}.", serverProcess.StartInfo.FileName, serverProcess.StartInfo.Arguments);
