@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolidityCompiler.cs" />
+    <Compile Include="SolidityCompilerIO.cs" />
     <Compile Include="SolidityContentTypeDefinition.cs" />
     <Compile Include="SolidityFileContextActionsProviderFactory.cs" />
     <Compile Include="SolidityFileContextProviderFactory.cs" />

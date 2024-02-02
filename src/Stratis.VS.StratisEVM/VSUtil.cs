@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 
 using Stratis.DevEx;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Stratis.VS.StratisEVM
 {

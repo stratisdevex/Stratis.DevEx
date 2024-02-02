@@ -348,7 +348,7 @@ namespace Stratis.DevEx
         #endregion
 
         #region Methods
-        public string NLogFormatMessage(string messageTemplate, params object[] args)
+        public string NLogFormatInfoMessage(string messageTemplate, params object[] args)
         {
             var ev = LogEventInfo.Create(LogLevel.Info, "none", this.logger.Factory.DefaultCultureInfo, messageTemplate, args);
             return ev.FormattedMessage;
@@ -365,7 +365,7 @@ namespace Stratis.DevEx
         public ConsoleLogger2Op(ConsoleLogger2 l, string opName, params object[] args) : base(l)
         {
            
-            this.opName = l.NLogFormatMessage(opName, args);
+            this.opName = l.NLogFormatInfoMessage(opName, args);
             timer.Start();
             this.l = l;
             l.Info(this.opName + "...");

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,41 +17,26 @@ namespace Stratis.VS.StratisEVM
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "Solidity Compiler");
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.FileName = "cmd.exe";
-            info.Arguments = "/c solc " + file + " --bin";
-            info.RedirectStandardOutput = true;
-            info.RedirectStandardError = true;
-            info.UseShellExecute = false;
-            info.CreateNoWindow = true;
-            using (var process = new Process())
+            var cmd = "cmd.exe";
+            var args = "/c node " + Path.Combine("node_modules", "solc", "solc.js") + " \"" + file + "\" --bin";
+            var output = await ThreadHelper.JoinableTaskFactory.RunAsync(async () => await RunCmdAsync(cmd, args, AssemblyLocation));
+            if (CheckRunCmdError(output)) 
             {
-                process.StartInfo = info;
-                process.EnableRaisingEvents = true;
-                try
-                {
-                    if (!process.Start())
-                    {
-                        VSUtil.LogError("Could not start Solidity Compiler process {process}.", info.FileName + " " + info.Arguments);
-                        return;
-                    }
-                    var stdout = await process.StandardOutput.ReadToEndAsync();
-                    var stderr = await process.StandardError.ReadToEndAsync();
-                    if (stdout != null && stdout.Length > 0) 
-                    {
-                        VSUtil.LogInfo("Solidity Compiler", stdout);
-                    }
-                    if (stderr != null && stderr.Length > 0)
-                    {
-                        VSUtil.LogError("Solidity Compiler", stderr);
-                    }
-                    await process.WaitForExitAsync();
-                }
-                catch (Exception ex)
-                {
-                    VSUtil.LogError("Solidity Compiler", ex);
-                    return;
-                }
+                VSUtil.LogError("Solidity Compiler", "Could not run Solidity Compiler process: " + cmd + " " + args + ": " + GetRunCmdError(output));
+                return;
+            }
+            if (output.ContainsKey("stdout"))
+            {
+                VSUtil.LogInfo("Solidity Compiler", (string)output["stdout"]);
+            }
+
+            if (output.ContainsKey("stderr"))
+            {
+                VSUtil.LogInfo("Solidity Compiler", (string)output["stderr"]);
+            }
+            if (output.ContainsKey("stdout") || output.ContainsKey("stderr"))
+            {
+                return;
             }
         }
     }

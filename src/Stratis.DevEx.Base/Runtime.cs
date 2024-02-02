@@ -372,6 +372,11 @@ namespace Stratis.DevEx
             }
         }
 
+        public static bool CheckRunCmdError(Dictionary<string, object> output) => output.ContainsKey("error") || output.ContainsKey("exception");
+
+        public static string GetRunCmdError(Dictionary<string, object> output) => (output.ContainsKey("error") ? (string) output["error"] : "") 
+            + (output.ContainsKey("exception") ? (string)output["exception"] : "");
+        
         public static bool CheckRunCmdOutput(Dictionary<string, object> output, string checktext)
         {
             if (output.ContainsKey("error") || output.ContainsKey("exception"))
