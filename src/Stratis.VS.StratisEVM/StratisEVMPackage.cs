@@ -108,7 +108,7 @@ namespace Stratis.VS.StratisEVM
 
             if (!Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) || !File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
             {
-                VSUtil.LogInfo("Stratis EVM", "VSCode Solidity language server not present.");
+                VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server not present.");
             }
             
             // When initialized asynchronously, the current thread may be a background thread at this point.

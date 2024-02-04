@@ -152,20 +152,20 @@ namespace Stratis.VS
             }
             if (Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) && File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
             {
-               VSUtil.LogInfo("Stratis EVM", "VSCode Solidity language server present.");
+               VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server present.");
             }
             else
             {
                 VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "Stratis EVM");
-                VSUtil.LogInfo("Stratis EVM", "Installing VSCode Solidity language server...");
+                VSUtil.LogInfo("Stratis EVM", "Installing vscode-solidity language server...");
                 var output = await ThreadHelper.JoinableTaskFactory.RunAsync(InstallVSCodeSolidityLanguageServerAsync, JoinableTaskCreationOptions.LongRunning);
                 if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
                 {
-                    VSUtil.LogInfo("Stratis EVM", "VSCode Solidity language server installed.");
+                    VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server installed.");
                 }
                 else
                 {
-                    VSUtil.LogError("Stratis EVM", "Could not install VSCode Solidity language server.");
+                    VSUtil.LogError("Stratis EVM", "Could not install vscode-solidity language server.");
                     return null;
                 }
             }
@@ -214,7 +214,7 @@ namespace Stratis.VS
 
         public Task<InitializationFailureContext> OnServerInitializeFailedAsync(ILanguageClientInitializationInfo initializationState)
         {
-            string message = "Solidity language server failed to initialize.";
+            string message = "vscode-solidity language server failed to initialize.";
             Error(message);
             string exception = initializationState.InitializationException?.ToString() ?? string.Empty;
             message = $"{message}\n {exception}";
