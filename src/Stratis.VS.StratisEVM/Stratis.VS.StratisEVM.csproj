@@ -57,9 +57,6 @@
     <Compile Include="VSUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Grammars\Solidity.tmLanguage">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -77,6 +74,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="package.json">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Grammars\solidity.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="README.md" />
