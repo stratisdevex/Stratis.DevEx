@@ -264,7 +264,55 @@ namespace Stratis.VS
             public async Task<JToken> HandleRequestAsync(string methodName, JToken methodParam, Func<JToken, Task<JToken>> sendRequest)
             {
                 var resp = await sendRequest(methodParam);
-                Info("Request {req} {param}: {resp}", methodName, methodParam.ToString(), resp?.ToString() ?? "(null)");
+                try
+                {
+                    Info("Request {req} {param}: {resp}", methodName, methodParam.ToString(), resp?.ToString() ?? "(null)");
+                    if (resp != null)
+                    {
+                        if (methodName == "textDocument/hover")
+                        {
+                            if (resp.Root != null && resp.Root["contents"] != null && resp.Root["contents"]["kind"] != null && resp.Root["contents"]["kind"].Value<string>() == "markdown")
+                            {
+                                Info("Replace hover markup contents with plaintext.");
+                                resp.Root["contents"]["kind"] = JValue.CreateString("plaintext");
+                                if (resp.Root["contents"]["value"] != null)
+                                {
+                                    resp.Root["contents"]["value"] = JValue.CreateString(resp.Root["contents"]["value"].Value<string>().Replace("### ", "").Replace("#", ""));
+                                }
+                                else
+                                {
+                                    resp.Root["contents"]["value"] = "";
+                                }
+                            }
+                        }
+                        else if (methodName == "textDocument/completion")
+                        {
+                            if (resp.Root.Type == JTokenType.Array && resp.Root.HasValues)
+                            {
+                                Info("array detected");
+                                foreach (var f in resp.Root)
+                                {
+                                    if (f != null && f["documentation"] != null && f["documentation"]["kind"] != null && f["documentation"]["value"] != null && f["documentation"]["kind"].Value<string>() == "markdown")
+                                    {
+                                        Info("Replace completion markup contents with plaintext.");
+                                        f["documentation"]["kind"] = JValue.CreateString("plaintext");
+                                        f["documentation"]["value"] = JValue.CreateString(f["documentation"]["value"].Value<string>().Replace("### ", "").Replace("#", ""));
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                    else
+                    {
+                        Info("resp is null");
+                    }
+                }
+                catch(Exception ex) 
+                {
+                    Error(ex, "error reading response");
+                }
+                                
                 return resp;
             }
         }
