@@ -10,7 +10,7 @@ The StratisEVM extension provides support for developing Stratis Solidity smart 
 * Compiling a Solidity file from inside Visual Studio
 
 ## Requirements
-* Visual Stdio 2022
+* Visual Studio 2022
 * A recent version of [Node.js](https://nodejs.org/)
 
 ## Usage
