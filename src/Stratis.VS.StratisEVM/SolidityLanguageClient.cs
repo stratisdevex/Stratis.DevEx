@@ -260,7 +260,7 @@ namespace Stratis.VS
 
             public async Task<JToken> HandleRequestAsync(string methodName, JToken methodParam, Func<JToken, Task<JToken>> sendRequest)
             {
-                try
+                try //Handle exceptions raised by vscode-solidity server like https://github.com/juanfranblanco/vscode-solidity/issues/446
                 {
                     var resp = await sendRequest(methodParam);
                     Info("Request {req} {param}: {resp}", methodName, methodParam?.ToString() ?? "", resp?.ToString() ?? "(null)");
@@ -303,13 +303,13 @@ namespace Stratis.VS
                     else
                     {
                         Info("resp is null");
-                        return JObject.FromObject(new { contents = new { kind = "plaintext", value = "" } });
+                        return resp;
                     }
                 }
                 catch (Exception ex)
                 {
                     Error(ex, "Exception thrown handling request {m}.", methodName);
-                    return JObject.FromObject(new { contents = new { kind = "plaintext", value = "" } });
+                    return null;
                 }
             }
         }
