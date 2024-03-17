@@ -64,9 +64,9 @@ namespace Stratis.VS.StratisEVM
                 else
                 {
                     var binfile = s.Single();   
-                    var b = File.ReadAllBytes(binfile);
+                    var b = File.ReadAllText(binfile);
                     File.Delete(binfile);
-                    VSUtil.LogInfo("Solidity Compiler", "======= " + file + "======= " +"\nBinary: \n" + BitConverter.ToString(b).Replace("-", ""));
+                    VSUtil.LogInfo("Solidity Compiler", "======= " + file + "======= " +"\nBinary: \n" + b);
                     return;
                 }
 

@@ -15,7 +15,7 @@ contract BasicContract {
         // console.log("Unlock time is %o and block timestamp is %o", unlockTime, block.timestamp);
         emit BasicEvent(funcArg);
 
-        uint memory foo;
+        //uint memory foo;
     }
 
     
