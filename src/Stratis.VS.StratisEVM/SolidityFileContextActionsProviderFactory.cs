@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Workspace;
 using Microsoft.VisualStudio.Workspace.Extensions.VS;
-using System.Linq;
+
 
 namespace Stratis.VS.StratisEVM
 {
@@ -58,7 +58,7 @@ namespace Stratis.VS.StratisEVM
                         "Compile Solidity File" + fileContext.DisplayName,
                         async (fCtxt, progress, ct) =>
                         {
-                            await SolidityCompiler.CompileFileAsync(filePath, fileContext.InputFiles.First());
+                            await SolidityCompiler.CompileFileAsync(filePath);
                         }),
                 });
             }
