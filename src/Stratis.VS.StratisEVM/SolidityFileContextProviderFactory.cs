@@ -45,7 +45,7 @@ namespace Stratis.VS.StratisEVM
                         new Guid(ProviderType),
                         new Guid(StratisEVMPackageIds.SolidityFileContextType),
                         filePath + "\n",
-                        Array.Empty<string>()));
+                        new string[] { this.workspaceContext.Location }));
                 }
 
                 return await Task.FromResult(fileContexts.ToArray());
