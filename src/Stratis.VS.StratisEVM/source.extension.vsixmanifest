@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-    <Metadata>
-        <Identity Id="Stratis.VS.StratisEVM.09bed5a1-7734-4cff-9412-d17961f1a291" Version="0.1.2" Language="en-US" Publisher="Stratis DevEx" />
-        <DisplayName>StratisEVM</DisplayName>
-        <Description xml:space="preserve">StratisEVM smart contracts extension</Description>
-        <MoreInfo>https://github.com/stratisdevex/Stratis.DevEx/tree/master/src/Stratis.VS.StratisEVM</MoreInfo>
-        <License>LICENSE.txt</License>
-        <GettingStartedGuide>README.html</GettingStartedGuide>
-        <ReleaseNotes>Correctly include node_modules dependencies dir when compiling contracts.</ReleaseNotes>
-        <Icon>StratisLogo64x64.png</Icon>
-        <PreviewImage>StratisLogo200x200.png</PreviewImage>
-        <Tags>stratis,ethereum, solidity, smart contracts</Tags>
-        <Preview>true</Preview>
-    </Metadata>
-    <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
-            <ProductArchitecture>amd64</ProductArchitecture>
-        </InstallationTarget>
-    </Installation>
-    <Dependencies>
-        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-    </Dependencies>
-    <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
-    </Prerequisites>
-    <Assets>
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="SolidityLanguageSettings.pkgdef" />
-    </Assets>
+	<Metadata>
+		<Identity Id="Stratis.VS.StratisEVM.09bed5a1-7734-4cff-9412-d17961f1a291" Version="0.1.3" Language="en-US" Publisher="Stratis DevEx" />
+		<DisplayName>StratisEVM</DisplayName>
+		<Description xml:space="preserve">StratisEVM smart contracts extension</Description>
+		<MoreInfo>https://github.com/stratisdevex/Stratis.DevEx/tree/master/src/Stratis.VS.StratisEVM</MoreInfo>
+		<License>LICENSE.txt</License>
+		<GettingStartedGuide>README.html</GettingStartedGuide>
+		<ReleaseNotes>Correctly include node_modules dependencies dir when compiling contracts.</ReleaseNotes>
+		<Icon>StratisLogo64x64.png</Icon>
+		<PreviewImage>StratisLogo200x200.png</PreviewImage>
+		<Tags>stratis,ethereum, solidity, smart contracts</Tags>
+		<Preview>true</Preview>
+	</Metadata>
+	<Installation>
+		<InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
+			<ProductArchitecture>amd64</ProductArchitecture>
+		</InstallationTarget>
+	</Installation>
+	<Dependencies>
+		<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+	</Dependencies>
+	<Prerequisites>
+		<Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,18.0)" DisplayName="Visual Studio core editor" />
+	</Prerequisites>
+	<Assets>
+		<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+		<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="SolidityLanguageSettings.pkgdef" />
+	</Assets>
 </PackageManifest>
