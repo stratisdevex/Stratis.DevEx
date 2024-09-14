@@ -22,7 +22,7 @@
     <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
     <!--Avoid including unneeded references from PackageReference into vsix. If this behavior is desired, an alternative option is to use SuppressFromVsix items to specify which items to be excluded.-->
-    <IncludePackageReferencesInVSIXContainer>false</IncludePackageReferencesInVSIXContainer>
+    <IncludePackageReferencesInVSIXContainer>true</IncludePackageReferencesInVSIXContainer>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <StartAction>Program</StartAction>

@@ -35,7 +35,7 @@ namespace Stratis.VS.StratisEVM
     [InstalledProductRegistration("#110", "#112", "0.1", IconResourceID = 400)]
     [Guid(StratisEVMPackage.PackageGuidString)]
     //[ProvideAutoLoad("4646B819-1AE0-4E79-97F4-8A8176FDD664", PackageAutoLoadFlags.BackgroundLoad)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7
     {
