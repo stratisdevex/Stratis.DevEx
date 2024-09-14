@@ -45,16 +45,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ProjectType1.ProjectType.csproj" />
+    <None Include="ProjectType1.ProjectType.solproj" />
+    <None Include="Solidity.solproj" />
     <None Include="SmartContract1.sol" />
     <None Include="ProjectTemplate.solproj" />
     <None Include="ProjectTemplate1.ico" />

@@ -33,7 +33,7 @@ namespace Stratis.VS.StratisEVM
         /// The file extension used by your project type.
         /// This does not include the leading period.
         /// </summary>
-        internal const string ProjectExtension = "sol";
+        internal const string ProjectExtension = "solproj";
 
         /// <summary>
         /// A project capability that is present in your project type and none others.
@@ -43,7 +43,7 @@ namespace Stratis.VS.StratisEVM
         /// <remarks>
         /// This value should be kept in sync with the capability as actually defined in your .targets.
         /// </remarks>
-        internal const string UniqueCapability = "StratisEVMSolidityProject";
+        internal const string UniqueCapability = "Solidity";
 
         internal const string Language = "Solidity";
 

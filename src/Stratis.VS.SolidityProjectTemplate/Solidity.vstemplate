@@ -16,7 +16,7 @@
 	<CreateInPlace>true</CreateInPlace>
   </TemplateData>
   <TemplateContent>
-    <Project File="ProjectType1.ProjectType.csproj" ReplaceParameters="false">
+    <Project File="ProjectType1.ProjectType.solproj" ReplaceParameters="false">
       <ProjectItem ReplaceParameters="false" OpenInEditor="false">SmartContract1.sol</ProjectItem>
     </Project>
   </TemplateContent>
