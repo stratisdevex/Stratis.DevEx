@@ -47,7 +47,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BaseWizard.cs" />
     <Compile Include="SolidityConfiguredProject.cs" />
+    <Compile Include="SolidityProjectWizardUserInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="SolidityUnconfiguredProject.cs" />
     <Compile Include="SolidityProjectProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -91,6 +95,8 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Client">
@@ -103,6 +109,9 @@
       <Version>17.9.380</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.32112.339" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.VisualStudio.TemplateWizardInterface">
+      <Version>17.5.33428.366</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Workspace">
       <Version>17.1.11-preview-0002</Version>
     </PackageReference>
@@ -165,17 +174,14 @@
   These are the parts of the custom project system which will be deployed as part of the 
   final implementation, and provide the basic processing for handling rules in CPS.
   -->
-
   <!--
   The XAML files provide buth compile-time implementations for CPS rules as well as
   runtime information for property pages.  They will also be deployed as part of the
   final package.
   -->
-
   <!-- TODO: This copies the build authoring to a well-known location so that on the machine this project builds on,
        the projects created by the 3rd party consumer can open and build. But the real 3rd party consumer will not
        have run this step so they won't be able to open their projects. 
        To ship, the project type author must create an MSI that places these files in a well-known location on the
        customer machine and update the project template to point at that location.-->
- 
 </Project>

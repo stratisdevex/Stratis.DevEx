@@ -20,4 +20,8 @@
       <ProjectItem ReplaceParameters="false" OpenInEditor="false">SmartContract1.sol</ProjectItem>
     </Project>
   </TemplateContent>
+  <WizardExtension>
+	<Assembly>Stratis.VS.StratisEVM, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null</Assembly>
+	<FullClassName>Stratis.VS.StratisEVM.WizardImplementation</FullClassName>
+  </WizardExtension>
 </VSTemplate>
