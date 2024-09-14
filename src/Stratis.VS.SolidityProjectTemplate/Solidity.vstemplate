@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
+  <TemplateData>
+    <Name>Solidity Project</Name>
+    <Description>A project for creating Stratis and Ethereum-compatible Solidity smart contracts.</Description>
+    <Icon>Ethereum_32x32.png</Icon>
+    <ProjectType>Solidity</ProjectType>
+	<LanguageTag>Solidity</LanguageTag>
+	<PlatformTag>Web3</PlatformTag>
+	<ProjectTypeTag>Blockchain</ProjectTypeTag>
+	<SortOrder>1000</SortOrder>
+    <TemplateID>{05056b37-7356-490b-a12d-72beab514eb4}</TemplateID>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>Solidity</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+	<CreateInPlace>true</CreateInPlace>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="ProjectTemplate.solproj" ReplaceParameters="false">
+      <ProjectItem ReplaceParameters="false" OpenInEditor="true">SmartContract1.sol</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>
