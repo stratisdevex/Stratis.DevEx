@@ -54,6 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ProjectType1.ProjectType.csproj" />
     <None Include="SmartContract1.sol" />
     <None Include="ProjectTemplate.solproj" />
     <None Include="ProjectTemplate1.ico" />

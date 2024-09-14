@@ -16,8 +16,8 @@
 	<CreateInPlace>true</CreateInPlace>
   </TemplateData>
   <TemplateContent>
-    <Project File="ProjectTemplate.solproj" ReplaceParameters="false">
-      <ProjectItem ReplaceParameters="false" OpenInEditor="true">SmartContract1.sol</ProjectItem>
+    <Project File="ProjectType1.ProjectType.csproj" ReplaceParameters="false">
+      <ProjectItem ReplaceParameters="false" OpenInEditor="false">SmartContract1.sol</ProjectItem>
     </Project>
   </TemplateContent>
 </VSTemplate>
