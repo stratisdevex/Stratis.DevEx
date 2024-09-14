@@ -22,7 +22,7 @@
     <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
     <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
     <!--Avoid including unneeded references from PackageReference into vsix. If this behavior is desired, an alternative option is to use SuppressFromVsix items to specify which items to be excluded.-->
-    <IncludePackageReferencesInVSIXContainer>true</IncludePackageReferencesInVSIXContainer>
+    <IncludePackageReferencesInVSIXContainer>false</IncludePackageReferencesInVSIXContainer>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
     <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <StartAction>Program</StartAction>
@@ -165,45 +165,17 @@
   These are the parts of the custom project system which will be deployed as part of the 
   final implementation, and provide the basic processing for handling rules in CPS.
   -->
-  <ItemGroup>
-    <None Include="BuildSystem\DeployedBuildSystem\ProjectType1.props" />
-    <None Include="BuildSystem\DeployedBuildSystem\ProjectType1.targets" />
-  </ItemGroup>
+
   <!--
   The XAML files provide buth compile-time implementations for CPS rules as well as
   runtime information for property pages.  They will also be deployed as part of the
   final package.
   -->
-  <ItemGroup>
-    <None Include="BuildSystem\Rules\ProjectItemsSchema.xaml" />
-    <XamlPropertyRule Include="BuildSystem\Rules\general.xaml" />
-    <XamlPropertyRule Include="BuildSystem\Rules\general_file.xaml">
-      <RuleInjection>None</RuleInjection>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\folder.xaml">
-      <RuleInjection>None</RuleInjection>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\none.xaml">
-      <RuleInjection>None</RuleInjection>
-    </XamlPropertyRule>
-    <XamlPropertyRule Include="BuildSystem\Rules\scc.xaml" />
-    <XamlPropertyRule Include="BuildSystem\Rules\debugger_general.xaml" />
-    <XamlPropertyRule Include="BuildSystem\Rules\general.browseobject.xaml" />
-    <XamlPropertyRule Include="BuildSystem\Rules\script.xaml" />
-    <None Include="BuildSystem\Rules\script.browseobject.xaml" />
-    <XamlPropertyRule Include="BuildSystem\Rules\ScriptDebugger.xaml" />
-  </ItemGroup>
+
   <!-- TODO: This copies the build authoring to a well-known location so that on the machine this project builds on,
        the projects created by the 3rd party consumer can open and build. But the real 3rd party consumer will not
        have run this step so they won't be able to open their projects. 
        To ship, the project type author must create an MSI that places these files in a well-known location on the
        customer machine and update the project template to point at that location.-->
-  <Target Name="AfterBuild">
-    <ItemGroup>
-      <BuildSystemToCopy Include="BuildSystem\DeployedBuildSystem\**\*" />
-      <RulesToCopy Include="BuildSystem\Rules\**\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(BuildSystemToCopy)" DestinationFiles="@(BuildSystemToCopy->'$(LocalAppData)\CustomProjectSystems\ProjectType1\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(RulesToCopy)" DestinationFiles="@(RulesToCopy->'$(LocalAppData)\CustomProjectSystems\ProjectType1\Rules\%(RecursiveDir)%(FileName)%(Extension)')" SkipUnchangedFiles="true" />
-  </Target>
+ 
 </Project>
