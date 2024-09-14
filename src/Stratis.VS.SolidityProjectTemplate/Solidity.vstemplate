@@ -3,7 +3,7 @@
   <TemplateData>
     <Name>Solidity Project</Name>
     <Description>A project for creating Stratis and Ethereum-compatible Solidity smart contracts.</Description>
-    <Icon>Ethereum_32x32.png</Icon>
+    <Icon>Ethereum_32x32_black.png</Icon>
     <ProjectType>Solidity</ProjectType>
 	<LanguageTag>Solidity</LanguageTag>
 	<PlatformTag>Web3</PlatformTag>
