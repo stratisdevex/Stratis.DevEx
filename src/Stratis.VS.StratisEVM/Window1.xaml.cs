@@ -23,6 +23,7 @@ namespace Stratis.VS.StratisEVM
         public Window1()
         {
             InitializeComponent();
+            //InitializeComponent();
         }
     }
 }
