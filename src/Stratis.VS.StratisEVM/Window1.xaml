@@ -1,0 +1,19 @@
+﻿<VS:DialogWindow x:Class="Stratis.VS.StratisEVM.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:VS="clr-namespace:Microsoft.VisualStudio.PlatformUI"
+        Title="Window1" Height="100" Width="300">
+    <Window.Resources>
+        <SolidColorBrush x:Key="MyBrush" Color="Gold"/>
+        <Style TargetType="Border" x:Key="PageBackground">
+            <Setter Property="BorderBrush" Value="Blue"/>
+            <Setter Property="BorderThickness" Value="5" />
+        </Style>
+    </Window.Resources>
+    <Border Style="{StaticResource PageBackground}">
+        <StackPanel>
+            <TextBlock Text="Hello" />
+        </StackPanel>
+    </Border>
+</VS:DialogWindow>
+

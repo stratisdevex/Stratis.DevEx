@@ -41,14 +41,16 @@ namespace Stratis.VS.StratisEVM
             {
                 // Display a form to the user. The form collects
                 // input for the custom message.
-                inputForm = new SolidityProjectWizardUserInputForm();
-                inputForm.ShowDialog();
+                //inputForm = new SolidityProjectWizardUserInputForm();
+                //inputForm.ShowDialog();
 
-                customMessage = SolidityProjectWizardUserInputForm.CustomMessage;
+                //customMessage = SolidityProjectWizardUserInputForm.CustomMessage;
 
+                Window1 window1 = new Window1();
+                window1.ShowDialog(); 
                 // Add custom parameters.
-                replacementsDictionary.Add("$custommessage$",
-                    customMessage);
+                //replacementsDictionary.Add("$custommessage$",
+                //    customMessage);
             }
             catch (Exception ex)
             {
