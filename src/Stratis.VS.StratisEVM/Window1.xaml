@@ -4,20 +4,20 @@
         xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0" 
         Background="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelBrushKey}}"
         Foreground="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelTextBrushKey}}"
-        WindowStartupLocation="CenterOwner"
-        WindowState="Normal"
-        HasMaximizeButton="True"
-        HasMinimizeButton="True"
-        BorderThickness="0,1,0,0"
-        ShowInTaskbar="true"
-        Title="Window1"
-        Width="814"                
-       Height="460"
-        MinWidth="814"
-        MinHeight="460"
-  >
-  
-    
+                         SnapsToDevicePixels="True"
+                   UseLayoutRounding="True"
+                   WindowStartupLocation="CenterOwner"
+                   WindowStyle="None"
+                   WindowState="Normal" 
+                   ResizeMode="CanResize"
+                   ShowInTaskbar="false"
+
+      
+        
+        Width="460"                
+        Height="200"
+        MinWidth="460"
+        MinHeight="200">
     <Grid>
     
     <Grid.Resources>
@@ -37,8 +37,10 @@
           </Trigger>
         </Style.Triggers>
       </Style>
-            <Style TargetType="{x:Type ListBox}">
+            <Style TargetType="{x:Type ComboBox}">
+                <Setter Property="HorizontalAlignment" Value="Right"/>
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelTextBrushKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ListBoxBorderBrushKey}}" />
             </Style>
             <Style TargetType="{x:Type StackPanel}">
         <Setter Property="Orientation" Value="Horizontal" />
@@ -53,7 +55,7 @@
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" />
-      <ColumnDefinition />
+      <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
 
     <Grid.RowDefinitions>
@@ -62,13 +64,20 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
-      <RowDefinition />
-    </Grid.RowDefinitions>
+      
+        </Grid.RowDefinitions>
 
-    <!-- Left Margin -->
-        <Label Grid.Column="0" Grid.Row="0">Solidity project configuration file:</Label>
-        <ComboBox VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="0" SelectedItem="{Binding SelectedConfigFile, Mode=OneWay}">
-            <ComboBoxItem>remappings.txt</ComboBoxItem>
+        <Image Grid.Column="1" Grid.Row="0" Width="64" Height="64" HorizontalAlignment="Right" Source="https://stratisdevex.gallerycdn.vsassets.io/extensions/stratisdevex/stratisevm/0.1.3/1725544756658/Microsoft.VisualStudio.Services.Icons.Default" />
+        
+        <Label Grid.Column="0" Grid.Row="0" FontSize="21"> Configure your Solidity Project</Label>
+        <Label Grid.Column="0" Grid.Row="1">Solidity project configuration file:</Label>
+        <ComboBox 
+            VerticalAlignment="Center" 
+            Grid.Column="1" 
+            Width="150"
+            Grid.Row="1" 
+            SelectedItem="{Binding SelectedConfigFile, Mode=OneWay}">
+            <ComboBoxItem IsSelected="true">remappings.txt</ComboBoxItem>
             <ComboBoxItem>foundry.toml</ComboBoxItem>
             <ComboBoxItem>brownie-config.yaml</ComboBoxItem>
             <ComboBoxItem>truffle-config.js</ComboBoxItem>
@@ -76,39 +85,24 @@
         </ComboBox>
 
 
+        <Label Grid.Column="0" Grid.Row="2">Solidity compiler version:</Label>
+        <ComboBox 
+    VerticalAlignment="Center" 
+    Grid.Column="1" 
+    Width="150"
+    Grid.Row="2" 
+    SelectedItem="{Binding SelectedCompilerVersion, Mode=OneWay}">
+            <ComboBoxItem IsSelected="true">0.8.27</ComboBoxItem>
+            <ComboBoxItem>0.8.26</ComboBoxItem>
+            <ComboBoxItem>0.8.25</ComboBoxItem>
+            <ComboBoxItem>0.8.24</ComboBoxItem>
+            <ComboBoxItem>0.8.23</ComboBoxItem>
+        </ComboBox>
 
-    <!-- Top Margin -->
-    <Label Grid.Column="0" Grid.Row="1">Top Margin:</Label>
-    <TextBox Name="topMarginTextBox" Grid.Column="1" Grid.Row="1">
-      <TextBox.Text>
-        <Binding Path="Top" UpdateSourceTrigger="PropertyChanged">
-         
-        </Binding>
-      </TextBox.Text>
-    </TextBox>
-
-    <!-- Right Margin -->
-    <Label Grid.Column="0" Grid.Row="2">Right Margin:</Label>
-    <TextBox Name="rightMarginTextBox" Grid.Column="1" Grid.Row="2">
-      <TextBox.Text>
-        <Binding Path="Right" UpdateSourceTrigger="PropertyChanged">
-          
-        </Binding>
-      </TextBox.Text>
-    </TextBox>
-
-    <!-- Bottom Margin -->
-    <Label Grid.Column="0" Grid.Row="3">Bottom Margin:</Label>
-    <TextBox Name="bottomMarginTextBox" Grid.Column="1" Grid.Row="3">
-      <TextBox.Text>
-        <Binding Path="Bottom" UpdateSourceTrigger="PropertyChanged">
-          
-        </Binding>
-      </TextBox.Text>
-    </TextBox>
-
+        <!-- Top Margin -->
+  
     <!-- Accept or Cancel -->
-    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4">
+    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,10" Grid.Row="4">
       <Button Name="okButton" Click="okButton_Click" IsDefault="True">OK</Button>
       <Button Name="cancelButton" IsCancel="True">Cancel</Button>
     </StackPanel>

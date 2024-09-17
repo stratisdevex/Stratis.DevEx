@@ -28,6 +28,7 @@ namespace Stratis.VS.StratisEVM
 
         public string SelectedConfigFile { get; set; }
 
+        public string SelectedCompilerVersion { get; set; } 
 
         private void okButton_Click(object sender, RoutedEventArgs e) =>
     DialogResult = true;
