@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
+
 using Microsoft.VisualStudio.PlatformUI;
 namespace Stratis.VS.StratisEVM
 {
@@ -35,5 +37,23 @@ namespace Stratis.VS.StratisEVM
 
         private void cancelButton_Click(object sender, RoutedEventArgs e) =>
             DialogResult = false;
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            System.Windows.Controls.ComboBoxItem item = (System.Windows.Controls.ComboBoxItem)e.AddedItems[0];
+            if (item != null && item.Content != null)
+            {
+                SelectedConfigFile = (string)item.Content;
+            }
+        }
+
+        private void ComboBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            System.Windows.Controls.ComboBoxItem item = (System.Windows.Controls.ComboBoxItem) e.AddedItems[0];
+            if (item != null && item.Content != null)
+            {
+                SelectedCompilerVersion = (string) item.Content;
+            }
+        }
     }
 }

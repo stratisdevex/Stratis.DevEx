@@ -14,9 +14,9 @@
 
       
         
-        Width="460"                
+        Width="500"                
         Height="200"
-        MinWidth="460"
+        MinWidth="500"
         MinHeight="200">
     <Grid>
     
@@ -76,7 +76,7 @@
             Grid.Column="1" 
             Width="150"
             Grid.Row="1" 
-            SelectedItem="{Binding SelectedConfigFile, Mode=OneWay}">
+            SelectedValue="remappings.txt" SelectionChanged="ComboBox_SelectionChanged">
             <ComboBoxItem IsSelected="true">remappings.txt</ComboBoxItem>
             <ComboBoxItem>foundry.toml</ComboBoxItem>
             <ComboBoxItem>brownie-config.yaml</ComboBoxItem>
@@ -91,7 +91,7 @@
     Grid.Column="1" 
     Width="150"
     Grid.Row="2" 
-    SelectedItem="{Binding SelectedCompilerVersion, Mode=OneWay}">
+    SelectedValue="0.8.27" SelectionChanged="ComboBox_SelectionChanged_1">
             <ComboBoxItem IsSelected="true">0.8.27</ComboBoxItem>
             <ComboBoxItem>0.8.26</ComboBoxItem>
             <ComboBoxItem>0.8.25</ComboBoxItem>

@@ -47,11 +47,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BaseWizard.cs" />
+    <Compile Include="SolidityProjectWizard.cs" />
     <Compile Include="SolidityConfiguredProject.cs" />
-    <Compile Include="SolidityProjectWizardUserInputForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="SolidityUnconfiguredProject.cs" />
     <Compile Include="SolidityProjectProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,8 +60,8 @@
     <Compile Include="SolidityLanguageClient.cs" />
     <Compile Include="StratisEVMPackage.cs" />
     <Compile Include="StratisEVMPackageIds.cs" />
-    <Compile Include="Window1.xaml.cs">
-      <DependentUpon>Window1.xaml</DependentUpon>
+    <Compile Include="SolidityProjectWizardDialogWindow.xaml.cs">
+      <DependentUpon>SolidityProjectWizardDialogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="VSUtil.cs" />
   </ItemGroup>
@@ -174,7 +171,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Window1.xaml">
+    <Page Include="SolidityProjectWizardDialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

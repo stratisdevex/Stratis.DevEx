@@ -6,9 +6,8 @@ using EnvDTE;
 
 namespace Stratis.VS.StratisEVM
 {
-    public class WizardImplementation : IWizard
+    public class SolidityProjectWizard : IWizard
     {
-        private SolidityProjectWizardUserInputForm inputForm;
         private string customMessage;
 
         // This method is called before opening any item that
@@ -47,9 +46,10 @@ namespace Stratis.VS.StratisEVM
                 //customMessage = SolidityProjectWizardUserInputForm.CustomMessage;
 
                 Window1 window1 = new Window1();
-                window1.ShowDialog(); 
+                window1.ShowDialog();
                 // Add custom parameters.
-                //replacementsDictionary.Add("$custommessage$",
+                replacementsDictionary.Add("$solidityconfigfile$", window1.SelectedConfigFile);
+                replacementsDictionary.Add("$soliditycompilerversion$", window1.SelectedCompilerVersion);
                 //    customMessage);
             }
             catch (Exception ex)
