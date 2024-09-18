@@ -48,8 +48,8 @@ namespace Stratis.VS.StratisEVM
                 Window1 window1 = new Window1();
                 window1.ShowDialog();
                 // Add custom parameters.
-                replacementsDictionary.Add("$solidityconfigfile$", window1.SelectedConfigFile);
-                replacementsDictionary.Add("$soliditycompilerversion$", window1.SelectedCompilerVersion);
+                //replacementsDictionary.Add("$solidityconfigfile$", window1.SelectedConfigFile);
+                //replacementsDictionary.Add("$soliditycompilerversion$", window1.SelectedCompilerVersion);
                 //    customMessage);
             }
             catch (Exception ex)

@@ -47,6 +47,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SolidityProjectMonikers.cs" />
+    <Compile Include="SolidityProjectTreePropertiesProvider.cs" />
     <Compile Include="SolidityProjectWizard.cs" />
     <Compile Include="SolidityConfiguredProject.cs" />
     <Compile Include="SolidityUnconfiguredProject.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="VSUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\SolidityProjectProjectIcon.png" />
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -89,6 +92,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="README.md" />
+    <Content Include="SolidityProject.imagemanifest">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -97,6 +103,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
@@ -171,6 +178,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\SolidityProjectProjectIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
     <Page Include="SolidityProjectWizardDialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

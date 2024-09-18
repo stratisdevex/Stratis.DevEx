@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImageManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                           xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                           xmlns="http://schemas.microsoft.com/VisualStudio/ImageManifestSchema/2014">
+  <Symbols>
+    <String Name="Resources" Value="/Stratis.VS.StratisEVM;Component/" />
+    <Guid Name="SolidityProjectGuid" Value="293347bb-f054-408c-8ad9-cbabe93176fc" />
+    <ID Name="ProjectIcon" Value="0" />
+  </Symbols>
+  <Images>
+    <Image Guid="$(SolidityProjectGuid)" ID="$(ProjectIcon)">
+      <Source Uri="$(Resources)/Images/SolidityProjectProjectIcon.xaml" />
+      <Source Uri="$(Resources)/Images/SolidityProjectProjectIcon.png" >
+        <Size Value="16" />
+      </Source>  
+    </Image>
+  </Images>
+  <ImageLists />
+</ImageManifest>
