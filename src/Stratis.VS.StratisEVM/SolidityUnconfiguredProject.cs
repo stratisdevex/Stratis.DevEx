@@ -24,7 +24,7 @@ namespace Stratis.VS.StratisEVM
 {
     [Export]
     [AppliesTo(UniqueCapability)]
-    [ProjectTypeRegistration(ProjectTypeGuid, "Solidity", "#2", ProjectExtension, Language, resourcePackageGuid: StratisEVMPackage.PackageGuidString, PossibleProjectExtensions = ProjectExtension)]
+    [ProjectTypeRegistration(ProjectTypeGuid, "Solidity", "#2", ProjectExtension, Language, resourcePackageGuid: StratisEVMPackage.PackageGuidString, PossibleProjectExtensions = ProjectExtension, Capabilities = UniqueCapability)]
     internal class SolidityUnconfiguredProject
     {
         internal const string ProjectTypeGuid = "4FC4544B-041A-41FD-B858-024E6755305D";
