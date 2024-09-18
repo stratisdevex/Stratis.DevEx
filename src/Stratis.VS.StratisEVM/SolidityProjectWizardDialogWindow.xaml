@@ -18,6 +18,11 @@
         Height="200"
         MinWidth="500"
         MinHeight="200">
+    <WindowChrome.WindowChrome>
+        <WindowChrome 
+            CaptionHeight="0"
+            ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
     <Grid>
     
     <Grid.Resources>

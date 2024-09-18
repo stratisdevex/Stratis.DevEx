@@ -9,7 +9,7 @@ namespace Stratis.VS.StratisEVM
     /// Updates nodes in the project tree by overriding property values calculated so far by lower priority providers.
     /// </summary>
     [Export(typeof(IProjectTreePropertiesProvider))]
-    [AppliesTo(MyUnconfiguredProject.UniqueCapability)]
+    [AppliesTo(SolidityUnconfiguredProject.UniqueCapability)]
     // TODO: Consider removing the Order attribute as it typically should not be needed when creating a new project type. It may be needed when customizing an existing project type to override the default behavior (e.g. the default C# implementation).
     [Order(1000)]
     internal class SolidityProjectTreePropertiesProvider : IProjectTreePropertiesProvider
