@@ -5,7 +5,9 @@
   <Symbols>
     <String Name="Resources" Value="/Stratis.VS.StratisEVM;Component/" />
     <Guid Name="SolidityProjectGuid" Value="293347bb-f054-408c-8ad9-cbabe93176fc" />
+    <Guid Name="SoliditySourceFileGuid" Value="c0a684d8-7f68-4bc3-9b34-60a864cfdf98" />
     <ID Name="ProjectIcon" Value="0" />
+    <ID Name="SoliditySourceIcon" Value="1" />
   </Symbols>
   <Images>
     <Image Guid="$(SolidityProjectGuid)" ID="$(ProjectIcon)">
@@ -13,6 +15,12 @@
       <Source Uri="$(Resources)/Images/SolidityProjectProjectIcon.png" >
         <Size Value="16" />
       </Source>  
+    </Image>
+    <Image Guid="$(SoliditySourceFileGuid)" ID="$(SoliditySourceIcon)">
+      <Source Uri="$(Resources)/Images/SoliditySourceFileIcon.xaml" />
+      <Source Uri="$(Resources)/Images/SoliditySourceFileIcon.png" >
+        <Size Value="16" />
+      </Source>
     </Image>
   </Images>
   <ImageLists />

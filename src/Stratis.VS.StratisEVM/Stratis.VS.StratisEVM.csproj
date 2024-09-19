@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\SolidityProjectProjectIcon.png" />
+    <Resource Include="Images\SoliditySourceFileIcon.png" />
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -181,6 +182,10 @@
     <Resource Include="Images\SolidityProjectProjectIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Images\SoliditySourceFileIcon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Resource>
     <Page Include="SolidityProjectWizardDialogWindow.xaml">
       <SubType>Designer</SubType>
