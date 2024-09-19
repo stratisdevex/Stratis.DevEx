@@ -5,8 +5,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <None Include="**\*.js" />
-    <None Include="**\*.vbs" />
+    <None Include="**\*.sol" />
   </ItemGroup>
 	<Target Name="Build">
 		

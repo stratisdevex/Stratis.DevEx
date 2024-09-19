@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// SPDX-License-Identifier: GPL-3.0
+pragma solidity 0.8.20;
 
-namespace ProjectTemplate1
-{
-    public class Class1
-    {
+contract SimpleStorage {
+    uint storedData;
+
+    function set(uint x) public {
+        storedData = x;
+    }
+
+    function get() public view returns (uint) {
+        return storedData;
     }
 }
