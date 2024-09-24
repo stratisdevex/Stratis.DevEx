@@ -31,7 +31,7 @@ namespace Stratis.VS.StratisEVM
                 propertyValues.Icon = SolidityProjectMonikers.ProjectIconImageMoniker.ToProjectSystemType();
             }
 
-            else if (propertyValues.Flags.Contains(ProjectTreeFlags.Common.SourceFile) && propertyValues.Flags.Contains(ProjectTreeFlags.Common.FileOnDisk) && propertyValues.Flags.Contains(ProjectTreeFlags.Common.FileOnDisk))
+            else if (propertyContext.ItemName.EndsWith(".sol") && propertyValues.Flags.Contains(ProjectTreeFlags.Common.SourceFile) && propertyValues.Flags.Contains(ProjectTreeFlags.Common.FileOnDisk) && propertyValues.Flags.Contains(ProjectTreeFlags.Common.FileSystemEntity))
             {
                 propertyValues.Icon = SolidityProjectMonikers.SolidityIconImageMoniker.ToProjectSystemType();
             }

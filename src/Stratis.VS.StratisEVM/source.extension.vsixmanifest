@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Stratis.VS.StratisEVM.09bed5a1-7734-4cff-9412-d17961f1a291" Version="0.1.3" Language="en-US" Publisher="Stratis DevEx" />
+        <Identity Id="Stratis.VS.StratisEVM.09bed5a1-7734-4cff-9412-d17961f1a291" Version="0.1.4" Language="en-US" Publisher="Stratis DevEx" />
         <DisplayName>StratisEVM</DisplayName>
         <Description xml:space="preserve">StratisEVM smart contracts extension</Description>
         <MoreInfo>https://github.com/stratisdevex/Stratis.DevEx/tree/master/src/Stratis.VS.StratisEVM</MoreInfo>
@@ -32,5 +32,6 @@
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="template.pkgdef" />
         <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" AssemblyName="|%CurrentProject%;AssemblyName|" />
         <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="Stratis.VS.SolidityFileItemTemplate" d:TargetPath="|Stratis.VS.SolidityFileItemTemplate;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
+        <Asset Type="Microsoft.VisualStudio.ItemTemplate" d:Source="Project" d:ProjectName="ItemTemplate2" d:TargetPath="|ItemTemplate2;TemplateProjectOutputGroup|" Path="ItemTemplates" d:VsixSubPath="ItemTemplates" />
     </Assets>
 </PackageManifest>

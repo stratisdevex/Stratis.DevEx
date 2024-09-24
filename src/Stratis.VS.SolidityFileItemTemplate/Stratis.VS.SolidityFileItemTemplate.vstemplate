@@ -6,7 +6,7 @@
     <Icon>solidity_icon.ico</Icon>
     <TemplateGroupID>Solidity</TemplateGroupID>
     <TemplateID>350d4e4a-3ad0-4c56-9a48-b865f1532b9f</TemplateID>
-    <ProjectType>Solidity</ProjectType>
+    <ProjectType>CSharp</ProjectType>
 
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>SmartContract1.sol</DefaultName>
