@@ -44,8 +44,8 @@
       </Style>
             <Style TargetType="{x:Type ComboBox}">
                 <Setter Property="HorizontalAlignment" Value="Right"/>
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelTextBrushKey}}" />
-                <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ListBoxBorderBrushKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ListBoxTextBrushKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ListBoxBrushKey}}" />
             </Style>
             <Style TargetType="{x:Type StackPanel}">
         <Setter Property="Orientation" Value="Horizontal" />
@@ -55,7 +55,9 @@
         <Setter Property="Width" Value="70" />
         <Setter Property="Height" Value="25" />
         <Setter Property="Margin" Value="5,0,0,0" />
-      </Style>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonTextBrushKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonBackgroundBrushKey}}" />
+            </Style>
     </Grid.Resources>
 
     <Grid.ColumnDefinitions>
@@ -81,12 +83,12 @@
             Grid.Column="1" 
             Width="150"
             Grid.Row="1" 
-            SelectedValue="remappings.txt" SelectionChanged="ComboBox_SelectionChanged">
-            <ComboBoxItem IsSelected="true">remappings.txt</ComboBoxItem>
+            SelectedValue="hardhat.config.js" SelectionChanged="ComboBox_SelectionChanged">
+            <ComboBoxItem>remappings.txt</ComboBoxItem>
             <ComboBoxItem>foundry.toml</ComboBoxItem>
             <ComboBoxItem>brownie-config.yaml</ComboBoxItem>
             <ComboBoxItem>truffle-config.js</ComboBoxItem>
-            <ComboBoxItem>hardhat.config.js</ComboBoxItem>
+            <ComboBoxItem IsSelected="true">hardhat.config.js</ComboBoxItem>
         </ComboBox>
 
 
@@ -102,6 +104,9 @@
             <ComboBoxItem>0.8.25</ComboBoxItem>
             <ComboBoxItem>0.8.24</ComboBoxItem>
             <ComboBoxItem>0.8.23</ComboBoxItem>
+            <ComboBoxItem>0.8.22</ComboBoxItem>
+            <ComboBoxItem>0.8.21</ComboBoxItem>
+            <ComboBoxItem>0.8.20</ComboBoxItem>
         </ComboBox>
 
         <!-- Top Margin -->

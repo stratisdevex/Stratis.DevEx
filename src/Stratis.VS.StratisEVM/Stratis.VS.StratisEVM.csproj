@@ -161,6 +161,13 @@
       <Project>{f54aa3e2-f4bf-4c94-8ac9-a476265a70bf}</Project>
       <Name>Stratis.DevEx.Base</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Stratis.VS.SolidityFileItemTemplate\Stratis.VS.SolidityFileItemTemplate.csproj">
+      <Project>{72198956-89B5-48F4-B209-A963504B5279}</Project>
+      <Name>Stratis.VS.SolidityFileItemTemplate</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
     <ProjectReference Include="..\Stratis.VS.SolidityProjectTemplate\Stratis.VS.SolidityProjectTemplate.csproj">
       <Project>{90BA4A89-26AA-4E2D-86EF-F5CC2420EB61}</Project>
       <Name>Stratis.VS.SolidityProjectTemplate</Name>
