@@ -84,7 +84,15 @@ namespace Stratis.DevEx
         public static bool IsGitHubUrl(this string u) =>
             Uri.TryCreate(u, UriKind.Absolute, out var uri) && uri.Host == "github.com" ? true : false;
 
-        public static string CombinePath(this string s1, string s2) => Path.Combine(s1, s2);
+        public static string CombinePath(this string s1, params string[] s2)
+        {   
+            var r = s1;    
+            for (int i = 0; i < s2.Length; i++)
+            {
+                r = Path.Combine(r, s2[i]);   
+            }
+            return r;
+        }
 
         public static string Last(this StringBuilder sb)
         {

@@ -33,9 +33,10 @@ namespace Stratis.VS.StratisEVM
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", "0.1", IconResourceID = 400)]
-    [Guid(StratisEVMPackage.PackageGuidString)]
+    [Guid(PackageGuidString)]
     //[ProvideAutoLoad("4646B819-1AE0-4E79-97F4-8A8176FDD664", PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7
     {
@@ -105,6 +106,15 @@ namespace Stratis.VS.StratisEVM
                 }
             }
 
+            if (!Directory.Exists(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity")))
+            {
+                await Runtime.CopyDirectoryAsync(Runtime.AssemblyLocation.CombinePath("BuildSystem"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
+                VSUtil.LogInfo("Stratis EVM", "Created Solidity project type build system.");
+            }
+            else
+            {
+                VSUtil.LogInfo("Stratis EVM", "Solidity project type build system present.");
+            }
 
             if (!Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) || !File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
             {

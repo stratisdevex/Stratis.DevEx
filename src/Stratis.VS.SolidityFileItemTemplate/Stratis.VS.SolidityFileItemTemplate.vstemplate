@@ -4,19 +4,13 @@
     <Name>Solidity File</Name>
     <Description>A Solidity source code file</Description>
     <Icon>solidity_icon.ico</Icon>
-    <TemplateGroupID>Solidity</TemplateGroupID>
+	<ProjectType>CSharp</ProjectType>
     <TemplateID>350d4e4a-3ad0-4c56-9a48-b865f1532b9f</TemplateID>
-    <ProjectType>CSharp</ProjectType>
-
-    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <NumberOfParentCategoriesToRollUp>2</NumberOfParentCategoriesToRollUp>
+	<ShowByDefault>True</ShowByDefault>
     <DefaultName>SmartContract1.sol</DefaultName>
   </TemplateData>
   <TemplateContent>
-    <References>
-      <Reference>
-        <Assembly>System</Assembly>
-      </Reference>
-    </References>
     <ProjectItem ReplaceParameters="true">SmartContract1.sol</ProjectItem>
   </TemplateContent>
 </VSTemplate>

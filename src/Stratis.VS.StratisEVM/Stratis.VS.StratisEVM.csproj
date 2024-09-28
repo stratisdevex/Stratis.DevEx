@@ -199,6 +199,61 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <!-- 
+  These are the parts of the custom project system which will be deployed as part of the 
+  final implementation, and provide the basic processing for handling rules in CPS.
+  -->
+  <ItemGroup>
+    <Content Include="BuildSystem\Solidity.props">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Solidity.targets">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <!--
+  The XAML files provide buth compile-time implementations for CPS rules as well as
+  runtime information for property pages.  They will also be deployed as part of the
+  final package.
+  -->
+  <ItemGroup>
+    <Content Include="BuildSystem\Rules\ProjectItemsSchema.xaml">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\general.xaml">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\general_file.xaml">
+      <RuleInjection>None</RuleInjection>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\folder.xaml">
+      <RuleInjection>None</RuleInjection>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\none.xaml">
+      <RuleInjection>None</RuleInjection>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\scc.xaml">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\debugger_general.xaml">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\general.browseobject.xaml">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\script.xaml">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\script.browseobject.xaml">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="BuildSystem\Rules\ScriptDebugger.xaml">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <!-- 

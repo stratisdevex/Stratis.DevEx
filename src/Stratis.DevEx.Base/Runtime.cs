@@ -52,6 +52,7 @@ namespace Stratis.DevEx
 
         public static string AppDataDir => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
+        public static string LocalAppDataDir => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         public static string StratisDevDir => Path.Combine(AppDataDir, "StratisDev");
 
         public static Random Rng { get; } = new Random();
@@ -453,6 +454,50 @@ namespace Stratis.DevEx
             op.Complete();
         }
 
+        public static async Task CopyDirectoryAsync(string sourceDir, string destinationDir, bool recursive = false)
+        {
+            using var op = Begin("Copying {0} to {1}", sourceDir, destinationDir);
+            // Get information about the source directory
+            var dir = new DirectoryInfo(sourceDir);
+
+            // Check if the source directory exists
+            if (!dir.Exists)
+                throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+
+            // Cache directories before we start copying
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // Create the destination directory
+            Directory.CreateDirectory(destinationDir);
+
+            // Get the files in the source directory and copy to the destination directory
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                string targetFilePath = Path.Combine(destinationDir, file.Name);
+                file.CopyTo(targetFilePath);
+            }
+            foreach (var file in dir.GetFiles())
+            {
+                using (FileStream sourceStream = file.Open(FileMode.Open))
+                {
+                    using (FileStream destinationStream = File.Create(Path.Combine(destinationDir, file.Name)))
+                    {
+                        await sourceStream.CopyToAsync(destinationStream);
+                    }
+                }
+            }
+
+            // If recursive and copying subdirectories, recursively call this method
+            if (recursive)
+            {
+                foreach (DirectoryInfo subDir in dirs)
+                {
+                    string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                    CopyDirectory(subDir.FullName, newDestinationDir, true);
+                }
+            }
+            op.Complete();
+        }
         public static async Task<bool> DownloadFileAsync(string name, Uri downloadUrl, string downloadPath)
         {
 #pragma warning disable SYSLIB0014 // Type or member is obsolete
