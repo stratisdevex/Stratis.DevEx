@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="$(LocalAppData)\CustomProjectSystems\Solidity\Solidity.props" />
+	<Import Project="$(LocalAppData)\CustomProjectSystems\Solidity\Solidity.targets" />
+	<PropertyGroup>
+		<CompilerVersion>0.8.20</CompilerVersion>
+		<ConfigurationFile>hardhat.config.js</ConfigurationFile>
+	</PropertyGroup>
 	<ItemGroup>
 		<None Include="SmartContract1.sol" />
 		<None Include="hardhat.config.js" />
 		<None Include="package.json" />
-
 	</ItemGroup>
-	<Import Project="$(LocalAppData)\CustomProjectSystems\Solidity\Solidity.targets" />
 </Project>

@@ -19,6 +19,18 @@
         </StringProperty.DataSource>
     </StringProperty>
 
+	<StringProperty Name="CompilerVersion" DisplayName="Compiler Version">
+		<StringProperty.DataSource>
+			<DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+		</StringProperty.DataSource>
+	</StringProperty>
+	
+	<StringProperty Name="ConfigurationFile" DisplayName="Configuration File">
+		<StringProperty.DataSource>
+			<DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+		</StringProperty.DataSource>
+	</StringProperty>
+	
     <StringProperty Name="ProjectGuid" Visible="False">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Globals" HasConfigurationCondition="False" />
