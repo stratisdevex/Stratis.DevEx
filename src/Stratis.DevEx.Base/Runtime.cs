@@ -468,19 +468,22 @@ namespace Stratis.DevEx
             DirectoryInfo[] dirs = dir.GetDirectories();
 
             // Create the destination directory
-            Directory.CreateDirectory(destinationDir);
+            if (!Directory.Exists(destinationDir))
+            {
+                Directory.CreateDirectory(destinationDir);
+            }
 
             // Get the files in the source directory and copy to the destination directory
-            foreach (FileInfo file in dir.GetFiles())
-            {
-                string targetFilePath = Path.Combine(destinationDir, file.Name);
-                file.CopyTo(targetFilePath);
-            }
             foreach (var file in dir.GetFiles())
             {
+                var of = Path.Combine(destinationDir, file.Name);
+                if (File.Exists(of))
+                {
+                    File.Delete(of);    
+                }
                 using (FileStream sourceStream = file.Open(FileMode.Open))
                 {
-                    using (FileStream destinationStream = File.Create(Path.Combine(destinationDir, file.Name)))
+                    using (FileStream destinationStream = File.Create(of))
                     {
                         await sourceStream.CopyToAsync(destinationStream);
                     }

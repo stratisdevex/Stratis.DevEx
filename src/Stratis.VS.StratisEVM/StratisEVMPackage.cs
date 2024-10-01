@@ -106,15 +106,11 @@ namespace Stratis.VS.StratisEVM
                 }
             }
 
-            if (!Directory.Exists(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity")))
+            if (Directory.Exists(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity")))
             {
-                await Runtime.CopyDirectoryAsync(Runtime.AssemblyLocation.CombinePath("BuildSystem"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
-                VSUtil.LogInfo("Stratis EVM", "Created Solidity project type build system.");
+                Directory.Delete(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
             }
-            else
-            {
-                VSUtil.LogInfo("Stratis EVM", "Solidity project type build system present.");
-            }
+            await Runtime.CopyDirectoryAsync(Runtime.AssemblyLocation.CombinePath("BuildSystem"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
 
             if (!Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) || !File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
             {

@@ -13,24 +13,32 @@
         <DataSource Persistence="ProjectFile" Label="Configuration" />
     </Rule.DataSource>
 
-    <StringProperty Name="StartItem" DisplayName="Start Item">
-        <StringProperty.DataSource>
-            <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
-        </StringProperty.DataSource>
-    </StringProperty>
-
-	<StringProperty Name="CompilerVersion" DisplayName="Compiler Version">
-		<StringProperty.DataSource>
+	<EnumProperty Name="ConfigurationFile" DisplayName="Solidity Configuration File">
+		<EnumProperty.DataSource>
 			<DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
-		</StringProperty.DataSource>
-	</StringProperty>
+		</EnumProperty.DataSource>
+		<EnumValue Name="remappings.txt" />
+		<EnumValue Name="foundry.toml" />
+		<EnumValue Name="brownie-config.yaml" />
+		<EnumValue Name="truffle-config.js" />
+		<EnumValue Name="hardhat.config.js" />
+		<EnumValue Name="hardhat.config.ts" />
+	</EnumProperty>
 	
-	<StringProperty Name="ConfigurationFile" DisplayName="Configuration File">
-		<StringProperty.DataSource>
+	<EnumProperty Name="CompilerVersion" DisplayName="Solidity Compiler Version">
+		<EnumProperty.DataSource>
 			<DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
-		</StringProperty.DataSource>
-	</StringProperty>
-	
+		</EnumProperty.DataSource>
+		<EnumValue Name="0.8.20" />
+		<EnumValue Name="0.8.21" />
+		<EnumValue Name="0.8.22" />
+		<EnumValue Name="0.8.23" />
+		<EnumValue Name="0.8.24" />
+		<EnumValue Name="0.8.25" />
+		<EnumValue Name="0.8.26" />
+		<EnumValue Name="0.8.27" />
+	</EnumProperty>
+		
     <StringProperty Name="ProjectGuid" Visible="False">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Globals" HasConfigurationCondition="False" />
