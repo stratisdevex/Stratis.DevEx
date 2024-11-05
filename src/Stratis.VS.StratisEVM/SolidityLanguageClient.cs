@@ -137,7 +137,6 @@ namespace Stratis.VS
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            //await Task.Yield();
             if (!VSUtil.VSServicesInitialized)
             {
                 if (VSUtil.InitializeVSServices(ServiceProvider.GlobalProvider))
@@ -158,7 +157,9 @@ namespace Stratis.VS
             {
                 VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "Stratis EVM");
                 VSUtil.LogInfo("Stratis EVM", "Installing vscode-solidity language server...");
-                var output = await ThreadHelper.JoinableTaskFactory.RunAsync(InstallVSCodeSolidityLanguageServerAsync, JoinableTaskCreationOptions.LongRunning);
+                await TaskScheduler.Default;
+                var output = await InstallVSCodeSolidityLanguageServerAsync();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
                 {
                     VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server installed.");
@@ -194,6 +195,10 @@ namespace Stratis.VS
 
         public async Task StopServerAsync()
         {
+            if (serverProcess != null && !serverProcess.HasExited)
+            {
+                serverProcess.Kill();
+            }
             if (StopAsync != null)
             {
                 await StopAsync.InvokeAsync(this, EventArgs.Empty);

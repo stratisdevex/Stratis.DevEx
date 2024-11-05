@@ -23,6 +23,7 @@ namespace Stratis.VS.StratisEVM
         protected static string[] LogWindowNames = new string[] { "Stratis EVM", "Solidity Compiler" };
         protected static IVsOutputWindowPane GetLogOutputPane(string name)
         {
+            ThreadHelper.ThrowIfNotOnUIThread ();
             IVsOutputWindowPane outputPane = null;
             if (!logWindowPanes.ContainsKey(name) || ErrorHandler.Failed(outputWindow.GetPane(logWindowPanes[name], out outputPane)))
             {
@@ -38,6 +39,7 @@ namespace Stratis.VS.StratisEVM
         }
         public static void LogInfo(string logname, string text)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Info("(" + logname + ") " + text);
             IVsOutputWindowPane outputPane = GetLogOutputPane(logname);
             if (outputPane is null) 
@@ -56,6 +58,7 @@ namespace Stratis.VS.StratisEVM
 
         public static void LogError(string logname, string text)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Error("(" + logname + ") " + text);
             IVsOutputWindowPane outputPane = GetLogOutputPane(logname);
             if (outputPane is null)

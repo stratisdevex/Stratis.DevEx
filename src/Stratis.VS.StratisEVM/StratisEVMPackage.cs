@@ -9,8 +9,9 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Stratis.DevEx;
 using Microsoft.VisualStudio.TaskRunnerExplorer;
 using Microsoft.IO;
-using System.Windows.Threading;
+using Microsoft.VisualStudio.Threading;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -92,7 +93,7 @@ namespace Stratis.VS.StratisEVM
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
-            await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             if (!VSUtil.VSServicesInitialized)
             {
                 if (VSUtil.InitializeVSServices(ServiceProvider.GlobalProvider))
@@ -106,14 +107,17 @@ namespace Stratis.VS.StratisEVM
                 }
             }
 
+            await TaskScheduler.Default;
             if (Directory.Exists(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity")))
             {
                 Directory.Delete(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
             }
             await Runtime.CopyDirectoryAsync(Runtime.AssemblyLocation.CombinePath("BuildSystem"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
 
+
             if (!Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) || !File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
             {
+                await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
                 VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server not present.");
             }
             
@@ -125,7 +129,7 @@ namespace Stratis.VS.StratisEVM
         #endregion
 
         #region Fields
-        public static Dispatcher _dispatcher;
+        //public static Dispatcher _dispatcher;
         #endregion
     }
 }
