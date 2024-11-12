@@ -28,9 +28,9 @@ namespace Stratis.VS.StratisEVM
             //InitializeComponent();
         }
 
-        public string SelectedConfigFile { get; set; }
+        public string SelectedConfigFile { get; set; } = "hardhat.config.js";
 
-        public string SelectedCompilerVersion { get; set; } 
+        public string SelectedCompilerVersion { get; set; } =  "0.8.27";
 
         private void okButton_Click(object sender, RoutedEventArgs e) =>
     DialogResult = true;

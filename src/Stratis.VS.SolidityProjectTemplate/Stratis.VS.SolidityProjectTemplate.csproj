@@ -48,6 +48,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="foundry.toml" />
     <None Include="package.json" />
     <None Include="ProjectType1.ProjectType.solproj" />
     <None Include="Solidity.solproj" />
@@ -61,6 +62,7 @@
   <ItemGroup>
     <Content Include="Ethereum_32x32.png" />
     <Content Include="Ethereum_32x32_black.png" />
+    <None Include="truffle-config.js" />
     <None Include="hardhat.config.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

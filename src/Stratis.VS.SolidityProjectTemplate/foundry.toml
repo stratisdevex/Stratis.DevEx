@@ -1,0 +1,2 @@
+﻿[profile.default]
+solc = "$soliditycompilerversion$"

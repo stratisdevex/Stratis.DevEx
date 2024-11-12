@@ -45,11 +45,11 @@ namespace Stratis.VS.StratisEVM
 
                 //customMessage = SolidityProjectWizardUserInputForm.CustomMessage;
 
-                Window1 window1 = new Window1();
-                window1.ShowDialog();
+                wizard = new Window1();
+                wizard.ShowDialog();
                 // Add custom parameters.
-                //replacementsDictionary.Add("$solidityconfigfile$", window1.SelectedConfigFile);
-                //replacementsDictionary.Add("$soliditycompilerversion$", window1.SelectedCompilerVersion);
+                replacementsDictionary.Add("$solidityconfigfile$", wizard.SelectedConfigFile);
+                replacementsDictionary.Add("$soliditycompilerversion$", wizard.SelectedCompilerVersion);
                 //    customMessage);
             }
             catch (Exception ex)
@@ -62,7 +62,20 @@ namespace Stratis.VS.StratisEVM
         // not for project templates.
         public bool ShouldAddProjectItem(string filePath)
         {
-            return true;
+            if (filePath.EndsWith(".sol") || filePath.EndsWith("package.json"))
+            {
+                return true;
+            }
+            else if (filePath.EndsWith(wizard.SelectedConfigFile))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
+
+        Window1 wizard;
     }
 }

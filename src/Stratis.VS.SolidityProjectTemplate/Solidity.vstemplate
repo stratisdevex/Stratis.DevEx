@@ -16,10 +16,12 @@
 	<CreateInPlace>true</CreateInPlace>
   </TemplateData>
   <TemplateContent>
-    <Project File="ProjectType1.ProjectType.solproj" ReplaceParameters="false">
-      <ProjectItem ReplaceParameters="false" OpenInEditor="false">hardhat.config.js</ProjectItem>
-      <ProjectItem ReplaceParameters="false" OpenInEditor="false">package.json</ProjectItem>
-      <ProjectItem ReplaceParameters="false" OpenInEditor="true">SmartContract1.sol</ProjectItem>
+    <Project File="ProjectType1.ProjectType.solproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="true" OpenInEditor="false">hardhat.config.js</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="false">truffle-config.js</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="false">foundry.toml</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="false">package.json</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">SmartContract1.sol</ProjectItem>
     </Project>
   </TemplateContent>
   <WizardExtension>
