@@ -45,7 +45,6 @@
             <Style TargetType="{x:Type ComboBox}">
                 <Setter Property="HorizontalAlignment" Value="Right"/>
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ListBoxTextBrushKey}}" />
-                <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ListBoxBrushKey}}" />
             </Style>
             <Style TargetType="{x:Type StackPanel}">
         <Setter Property="Orientation" Value="Horizontal" />
@@ -84,11 +83,9 @@
             Width="150"
             Grid.Row="1" 
             SelectedValue="hardhat.config.js" SelectionChanged="ComboBox_SelectionChanged">
-            <ComboBoxItem>remappings.txt</ComboBoxItem>
-            <ComboBoxItem>foundry.toml</ComboBoxItem>
-            <ComboBoxItem>brownie-config.yaml</ComboBoxItem>
-            <ComboBoxItem>truffle-config.js</ComboBoxItem>
             <ComboBoxItem IsSelected="true">hardhat.config.js</ComboBoxItem>
+            <ComboBoxItem>truffle-config.js</ComboBoxItem>
+            <ComboBoxItem>foundry.toml</ComboBoxItem>
         </ComboBox>
 
 

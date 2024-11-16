@@ -13,6 +13,7 @@
 
   <!-- Capabilities for this project.  Conditions should be based on platform|configuration only. -->
   <ItemGroup>
+    <ProjectCapability Include="CPS" />
     <ProjectCapability Include="Solidity" />
     <ProjectCapability Include="UseFileGlobs" />
     <ProjectCapability Include="OpenProjectFile" />
@@ -68,6 +69,7 @@
   </Target>
 
   <Target Name="Build" >
+    <Message Text="Hello build" />
   </Target>
 
   <Target Name="Rebuild">

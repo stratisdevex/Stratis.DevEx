@@ -120,6 +120,7 @@ namespace Stratis.VS.StratisEVM
                 await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
                 VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server not present.");
             }
+            await Stratis.VS.StratisEVM.SolidityProjectMenuCommands.InitializeAsync(this);
             
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
