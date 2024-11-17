@@ -41,7 +41,10 @@ namespace Stratis.VS.StratisEVM
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
             var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new MenuCommand(this.Execute, menuCommandID);
+            var menuItem = new MenuCommand(this.Execute, menuCommandID)
+            {
+                Supported = false
+            };
             commandService.AddCommand(menuItem);
         }
 

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 using Microsoft.VisualStudio.Shell;
-
 using Microsoft.VisualStudio.Shell.Interop;
-using Stratis.DevEx;
-using Microsoft.VisualStudio.TaskRunnerExplorer;
+
 using Microsoft.IO;
 using Microsoft.VisualStudio.Threading;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio;
+using static Microsoft.VisualStudio.VSConstants.UICONTEXT;
+
+using Stratis.DevEx;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -39,13 +40,19 @@ namespace Stratis.VS.StratisEVM
     [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideAutoLoad(UIContextGuids.NoSolution, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideUIContextRule(SolidityFileUIContextRule,
+        name: "Solidity Project Files",
+        expression: "(SingleProject | MultipleProjects) & Solidity",
+        termNames: new[] { "SingleProject", "MultipleProjects", "Solidity" },
+        termValues: new[] { SolutionHasSingleProject_string, SolutionHasMultipleProjects_string, "HierSingleSelectionName:.sol$" })]
     public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7
     {
-         /// <summary>
+        /// <summary>
         /// Stratis.VS.StratisEVMPackage GUID string.
         /// </summary>
         public const string PackageGuidString = "711b90a1-97e6-4b9a-91c4-3d62ccd32d4e";
 
+        public const string SolidityFileUIContextRule = "82268519-FB9D-4B7E-8B01-2A311F4181E2";
         #region Constructors
         static StratisEVMPackage()
         {

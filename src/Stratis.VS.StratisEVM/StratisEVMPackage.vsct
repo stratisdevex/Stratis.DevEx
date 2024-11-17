@@ -81,6 +81,8 @@
       <Button guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" priority="0x0100" type="Button">
         <Parent guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" />
         <Icon guid="guidImages1" id="bmpPic1" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
           <ButtonText>Invoke SolidityProjectMenuCommands</ButtonText>
         </Strings>
@@ -106,10 +108,15 @@
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
     </CommandPlacement>
   </CommandPlacements>
+
+  <VisibilityConstraints>
+    <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" context="SolidityFileUIContextRule" />
+  </VisibilityConstraints>
   
-    <Symbols>
+  <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidStratisEVMPackage" value="{711b90a1-97e6-4b9a-91c4-3d62ccd32d4e}" />
+    <GuidSymbol name="SolidityFileUIContextRule" value="{82268519-FB9D-4B7E-8B01-2A311F4181E2}" />
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidStratisEVMPackageCmdSet" value="{5e1dc4ca-7f1b-4ff0-a794-7e162ab8f421}">
