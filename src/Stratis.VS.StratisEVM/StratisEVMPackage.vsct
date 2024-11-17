@@ -39,9 +39,11 @@
       <Group guid="guidStratisEVMPackageCmdSet" id="MyMenuGroup" priority="0x0200">
         <Parent guid="guidWorkspaceExplorerToolWindowCmdSet" id="idmWSE_ContextMenu" />
       </Group>
-      <Group guid="guidStratisEVMPackageCmdSet1" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
-      </Group>
+
+      <Groups>
+        <Group guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" />
+      </Groups>
+      
     </Groups>
 
     <!--Buttons section. -->
@@ -74,8 +76,10 @@
           <ButtonText>Solidity Command 2</ButtonText>
         </Strings>
       </Button>
+      
+      
       <Button guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" priority="0x0100" type="Button">
-        <Parent guid="guidStratisEVMPackageCmdSet1" id="MyMenuGroup" />
+        <Parent guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" />
         <Icon guid="guidImages1" id="bmpPic1" />
         <Strings>
           <ButtonText>Invoke SolidityProjectMenuCommands</ButtonText>
@@ -96,7 +100,14 @@
     </Bitmaps>
   </Commands>
 
-  <Symbols>
+  <CommandPlacements>
+    <CommandPlacement guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" priority="0xFFFF">
+      <!-- The parent of the group will be the file context menu -->
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
+    </CommandPlacement>
+  </CommandPlacements>
+  
+    <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidStratisEVMPackage" value="{711b90a1-97e6-4b9a-91c4-3d62ccd32d4e}" />
 
@@ -125,8 +136,8 @@
       <IDSymbol name="idmWSE_ContextMenu" value="0x0002" />
     </GuidSymbol>
   
-    <GuidSymbol value="{1370374f-6ad4-4975-80fb-6d3487cd4ba9}" name="guidStratisEVMPackageCmdSet1">
-      <IDSymbol value="4128" name="MyMenuGroup" />
+    <GuidSymbol name="guidStratisEVMPackageCmdSet1" value="{1370374f-6ad4-4975-80fb-6d3487cd4ba9}" >
+      <IDSymbol value="4128" name="MyGroupForCommands" />
       <IDSymbol value="256" name="cmdidSolidityProjectMenuCommands" />
     </GuidSymbol>
   

@@ -21,7 +21,7 @@ namespace Stratis.VS.StratisEVM
             menuCommandId = 4128;
             if (projectItem.FilePath.EndsWith(".sol"))
             {
-                return true;
+                return false;
             }
             else
             {
