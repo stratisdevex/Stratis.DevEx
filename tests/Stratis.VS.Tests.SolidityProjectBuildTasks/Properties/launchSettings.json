@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Stratis.VS.Tests.SolidityProjectBuildTasks": {
+      "commandName": "Project"
+    },
+    "MSBuild": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Preview\\MSBuild\\Current\\Bin\\MSBuild.exe"
+    }
+  }
+}

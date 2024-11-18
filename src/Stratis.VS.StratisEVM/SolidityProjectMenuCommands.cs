@@ -14,15 +14,13 @@ namespace Stratis.VS.StratisEVM
     /// </summary>
     internal sealed class SolidityProjectMenuCommands
     {
-        /// <summary>
-        /// Command ID.
-        /// </summary>
-        public const int CommandId = 256;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid CommandSet = new Guid("1370374f-6ad4-4975-80fb-6d3487cd4ba9");
+
+        public const int CompileCommandId = 0x0100;
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -40,7 +38,7 @@ namespace Stratis.VS.StratisEVM
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
-            var menuCommandID = new CommandID(CommandSet, CommandId);
+            var menuCommandID = new CommandID(CommandSet, CompileCommandId);
             var menuItem = new MenuCommand(this.Execute, menuCommandID)
             {
                 Supported = false

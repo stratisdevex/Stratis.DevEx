@@ -80,11 +80,11 @@
       
       <Button guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" priority="0x0100" type="Button">
         <Parent guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" />
-        <Icon guid="guidImages1" id="bmpPic1" />
+        <Icon guid="guidSolidityIcon" id="pngSolidity" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
         <Strings>
-          <ButtonText>Invoke SolidityProjectMenuCommands</ButtonText>
+          <ButtonText>Compile Solidity File</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -103,7 +103,7 @@
   </Commands>
 
   <CommandPlacements>
-    <CommandPlacement guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" priority="0xFFFF">
+    <CommandPlacement guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" priority="0x0100">
       <!-- The parent of the group will be the file context menu -->
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
     </CommandPlacement>
