@@ -83,6 +83,7 @@
         <Icon guid="guidSolidityIcon" id="pngSolidity" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
+		<CommandFlag>AllowParams</CommandFlag>
         <Strings>
           <ButtonText>Compile Solidity File</ButtonText>
         </Strings>

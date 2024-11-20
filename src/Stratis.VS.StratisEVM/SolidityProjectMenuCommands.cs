@@ -1,8 +1,10 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Workspace;
 using System;
 using System.ComponentModel.Design;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
@@ -41,13 +43,14 @@ namespace Stratis.VS.StratisEVM
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
             var menuCommandID = new CommandID(CommandSet, CompileCommandId);
-            var menuItem = new MenuCommand(this.Execute, menuCommandID)
+            var menuItem = new OleMenuCommand(CompileFile, menuCommandID)
             {
                 Supported = false
             };
+            menuItem.ParametersDescription = "$";
             commandService.AddCommand(menuItem);
             menuCommandID = new CommandID(CommandSet, InstallPackagesCommandId);
-            menuItem = new MenuCommand(this.Execute, menuCommandID)
+            menuItem = new OleMenuCommand(CompileFile, menuCommandID)
             {
                 Supported = false
             };
@@ -83,27 +86,17 @@ namespace Stratis.VS.StratisEVM
             Instance = new SolidityProjectMenuCommands(package, commandService);
         }
 
-        /// <summary>
-        /// This function is the callback used to execute the command when the menu item is clicked.
-        /// See the constructor to see how the menu item is associated with this function using
-        /// OleMenuCommandService service and MenuCommand class.
-        /// </summary>
-        /// <param name="sender">Event sender.</param>
-        /// <param name="e">Event args.</param>
-        private void Execute(object sender, EventArgs e)
+        private async Task CompileFileAsync()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "SolidityProjectMenuCommands";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+            EnvDTE.DTE dte = (EnvDTE.DTE) await ServiceProvider.GetServiceAsync(typeof(EnvDTE.DTE));
+            Array activeSolutionProjects = (Array)dte.ActiveSolutionProjects;
+            EnvDTE.Project dteProject = (EnvDTE.Project)activeSolutionProjects.GetValue(0);
+            await SolidityCompiler.CompileFileAsync(dte.ActiveDocument.FullName, Path.GetDirectoryName(dteProject.FullName));
         }
+
+        #pragma warning disable VSTHRD110, CS4014
+        private void CompileFile(object sender, EventArgs e) => CompileFileAsync();
+        #pragma warning restore VSTHRD110, CS4014
     }
 }
