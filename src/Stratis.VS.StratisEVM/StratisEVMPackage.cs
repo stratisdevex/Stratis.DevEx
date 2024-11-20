@@ -130,6 +130,8 @@ namespace Stratis.VS.StratisEVM
                 Directory.CreateDirectory(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools"));
             }
             await Runtime.CopyFileAsync(Runtime.AssemblyLocation.CombinePath("Stratis.VS.SolidityProjectBuildTasks.dll"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", "Stratis.VS.SolidityProjectBuildTasks.dll"));
+            await File.WriteAllTextAsync(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "extdir.txt"), Runtime.AssemblyLocation);
+            
             if (!Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) || !File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
             {
                 await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);

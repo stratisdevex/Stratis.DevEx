@@ -8,11 +8,14 @@ namespace Stratis.VS
     public class CompileContracts : Task
     {
         [Required]
+        public string ExtDir { get; set; }
+
+        [Required]
         public ITaskItem[] Contracts { get; set; }
 
         public override bool Execute()
         {
-            Log.LogMessage(MessageImportance.High, "{0}", Contracts.Select(c => c.ItemSpec).ToArray());
+            Log.LogMessage(MessageImportance.High, "{0}:{1}", ExtDir, Contracts.Select(c => c.ItemSpec).ToArray());
             return true;
         }
     }
