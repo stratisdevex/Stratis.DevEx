@@ -74,7 +74,7 @@
 
   <UsingTask TaskName="CompileContracts" AssemblyFile="$(LocalAppData)\CustomProjectSystems\Solidity\Tools\Stratis.VS.SolidityProjectBuildTasks.dll"/>
   <Target Name="Build">
-    <CompileContracts ExtDir="$(ExtDir)" Contracts="@(Contract)" />
+    <CompileContracts ExtDir="$(ExtDir)" ProjectDir="$(MSBuildProjectDirectory)" Contracts="@(Contract)" />
   </Target>
 
   <Target Name="Rebuild">

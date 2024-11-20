@@ -11,6 +11,9 @@ namespace Stratis.VS
         public string ExtDir { get; set; }
 
         [Required]
+        public string ProjectDir { get; set; }
+
+        [Required]
         public ITaskItem[] Contracts { get; set; }
 
         public override bool Execute()

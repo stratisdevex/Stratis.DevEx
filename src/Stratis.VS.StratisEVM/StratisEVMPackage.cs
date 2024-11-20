@@ -45,6 +45,11 @@ namespace Stratis.VS.StratisEVM
         expression: "(SingleProject | MultipleProjects) & Solidity",
         termNames: new[] { "SingleProject", "MultipleProjects", "Solidity" },
         termValues: new[] { SolutionHasSingleProject_string, SolutionHasMultipleProjects_string, "HierSingleSelectionName:.sol$" })]
+    [ProvideUIContextRule(NPMFileUIContextRule,
+        name: "NPM Configuration Files",
+        expression: "(SingleProject | MultipleProjects) & Solidity",
+        termNames: new[] { "SingleProject", "MultipleProjects", "Solidity" },
+        termValues: new[] { SolutionHasSingleProject_string, SolutionHasMultipleProjects_string, "HierSingleSelectionName:package.json$" })]
     public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7
     {
         /// <summary>
@@ -53,6 +58,8 @@ namespace Stratis.VS.StratisEVM
         public const string PackageGuidString = "711b90a1-97e6-4b9a-91c4-3d62ccd32d4e";
 
         public const string SolidityFileUIContextRule = "82268519-FB9D-4B7E-8B01-2A311F4181E2";
+
+        public const string NPMFileUIContextRule = "9A7CA75A-FA6E-45B2-B6E9-4BFF0AB7BB88";
         #region Constructors
         static StratisEVMPackage()
         {
