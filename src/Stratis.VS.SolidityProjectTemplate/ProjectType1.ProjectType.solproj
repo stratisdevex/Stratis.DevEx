@@ -7,7 +7,7 @@
 		<ConfigurationFile>$solidityconfigfile$</ConfigurationFile>
 	</PropertyGroup>
 	<ItemGroup>
-		<None Include="SmartContract1.sol" />
+		<Contract Include="SmartContract1.sol" />
 		<None Include="$solidityconfigfile$" />
 		<None Include="package.json" />
 	</ItemGroup>
