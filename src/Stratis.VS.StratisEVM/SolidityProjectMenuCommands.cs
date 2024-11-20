@@ -22,6 +22,8 @@ namespace Stratis.VS.StratisEVM
 
         public const int CompileCommandId = 0x0100;
 
+        public const int InstallPackagesCommandId = 0x0101;
+
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
@@ -44,6 +46,12 @@ namespace Stratis.VS.StratisEVM
                 Supported = false
             };
             commandService.AddCommand(menuItem);
+            menuCommandID = new CommandID(CommandSet, InstallPackagesCommandId);
+            menuItem = new MenuCommand(this.Execute, menuCommandID)
+            {
+                Supported = false
+            };
+            commandService.AddCommand(menuItem);
         }
 
         /// <summary>
@@ -58,13 +66,8 @@ namespace Stratis.VS.StratisEVM
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
-        {
-            get
-            {
-                return this.package;
-            }
-        }
+        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider => this.package;
+        
 
         /// <summary>
         /// Initializes the singleton instance of the command.

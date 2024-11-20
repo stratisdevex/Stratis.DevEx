@@ -87,6 +87,16 @@
           <ButtonText>Compile Solidity File</ButtonText>
         </Strings>
       </Button>
+
+      <Button guid="guidStratisEVMPackageCmdSet1" id="SolidityProjectMenuCmdId2" priority="0x0100" type="Button">
+        <Parent guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" />
+        <Icon guid="guidNPMIcon" id="pngNPM" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Install NPM packages</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -98,6 +108,7 @@
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
       <Bitmap guid="guidImages" href="Resources\Commands.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidSolidityIcon" href="Resources\solidity_16x16.png" usedList="pngSolidity" />
+      <Bitmap guid="guidNPMIcon" href="Resources\NodeJSPackage_16x.png" usedList="pngNPM" />
       <Bitmap guid="guidImages1" href="Resources\SolidityProjectMenuCommands.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
   </Commands>
@@ -111,12 +122,14 @@
 
   <VisibilityConstraints>
     <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" context="SolidityFileUIContextRule" />
+    <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="SolidityProjectMenuCmdId2" context="NPMFileUIContextRule" />
   </VisibilityConstraints>
   
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidStratisEVMPackage" value="{711b90a1-97e6-4b9a-91c4-3d62ccd32d4e}" />
     <GuidSymbol name="SolidityFileUIContextRule" value="{82268519-FB9D-4B7E-8B01-2A311F4181E2}" />
+    <GuidSymbol name="NPMFileUIContextRule" value="{9A7CA75A-FA6E-45B2-B6E9-4BFF0AB7BB88}" />
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidStratisEVMPackageCmdSet" value="{5e1dc4ca-7f1b-4ff0-a794-7e162ab8f421}">
@@ -138,6 +151,10 @@
       <IDSymbol name="pngSolidity" value="1" />
     </GuidSymbol>
 
+    <GuidSymbol name="guidNPMIcon" value="{8DBD10FD-7591-4323-AD99-59EABB9E334D}">
+      <IDSymbol name="pngNPM" value="1" />
+    </GuidSymbol>
+
     <!-- Solution Explorer folder mode GUIDs and IDs. -->
     <GuidSymbol name="guidWorkspaceExplorerToolWindowCmdSet" value="{cfb400f1-5c60-4f3c-856e-180d28def0b7}">
       <IDSymbol name="idmWSE_ContextMenu" value="0x0002" />
@@ -145,7 +162,8 @@
   
     <GuidSymbol name="guidStratisEVMPackageCmdSet1" value="{1370374f-6ad4-4975-80fb-6d3487cd4ba9}" >
       <IDSymbol value="4128" name="MyGroupForCommands" />
-      <IDSymbol value="256" name="cmdidSolidityProjectMenuCommands" />
+      <IDSymbol value="0x0100" name="cmdidSolidityProjectMenuCommands" />
+      <IDSymbol value="0x0101" name="SolidityProjectMenuCmdId2" />
     </GuidSymbol>
   
     <GuidSymbol value="{2cf4a158-77c9-4d4f-93b4-beb73cfeda88}" name="guidImages1">
