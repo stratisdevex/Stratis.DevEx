@@ -1,7 +1,11 @@
 ﻿<Project DefaultTargets="Debug">
   <UsingTask  TaskName="CompileContracts" AssemblyFile="C:\\Projects\\Stratis.DevEx\\src\\Stratis.VS.SolidityProjectBuildTasks\\bin\\Debug\\netstandard2.0\\Stratis.VS.SolidityProjectBuildTasks.dll"/>
-  <Target Name="Debug">
-  <CompileContracts Contracts="Foo" />
+	<ItemGroup>
+		<Compile Include="Foo.sol" />
+	</ItemGroup>
+	<Target Name="Debug">
+	  
+	  <CompileContracts Contracts="@(Compile)" />
    
   </Target>
 </Project>

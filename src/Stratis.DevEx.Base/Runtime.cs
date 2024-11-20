@@ -501,6 +501,16 @@ namespace Stratis.DevEx
             }
             op.Complete();
         }
+
+        public static async Task CopyFileAsync(string src, string dst)
+        {
+            using (var srcStream = new FileStream(src, FileMode.Open, FileAccess.Read, FileShare.Read, 0x1000, useAsync: true))
+            using (var dstStream = new FileStream(dst, FileMode.Create, FileAccess.Write, FileShare.Write, 0x1000, useAsync: true))
+            {
+                await srcStream.CopyToAsync(dstStream);
+            }
+        }
+
         public static async Task<bool> DownloadFileAsync(string name, Uri downloadUrl, string downloadPath)
         {
 #pragma warning disable SYSLIB0014 // Type or member is obsolete

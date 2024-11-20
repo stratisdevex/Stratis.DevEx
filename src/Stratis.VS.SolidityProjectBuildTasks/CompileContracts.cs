@@ -12,7 +12,7 @@ namespace Stratis.VS
 
         public override bool Execute()
         {
-            Log.LogMessage("{0}", Contracts);
+            Log.LogMessage("{0}", Contracts.Select(c => c.ItemSpec));
             return true;
         }
     }

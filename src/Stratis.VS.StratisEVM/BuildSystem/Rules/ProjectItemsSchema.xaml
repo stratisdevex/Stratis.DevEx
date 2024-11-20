@@ -4,9 +4,9 @@
     xmlns="http://schemas.microsoft.com/build/2009/properties">
 
     <ContentType
-        Name="Script"
-        DisplayName="Script file"
-        ItemType="Script">
+        Name="Contract"
+        DisplayName="Contract"
+        ItemType="Contract">
     </ContentType>
 
     <ContentType
@@ -15,10 +15,9 @@
         ItemType="None">
     </ContentType>
 
-    <ItemType Name="Script" DisplayName="Script"/>
+    <ItemType Name="Contract" DisplayName="Contract"/>
     <ItemType Name="None" DisplayName="Does not participate in build"/>
 
-    <FileExtension Name=".vbs" ContentType="Script"/>
-    <FileExtension Name=".jS" ContentType="Script"/>
+    <FileExtension Name=".sol" ContentType="Contract"/>
     <FileExtension Name=".txt" ContentType="Text"/>
 </ProjectSchemaDefinitions>
