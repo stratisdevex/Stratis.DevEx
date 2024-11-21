@@ -3,5 +3,6 @@
   "solidity.telemetry": false,
   "solidity.maxNumberOfProblems": 1,
   "solidity.enabledAsYouTypeCompilationErrorCheck": true,
-  "solidity.defaultCompiler": "embedded"
+  "solidity.compileUsingRemoteVersion": "latest"
+
 }
