@@ -45,7 +45,7 @@ namespace Stratis.VS.StratisEVM
             menuItem.ParametersDescription = "$";
             commandService.AddCommand(menuItem);
             menuCommandID = new CommandID(CommandSet, InstallPackagesCommandId);
-            menuItem = new OleMenuCommand(CompileFile, menuCommandID)
+            menuItem = new OleMenuCommand(InstallNPMPackages, menuCommandID)
             {
                 Supported = false
             };
@@ -89,8 +89,17 @@ namespace Stratis.VS.StratisEVM
             await SolidityCompiler.CompileFileAsync(file, dir);
         }
 
+        private async Task InstallNPMPackagesAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+            EnvDTE80.DTE2 dte = (EnvDTE80.DTE2)await ServiceProvider.GetServiceAsync(typeof(EnvDTE.DTE));
+            var dir = Path.GetDirectoryName(dte.SelectedItems.Item(1).ProjectItem.ContainingProject.FileName);
+            await SolidityCompiler.InstallNPMPackagesAsync(dir);
+        }
+
         #pragma warning disable VSTHRD110, CS4014
         private void CompileFile(object sender, EventArgs e) => CompileFileAsync();
-        #pragma warning restore VSTHRD110, CS4014
+        private void InstallNPMPackages(object sender, EventArgs e) => InstallNPMPackagesAsync();
+#pragma warning restore VSTHRD110, CS4014
     }
 }

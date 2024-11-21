@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 
 using Stratis.DevEx;
+using static Microsoft.VisualStudio.ProjectSystem.VS.HResult.Ole;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -83,6 +84,22 @@ namespace Stratis.VS.StratisEVM
                     return;
                 }
             }
+        }
+
+        public static async Task InstallNPMPackagesAsync(string projectDir)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "Stratis EVM");
+            VSUtil.LogInfo("Stratis EVM", string.Format("Installing NPM dependencies in project directory {0}...", projectDir));
+            await TaskScheduler.Default;
+            var output = await RunCmdAsync("cmd.exe", "/c npm install", projectDir);
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (CheckRunCmdError(output))
+            {
+                VSUtil.LogError("Stratis EVM", "Could not install NPM dependencies: " + GetRunCmdError(output));
+                return;
+            }
+            VSUtil.LogInfo("Stratis EVM", ((string)output["stdout"]).Trim());
         }
     }
 }
