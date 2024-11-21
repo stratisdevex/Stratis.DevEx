@@ -1,7 +1,4 @@
-﻿using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Workspace;
-using System;
+﻿using System;
 using System.ComponentModel.Design;
 using System.Globalization;
 using System.IO;
@@ -9,14 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
+using Microsoft.VisualStudio.Shell;
+
 namespace Stratis.VS.StratisEVM
 {
-    /// <summary>
-    /// Command handler
-    /// </summary>
     internal sealed class SolidityProjectMenuCommands
     {
-
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
@@ -69,9 +64,8 @@ namespace Stratis.VS.StratisEVM
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider => this.package;
+        private IAsyncServiceProvider ServiceProvider => this.package;
         
-
         /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
@@ -89,10 +83,10 @@ namespace Stratis.VS.StratisEVM
         private async Task CompileFileAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-            EnvDTE.DTE dte = (EnvDTE.DTE) await ServiceProvider.GetServiceAsync(typeof(EnvDTE.DTE));
-            Array activeSolutionProjects = (Array)dte.ActiveSolutionProjects;
-            EnvDTE.Project dteProject = (EnvDTE.Project)activeSolutionProjects.GetValue(0);
-            await SolidityCompiler.CompileFileAsync(dte.ActiveDocument.FullName, Path.GetDirectoryName(dteProject.FullName));
+            EnvDTE80.DTE2 dte = (EnvDTE80.DTE2) await ServiceProvider.GetServiceAsync(typeof(EnvDTE.DTE));
+            var file = dte.SelectedItems.Item(1).ProjectItem.Properties.Item("FullPath").Value.ToString();
+            var dir = Path.GetDirectoryName(dte.SelectedItems.Item(1).ProjectItem.ContainingProject.FileName);
+            await SolidityCompiler.CompileFileAsync(file, dir);
         }
 
         #pragma warning disable VSTHRD110, CS4014
