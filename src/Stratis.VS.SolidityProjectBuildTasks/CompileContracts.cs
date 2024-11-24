@@ -30,7 +30,7 @@ namespace Stratis.VS
                 UseShellExecute = false,
                 WorkingDirectory = ProjectDir,
                 CreateNoWindow = true,  
-                RedirectStandardOutput = false,  
+                RedirectStandardOutput = true,  
                 RedirectStandardInput = true,   
                 RedirectStandardError = false,
             };
@@ -54,7 +54,8 @@ namespace Stratis.VS
             }
             var ser = new Newtonsoft.Json.JsonSerializer();
             ser.Serialize(p.StandardInput, i);
-            p.StandardInput.Write(Environment.NewLine);
+            p.StandardInput.WriteLine(Environment.NewLine);
+            p.StandardInput.Close();
             Log.LogMessage(MessageImportance.High, p.StandardOutput.ReadToEnd());   
             return false;
         }
