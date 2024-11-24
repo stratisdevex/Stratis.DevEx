@@ -64,8 +64,8 @@ namespace Stratis.VS
                 Log.LogError("Could not start npm process", psi.FileName + " " + psi.Arguments);
                 return false;
             }
-            var ser = new Newtonsoft.Json.JsonSerializer();
-            ser.Serialize(p.StandardInput, i);
+            
+            CompactJson.Serializer.Write(i, p.StandardInput, false);
             p.StandardInput.WriteLine(Environment.NewLine);
             p.StandardInput.Close();
             Log.LogMessage(MessageImportance.High, p.StandardOutput.ReadToEnd());

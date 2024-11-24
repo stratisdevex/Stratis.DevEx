@@ -2,10 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Serialization;
 
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
+    using CompactJson;
+   
+    using System.ComponentModel;
+   
 
     public partial class SolidityCompilerInput
     {
@@ -15,12 +17,10 @@
         [JsonProperty("sources")]
         public Dictionary<string, Source> Sources { get; set; }
 
-        [JsonProperty("settings", NullValueHandling = NullValueHandling.Ignore)]
-        
+        [JsonProperty("settings")]
         public Settings Settings { get; set; }
     }
 
-    [JsonObject(MissingMemberHandling = MissingMemberHandling.Ignore, ItemNullValueHandling = NullValueHandling.Ignore)]    
     public partial class Settings
     {
         [JsonProperty("remappings")]
