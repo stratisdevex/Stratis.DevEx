@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
+
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -42,9 +44,19 @@ namespace Stratis.VS
             var i = new SolidityCompilerInput()
             {
                 Language = "Solidity",
-
-                Sources = Contracts.ToDictionary(k => k.GetMetadata("Name"), v => new Source() { Urls = new[] { v.ItemSpec } })
-
+                Settings = new Settings()
+                {
+                    EvmVersion = "byzantium",
+                    OutputSelection = new Dictionary<string, Dictionary<string, string[]>>()
+                    {
+                        {"*", new Dictionary<string, string[]>()
+                            {
+                                {"*", new [] {"evm.bytecode" } }
+                            }  
+                        }
+                    }
+                },
+                Sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } })
             };
 
             if (!p.Start())
@@ -56,8 +68,12 @@ namespace Stratis.VS
             ser.Serialize(p.StandardInput, i);
             p.StandardInput.WriteLine(Environment.NewLine);
             p.StandardInput.Close();
-            Log.LogMessage(MessageImportance.High, p.StandardOutput.ReadToEnd());   
-            return false;
+            Log.LogMessage(MessageImportance.High, p.StandardOutput.ReadToEnd());
+            if (!p.HasExited)
+            {
+                p.Kill();
+            }
+            return true;
         }
     }
 }

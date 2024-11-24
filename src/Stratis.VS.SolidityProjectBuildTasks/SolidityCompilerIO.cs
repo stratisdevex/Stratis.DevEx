@@ -15,10 +15,12 @@
         [JsonProperty("sources")]
         public Dictionary<string, Source> Sources { get; set; }
 
-        [JsonProperty("settings")]
+        [JsonProperty("settings", NullValueHandling = NullValueHandling.Ignore)]
+        
         public Settings Settings { get; set; }
     }
 
+    [JsonObject(MissingMemberHandling = MissingMemberHandling.Ignore, ItemNullValueHandling = NullValueHandling.Ignore)]    
     public partial class Settings
     {
         [JsonProperty("remappings")]
@@ -37,7 +39,7 @@
         public Dictionary<string, string> Libraries { get; set; }
 
         [JsonProperty("outputSelection")]
-        public OutputSelection OutputSelection { get; set; }
+        public Dictionary<string, Dictionary<string, string[]>> OutputSelection { get; set; }
     }
 
     public partial class Metadata
@@ -54,28 +56,6 @@
         [JsonProperty("runs")]
         public long Runs { get; set; }
     }
-
-    public partial class OutputSelection
-    {
-        [JsonProperty("*")]
-        public Empty Empty { get; set; }
-
-        [JsonProperty("def")]
-        public Def Def { get; set; }
-    }
-
-    public partial class Def
-    {
-        [JsonProperty("MyContract")]
-        public string[] MyContract { get; set; }
-    }
-
-    public partial class Empty
-    {
-        [JsonProperty("")]
-        public string[] Purple { get; set; }
-    }
-
 
     public partial class Source
     {
