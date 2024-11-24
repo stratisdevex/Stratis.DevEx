@@ -154,6 +154,7 @@ namespace Stratis.VS.StratisEVM
 
         public static bool CheckRunCmdOutput(Dictionary<string, object> output, string logname, string checktext)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (output.ContainsKey("error") || output.ContainsKey("exception")) 
             {
                 if (output.ContainsKey("error"))

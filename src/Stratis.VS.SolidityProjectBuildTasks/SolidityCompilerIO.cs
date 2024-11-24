@@ -13,7 +13,7 @@
         public string Language { get; set; }
 
         [JsonProperty("sources")]
-        public Sources Sources { get; set; }
+        public Dictionary<string, Source> Sources { get; set; }
 
         [JsonProperty("settings")]
         public Settings Settings { get; set; }
@@ -34,22 +34,10 @@
         public Metadata Metadata { get; set; }
 
         [JsonProperty("libraries")]
-        public Libraries Libraries { get; set; }
+        public Dictionary<string, string> Libraries { get; set; }
 
         [JsonProperty("outputSelection")]
         public OutputSelection OutputSelection { get; set; }
-    }
-
-    public partial class Libraries
-    {
-        [JsonProperty("myFile.sol")]
-        public LibrariesMyFileSol MyFileSol { get; set; }
-    }
-
-    public partial class LibrariesMyFileSol
-    {
-        [JsonProperty("MyLib")]
-        public string MyLib { get; set; }
     }
 
     public partial class Metadata
@@ -88,30 +76,16 @@
         public string[] Purple { get; set; }
     }
 
-    public partial class Sources
-    {
-        [JsonProperty("myFile.sol")]
-        public SourcesMyFileSol MyFileSol { get; set; }
 
-        [JsonProperty("mortal")]
-        public Mortal Mortal { get; set; }
-    }
-
-    public partial class Mortal
-    {
-        [JsonProperty("keccak256")]
-        public string Keccak256 { get; set; }
-
-        [JsonProperty("content")]
-        public string Content { get; set; }
-    }
-
-    public partial class SourcesMyFileSol
+    public partial class Source
     {
         [JsonProperty("keccak256")]
         public string Keccak256 { get; set; }
 
         [JsonProperty("urls")]
         public string[] Urls { get; set; }
+
+        [JsonProperty("content")]
+        public string Content { get; set; }
     }
 }
