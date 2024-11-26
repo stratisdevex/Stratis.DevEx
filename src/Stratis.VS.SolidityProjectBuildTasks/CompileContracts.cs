@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
 using Stratis.VS.StratisEVM.SolidityCompilerIO;
+
 namespace Stratis.VS
 {
     public class CompileContracts : Task
@@ -102,9 +102,13 @@ namespace Stratis.VS
                 }
                 return false;   
             }
+            if (!p.HasExited)
+            {
+                p.Kill();
+            }
             var on = o.Split('\n');
             var jo = on.First().TrimStart().StartsWith(">") ? on.Skip(1).Aggregate((s, n) => s + "\n" + n) : o;
-            Log.LogMessage(MessageImportance.High, jo);
+            Log.LogMessage(MessageImportance.Low, jo);
             SolidityCompilerOutput output;
             try
             {
@@ -115,9 +119,10 @@ namespace Stratis.VS
                 Log.LogErrorFromException(ex);
                 return false;
             }
+            bool haserror = false;
             if (output.errors.Length > 0)
             {
-                foreach(var error in output.errors)
+                foreach (var error in output.errors)
                 {
                     if (error.severity == "warning")
                     {
@@ -133,6 +138,7 @@ namespace Stratis.VS
                     }
                     else
                     {
+                        haserror = true;
                         if (error.sourceLocation == null)
                         {
                             Log.LogError(error.message);
@@ -144,19 +150,15 @@ namespace Stratis.VS
                         }
                     }
                 }
+                
             }
-
-            if (!p.HasExited)
-            {
-                p.Kill();
-            }
-            return true;
+            return !haserror;
         }
 
         protected (int, int) GetLineColFromPos(string text, int pos)
         {
             int line = 1, col = 0;
-            for (int i = 0; i <= pos; i++)
+            for (int i = 0; i < pos; i++)
             {
                 if (text[i] == '\n')
                 {
@@ -196,6 +198,7 @@ namespace Stratis.VS
 
         protected bool InstallSolidityLanguageServer()
         {
+            Log.LogMessage(MessageImportance.High, "Installing vscode-solidity language server...");
             var output = RunCmd("cmd.exe", "/c npm install solidity-0.0.165.tgz --force --quiet --no-progress", ExtDir);
             if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
             {
@@ -204,7 +207,7 @@ namespace Stratis.VS
             }
             else
             {
-                Log.LogError("Stratis EVM", "Could not install vscode-solidity language server.");
+                Log.LogError("Could not install vscode-solidity language server.");
                 return false;
             }
         }
