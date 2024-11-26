@@ -5,9 +5,9 @@
     using System.Runtime.Serialization;
 
     using CompactJson;
-   
+
     using System.ComponentModel;
-   
+
 
     public partial class SolidityCompilerInput
     {
@@ -68,4 +68,68 @@
         [JsonProperty("content")]
         public string Content { get; set; }
     }
+
+    public class SolidityCompilerOutput
+    {
+        public Dictionary<string, SimpleStorage> contracts { get; set; }
+        public Error[] errors { get; set; }
+        public Dictionary<string, SmartContractId> sources { get; set; }
+    }
+
+    public class Contract
+    {
+        public SimpleStorage SimpleStorage { get; set; }
+    }
+
+    public class SimpleStorage
+    {
+        public Evm evm { get; set; }
+    }
+
+    public class Evm
+    {
+        public Bytecode bytecode { get; set; }
+    }
+
+    public class Bytecode
+    {
+        public Functiondebugdata functionDebugData { get; set; }
+        public object[] generatedSources { get; set; }
+        public Linkreferences linkReferences { get; set; }
+        public string _object { get; set; }
+        public string opcodes { get; set; }
+        public string sourceMap { get; set; }
+    }
+
+    public class Functiondebugdata
+    {
+    }
+
+    public class Linkreferences
+    {
+    }
+
+    public class SmartContractId
+    {
+        public int id { get; set; }
+    }
+
+    public class Error
+    {
+        public string component { get; set; }
+        public string formattedMessage { get; set; }
+        public string message { get; set; }
+        public string severity { get; set; }
+        public string type { get; set; }
+        public string errorCode { get; set; }
+        public SourceLocation sourceLocation { get; set; }
+    }
+
+    public class SourceLocation
+    {
+        public int end { get; set; }
+        public string file { get; set; }
+        public int start { get; set; }
+    }
+
 }

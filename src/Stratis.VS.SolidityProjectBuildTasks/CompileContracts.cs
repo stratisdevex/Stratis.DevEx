@@ -26,11 +26,13 @@ namespace Stratis.VS
         {
             var solcpath = Directory.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) ? Path.Combine(ProjectDir, "node_modules", "solc", "solc.js") :
                 Path.Combine(ExtDir, "node_modules", "solc", "solc.js");
+            var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
+
             Log.LogMessage(MessageImportance.High, "Compiling {0} file(s) in directory {1} using solcjs compiler at {2}...", Contracts.Count(), ProjectDir, Path.GetDirectoryName(solcpath));
             var psi = new ProcessStartInfo("cmd.exe", "/c node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"")
             {
                 UseShellExecute = false,
-                WorkingDirectory = ProjectDir,
+                WorkingDirectory = ExtDir,
                 CreateNoWindow = true,  
                 RedirectStandardOutput = true,  
                 RedirectStandardInput = true,   
@@ -56,7 +58,7 @@ namespace Stratis.VS
                         }
                     }
                 },
-                Sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } })
+                Sources =   sources        
             };
 
             try
@@ -69,7 +71,7 @@ namespace Stratis.VS
             }
             catch (Exception ex)
             {
-                Log.LogErrorFromException(ex);
+                Log.LogErrorFromException(new Exception($"Exception thrown starting process {psi.FileName} {psi.Arguments}", ex));
                 return false;
             }
 
@@ -80,16 +82,45 @@ namespace Stratis.VS
             if (string.IsNullOrEmpty(o))
             {
                 var err = p.StandardError.ReadToEnd();
+                Log.LogError("Compilation failed: {0}", err);
                 if (!p.HasExited)
                 {
                     p.Kill();
                 }
-                Log.LogError("Compilation failed: {0}", err);
                 return false;   
             }
             var on = o.Split('\n');
             var jo = on.First().TrimStart().StartsWith(">") ? on.Skip(1).Aggregate((s, n) => s + "\n" + n) : o;
-            Log.LogMessage(MessageImportance.High, p.StandardOutput.ReadToEnd());
+            Log.LogMessage(MessageImportance.High, jo);
+            SolidityCompilerOutput output;
+            try
+            {
+                output = CompactJson.Serializer.Parse<SolidityCompilerOutput>(jo);
+            }
+            catch (Exception ex)
+            {
+                Log.LogErrorFromException(ex);
+                return false;
+            }
+            if (output.errors.Length > 0)
+            {
+                foreach(var error in output.errors)
+                {
+                    //var (error.sourceLocation.file)
+                    if (error.severity == "warning")
+                    {
+                        if (error.sourceLocation == null)
+                        {
+                            Log.LogWarning(error.message);
+                        }
+                        
+                        //Log.LogWarning(error.type, error.errorCode,"", error.sourceLocation.file, error.sourceLocation.l);
+                    }
+                    //Log.LogError(error.component, error.)
+                }
+            }
+
+           
             if (!p.HasExited)
             {
                 p.Kill();

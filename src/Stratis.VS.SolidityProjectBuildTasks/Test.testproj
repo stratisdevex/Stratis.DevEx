@@ -5,7 +5,7 @@
 	</ItemGroup>
 	<Target Name="Debug">
 	  
-	  <CompileContracts Contracts="@(Compile)" ExtDir="C:\\Users\\Allister\\AppData\\Local\\Microsoft\\VisualStudio\\17.0_13a12150Exp\\Extensions\\Stratis DevEx\\StratisEVM\\0.1.4" ProjectDir="$(MSBuildProjectDirectory)"/>
+	  <CompileContracts Contracts="@(Compile)" ExtDir="C:\Users\Allister\AppData\Local\Microsoft\VisualStudio\17.0_c69ae1a2Exp\Extensions\Stratis DevEx\StratisEVM\0.1.4" ProjectDir="$(MSBuildProjectDirectory)"/>
    
   </Target>
 </Project>
