@@ -139,23 +139,6 @@ namespace Stratis.VS.StratisEVM
             await Runtime.CopyFileAsync(Runtime.AssemblyLocation.CombinePath("Stratis.VS.SolidityProjectBuildTasks.dll"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", "Stratis.VS.SolidityProjectBuildTasks.dll"));
             await Runtime.CopyFileAsync(Runtime.AssemblyLocation.CombinePath("CompactJson.dll"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", "CompactJson.dll"));
             await File.WriteAllTextAsync(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "extdir.txt"), Runtime.AssemblyLocation);
-            
-            if (!Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) || !File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
-            {
-                await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-                VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server not present. Installing...");
-                await TaskScheduler.Default;
-                var output = await SolidityLanguageClient.InstallVSCodeSolidityLanguageServerAsync();
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                if (Runtime.CheckRunCmdOutput(output, "Run `npm audit` for details."))
-                {
-                    VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server installed.");
-                }
-                else
-                {
-                    VSUtil.LogError("Stratis EVM", "Could not install vscode-solidity language server.");
-                }
-            }
         }
         #endregion
 

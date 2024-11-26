@@ -22,14 +22,27 @@ namespace Stratis.VS
         [Required]
         public ITaskItem[] Contracts { get; set; }
 
+        public Dictionary<string, Source> Sources => Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
+
         public override bool Execute()
         {
             var solcpath = Directory.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) ? Path.Combine(ProjectDir, "node_modules", "solc", "solc.js") :
                 Path.Combine(ExtDir, "node_modules", "solc", "solc.js");
+            var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"";
             var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
 
-            Log.LogMessage(MessageImportance.High, "Compiling {0} file(s) in directory {1} using solcjs compiler at {2}...", Contracts.Count(), ProjectDir, Path.GetDirectoryName(solcpath));
-            var psi = new ProcessStartInfo("cmd.exe", "/c node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"")
+            if (!(Directory.Exists(Path.Combine(ExtDir, "node_modules")) && File.Exists(Path.Combine(ExtDir, "node_modules", "solidity", "dist", "cli", "server.js"))))
+            {
+                if (!InstallSolidityLanguageServer())
+                {
+                    return false;
+                }
+            }
+
+            Log.LogMessage(MessageImportance.High, "Compiling {0} file(s) in directory {1}...", Contracts.Count(), ProjectDir);
+            Log.LogCommandLine(MessageImportance.High, cmdline);
+
+            var psi = new ProcessStartInfo("cmd.exe", "/c " + cmdline)
             {
                 UseShellExecute = false,
                 WorkingDirectory = ExtDir,
@@ -58,7 +71,7 @@ namespace Stratis.VS
                         }
                     }
                 },
-                Sources =   sources        
+                Sources =  this.Sources        
             };
 
             try
@@ -106,26 +119,181 @@ namespace Stratis.VS
             {
                 foreach(var error in output.errors)
                 {
-                    //var (error.sourceLocation.file)
                     if (error.severity == "warning")
                     {
                         if (error.sourceLocation == null)
                         {
                             Log.LogWarning(error.message);
                         }
-                        
-                        //Log.LogWarning(error.type, error.errorCode,"", error.sourceLocation.file, error.sourceLocation.l);
+                        else
+                        {
+                            var (file, startl, startc, endl, endc) = GetFileLineColFromError(error);
+                            Log.LogWarning(error.type, error.errorCode, error.component, file, startl, startc, endl, endc, error.message);
+                        }
                     }
-                    //Log.LogError(error.component, error.)
+                    else
+                    {
+                        if (error.sourceLocation == null)
+                        {
+                            Log.LogError(error.message);
+                        }
+                        else
+                        {
+                            var (file, startl, startc, endl, endc) = GetFileLineColFromError(error);
+                            Log.LogError(error.type, error.errorCode, error.component, file, startl, startc, endl, endc, error.message);
+                        }
+                    }
                 }
             }
 
-           
             if (!p.HasExited)
             {
                 p.Kill();
             }
             return true;
+        }
+
+        protected (int, int) GetLineColFromPos(string text, int pos)
+        {
+            int line = 1, col = 0;
+            for (int i = 0; i <= pos; i++)
+            {
+                if (text[i] == '\n')
+                {
+                    line++;
+                    col = 0;
+                }
+                else
+                {
+                    col++;
+                }
+            }
+            return (line, col);
+        }
+
+        protected (string,int,int,int,int) GetFileLineColFromError(Error error)
+        {
+            var fn = error.sourceLocation?.file ?? throw new ArgumentNullException(nameof(error.sourceLocation));
+            var fm = error.formattedMessage ?? throw new ArgumentNullException(nameof(error.formattedMessage));
+            var file = Sources[fn].Urls[0];
+            var text = File.ReadAllText(file);
+            var (startl, startcol) = GetLineColFromPos(text, error.sourceLocation.start);
+            var (endl, endcol) = GetLineColFromPos(text, error.sourceLocation.end);
+            return (file, startl, startcol, endl, endcol);
+            
+            /*
+            var s = fm.Split(new[] { "-->" }, StringSplitOptions.None);
+            if (s.Length == 1)
+            {
+                return (file,0,0);  
+            }
+            var pos = s[1].Split('\n')[0].Split(':');
+            var line = Convert.ToInt32(pos[0]);
+            var col = Convert.ToInt32(pos[1]);
+            return (file, line, col);
+            */
+        }
+
+        protected bool InstallSolidityLanguageServer()
+        {
+            var output = RunCmd("cmd.exe", "/c npm install solidity-0.0.165.tgz --force --quiet --no-progress", ExtDir);
+            if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
+            {
+                Log.LogMessage(MessageImportance.High, "vscode-solidity language server installed.");
+                return true;
+            }
+            else
+            {
+                Log.LogError("Stratis EVM", "Could not install vscode-solidity language server.");
+                return false;
+            }
+        }
+
+        public static Dictionary<string, object> RunCmd(string filename, string arguments, string workingdirectory)
+        {
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.FileName = filename;
+            info.Arguments = arguments;
+            info.WorkingDirectory = workingdirectory;
+            info.RedirectStandardOutput = true;
+            info.RedirectStandardError = true;
+            info.UseShellExecute = false;
+            info.CreateNoWindow = true;
+            var output = new Dictionary<string, object>();
+            using (var process = new Process())
+            {
+                process.StartInfo = info;
+                try
+                {
+                    if (!process.Start())
+                    {
+                        output["error"] = ("Could not start {file} {args} in {dir}.", info.FileName, info.Arguments, info.WorkingDirectory);
+                        return output;
+                    }
+                    var stdout = process.StandardOutput.ReadToEnd();
+                    var stderr = process.StandardError.ReadToEnd();
+                    if (stdout != null && stdout.Length > 0)
+                    {
+                        output["stdout"] = stdout;
+                    }
+                    if (stderr != null && stderr.Length > 0)
+                    {
+                        output["stderr"] = stderr;
+                    }
+                    return output;
+                }
+                catch (Exception ex)
+                {
+                    output["exception"] = ex;
+                    return output;
+                }
+            }
+        }
+
+        public bool CheckRunCmdError(Dictionary<string, object> output) => output.ContainsKey("error") || output.ContainsKey("exception");
+
+        public string GetRunCmdError(Dictionary<string, object> output) => (output.ContainsKey("error") ? (string)output["error"] : "")
+            + (output.ContainsKey("exception") ? (string)output["exception"] : "");
+
+        public bool CheckRunCmdOutput(Dictionary<string, object> output, string checktext)
+        {
+            if (output.ContainsKey("error") || output.ContainsKey("exception"))
+            {
+                if (output.ContainsKey("error"))
+                {
+                    Log.LogError((string)output["error"]);
+                }
+                if (output.ContainsKey("exception"))
+                {
+                    Log.LogErrorFromException(new Exception("Exception thrown during process execution.", (Exception)output["exception"]));
+                }
+                return false;
+            }
+            else
+            {
+                if (output.ContainsKey("stderr"))
+                {
+                    var stderr = (string)output["stderr"];
+                    Log.LogMessage(MessageImportance.Low, stderr);
+                }
+                if (output.ContainsKey("stdout"))
+                {
+                    var stdout = (string)output["stdout"];
+                    Log.LogMessage(MessageImportance.Low, stdout);
+                    if (stdout.Contains(checktext))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
     }
 }
