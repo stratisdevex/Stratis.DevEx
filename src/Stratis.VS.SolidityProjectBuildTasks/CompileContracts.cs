@@ -22,10 +22,15 @@ namespace Stratis.VS
         [Required]
         public ITaskItem[] Contracts { get; set; }
 
+        [Required]
+        public string OutputDir { get; set; }  
+
+
         public Dictionary<string, Source> Sources => Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
 
         public override bool Execute()
         {
+            
             var solcpath = Directory.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) ? Path.Combine(ProjectDir, "node_modules", "solc", "solc.js") :
                 Path.Combine(ExtDir, "node_modules", "solc", "solc.js");
             var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"";
@@ -61,7 +66,7 @@ namespace Stratis.VS
                 Language = "Solidity",
                 Settings = new Settings()
                 {
-                    EvmVersion = "byzantium",
+                    EvmVersion = "shanghai",
                     OutputSelection = new Dictionary<string, Dictionary<string, string[]>>()
                     {
                         {"*", new Dictionary<string, string[]>()
@@ -108,7 +113,7 @@ namespace Stratis.VS
             }
             var on = o.Split('\n');
             var jo = on.First().TrimStart().StartsWith(">") ? on.Skip(1).Aggregate((s, n) => s + "\n" + n) : o;
-            Log.LogMessage(MessageImportance.Low, jo);
+            Log.LogMessage(MessageImportance.High, jo);
             SolidityCompilerOutput output;
             try
             {
@@ -120,7 +125,7 @@ namespace Stratis.VS
                 return false;
             }
             bool haserror = false;
-            if (output.errors.Length > 0)
+            if (output.errors != null && output.errors.Length > 0)
             {
                 foreach (var error in output.errors)
                 {
@@ -152,7 +157,25 @@ namespace Stratis.VS
                 }
                 
             }
-            return !haserror;
+
+            if (haserror)
+            {
+                return false;
+            }
+
+            if (Directory.Exists(OutputDir))
+            {
+                Directory.CreateDirectory(OutputDir);
+            }
+            
+            foreach(var c in output.contracts)
+            {
+                if (c.Value.Values.First().evm.bytecode._object != null)
+                {
+                    File.WriteAllBytes(Path.Combine(OutputDir, c.Key + ".bin"), FromHexString(c.Value.Values.First().evm.bytecode._object));
+                }
+            }
+            return true;
         }
 
         protected (int, int) GetLineColFromPos(string text, int pos)
@@ -217,7 +240,7 @@ namespace Stratis.VS
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = filename;
             info.Arguments = arguments;
-            info.WorkingDirectory = workingdirectory;
+            info.WorkingDirectory = "\"" + workingdirectory + "\"";
             info.RedirectStandardOutput = true;
             info.RedirectStandardError = true;
             info.UseShellExecute = false;
@@ -268,7 +291,7 @@ namespace Stratis.VS
                 }
                 if (output.ContainsKey("exception"))
                 {
-                    Log.LogErrorFromException(new Exception("Exception thrown during process execution.", (Exception)output["exception"]));
+                    Log.LogErrorFromException((Exception)output["exception"]);
                 }
                 return false;
             }
@@ -297,6 +320,26 @@ namespace Stratis.VS
                     return false;
                 }
             }
+        }
+
+        private static int PerformModularArithmeticCalculation(char value) => (value % 32 + 9) % 25;
+        public static byte[] FromHexString(string input)
+        {
+            if (input.Length % 2 != 0)
+                throw new ArgumentException("Input has invalid length", nameof(input));
+
+            if (input.StartsWith("0x"))
+                input = input.Substring(2);
+
+            if (string.IsNullOrEmpty(input))    
+                return Array.Empty<byte>();
+
+            var dest = new byte[input.Length >> 1];
+            for (int i = 0, j = 0; j < dest.Length; j++)
+                dest[j] = (byte)((PerformModularArithmeticCalculation(input[i++]) << 4) +
+                    PerformModularArithmeticCalculation(input[i++]));
+
+            return dest;
         }
     }
 }

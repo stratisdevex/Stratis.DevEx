@@ -1,11 +1,9 @@
-﻿<Project DefaultTargets="Debug">
-  <UsingTask  TaskName="CompileContracts" AssemblyFile="C:\\Projects\\Stratis.DevEx\\src\\Stratis.VS.SolidityProjectBuildTasks\\bin\\Debug\\netstandard2.0\\Stratis.VS.SolidityProjectBuildTasks.dll"/>
+﻿<Project DefaultTargets="Build">
+	<UsingTask  TaskName="CompileContracts" AssemblyFile="C:\\Projects\\Stratis.DevEx\\src\\Stratis.VS.SolidityProjectBuildTasks\\bin\\Debug\\netstandard2.0\\Stratis.VS.SolidityProjectBuildTasks.dll"/>
 	<ItemGroup>
 		<Compile Include="SmartContract1.sol" />
 	</ItemGroup>
-	<Target Name="Debug">
-	  
-	  <CompileContracts Contracts="@(Compile)" ExtDir="C:\Users\Allister\AppData\Local\Microsoft\VisualStudio\17.0_c69ae1a2Exp\Extensions\Stratis DevEx\StratisEVM\0.1.4" ProjectDir="$(MSBuildProjectDirectory)"/>
-   
-  </Target>
+	<Target Name="Build">
+		<CompileContracts Contracts="@(Compile)" ExtDir="C:\Users\Allister\AppData\Local\Microsoft\VisualStudio\17.0_13a12150Exp\Extensions\Stratis DevEx\StratisEVM\0.1.4" ProjectDir="$(MSBuildProjectDirectory)" OutputDir="$(MSBuildProjectDirectory)\bin\Debug"/>
+	</Target>
 </Project>

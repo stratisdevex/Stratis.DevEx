@@ -71,17 +71,17 @@
 
     public class SolidityCompilerOutput
     {
-        public Dictionary<string, SimpleStorage> contracts { get; set; }
+        public Dictionary<string, Dictionary<string, ContractStorage>> contracts { get; set; }
         public Error[] errors { get; set; }
         public Dictionary<string, SmartContractId> sources { get; set; }
     }
 
     public class Contract
     {
-        public SimpleStorage SimpleStorage { get; set; }
+        public ContractStorage ContractStorage { get; set; }
     }
 
-    public class SimpleStorage
+    public class ContractStorage
     {
         public Evm evm { get; set; }
     }
@@ -96,6 +96,8 @@
         public Functiondebugdata functionDebugData { get; set; }
         public object[] generatedSources { get; set; }
         public Linkreferences linkReferences { get; set; }
+        
+        [JsonProperty("object")]
         public string _object { get; set; }
         public string opcodes { get; set; }
         public string sourceMap { get; set; }
