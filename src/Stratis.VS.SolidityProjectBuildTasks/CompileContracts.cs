@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-
+using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -23,7 +23,7 @@ namespace Stratis.VS
         public ITaskItem[] Contracts { get; set; }
 
         [Required]
-        public string OutputDir { get; set; }  
+        public string OutputPath { get; set; }  
 
 
         public Dictionary<string, Source> Sources => Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
@@ -31,12 +31,12 @@ namespace Stratis.VS
         public override bool Execute()
         {
             
-            var solcpath = Directory.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) ? Path.Combine(ProjectDir, "node_modules", "solc", "solc.js") :
+            var solcpath = File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) ? Path.Combine(ProjectDir, "node_modules", "solc", "solc.js") :
                 Path.Combine(ExtDir, "node_modules", "solc", "solc.js");
-            var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"";
+            var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"" + " --include-path=\"" + Path.Combine(ProjectDir, "node_modules") + "\"";
             var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
 
-            if (!(Directory.Exists(Path.Combine(ExtDir, "node_modules")) && File.Exists(Path.Combine(ExtDir, "node_modules", "solidity", "dist", "cli", "server.js"))))
+            if (!File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) && !(Directory.Exists(Path.Combine(ExtDir, "node_modules")) && File.Exists(Path.Combine(ExtDir, "node_modules", "solidity", "dist", "cli", "server.js"))))
             {
                 if (!InstallSolidityLanguageServer())
                 {
@@ -71,7 +71,7 @@ namespace Stratis.VS
                     {
                         {"*", new Dictionary<string, string[]>()
                             {
-                                {"*", new [] {"evm.bytecode" } }
+                                {"*", new [] {"abi", "evm.bytecode", "evm.gasEstimates" } }
                             }  
                         }
                     }
@@ -113,7 +113,7 @@ namespace Stratis.VS
             }
             var on = o.Split('\n');
             var jo = on.First().TrimStart().StartsWith(">") ? on.Skip(1).Aggregate((s, n) => s + "\n" + n) : o;
-            Log.LogMessage(MessageImportance.High, jo);
+            Log.LogMessage(MessageImportance.Low, jo);
             SolidityCompilerOutput output;
             try
             {
@@ -155,7 +155,6 @@ namespace Stratis.VS
                         }
                     }
                 }
-                
             }
 
             if (haserror)
@@ -163,16 +162,33 @@ namespace Stratis.VS
                 return false;
             }
 
-            if (Directory.Exists(OutputDir))
+            var outputdir = Path.Combine(ProjectDir, OutputPath);
+            if (!Directory.Exists(outputdir))
             {
-                Directory.CreateDirectory(OutputDir);
+                Directory.CreateDirectory(outputdir);
             }
             
             foreach(var c in output.contracts)
             {
-                if (c.Value.Values.First().evm.bytecode._object != null)
+                var cs = c.Value.Values.First();
+                if (Sources.ContainsKey(c.Key))
                 {
-                    File.WriteAllBytes(Path.Combine(OutputDir, c.Key + ".bin"), FromHexString(c.Value.Values.First().evm.bytecode._object));
+                    if (cs.evm.bytecode._object != null)
+                    {
+                        File.WriteAllBytes(Path.Combine(outputdir, c.Key + ".bin"), FromHexString(c.Value.Values.First().evm.bytecode._object));
+                    }
+                    if (!string.IsNullOrEmpty(cs.evm.bytecode.opcodes))
+                    {
+                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".opcodes.txt"), cs.evm.bytecode.opcodes);
+                    }
+                    if (cs.evm.gasEstimates != null)
+                    {
+                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".gas.txt"), Deserialize(cs.evm.gasEstimates));
+                    }
+                    if (cs.abi != null)
+                    {
+                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".abi"), Deserialize(cs.abi));
+                    }
                 }
             }
             return true;
@@ -240,7 +256,7 @@ namespace Stratis.VS
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = filename;
             info.Arguments = arguments;
-            info.WorkingDirectory = "\"" + workingdirectory + "\"";
+            info.WorkingDirectory = workingdirectory;
             info.RedirectStandardOutput = true;
             info.RedirectStandardError = true;
             info.UseShellExecute = false;
@@ -322,9 +338,10 @@ namespace Stratis.VS
             }
         }
 
-        private static int PerformModularArithmeticCalculation(char value) => (value % 32 + 9) % 25;
         public static byte[] FromHexString(string input)
         {
+            int PerformModularArithmeticCalculation(char value) => (value % 32 + 9) % 25;
+
             if (input.Length % 2 != 0)
                 throw new ArgumentException("Input has invalid length", nameof(input));
 
@@ -340,6 +357,13 @@ namespace Stratis.VS
                     PerformModularArithmeticCalculation(input[i++]));
 
             return dest;
+        }
+
+        public string Deserialize<T>(T obj)
+        {
+            var sb = new StringBuilder();
+            CompactJson.Serializer.Write(obj, new StringWriter(sb), true);
+            return sb.ToString();   
         }
     }
 }

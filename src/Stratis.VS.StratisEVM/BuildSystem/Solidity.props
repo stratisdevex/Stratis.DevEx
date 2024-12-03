@@ -5,6 +5,7 @@
 
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<OutputPath>bin\solidity</OutputPath>
 
     <DebuggerFlavor>ScriptDebugger</DebuggerFlavor>
     <RunCommand>$(WinDir)\System32\cscript.exe</RunCommand>

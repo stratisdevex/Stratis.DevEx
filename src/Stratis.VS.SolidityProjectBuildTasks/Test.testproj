@@ -4,6 +4,6 @@
 		<Compile Include="SmartContract1.sol" />
 	</ItemGroup>
 	<Target Name="Build">
-		<CompileContracts Contracts="@(Compile)" ExtDir="C:\Users\Allister\AppData\Local\Microsoft\VisualStudio\17.0_13a12150Exp\Extensions\Stratis DevEx\StratisEVM\0.1.4" ProjectDir="$(MSBuildProjectDirectory)" OutputDir="$(MSBuildProjectDirectory)\bin\Debug"/>
+		<CompileContracts Contracts="@(Compile)" ExtDir="C:\Users\Allister\AppData\Local\Microsoft\VisualStudio\17.0_c69ae1a2Exp\Extensions\Stratis DevEx\StratisEVM\0.1.4" ProjectDir="$(MSBuildProjectDirectory)" OutputPath="bin\solidity"/>
 	</Target>
 </Project>
