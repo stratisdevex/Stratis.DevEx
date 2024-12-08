@@ -191,6 +191,8 @@ namespace Stratis.VS
                     }
                 }
             }
+
+            InstallNethereumGeneratorToolIfNotPresent();
             return true;
         }
 
@@ -249,6 +251,13 @@ namespace Stratis.VS
                 Log.LogError("Could not install vscode-solidity language server.");
                 return false;
             }
+        }
+        
+        protected bool InstallNethereumGeneratorToolIfNotPresent()
+        {
+            //Log.LogMessage(MessageImportance.High, $"Install Nethereum generator tool...");
+            //var output = RunCmd("cmd.exe", "dotnet tool install Nethereum.Generator.Console", ProjectDir);
+            return true;
         }
 
         public static Dictionary<string, object> RunCmd(string filename, string arguments, string workingdirectory)

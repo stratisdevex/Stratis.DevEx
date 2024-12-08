@@ -13,6 +13,8 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.VS;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
+
 
 namespace Stratis.VS.StratisEVM
 {
@@ -45,6 +47,7 @@ namespace Stratis.VS.StratisEVM
         public SolidityUnconfiguredProject(UnconfiguredProject unconfiguredProject)
         {
             this.ProjectHierarchies = new OrderPrecedenceImportCollection<IVsHierarchy>(projectCapabilityCheckProvider: unconfiguredProject);
+            AsyncTasksService.RegisterCriticalAsyncTask((ProjectThreadingService.JoinableTaskFactory.RunAsync(StratisEVMPackage.InstallBuildSystemAsync), ProjectCriticalOperation.);
         }
 
         [Import]
@@ -64,6 +67,9 @@ namespace Stratis.VS.StratisEVM
 
         [ImportMany(ExportContractNames.VsTypes.IVsProject, typeof(IVsProject))]
         internal OrderPrecedenceImportCollection<IVsHierarchy> ProjectHierarchies { get; private set; }
+
+        [Import(ExportContractNames.Scopes.UnconfiguredProject)]
+        IProjectAsynchronousTasksService AsyncTasksService { get; set; }
 
         internal IVsHierarchy ProjectHierarchy
         {

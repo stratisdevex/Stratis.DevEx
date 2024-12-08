@@ -477,10 +477,6 @@ namespace Stratis.DevEx
             foreach (var file in dir.GetFiles())
             {
                 var of = Path.Combine(destinationDir, file.Name);
-                if (File.Exists(of))
-                {
-                    File.Delete(of);    
-                }
                 using (FileStream sourceStream = file.Open(FileMode.Open))
                 {
                     using (FileStream destinationStream = File.Create(of))
@@ -496,7 +492,7 @@ namespace Stratis.DevEx
                 foreach (DirectoryInfo subDir in dirs)
                 {
                     string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
-                    CopyDirectory(subDir.FullName, newDestinationDir, true);
+                    await CopyDirectoryAsync(subDir.FullName, newDestinationDir, true);
                 }
             }
             op.Complete();

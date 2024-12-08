@@ -2,6 +2,9 @@
   "name": "solidity-contract",
   "version": "1.0.0",
   "author": "Your Name <email@example.com>",
+  "dependencies": {
+    "solc": "$soliditycompilerversion$"
+  },
   "exclude": [
     "**/bin",
     "**/bower_components",
