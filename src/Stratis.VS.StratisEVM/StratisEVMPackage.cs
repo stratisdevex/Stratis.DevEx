@@ -126,24 +126,7 @@ namespace Stratis.VS.StratisEVM
 
             await TaskScheduler.Default;
 
-            //if (Directory.Exists(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity")))
-            //{
-            //    Directory.Delete(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
-            //}
-            /*
-            await Runtime.CopyDirectoryAsync(Runtime.AssemblyLocation.CombinePath("BuildSystem"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
-            
-            if (!Directory.Exists(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools")))
-            {
-                Directory.CreateDirectory(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools"));
-            }
-            await Runtime.CopyFileAsync(Runtime.AssemblyLocation.CombinePath("Stratis.VS.SolidityProjectBuildTasks.dll"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", "Stratis.VS.SolidityProjectBuildTasks.dll"));
-            if (!File.Exists(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", "CompactJson.dll")))
-            {
-                await Runtime.CopyFileAsync(Runtime.AssemblyLocation.CombinePath("CompactJson.dll"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", "CompactJson.dll"));
-            }
-            */
-            await File.WriteAllTextAsync(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "extdir.txt"), Runtime.AssemblyLocation);
+            await InstallBuildSystemAsync();
         }
         #endregion
 
@@ -160,6 +143,7 @@ namespace Stratis.VS.StratisEVM
             {
                 await Runtime.CopyFileAsync(Runtime.AssemblyLocation.CombinePath("CompactJson.dll"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", "CompactJson.dll"));
             }
+            await File.WriteAllTextAsync(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "extdir.txt"), Runtime.AssemblyLocation);
         }
         #endregion
 

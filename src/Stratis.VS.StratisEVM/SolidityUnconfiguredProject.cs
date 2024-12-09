@@ -47,7 +47,7 @@ namespace Stratis.VS.StratisEVM
         public SolidityUnconfiguredProject(UnconfiguredProject unconfiguredProject)
         {
             this.ProjectHierarchies = new OrderPrecedenceImportCollection<IVsHierarchy>(projectCapabilityCheckProvider: unconfiguredProject);
-            AsyncTasksService.RegisterCriticalAsyncTask((ProjectThreadingService.JoinableTaskFactory.RunAsync(StratisEVMPackage.InstallBuildSystemAsync), ProjectCriticalOperation.);
+            //AsyncTasksService.RegisterCriticalAsyncTask(ProjectThreadingService.JoinableTaskFactory.RunAsync(StratisEVMPackage.InstallBuildSystemAsync));
         }
 
         [Import]
