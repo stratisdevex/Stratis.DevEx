@@ -19,5 +19,6 @@
     <ItemType Name="None" DisplayName="Does not participate in build"/>
 
     <FileExtension Name=".sol" ContentType="Contract"/>
+  <FileExtension Name=".cs" ContentType="Text"/>
     <FileExtension Name=".txt" ContentType="Text"/>
 </ProjectSchemaDefinitions>

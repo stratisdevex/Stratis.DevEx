@@ -10,5 +10,6 @@
 		<Contract Include="SmartContract1.sol" />
 		<None Include="$solidityconfigfile$" />
 		<None Include="package.json" />
+    <None Include="bindings\**" />
 	</ItemGroup>
 </Project>

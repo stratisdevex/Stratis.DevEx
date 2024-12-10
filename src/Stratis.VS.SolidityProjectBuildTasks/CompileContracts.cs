@@ -30,7 +30,6 @@ namespace Stratis.VS
 
         public override bool Execute()
         {
-            
             var solcpath = File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) ? Path.Combine(ProjectDir, "node_modules", "solc", "solc.js") :
                 Path.Combine(ExtDir, "node_modules", "solc", "solc.js");
             var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"" + " --include-path=\"" + Path.Combine(ProjectDir, "node_modules") + "\"";
@@ -183,16 +182,44 @@ namespace Stratis.VS
                     }
                     if (cs.evm.gasEstimates != null)
                     {
-                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".gas.txt"), Deserialize(cs.evm.gasEstimates));
+                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".gas.txt"), Serialize(cs.evm.gasEstimates));
                     }
                     if (cs.abi != null)
                     {
-                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".abi"), Deserialize(cs.abi));
+                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".abi"), Serialize(cs.abi));
                     }
                 }
             }
 
-            InstallNethereumGeneratorToolIfNotPresent();
+            if (!InstallNethereumGeneratorToolIfNotPresent())
+            {
+                Log.LogError("Cannot generate .NET bindings for Solidity project.");
+                return true;
+            }
+            if (!Directory.Exists(Path.Combine(ProjectDir, "bindings")))
+            {
+                Directory.CreateDirectory(Path.Combine(ProjectDir, "bindings"));
+            }
+
+            foreach (var c in output.contracts)
+            {
+                var cs = c.Value.Values.First();
+                if (Sources.ContainsKey(c.Key))
+                {
+                    if (cs.evm.bytecode._object != null && cs.abi != null)
+                    {
+                        if (CheckRunCmdOutput(RunCmd("cmd.exe", $"/c  dotnet Nethereum.Generator.Console generate from-abi -abi {Path.Combine(outputdir, c.Key + ".abi")} -bin {Path.Combine(outputdir, c.Key + ".bin")} -o bindings -ns Ethereum", ProjectDir), ""))
+                        {
+                            Log.LogMessage(MessageImportance.High, $"Created .NET bindings for {c.Key} contract at {Path.Combine(ProjectDir, "bindings", c.Key)}.");
+                        }
+                        else
+                        {
+                            Log.LogError($"Could not create .NET bindings for {c.Key} contract.");
+                        }
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -255,12 +282,29 @@ namespace Stratis.VS
         
         protected bool InstallNethereumGeneratorToolIfNotPresent()
         {
-            //Log.LogMessage(MessageImportance.High, $"Install Nethereum generator tool...");
-            //var output = RunCmd("cmd.exe", "dotnet tool install Nethereum.Generator.Console", ProjectDir);
+            Log.LogMessage(MessageImportance.High, $"Installing .NET tool manifest...");
+            if (!File.Exists(Path.Combine(ProjectDir, ".config", "dotnet-tools.json")))
+            {
+                if (!CheckRunCmdOutput(RunCmd("cmd.exe", "/c dotnet new tool-manifest", ProjectDir), "was created successfully"))
+                {
+                    Log.LogError("Could not install .NET tools manifest in " + ProjectDir);
+                    return false;
+                }
+            }
+            if (!CheckRunCmdOutput(RunCmd("cmd.exe", "/c dotnet tool list", ProjectDir), "nethereum.generator.console"))
+            {
+                Log.LogMessage(MessageImportance.High, $"Installing Nethereum generator .NET tool...");
+                if (!CheckRunCmdOutput(RunCmd("cmd.exe", "/c dotnet tool install Nethereum.Generator.Console", ProjectDir), "successfully installed"))
+                {
+                    Log.LogError("Could not install Nethereum.Generator.Console .NET tool in " + ProjectDir);
+                    return false;
+                }
+            }
+            
             return true;
         }
 
-        public static Dictionary<string, object> RunCmd(string filename, string arguments, string workingdirectory)
+        public Dictionary<string, object> RunCmd(string filename, string arguments, string workingdirectory)
         {
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = filename;
@@ -276,6 +320,7 @@ namespace Stratis.VS
                 process.StartInfo = info;
                 try
                 {
+                    Log.LogCommandLine($"{filename} {arguments}");
                     if (!process.Start())
                     {
                         output["error"] = ("Could not start {file} {args} in {dir}.", info.FileName, info.Arguments, info.WorkingDirectory);
@@ -325,7 +370,7 @@ namespace Stratis.VS
                 if (output.ContainsKey("stderr"))
                 {
                     var stderr = (string)output["stderr"];
-                    Log.LogMessage(MessageImportance.Low, stderr);
+                    Log.LogMessage(MessageImportance.High, stderr);
                 }
                 if (output.ContainsKey("stdout"))
                 {
@@ -339,6 +384,10 @@ namespace Stratis.VS
                     {
                         return false;
                     }
+                }
+                else if (checktext == "" && !output.ContainsKey("stdout"))
+                {
+                    return true;
                 }
                 else
                 {
@@ -368,11 +417,14 @@ namespace Stratis.VS
             return dest;
         }
 
-        public string Deserialize<T>(T obj)
+        public string Serialize<T>(T obj)
         {
             var sb = new StringBuilder();
-            CompactJson.Serializer.Write(obj, new StringWriter(sb), true);
-            return sb.ToString();   
+            using (var sw = new StringWriter(sb))
+            {
+                CompactJson.Serializer.Write(obj, new StringWriter(sb), true);
+                return sb.ToString();
+            }
         }
     }
 }

@@ -22,6 +22,7 @@
       <ProjectItem ReplaceParameters="true" OpenInEditor="false">foundry.toml</ProjectItem>
       <ProjectItem ReplaceParameters="true" OpenInEditor="false">package.json</ProjectItem>
       <ProjectItem ReplaceParameters="true" OpenInEditor="true">SmartContract1.sol</ProjectItem>
+      <Folder Name="bindings" TargetFolderName="bindings" />
     </Project>
   </TemplateContent>
   <WizardExtension>
