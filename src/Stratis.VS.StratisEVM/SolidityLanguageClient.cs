@@ -151,22 +151,22 @@ namespace Stratis.VS
             }
             if (Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) && File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
             {
-               VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server present.");
+               VSUtil.LogInfo("Stratis EVM", "Solidity language server present.");
             }
             else
             {
                 VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "Stratis EVM");
-                VSUtil.LogInfo("Stratis EVM", "Installing vscode-solidity language server...");
+                VSUtil.LogInfo("Stratis EVM", "Installing Solidity language server...");
                 await TaskScheduler.Default;
                 var output = await InstallVSCodeSolidityLanguageServerAsync();
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
                 {
-                    VSUtil.LogInfo("Stratis EVM", "vscode-solidity language server installed.");
+                    VSUtil.LogInfo("Stratis EVM", "Solidity language server installed.");
                 }
                 else
                 {
-                    VSUtil.LogError("Stratis EVM", "Could not install vscode-solidity language server.");
+                    VSUtil.LogError("Stratis EVM", "Could not install Solidity language server.");
                     return null;
                 }
             }
@@ -219,7 +219,7 @@ namespace Stratis.VS
 
         public Task<InitializationFailureContext> OnServerInitializeFailedAsync(ILanguageClientInitializationInfo initializationState)
         {
-            string message = "vscode-solidity language server failed to initialize.";
+            string message = "Solidity language server failed to initialize.";
             Error(message);
             string exception = initializationState.InitializationException?.ToString() ?? string.Empty;
             message = $"{message}\n {exception}";
@@ -265,7 +265,7 @@ namespace Stratis.VS
 
             public async Task<JToken> HandleRequestAsync(string methodName, JToken methodParam, Func<JToken, Task<JToken>> sendRequest)
             {
-                try //Handle exceptions raised by vscode-solidity server like https://github.com/juanfranblanco/vscode-solidity/issues/446
+                try //Handle exceptions raised by Solidity server like https://github.com/juanfranblanco/Solidity/issues/446
                 {
                     var resp = await sendRequest(methodParam);
                     Info("Request {req} {param}: {resp}", methodName, methodParam?.ToString() ?? "", resp?.ToString() ?? "(null)");
@@ -279,7 +279,7 @@ namespace Stratis.VS
                                 resp.Root["contents"]["kind"] = JValue.CreateString("plaintext");
                                 if (resp.Root["contents"]["value"] != null)
                                 {
-                                    resp.Root["contents"]["value"] = JValue.CreateString(resp.Root["contents"]["value"].Value<string>().Replace("### ", "").Replace("#", ""));
+                                    resp.Root["contents"]["value"] = JValue.CreateString(resp.Root["contents"]["value"].Value<string>().Replace("### ", "").Replace("#", "").Trim());
                                 }
                                 else
                                 {

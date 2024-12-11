@@ -22,18 +22,19 @@ namespace Stratis.VS.StratisEVM
             VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "Solidity Compiler");
             VSUtil.LogInfo("Solidity Compiler", string.Format("Compiling {0} in {1}...", file, workspaceDir));
             await TaskScheduler.Default;
-            var binfiles = Directory.GetFiles(AssemblyLocation, "*.bin", SearchOption.TopDirectoryOnly);
+            var binfiles = Directory.GetFiles(workspaceDir, "*.bin", SearchOption.TopDirectoryOnly);
             foreach ( var binfile in binfiles ) 
             {
                 File.Delete(binfile);   
             }
             var cmd = "cmd.exe";
-            var args = "/c node " + Path.Combine("node_modules", "solc", "solc.js") + " --base-path=\"" + workspaceDir + "\"" + " \"" + file + "\" --bin";
+            var solcpath = File.Exists(Path.Combine(workspaceDir, "node_modules", "solc", "solc.js")) ? Path.Combine(workspaceDir, "node_modules", "solc", "solc.js") : Path.Combine(AssemblyLocation, "node_modules", "solc", "solc.js");
+            var args = "/c node " + solcpath + " --base-path=\"" + workspaceDir + "\"" + " \"" + file + "\" --bin";
             if (Directory.Exists(Path.Combine(workspaceDir, "node_modules")))
             {
                 args += " --include-path=" + Path.Combine(workspaceDir, "node_modules");
             }
-            var output = await RunCmdAsync(cmd, args, AssemblyLocation);
+            var output = await RunCmdAsync(cmd, args, workspaceDir);
             if (CheckRunCmdError(output)) 
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -54,7 +55,7 @@ namespace Stratis.VS.StratisEVM
             }
             else
             {
-                binfiles = Directory.GetFiles(AssemblyLocation, "*.bin", SearchOption.TopDirectoryOnly);
+                binfiles = Directory.GetFiles(workspaceDir, "*.bin", SearchOption.TopDirectoryOnly);
                 if (binfiles is null || binfiles.Length == 0) 
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
