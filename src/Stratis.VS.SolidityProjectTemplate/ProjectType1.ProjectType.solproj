@@ -5,6 +5,7 @@
 	<PropertyGroup>
 		<CompilerVersion>$soliditycompilerversion$</CompilerVersion>
 		<ConfigurationFile>$solidityconfigfile$</ConfigurationFile>
+    <BindingsNS>Ethereum</BindingsNS>
 	</PropertyGroup>
 	<ItemGroup>
 		<Contract Include="SmartContract1.sol" />

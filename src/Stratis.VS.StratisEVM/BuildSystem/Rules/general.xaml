@@ -38,7 +38,13 @@
 		<EnumValue Name="0.8.26" />
 		<EnumValue Name="0.8.27" />
 	</EnumProperty>
-		
+
+  <StringProperty Name="BindingsNS" DisplayName=".NET Bindings Namespace">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  
     <StringProperty Name="ProjectGuid" Visible="False">
         <StringProperty.DataSource>
             <DataSource Persistence="ProjectFile" Label="Globals" HasConfigurationCondition="False" />

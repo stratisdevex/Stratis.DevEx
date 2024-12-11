@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 using Microsoft.Build.Framework;
@@ -24,25 +25,27 @@ namespace Stratis.VS
         public ITaskItem[] Contracts { get; set; }
 
         [Required]
-        public string OutputPath { get; set; }  
+        public string OutputPath { get; set; }
 
+        public string BindingsNS { get; set; } = "Ethereum";
 
         public Dictionary<string, Source> Sources => Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
 
         public override bool Execute()
         {
-            if (!File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")))
+            if (File.Exists(Path.Combine(ProjectDir, "package.json")) && !File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")))
             {
                 Log.LogMessage(MessageImportance.High, "Installing NPM dependencies in project directory {0}...", ProjectDir);
              
                 var npmoutput = RunCmd("cmd.exe", "/c npm install", ProjectDir);
-                if (CheckRunCmdError(npmoutput))
+                if (!CheckRunCmdError(npmoutput) && CheckRunCmdOutput(npmoutput, "packages audited"))
                 {
-                    Log.LogError("Could not install NPM dependencies: " + GetRunCmdError(npmoutput));
+                    Log.LogMessage(MessageImportance.High, ((string)npmoutput["stdout"]).Trim());
+                    
                 }
                 else
                 {
-                    Log.LogMessage(MessageImportance.High, ((string)npmoutput["stdout"]).Trim());
+                    Log.LogError("Could not install NPM dependencies: " + GetRunCmdError(npmoutput));
                 }
             }
             var solcpath = File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) ? Path.Combine(ProjectDir, "node_modules", "solc", "solc.js") :
@@ -201,7 +204,7 @@ namespace Stratis.VS
                     }
                     if (cs.evm.gasEstimates != null)
                     {
-                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".gas.txt"), Serialize(cs.evm.gasEstimates));
+                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".gas.json"), Serialize(cs.evm.gasEstimates));
                     }
                     if (cs.abi != null)
                     {
@@ -227,7 +230,7 @@ namespace Stratis.VS
                 {
                     if (cs.evm.bytecode._object != null && cs.abi != null)
                     {
-                        if (CheckRunCmdOutput(RunCmd("cmd.exe", $"/c  dotnet Nethereum.Generator.Console generate from-abi -abi {Path.Combine(outputdir, c.Key + ".abi")} -bin {Path.Combine(outputdir, c.Key + ".bin")} -o bindings -ns Ethereum", ProjectDir), ""))
+                        if (CheckRunCmdOutput(RunCmd("cmd.exe", $"/c  dotnet Nethereum.Generator.Console generate from-abi -abi {Path.Combine(outputdir, c.Key + ".abi")} -bin {Path.Combine(outputdir, c.Key + ".bin")} -o bindings -ns {BindingsNS}", ProjectDir), ""))
                         {
                             Log.LogMessage(MessageImportance.High, $"Created .NET bindings for {c.Key} contract at {Path.Combine(ProjectDir, "bindings", c.Key)}.");
                         }
@@ -319,7 +322,6 @@ namespace Stratis.VS
                     return false;
                 }
             }
-            
             return true;
         }
 
@@ -368,7 +370,7 @@ namespace Stratis.VS
         public bool CheckRunCmdError(Dictionary<string, object> output) => output.ContainsKey("error") || output.ContainsKey("exception");
 
         public string GetRunCmdError(Dictionary<string, object> output) => (output.ContainsKey("error") ? (string)output["error"] : "")
-            + (output.ContainsKey("exception") ? (string)output["exception"] : "");
+            + (output.ContainsKey("exception") ? (string)output["exception"] : "" + (output.ContainsKey("stderr") ? (string)output["stderr"] : ""));
 
         public bool CheckRunCmdOutput(Dictionary<string, object> output, string checktext)
         {
@@ -390,6 +392,7 @@ namespace Stratis.VS
                 {
                     var stderr = (string)output["stderr"];
                     Log.LogMessage(MessageImportance.High, stderr);
+                    return false;
                 }
                 if (output.ContainsKey("stdout"))
                 {

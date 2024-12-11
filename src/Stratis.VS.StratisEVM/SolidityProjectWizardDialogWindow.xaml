@@ -4,7 +4,7 @@
         xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0" 
         Background="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelBrushKey}}"
         Foreground="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelTextBrushKey}}"
-                         SnapsToDevicePixels="True"
+                         SnapsToDevicePixels="False"
                    UseLayoutRounding="True"
                    WindowStartupLocation="CenterOwner"
                    WindowStyle="None"
@@ -14,9 +14,9 @@
 
       
         
-        Width="500"                
-        Height="200"
-        MinWidth="500"
+        Width="452"                
+        Height="184"
+        MinWidth="462"
         MinHeight="200">
     <WindowChrome.WindowChrome>
         <WindowChrome 
@@ -24,58 +24,58 @@
             ResizeBorderThickness="5" />
     </WindowChrome.WindowChrome>
     <Grid>
-    
-    <Grid.Resources>
-      <Style TargetType="{x:Type Grid}">
-        <Setter Property="Margin" Value="10" />
-      </Style>
-      <Style TargetType="{x:Type Label}">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelTextBrushKey}}" />
-        <Setter Property="Margin" Value="0,3,5,5" />
-        <Setter Property="Padding" Value="0,0,0,5" />
-      </Style>
-      <Style TargetType="{x:Type TextBox}">
-        <Setter Property="Margin" Value="0,0,0,5" />
-        <Style.Triggers>
-          <Trigger Property="Validation.HasError" Value="true">
-            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-          </Trigger>
-        </Style.Triggers>
-      </Style>
+
+        <Grid.Resources>
+            <Style TargetType="{x:Type Grid}">
+                <Setter Property="Margin" Value="10" />
+            </Style>
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelTextBrushKey}}" />
+                <Setter Property="Margin" Value="0,3,5,5" />
+                <Setter Property="Padding" Value="0,0,0,5" />
+            </Style>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="0,0,0,5" />
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <Style TargetType="{x:Type ComboBox}">
                 <Setter Property="HorizontalAlignment" Value="Right"/>
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ListBoxTextBrushKey}}" />
+
             </Style>
             <Style TargetType="{x:Type StackPanel}">
-        <Setter Property="Orientation" Value="Horizontal" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
-      </Style>
-      <Style TargetType="{x:Type Button}">
-        <Setter Property="Width" Value="70" />
-        <Setter Property="Height" Value="25" />
-        <Setter Property="Margin" Value="5,0,0,0" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonTextBrushKey}}" />
-        <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonBackgroundBrushKey}}" />
+                <Setter Property="Orientation" Value="Horizontal" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
             </Style>
-    </Grid.Resources>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Width" Value="70" />
+                <Setter Property="Height" Value="25" />
+                <Setter Property="Margin" Value="5,0,0,0" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonTextBrushKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonBackgroundBrushKey}}" />
+            </Style>
+        </Grid.Resources>
 
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="Auto" />
-      <ColumnDefinition Width="Auto" />
-    </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+
         </Grid.RowDefinitions>
 
         <Image Grid.Column="1" Grid.Row="0" Width="64" Height="64" HorizontalAlignment="Right" Source="https://stratisdevex.gallerycdn.vsassets.io/extensions/stratisdevex/stratisevm/0.1.3/1725544756658/Microsoft.VisualStudio.Services.Icons.Default" />
-        
-        <Label Grid.Column="0" Grid.Row="0" FontSize="21"> Configure your Solidity Project</Label>
+
+        <Label Grid.Column="0" Grid.Row="0" FontSize="21">Configure your Solidity Project</Label>
         <Label Grid.Column="0" Grid.Row="1">Solidity project configuration file:</Label>
         <ComboBox 
             VerticalAlignment="Center" 
@@ -107,14 +107,14 @@
         </ComboBox>
 
         <!-- Top Margin -->
-  
-    <!-- Accept or Cancel -->
-    <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,10" Grid.Row="4">
-      <Button Name="okButton" Click="okButton_Click" IsDefault="True">OK</Button>
-      <Button Name="cancelButton" IsCancel="True">Cancel</Button>
-    </StackPanel>
 
-  </Grid >
+        <!-- Accept or Cancel -->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,10" Grid.Row="4">
+            <Button Name="okButton" Click="okButton_Click" IsDefault="True">OK</Button>
+            <Button Name="cancelButton" IsCancel="True">Cancel</Button>
+        </StackPanel>
+
+    </Grid >
 
 </vs:DialogWindow>
 
