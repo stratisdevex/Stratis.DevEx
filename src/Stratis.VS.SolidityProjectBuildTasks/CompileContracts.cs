@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -30,8 +31,26 @@ namespace Stratis.VS
 
         public override bool Execute()
         {
+            if (!File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")))
+            {
+                Log.LogMessage(MessageImportance.High, "Installing NPM dependencies in project directory {0}...", ProjectDir);
+             
+                var npmoutput = RunCmd("cmd.exe", "/c npm install", ProjectDir);
+                if (CheckRunCmdError(npmoutput))
+                {
+                    Log.LogError("Could not install NPM dependencies: " + GetRunCmdError(npmoutput));
+                }
+                else
+                {
+                    Log.LogMessage(MessageImportance.High, ((string)npmoutput["stdout"]).Trim());
+                }
+            }
             var solcpath = File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) ? Path.Combine(ProjectDir, "node_modules", "solc", "solc.js") :
                 Path.Combine(ExtDir, "node_modules", "solc", "solc.js");
+            if (!File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")))
+            {
+                Log.LogWarning("solc compiler not present in project node_modules directory. Falling back to embedded compiler.");
+            }
             var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"" + " --include-path=\"" + Path.Combine(ProjectDir, "node_modules") + "\"";
             var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
 
@@ -174,7 +193,7 @@ namespace Stratis.VS
                 {
                     if (cs.evm.bytecode._object != null)
                     {
-                        File.WriteAllBytes(Path.Combine(outputdir, c.Key + ".bin"), FromHexString(c.Value.Values.First().evm.bytecode._object));
+                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".bin"), c.Value.Values.First().evm.bytecode._object);
                     }
                     if (!string.IsNullOrEmpty(cs.evm.bytecode.opcodes))
                     {
@@ -282,9 +301,9 @@ namespace Stratis.VS
         
         protected bool InstallNethereumGeneratorToolIfNotPresent()
         {
-            Log.LogMessage(MessageImportance.High, $"Installing .NET tool manifest...");
             if (!File.Exists(Path.Combine(ProjectDir, ".config", "dotnet-tools.json")))
             {
+                Log.LogMessage(MessageImportance.High, $"Installing .NET tool manifest...");
                 if (!CheckRunCmdOutput(RunCmd("cmd.exe", "/c dotnet new tool-manifest", ProjectDir), "was created successfully"))
                 {
                     Log.LogError("Could not install .NET tools manifest in " + ProjectDir);
