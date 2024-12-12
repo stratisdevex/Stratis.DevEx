@@ -3,13 +3,22 @@
     <h2>About</h2>
     <p>The StratisEVM extension provides support for developing Stratis Solidity smart contracts inside Visual Studio.</p>
     <h2>Features</h2>
+    <h2>About</h2>
+    <p>
+        The StratisEVM extension provides support for developing Stratis Solidity smart contracts inside Visual Studio.
+        <img src="https://stratisdevex.gallerycdn.vsassets.io/extensions/stratisdevex/stratisevm/0.1.3/1725544756658/stratis.vs.stratisevm.gif" alt="img" />
+    </p>
+    <h2>Features</h2>
     <ul>
+        <li>Solidity project system featuring support for managing smart contract dependencies and Solidity compiler integration with MSBuild</li>
+        <li>Integrates with Visual Studio solutions and &quot;New Project...&quot; dialog</li>
+        <li>Integrates with Visual Studio &quot;Open Folder...&quot; feature</li>
         <li>Uses <a href="https://github.com/juanfranblanco/vscode-solidity">vscode-solidity</a> language server</li>
-        <li>Integrates with Visual Studio &quot;Open Folder&quot;</li>
         <li>Syntax highlighting and hover information</li>
         <li>Intellisense</li>
         <li>Linting</li>
-        <li>Compile a Solidity file from inside Visual Studio</li>
+        <li>Compile Solidity projects and files from inside Visual Studio or on the command-line using MSBuild with error reporting</li>
+        <li>Generate .NET bindings to Solidity smart contracts from inside Visual Studio</li>
     </ul>
     <h2>Requirements</h2>
     <ul>
@@ -17,7 +26,10 @@
         <li>A recent version of <a href="https://nodejs.org/">Node.js</a></li>
     </ul>
     <h2>Usage</h2>
-    <p>Use the Visual Studio Open Folder... feature to open a folder with Solidity contracts. Your folder should contain one of the following files:</p>
+    <p>
+        Add a Solidity project to your solution using the &quot;New Project...&quot; dialog or use the Visual Studio &quot;Open Folder...&quot; feature to open a folder with Solidity contracts.
+        If using the Open Folder... feature, your folder should contain one of the following files:
+    </p>
     <ul>
         <li>remappings.txt</li>
         <li>foundry.toml</li>
@@ -26,12 +38,15 @@
         <li>hardhat.config.js</li>
         <li>hardhat.config.ts</li>
     </ul>
-    <p>which indicates it is a Solidity project folder. (This is needed for things like error-checking as-you-type by the Solidity compiler.)</p>
-    <p>Edit a Solidity file as normal. To compile a Solidity file, right-click on the file in Solution Explorer and select 'Compile Solidity File'.</p>
     <p>
-        The first time you open a folder with Solidity contracts the extension will install the necessary Node.js modules in the extension's private <code>node_modules</code> directory.
-        This will take a few seconds to complete so opening the folder will be slower than normal but after the modules are installed the first time, opening folders containing
-        Solidity contracts will be as usual.
+        Edit Solidity files as normal. Use Visual Studio's package.json editing support to add your smart contract dependencies and right-click on an existing package.json
+        and select &quot;Install NPM dependencies&quot;. To build a Solidity project use the Build menu commands and shortcuts as usual or run <code>dotnet build MyProj.solproj</code> from the command-line.
+        To compile an individual Solidity file or when using the Open Folder... feature, right-click on the file in Solution Explorer and select 'Compile Solidity File'.
+    </p>
+    <p>
+        The very first time you open a Solidity file the extension will install the necessary Node.js modules in the extension's private <code>node_modules</code> directory.
+        This will take a few seconds to complete so Intellisense won't be available during installation but after the modules are installed the first time,
+        editing Solidity contracts will be as usual.
     </p>
 </body>
 </html>

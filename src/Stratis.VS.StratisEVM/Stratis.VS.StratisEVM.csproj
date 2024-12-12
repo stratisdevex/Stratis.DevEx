@@ -81,6 +81,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="RELEASENOTES.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Commands.png" />
     <Content Include="Resources\NodeJSPackage_16x.png" />
     <Content Include="Resources\SolidityProjectMenuCommands.png" />

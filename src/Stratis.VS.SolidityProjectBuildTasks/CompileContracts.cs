@@ -38,7 +38,7 @@ namespace Stratis.VS
                 Log.LogMessage(MessageImportance.High, "Installing NPM dependencies in project directory {0}...", ProjectDir);
              
                 var npmoutput = RunCmd("cmd.exe", "/c npm install", ProjectDir);
-                if (!CheckRunCmdError(npmoutput) && CheckRunCmdOutput(npmoutput, "packages audited"))
+                if (!CheckRunCmdError(npmoutput))
                 {
                     Log.LogMessage(MessageImportance.High, ((string)npmoutput["stdout"]).Trim());
                     
@@ -54,20 +54,19 @@ namespace Stratis.VS
             {
                 Log.LogWarning("solc compiler not present in project node_modules directory. Falling back to embedded compiler.");
             }
-            var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"" + " --include-path=\"" + Path.Combine(ProjectDir, "node_modules") + "\"";
-            var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
-
             if (!File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) && !(Directory.Exists(Path.Combine(ExtDir, "node_modules")) && File.Exists(Path.Combine(ExtDir, "node_modules", "solidity", "dist", "cli", "server.js"))))
             {
                 if (!InstallSolidityLanguageServer())
                 {
+                    Log.LogError("No solc compiler available. Stopping.");
                     return false;
                 }
             }
 
+            var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"" + " --include-path=\"" + Path.Combine(ProjectDir, "node_modules") + "\"";
+            var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
             Log.LogMessage(MessageImportance.High, "Compiling {0} file(s) in directory {1}...", Contracts.Count(), ProjectDir);
             Log.LogCommandLine(MessageImportance.High, cmdline);
-
             var psi = new ProcessStartInfo("cmd.exe", "/c " + cmdline)
             {
                 UseShellExecute = false,
@@ -292,12 +291,12 @@ namespace Stratis.VS
             var output = RunCmd("cmd.exe", "/c npm install solidity-0.0.165.tgz --force --quiet --no-progress", ExtDir);
             if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
             {
-                Log.LogMessage(MessageImportance.High, "vscode-solidity language server installed.");
+                Log.LogMessage(MessageImportance.High, "Solidity language server installed.");
                 return true;
             }
             else
             {
-                Log.LogError("Could not install vscode-solidity language server.");
+                Log.LogError("Could not install Solidity language server.");
                 return false;
             }
         }

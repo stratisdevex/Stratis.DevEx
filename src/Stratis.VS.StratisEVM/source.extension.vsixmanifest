@@ -7,11 +7,10 @@
         <MoreInfo>https://github.com/stratisdevex/Stratis.DevEx/tree/master/src/Stratis.VS.StratisEVM</MoreInfo>
         <License>LICENSE.txt</License>
         <GettingStartedGuide>README.html</GettingStartedGuide>
-        <ReleaseNotes>Correctly include node_modules dependencies dir when compiling contracts.</ReleaseNotes>
+        <ReleaseNotes>RELEASENOTES.html</ReleaseNotes>
         <Icon>StratisLogo64x64.png</Icon>
         <PreviewImage>StratisLogo200x200.png</PreviewImage>
         <Tags>stratis,ethereum, solidity, smart contracts</Tags>
-        <Preview>true</Preview>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
