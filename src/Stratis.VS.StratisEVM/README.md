@@ -1,6 +1,8 @@
 ﻿## About
 The StratisEVM extension provides support for developing Stratis Solidity smart contracts inside Visual Studio.
+
 ![img](https://stratisdevex.gallerycdn.vsassets.io/extensions/stratisdevex/stratisevm/0.1.3/1725544756658/stratis.vs.stratisevm.gif)
+
 ## Features
 * Solidity project system featuring support for managing smart contract dependencies and Solidity compiler integration with MSBuild
 * Integrates with Visual Studio solutions and "New Project..." dialog
