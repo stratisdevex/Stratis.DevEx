@@ -18,6 +18,8 @@ using Microsoft.VisualStudio.ProjectSystem;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks.Dataflow;
+using Microsoft.VisualStudio.ProjectSystem.Properties;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -116,7 +118,9 @@ namespace Stratis.VS.StratisEVM
         {
             if (pHierarchy.IsCapabilityMatch(SolidityUnconfiguredProject.UniqueCapability))
             {
-                var h = VSUtil.GetUnconfiguredProject(VSUtil.GetDTEProject(pHierarchy));  
+                var unconfiguredProject = VSUtil.GetUnconfiguredProject(VSUtil.GetDTEProject(pHierarchy));
+                InstallSolidityProjectDataFlowSinks(unconfiguredProject);   
+                
             }
             return VSConstants.S_OK;
         }
@@ -246,6 +250,21 @@ namespace Stratis.VS.StratisEVM
 #endif
             await File.WriteAllTextAsync(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "extdir.txt"), Runtime.AssemblyLocation);
         }
+
+        private void InstallSolidityProjectDataFlowSinks(UnconfiguredProject unconfiguredProject)
+        {
+            var subscriptionService = unconfiguredProject.Services.ActiveConfiguredProjectSubscription;
+            
+            var receivingBlock = new ActionBlock<IProjectVersionedValue<IProjectSubscriptionUpdate>>(async u =>
+            {
+                await this.JoinableTaskFactory.SwitchToMainThreadAsync();
+                VSUtil.LogInfo("Stratis EVM", "updatw");
+            });
+            subscriptionService.JointRuleSource.SourceBlock.LinkTo(receivingBlock, new JointRuleDataflowLinkOptions() { PropagateCompletion = true}); 
+        }
+    
+
+  
         #endregion
 
         #region Fields
