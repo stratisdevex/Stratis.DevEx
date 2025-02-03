@@ -47,6 +47,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SolidityProjectDeployProvider.cs" />
     <Compile Include="SolidityProjectMenuCommands.cs" />
     <Compile Include="SolidityProjectMonikers.cs" />
     <Compile Include="SolidityProjectTreePropertiesProvider.cs" />

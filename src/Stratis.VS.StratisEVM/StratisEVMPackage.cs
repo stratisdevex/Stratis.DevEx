@@ -13,6 +13,11 @@ using Microsoft.VisualStudio;
 using static Microsoft.VisualStudio.VSConstants.UICONTEXT;
 
 using Stratis.DevEx;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.ProjectSystem;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -50,7 +55,7 @@ namespace Stratis.VS.StratisEVM
         expression: "(SingleProject | MultipleProjects) & Solidity",
         termNames: new[] { "SingleProject", "MultipleProjects", "Solidity" },
         termValues: new[] { SolutionHasSingleProject_string, SolutionHasMultipleProjects_string, "HierSingleSelectionName:package.json$" })]
-    public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7
+    public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7, IVsSolutionEvents
     {
         /// <summary>
         /// Stratis.VS.StratisEVMPackage GUID string.
@@ -69,7 +74,8 @@ namespace Stratis.VS.StratisEVM
 
         #region Methods
 
-        #region IVsSolutionEvents7
+        #region IVsSolutionEvents7 members
+
         public void OnBeforeCloseFolder(string folderPath)
         {
 
@@ -93,6 +99,63 @@ namespace Stratis.VS.StratisEVM
         {
 
         }
+        #endregion
+
+        #region IVsSolutionEvents implementation
+        int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
+        {
+            if (pHierarchy.IsCapabilityMatch(SolidityUnconfiguredProject.UniqueCapability))
+            {
+                var h = VSUtil.GetUnconfiguredProject(VSUtil.GetDTEProject(pHierarchy));  
+            }
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
+        int IVsSolutionEvents.OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
         #endregion
 
         #region Package Members
@@ -124,6 +187,27 @@ namespace Stratis.VS.StratisEVM
                 }
             }
 
+            IVsSolution solution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
+            solution.AdviseSolutionEvents(this, out var c);
+            // Here we initialize our internal IPackageService implementations, both in global and project services scope.
+
+            // Get access to global MEF services.
+            IComponentModel componentModel = await this.GetServiceAsync<SComponentModel, IComponentModel>();
+
+            // Get access to project services scope services.
+            IProjectServiceAccessor projectServiceAccessor = componentModel.GetService<IProjectServiceAccessor>();
+
+            //projectServiceAccessor.GetProjectService().
+            // Find package services in global scope.
+            //IEnumerable<ISolidityProjectServices> globalPackageServices = componentModel.GetExtensions<ISolidityProjectServices>();
+
+            // Find package services in project service scope.
+            
+            // We initialize these on the main thread.
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            // Initialize all services concurrently.
+            //await projectServicesPackageServices.First().InitializeAsync(this);
             await TaskScheduler.Default;
 
             await InstallBuildSystemAsync();

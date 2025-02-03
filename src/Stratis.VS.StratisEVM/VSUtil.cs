@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.ProjectSystem.Properties;
+using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
@@ -192,6 +194,26 @@ namespace Stratis.VS.StratisEVM
                     return false;
                 }
             }
+        }
+
+        public static EnvDTE.Project GetDTEProject(IVsHierarchy hierarchy)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out var objProj);
+            return (EnvDTE.Project)objProj;
+        }
+
+
+        public static UnconfiguredProject GetUnconfiguredProject(EnvDTE.Project project)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            IVsBrowseObjectContext context = project as IVsBrowseObjectContext;
+            if (context == null && project != null)
+            { // VC implements this on their DTE.Project.Object
+                context = project.Object as IVsBrowseObjectContext;
+            }
+
+            return context != null ? context.UnconfiguredProject : null;
         }
         public static bool VSServicesInitialized = false;
     }
