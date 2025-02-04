@@ -20,7 +20,10 @@
   <!--This header contains the command ids for the menus provided by the shell. -->
   <Extern href="vsshlids.h" />
 
-  <!--The Commands section is where commands, menus, and menu groups are defined.
+  <Include href="KnownImageIds.vsct"/>
+  <Include href="VSGlobals.vsct"/>
+  
+	<!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidStratisEVMPackage">
     <!-- Inside this section we have different sub-sections: one for the menus, another
@@ -30,6 +33,15 @@
     called "command set" and is used to group different command inside a logically related
     group; your package should define its own command set in order to avoid collisions
     with command ids defined by other packages. -->
+
+	<Menus>
+        <Menu guid="guidBlockchainExplorer" id="TWindowToolbar" type="ToolWindowToolbar">
+		    <CommandFlag>DefaultDocked</CommandFlag>
+			<Strings>
+			    <ButtonText>Tool Window Toolbar</ButtonText>
+			</Strings>
+		</Menu>
+	</Menus>
 
     <!-- In this section you can define new menu groups. A menu group is a container for
          other menus or buttons (commands); from a visual point of view you can see the
@@ -43,7 +55,10 @@
       <Groups>
         <Group guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" />
       </Groups>
-      
+
+		<Group guid="guidBlockchainExplorer" id="TWindowToolbarGroup" priority="0x0000">
+			<Parent guid="guidBlockchainExplorer" id="TWindowToolbar" />
+		</Group>
     </Groups>
 
     <!--Buttons section. -->
@@ -98,7 +113,50 @@
           <ButtonText>Install NPM packages</ButtonText>
         </Strings>
       </Button>
+
+	  <!-- Blockchain Explorer toolbar buttons -->
+        <Button guid="guidBlockchainExplorer" id="MyCommand" priority="0x0100" type="Button">
+		<Parent guid="VSMainMenu" id="View.DevWindowsGroup.OtherWindows.Group1"/>
+		<Icon guid="ImageCatalogGuid" id="StatusHelpOutline" />
+		<CommandFlag>IconIsMoniker</CommandFlag>
+		<Strings>
+			<ButtonText>Help Explorer</ButtonText>
+			<LocCanonicalName>.View.HelpExplorer</LocCanonicalName>
+		</Strings>
+	  </Button>
+
+		<Button guid="guidBlockchainExplorer" id="MultipleProjectTypeDisplay" priority="0x0001" type="Button">
+			<Parent guid="guidBlockchainExplorer" id="TWindowToolbarGroup"/>
+			<Icon guid="ImageCatalogGuid" id="DynamicDiscoveryDocument"/>
+			<CommandFlag>IconIsMoniker</CommandFlag>
+			<!--<CommandFlag>IconAndText</CommandFlag>-->
+			<Strings>
+				<ButtonText>Display Multiple Project Type Links</ButtonText>
+			</Strings>
+		</Button>
+
+		<Button guid="guidBlockchainExplorer" id="MultipleFileTypeDisplay" priority="0x0001" type="Button">
+			<Parent guid="guidBlockchainExplorer" id="TWindowToolbarGroup"/>
+			<Icon guid="ImageCatalogGuid" id="ProjectFilterFile"/>
+			<CommandFlag>IconIsMoniker</CommandFlag>
+			<!--<CommandFlag>IconAndText</CommandFlag>-->
+			<Strings>
+				<ButtonText>Display Multiple File Type Links</ButtonText>
+			</Strings>
+		</Button>
+
+		<Button guid="guidBlockchainExplorer" id="CreateCapabilitiyFile" priority="0x0001" type="Button">
+			<Parent guid="guidBlockchainExplorer" id="TWindowToolbarGroup"/>
+			<Icon guid="ImageCatalogGuid" id="CacheGroup"/>
+			<CommandFlag>IconIsMoniker</CommandFlag>
+			<!--<CommandFlag>IconAndText</CommandFlag>-->
+			<Strings>
+				<ButtonText>Save Project Capabilities to file</ButtonText>
+			</Strings>
+		</Button>
     </Buttons>
+	  
+	
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
@@ -175,5 +233,14 @@
       <IDSymbol name="bmpPicArrows" value="5" />
       <IDSymbol name="bmpPicStrikethrough" value="6" />
     </GuidSymbol>
+
+	<GuidSymbol name="guidBlockchainExplorer" value="{69f0baca-6ff2-4fc3-b276-603ea376fee4}">
+		  <IDSymbol name="MyCommand" value="0x0100" />
+		  <IDSymbol name="TWindowToolbar" value="0x1000" />
+		  <IDSymbol name="TWindowToolbarGroup" value="0x1050" />
+		  <IDSymbol name="MultipleProjectTypeDisplay" value="0x0111" />
+		  <IDSymbol name="MultipleFileTypeDisplay" value="0x0112" />
+		  <IDSymbol name="CreateCapabilitiyFile" value="0x0113" />
+	</GuidSymbol>
   </Symbols>
 </CommandTable>
