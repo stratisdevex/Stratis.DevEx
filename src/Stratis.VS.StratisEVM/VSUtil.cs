@@ -215,6 +215,9 @@ namespace Stratis.VS.StratisEVM
 
             return context != null ? context.UnconfiguredProject : null;
         }
+
+        public static UnconfiguredProject GetUnconfiguredProject(IVsHierarchy hierarchy) => GetUnconfiguredProject(GetDTEProject(hierarchy));
+        
         public static bool VSServicesInitialized = false;
     }
 }

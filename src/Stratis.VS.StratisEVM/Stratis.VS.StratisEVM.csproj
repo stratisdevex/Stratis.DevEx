@@ -47,6 +47,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BlockchainExplorerToolWindow.cs" />
+    <Compile Include="BlockchainExplorerToolWindowCommand.cs" />
+    <Compile Include="BlockchainExplorerToolWindowControl.xaml.cs">
+      <DependentUpon>BlockchainExplorerToolWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SolidityProjectDeployProvider.cs" />
     <Compile Include="SolidityProjectMenuCommands.cs" />
     <Compile Include="SolidityProjectMonikers.cs" />
@@ -86,6 +91,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\BlockchainExplorerToolWindowCommand.png" />
     <Content Include="Resources\Commands.png" />
     <Content Include="Resources\NodeJSPackage_16x.png" />
     <Content Include="Resources\SolidityProjectMenuCommands.png" />
@@ -221,6 +227,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="BlockchainExplorerToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SolidityProjectWizardDialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

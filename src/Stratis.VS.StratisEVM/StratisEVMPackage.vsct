@@ -20,8 +20,8 @@
   <!--This header contains the command ids for the menus provided by the shell. -->
   <Extern href="vsshlids.h" />
 
-  <Include href="KnownImageIds.vsct"/>
-  <Include href="VSGlobals.vsct"/>
+  <Include href="KnownImageIds.vsct" />
+  <Include href="VSGlobals.vsct" />
   
 	<!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
@@ -116,7 +116,7 @@
 
 	  <!-- Blockchain Explorer toolbar buttons -->
         <Button guid="guidBlockchainExplorer" id="MyCommand" priority="0x0100" type="Button">
-		<Parent guid="VSMainMenu" id="View.DevWindowsGroup.OtherWindows.Group1"/>
+		<Parent guid="VSMainMenu" id="View.DevWindowsGroup.OtherWindows.Group1" />
 		<Icon guid="ImageCatalogGuid" id="StatusHelpOutline" />
 		<CommandFlag>IconIsMoniker</CommandFlag>
 		<Strings>
@@ -126,8 +126,8 @@
 	  </Button>
 
 		<Button guid="guidBlockchainExplorer" id="MultipleProjectTypeDisplay" priority="0x0001" type="Button">
-			<Parent guid="guidBlockchainExplorer" id="TWindowToolbarGroup"/>
-			<Icon guid="ImageCatalogGuid" id="DynamicDiscoveryDocument"/>
+			<Parent guid="guidBlockchainExplorer" id="TWindowToolbarGroup" />
+			<Icon guid="ImageCatalogGuid" id="DynamicDiscoveryDocument" />
 			<CommandFlag>IconIsMoniker</CommandFlag>
 			<!--<CommandFlag>IconAndText</CommandFlag>-->
 			<Strings>
@@ -136,8 +136,8 @@
 		</Button>
 
 		<Button guid="guidBlockchainExplorer" id="MultipleFileTypeDisplay" priority="0x0001" type="Button">
-			<Parent guid="guidBlockchainExplorer" id="TWindowToolbarGroup"/>
-			<Icon guid="ImageCatalogGuid" id="ProjectFilterFile"/>
+			<Parent guid="guidBlockchainExplorer" id="TWindowToolbarGroup" />
+			<Icon guid="ImageCatalogGuid" id="ProjectFilterFile" />
 			<CommandFlag>IconIsMoniker</CommandFlag>
 			<!--<CommandFlag>IconAndText</CommandFlag>-->
 			<Strings>
@@ -146,14 +146,21 @@
 		</Button>
 
 		<Button guid="guidBlockchainExplorer" id="CreateCapabilitiyFile" priority="0x0001" type="Button">
-			<Parent guid="guidBlockchainExplorer" id="TWindowToolbarGroup"/>
-			<Icon guid="ImageCatalogGuid" id="CacheGroup"/>
+			<Parent guid="guidBlockchainExplorer" id="TWindowToolbarGroup" />
+			<Icon guid="ImageCatalogGuid" id="CacheGroup" />
 			<CommandFlag>IconIsMoniker</CommandFlag>
 			<!--<CommandFlag>IconAndText</CommandFlag>-->
 			<Strings>
 				<ButtonText>Save Project Capabilities to file</ButtonText>
 			</Strings>
 		</Button>
+      <Button guid="guidStratisEVMPackageCmdSet" id="cmdidBlockchainExplorerToolWindowCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="guidImages2" id="bmpPic1" />
+        <Strings>
+          <ButtonText>BlockchainExplorerToolWindow</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 	  
 	
@@ -169,13 +176,14 @@
       <Bitmap guid="guidSolidityIcon" href="Resources\solidity_16x16.png" usedList="pngSolidity" />
       <Bitmap guid="guidNPMIcon" href="Resources\NodeJSPackage_16x.png" usedList="pngNPM" />
       <Bitmap guid="guidImages1" href="Resources\SolidityProjectMenuCommands.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages2" href="Resources\BlockchainExplorerToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
   </Commands>
 
   <CommandPlacements>
     <CommandPlacement guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" priority="0x0100">
       <!-- The parent of the group will be the file context menu -->
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE"/>
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
     </CommandPlacement>
   </CommandPlacements>
 
@@ -195,6 +203,7 @@
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="CmdId1" value="0x0101" />
       <IDSymbol name="CmdId2" value="0x0102" />
+      <IDSymbol value="256" name="cmdidBlockchainExplorerToolWindowCommand" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{566c40d3-8ac5-4660-9ccc-44da7e349169}">
@@ -219,7 +228,7 @@
       <IDSymbol name="idmWSE_ContextMenu" value="0x0002" />
     </GuidSymbol>
   
-    <GuidSymbol name="guidStratisEVMPackageCmdSet1" value="{1370374f-6ad4-4975-80fb-6d3487cd4ba9}" >
+    <GuidSymbol name="guidStratisEVMPackageCmdSet1" value="{1370374f-6ad4-4975-80fb-6d3487cd4ba9}">
       <IDSymbol value="4128" name="MyGroupForCommands" />
       <IDSymbol value="0x0100" name="cmdidSolidityProjectMenuCommands" />
       <IDSymbol value="0x0101" name="SolidityProjectMenuCmdId2" />
@@ -242,5 +251,14 @@
 		  <IDSymbol name="MultipleFileTypeDisplay" value="0x0112" />
 		  <IDSymbol name="CreateCapabilitiyFile" value="0x0113" />
 	</GuidSymbol>
+  
+    <GuidSymbol value="{d4953174-0817-4c69-92b5-b90aa84c3022}" name="guidImages2">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
   </Symbols>
 </CommandTable>

@@ -57,16 +57,13 @@ namespace Stratis.VS.StratisEVM
         expression: "(SingleProject | MultipleProjects) & Solidity",
         termNames: new[] { "SingleProject", "MultipleProjects", "Solidity" },
         termValues: new[] { SolutionHasSingleProject_string, SolutionHasMultipleProjects_string, "HierSingleSelectionName:package.json$" })]
+    [ProvideToolWindow(typeof(BlockchainExplorerToolWindow), Style = VsDockStyle.Tabbed, Window = "{3AE79031-E1BC-11D0-8F78-00A0C9110057}")]
+    [ProvideToolWindowVisibility(typeof(BlockchainExplorerToolWindow), SolutionHasSingleProject_string)]
+    [ProvideToolWindowVisibility(typeof(BlockchainExplorerToolWindow), SolutionHasMultipleProjects_string)]
+    [ProvideToolWindowVisibility(typeof(BlockchainExplorerToolWindow), NoSolution_string)]
+    [ProvideToolWindowVisibility(typeof(BlockchainExplorerToolWindow), EmptySolution_string)]
     public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7, IVsSolutionEvents
     {
-        /// <summary>
-        /// Stratis.VS.StratisEVMPackage GUID string.
-        /// </summary>
-        public const string PackageGuidString = "711b90a1-97e6-4b9a-91c4-3d62ccd32d4e";
-
-        public const string SolidityFileUIContextRule = "82268519-FB9D-4B7E-8B01-2A311F4181E2";
-
-        public const string NPMFileUIContextRule = "9A7CA75A-FA6E-45B2-B6E9-4BFF0AB7BB88";
         #region Constructors
         static StratisEVMPackage()
         {
@@ -103,62 +100,35 @@ namespace Stratis.VS.StratisEVM
         }
         #endregion
 
-        #region IVsSolutionEvents implementation
-        int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved)
-        {
-            return VSConstants.S_OK;
-        }
+        #region IVsSolutionEvents members
 
-        int IVsSolutionEvents.OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
-        {
-            return VSConstants.S_OK;
-        }
+        int IVsSolutionEvents.OnAfterCloseSolution(object pUnkReserved) => VSConstants.S_OK;
+        
+        int IVsSolutionEvents.OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy) => VSConstants.S_OK;
 
         int IVsSolutionEvents.OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
         {
-            if (pHierarchy.IsCapabilityMatch(SolidityUnconfiguredProject.UniqueCapability))
+            if (pHierarchy.IsCapabilityMatch("CPS") && pHierarchy.IsCapabilityMatch(SolidityUnconfiguredProject.UniqueCapability))
             {
-                var unconfiguredProject = VSUtil.GetUnconfiguredProject(VSUtil.GetDTEProject(pHierarchy));
+                var unconfiguredProject = VSUtil.GetUnconfiguredProject(pHierarchy);
                 InstallSolidityProjectDataFlowSinks(unconfiguredProject);   
-                
             }
             return VSConstants.S_OK;
         }
 
-        int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
-        {
-            return VSConstants.S_OK;
-        }
+        int IVsSolutionEvents.OnAfterOpenSolution(object pUnkReserved, int fNewSolution) => VSConstants.S_OK;
 
-        int IVsSolutionEvents.OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
-        {
-            return VSConstants.S_OK;
-        }
+        int IVsSolutionEvents.OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved) => VSConstants.S_OK;
 
-        int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved)
-        {
-            return VSConstants.S_OK;
-        }
+        int IVsSolutionEvents.OnBeforeCloseSolution(object pUnkReserved) => VSConstants.S_OK;
 
-        int IVsSolutionEvents.OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
-        {
-            return VSConstants.S_OK;
-        }
+        int IVsSolutionEvents.OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy) => VSConstants.S_OK;
 
-        int IVsSolutionEvents.OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
-        {
-            return VSConstants.S_OK;
-        }
+        int IVsSolutionEvents.OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel) => VSConstants.S_OK;
 
-        int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
-        {
-            return VSConstants.S_OK;
-        }
+        int IVsSolutionEvents.OnQueryCloseSolution(object pUnkReserved, ref int pfCancel) => VSConstants.S_OK;
 
-        int IVsSolutionEvents.OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
-        {
-            return VSConstants.S_OK;
-        }
+        int IVsSolutionEvents.OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel) => VSConstants.S_OK;
 
         #endregion
 
@@ -207,17 +177,19 @@ namespace Stratis.VS.StratisEVM
 
             // Find package services in project service scope.
             
-            // We initialize these on the main thread.
-            await JoinableTaskFactory.SwitchToMainThreadAsync();
-
-            // Initialize all services concurrently.
-            //await projectServicesPackageServices.First().InitializeAsync(this);
+        
             await TaskScheduler.Default;
 
             await InstallBuildSystemAsync();
+
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            await BlockchainExplorerToolWindowCommand.InitializeAsync(this);
+            
         }
         #endregion
 
+        #region Static Methods
         public static async Task InstallBuildSystemAsync()
         {
 #if DEBUG
@@ -262,9 +234,19 @@ namespace Stratis.VS.StratisEVM
             });
             subscriptionService.JointRuleSource.SourceBlock.LinkTo(receivingBlock, new JointRuleDataflowLinkOptions() { PropagateCompletion = true}); 
         }
-    
+        #endregion
 
-  
+        #endregion
+
+        #region Constants
+        /// <summary>
+        /// Stratis.VS.StratisEVMPackage GUID string.
+        /// </summary>
+        public const string PackageGuidString = "711b90a1-97e6-4b9a-91c4-3d62ccd32d4e";
+
+        public const string SolidityFileUIContextRule = "82268519-FB9D-4B7E-8B01-2A311F4181E2";
+
+        public const string NPMFileUIContextRule = "9A7CA75A-FA6E-45B2-B6E9-4BFF0AB7BB88";
         #endregion
 
         #region Fields
