@@ -115,14 +115,14 @@
       </Button>
 
 	  <!-- Blockchain Explorer toolbar buttons -->
-        <Button guid="guidBlockchainExplorer" id="MyCommand" priority="0x0100" type="Button">
-		<Parent guid="VSMainMenu" id="View.DevWindowsGroup.OtherWindows.Group1" />
-		<Icon guid="ImageCatalogGuid" id="StatusHelpOutline" />
-		<CommandFlag>IconIsMoniker</CommandFlag>
-		<Strings>
-			<ButtonText>Help Explorer</ButtonText>
-			<LocCanonicalName>.View.HelpExplorer</LocCanonicalName>
-		</Strings>
+    <Button guid="guidBlockchainExplorer" id="MyCommand" priority="0x0100" type="Button">
+		  <Parent guid="VSMainMenu" id="View.DevWindowsGroup.OtherWindows.Group1" />
+		  <Icon guid="ImageCatalogGuid" id="StatusHelpOutline" />
+		  <CommandFlag>IconIsMoniker</CommandFlag>
+		  <Strings>
+			  <ButtonText>Help Explorer</ButtonText>
+			  <LocCanonicalName>.View.HelpExplorer</LocCanonicalName>
+		  </Strings>
 	  </Button>
 
 		<Button guid="guidBlockchainExplorer" id="MultipleProjectTypeDisplay" priority="0x0001" type="Button">
@@ -154,6 +154,7 @@
 				<ButtonText>Save Project Capabilities to file</ButtonText>
 			</Strings>
 		</Button>
+      
       <Button guid="guidStratisEVMPackageCmdSet" id="cmdidBlockchainExplorerToolWindowCommand" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
         <Icon guid="guidImages2" id="bmpPic1" />
