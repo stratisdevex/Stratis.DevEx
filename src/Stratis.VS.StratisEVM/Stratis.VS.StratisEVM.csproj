@@ -47,15 +47,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="UI\BlockchainExplorerToolWindow.cs" />
-    <Compile Include="UI\BlockchainExplorerToolWindowCommand.cs" />
-    <Compile Include="UI\BlockchainExplorerToolWindowControl.xaml.cs">
+    <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindow.cs" />
+    <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowCommand.cs" />
+    <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowControl.xaml.cs">
       <DependentUpon>BlockchainExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SolidityProject\SolidityProjectDeployProvider.cs" />
     <Compile Include="SolidityProject\SolidityProjectMenuCommands.cs" />
     <Compile Include="SolidityProject\SolidityProjectMonikers.cs" />
     <Compile Include="SolidityProject\SolidityProjectTreePropertiesProvider.cs" />
+    <Compile Include="UI\BlockchainExplorer\BlockchainInfoTree.cs" />
+    <Compile Include="UI\BlockchainExplorer\BlockchainViewModel.cs" />
     <Compile Include="UI\SolidityProjectWizard.cs" />
     <Compile Include="SolidityProject\SolidityConfiguredProject.cs" />
     <Compile Include="SolidityProject\SolidityUnconfiguredProject.cs" />
@@ -186,6 +188,10 @@
       <Project>{a0bff0db-ed9a-4639-ae86-8e709a1efc66}</Project>
       <Name>NLog</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ext\WPF TreeView\WPF TreeView.csproj">
+      <Project>{012c8923-ba09-4cde-9b19-110316c81178}</Project>
+      <Name>WPF TreeView</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj">
       <Project>{f54aa3e2-f4bf-4c94-8ac9-a476265a70bf}</Project>
       <Name>Stratis.DevEx.Base</Name>
@@ -224,9 +230,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="UI\BlockchainExplorerToolWindowControl.xaml">
+    <Page Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\BlockchainExplorer\TreeResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\SolidityProjectWizardDialogWindow.xaml">
       <SubType>Designer</SubType>
