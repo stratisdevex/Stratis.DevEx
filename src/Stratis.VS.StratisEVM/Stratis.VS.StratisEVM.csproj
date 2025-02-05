@@ -47,10 +47,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BlockchainExplorerToolWindow.cs" />
-    <Compile Include="BlockchainExplorerToolWindowCommand.cs" />
-    <Compile Include="BlockchainExplorerToolWindowControl.xaml.cs">
-      <DependentUpon>BlockchainExplorerToolWindowControl.xaml</DependentUpon>
+    <Compile Include="UI\BlockchainExplorerToolWindow.cs" />
+    <Compile Include="UI\BlockchainExplorerToolWindowCommand.cs" />
+    <Compile Include="UI\BlockchainExplorerToolWindowControl.xaml.cs">
+      <DependentUpon>UI\BlockchainExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="SolidityProjectDeployProvider.cs" />
     <Compile Include="SolidityProjectMenuCommands.cs" />
@@ -68,8 +68,8 @@
     <Compile Include="SolidityLanguageClient.cs" />
     <Compile Include="StratisEVMPackage.cs" />
     <Compile Include="StratisEVMPackageIds.cs" />
-    <Compile Include="SolidityProjectWizardDialogWindow.xaml.cs">
-      <DependentUpon>SolidityProjectWizardDialogWindow.xaml</DependentUpon>
+    <Compile Include="UI\SolidityProjectWizardDialogWindow.xaml.cs">
+      <DependentUpon>UI\SolidityProjectWizardDialogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="VSUtil.cs" />
   </ItemGroup>
