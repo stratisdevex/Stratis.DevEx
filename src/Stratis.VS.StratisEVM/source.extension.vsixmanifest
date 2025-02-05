@@ -8,8 +8,8 @@
         <License>LICENSE.txt</License>
         <GettingStartedGuide>README.html</GettingStartedGuide>
         <ReleaseNotes>RELEASENOTES.html</ReleaseNotes>
-        <Icon>StratisLogo64x64.png</Icon>
-        <PreviewImage>StratisLogo200x200.png</PreviewImage>
+        <Icon>Images\StratisLogo64x64.png</Icon>
+        <PreviewImage>Images\StratisLogo200x200.png</PreviewImage>
         <Tags>stratis,ethereum, solidity, smart contracts</Tags>
     </Metadata>
     <Installation>
