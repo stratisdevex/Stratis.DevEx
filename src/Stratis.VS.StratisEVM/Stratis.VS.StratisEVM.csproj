@@ -50,26 +50,26 @@
     <Compile Include="UI\BlockchainExplorerToolWindow.cs" />
     <Compile Include="UI\BlockchainExplorerToolWindowCommand.cs" />
     <Compile Include="UI\BlockchainExplorerToolWindowControl.xaml.cs">
-      <DependentUpon>UI\BlockchainExplorerToolWindowControl.xaml</DependentUpon>
+      <DependentUpon>BlockchainExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SolidityProjectDeployProvider.cs" />
-    <Compile Include="SolidityProjectMenuCommands.cs" />
-    <Compile Include="SolidityProjectMonikers.cs" />
-    <Compile Include="SolidityProjectTreePropertiesProvider.cs" />
-    <Compile Include="SolidityProjectWizard.cs" />
-    <Compile Include="SolidityConfiguredProject.cs" />
-    <Compile Include="SolidityUnconfiguredProject.cs" />
-    <Compile Include="SolidityProjectProperties.cs" />
+    <Compile Include="SolidityProject\SolidityProjectDeployProvider.cs" />
+    <Compile Include="SolidityProject\SolidityProjectMenuCommands.cs" />
+    <Compile Include="SolidityProject\SolidityProjectMonikers.cs" />
+    <Compile Include="SolidityProject\SolidityProjectTreePropertiesProvider.cs" />
+    <Compile Include="UI\SolidityProjectWizard.cs" />
+    <Compile Include="SolidityProject\SolidityConfiguredProject.cs" />
+    <Compile Include="SolidityProject\SolidityUnconfiguredProject.cs" />
+    <Compile Include="SolidityProject\SolidityProjectProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SolidityCompiler.cs" />
-    <Compile Include="SolidityContentTypeDefinition.cs" />
-    <Compile Include="SolidityFileContextActionsProviderFactory.cs" />
-    <Compile Include="SolidityFileContextProviderFactory.cs" />
-    <Compile Include="SolidityLanguageClient.cs" />
+    <Compile Include="SolidityProject\SolidityCompiler.cs" />
+    <Compile Include="LanguageServer\SolidityContentTypeDefinition.cs" />
+    <Compile Include="SolidityProject\SolidityFileContextActionsProviderFactory.cs" />
+    <Compile Include="SolidityProject\SolidityFileContextProviderFactory.cs" />
+    <Compile Include="LanguageServer\SolidityLanguageClient.cs" />
     <Compile Include="StratisEVMPackage.cs" />
     <Compile Include="StratisEVMPackageIds.cs" />
     <Compile Include="UI\SolidityProjectWizardDialogWindow.xaml.cs">
-      <DependentUpon>UI\SolidityProjectWizardDialogWindow.xaml</DependentUpon>
+      <DependentUpon>SolidityProjectWizardDialogWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="VSUtil.cs" />
   </ItemGroup>
@@ -96,7 +96,7 @@
     <Content Include="Resources\NodeJSPackage_16x.png" />
     <Content Include="Resources\SolidityProjectMenuCommands.png" />
     <Content Include="Resources\solidity_16x16.png" />
-    <Content Include="SolidityLanguageSettings.json">
+    <Content Include="LanguageServer\SolidityLanguageSettings.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="solidity-0.0.165.tgz">
@@ -105,7 +105,7 @@
     <Content Include="package.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Grammars\solidity.json">
+    <Content Include="LanguageServer\Grammars\solidity.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="BuildSystem\Solidity.Build.xsd">
@@ -165,18 +165,18 @@
     <Reference Include="System.Design" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SolidityLanguageSettings.pkgdef">
+    <Content Include="LanguageServer\SolidityLanguageSettings.pkgdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <VSCTCompile Include="StratisEVMPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
-    <Content Include="StratisLogo200x200.png">
+    <Content Include="Images\StratisLogo200x200.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="StratisLogo64x64.png">
+    <Content Include="Images\StratisLogo64x64.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -210,9 +210,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="StratisEVMPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>StratisEVMPackage</ManifestResourceName>
@@ -227,11 +224,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="BlockchainExplorerToolWindowControl.xaml">
+    <Page Include="UI\BlockchainExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SolidityProjectWizardDialogWindow.xaml">
+    <Page Include="UI\SolidityProjectWizardDialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
