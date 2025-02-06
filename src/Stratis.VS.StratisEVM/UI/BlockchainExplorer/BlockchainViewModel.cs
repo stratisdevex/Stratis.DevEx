@@ -28,11 +28,21 @@ namespace Stratis.VS.StratisEVM.ViewModel
         internal object Data { get; set; }
         internal ObservableCollection<BlockchainInfo> Children = new ObservableCollection<BlockchainInfo>();
         #endregion
+
+        #region Methods
+        public void AddChild(BlockchainInfo info)
+        {
+            info.Parent = this;
+            Children.Add(info); 
+        }
+        #endregion
     }
 
     internal class BlockchainViewModel : INotifyPropertyChanged
     {
+        #region Fields
         internal ObservableCollection<BlockchainInfo> objects;
+        #endregion
 
         internal ObservableCollection<BlockchainInfo> Objects
         {
@@ -55,10 +65,9 @@ namespace Stratis.VS.StratisEVM.ViewModel
         }
 
 
-        private void OnRootCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
+        private void OnRootCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) =>
             RaisePropertyChangedEvent("Categories");
-        }
+        
 
 
 
