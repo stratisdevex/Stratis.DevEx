@@ -12,10 +12,10 @@
                 Orientation="Horizontal"
                 Margin="0,2,0,2">
       <Image x:Name="Folder"
-             Source="/Images/FolderClosed.png" />
-      <TextBlock x:Name="CategoryName"
+             Source="/Images3/FolderClosed.png" />
+      <TextBlock x:Name="KindName"
                  Margin="2,0,0,0"
-                 Text="{Binding Path=CategoryName}" /> 
+                 Text="{Binding Path=Kind}" /> 
     </StackPanel>
 
     <DataTemplate.Triggers>
@@ -23,17 +23,17 @@
                    Value="True">
         <Setter Property="Source"
                 TargetName="Folder"
-                Value="/Images/FolderOpen.png" />
+                Value="/Images3/FolderOpen.png" />
       </DataTrigger>
 
       <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
                    Value="True">
         <Setter Property="Foreground"
-                TargetName="CategoryName"
+                TargetName="KindName"
                 Value="White" />
         <Setter Property="Source"
                 TargetName="Folder"
-                Value="/Images/FolderSelected.png" />
+                Value="/Images3/FolderSelected.png" />
         <Setter Property="BitmapEffect">
           <Setter.Value>
             <OuterGlowBitmapEffect GlowColor="Black" />
@@ -42,19 +42,19 @@
       </DataTrigger>
       
       <!-- custom icons for the root nodes -->
-      <DataTrigger Binding="{Binding Path=Header.CategoryName, RelativeSource={RelativeSource TemplatedParent}}"
-                   Value="Music">
+      <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}"
+                   Value="Network">
         <Setter Property="Source"
                 TargetName="Folder"
                 Value="/Images/Music.png" />
       </DataTrigger>
-      <DataTrigger Binding="{Binding Path=Header.CategoryName, RelativeSource={RelativeSource TemplatedParent}}"
+      <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}"
                    Value="Movies">
         <Setter Property="Source"
                 TargetName="Folder"
                 Value="/Images/Movie.png" />
       </DataTrigger>
-      <DataTrigger Binding="{Binding Path=Header.CategoryName, RelativeSource={RelativeSource TemplatedParent}}"
+      <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}"
                    Value="Books">
         <Setter Property="Source"
                 TargetName="Folder"
@@ -172,5 +172,23 @@
     <Setter Property="ToolTip"
             Value="Visit website" />
   </Style>
+    <!-- The view model that provides the data for the trees -->
+    <vm:BlockchainViewModel x:Key="Blockchains" />
 
+    <!-- a custom root node for the tree -->
+    <TreeViewItem x:Key="CustomRootNode">
+        <TreeViewItem.Header>
+            <StackPanel Orientation="Horizontal"
+            Margin="0,2,0,2">
+                <Image x:Name="imgStatus"
+         Source="/Images3/Home.png"
+         Width="16"
+         Height="16" />
+                <TextBlock Margin="2,0,0,0"
+             VerticalAlignment="Center"
+             FontWeight="Bold"
+             Text="Home (Custom Root)" />
+            </StackPanel>
+        </TreeViewItem.Header>
+    </TreeViewItem>
 </ResourceDictionary>

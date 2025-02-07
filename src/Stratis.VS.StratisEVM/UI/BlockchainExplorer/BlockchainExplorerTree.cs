@@ -10,9 +10,9 @@ using Stratis.VS.StratisEVM.ViewModel;
 
 namespace Stratis.VS.StratisEVM
 {
-    internal class BlockchainInfoTree : TreeViewBase<BlockchainInfo>
+    internal class BlockchainExplorerTree : TreeViewBase<BlockchainInfo>
     {
-        public override string GetItemKey(BlockchainInfo item) => item.Kind + "_" + item.Name;
+        public override string GetItemKey(BlockchainInfo item) => item.Parent.Name + "_" + item.Kind + "_" + item.Name;
 
         public override ICollection<BlockchainInfo> GetChildItems(BlockchainInfo parent) => parent.Children;
 

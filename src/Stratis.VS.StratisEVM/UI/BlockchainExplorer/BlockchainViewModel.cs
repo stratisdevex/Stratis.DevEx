@@ -3,14 +3,24 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace Stratis.VS.StratisEVM.ViewModel
 {
+    public enum BlockchainInfoKind
+    {
+        Folder,
+        Network,
+        Endpoint,
+        Account,
+        Contract
+    }
+    
     public class BlockchainInfo
     {
         #region Constructors
-        public BlockchainInfo(string kind, string name, BlockchainInfo parent, object data = null)
+        public BlockchainInfo(BlockchainInfoKind kind, string name, BlockchainInfo parent = null, object data = null)
         {
             Kind = kind;
             Name = name;
@@ -22,7 +32,7 @@ namespace Stratis.VS.StratisEVM.ViewModel
         #endregion
 
         #region Properties
-        internal string Kind { get; set; }
+        internal BlockchainInfoKind Kind { get; set; }
         internal string Name { get; set; }
         internal BlockchainInfo Parent { get; set; }
         internal object Data { get; set; }
@@ -30,11 +40,14 @@ namespace Stratis.VS.StratisEVM.ViewModel
         #endregion
 
         #region Methods
-        public void AddChild(BlockchainInfo info)
+        public BlockchainInfo AddChild(BlockchainInfoKind kind, string name, object data = null)
         {
-            info.Parent = this;
-            Children.Add(info); 
+            var info = new BlockchainInfo(kind, name, this, data);
+            Children.Add(info);
+            return info;
         }
+
+        public BlockchainInfo[] GetChildren(string name) => Children.Where(c =>  c.Name == name).ToArray(); 
         #endregion
     }
 
@@ -44,6 +57,7 @@ namespace Stratis.VS.StratisEVM.ViewModel
         internal ObservableCollection<BlockchainInfo> objects;
         #endregion
 
+        #region Properties
         internal ObservableCollection<BlockchainInfo> Objects
         {
             get => objects;
@@ -63,24 +77,11 @@ namespace Stratis.VS.StratisEVM.ViewModel
                 RaisePropertyChangedEvent("Objects");
             }
         }
+        #endregion
 
-
+        #region Methods
         private void OnRootCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) =>
             RaisePropertyChangedEvent("Categories");
-        
-
-
-
-        /// <summary>
-        /// Refreshes the data.
-        /// </summary>
-        
-
-        ///<summary>
-        ///Occurs when a property value changes.
-        ///</summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
 
         /// <summary>
         /// Fires the <see cref="PropertyChanged"/> event for a
@@ -114,5 +115,30 @@ namespace Stratis.VS.StratisEVM.ViewModel
 
             return null;
         }
+
+        public void CreateTestData()
+        {
+            
+            var data = new ObservableCollection<BlockchainInfo>();
+            var eth = new BlockchainInfo(BlockchainInfoKind.Network, "Ethereum");
+            var accts = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
+            accts.AddChild(BlockchainInfoKind.Account, "acct 1", "This is account 1");
+            var wall = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
+            data.Add(eth);
+            this.Objects = data;
+        }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// Refreshes the data.
+        /// </summary>
+
+
+        ///<summary>
+        ///Occurs when a property value changes.
+        ///</summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
     }
 }

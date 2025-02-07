@@ -1,4 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Hardcodet.Wpf.GenericTreeView;
+using Stratis.VS.StratisEVM.ViewModel;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -29,6 +32,16 @@ namespace Stratis.VS.StratisEVM
             MessageBox.Show(
                 string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
                 "BlockchainExplorerToolWindow");
+        }
+
+        /// <summary>
+        /// Handles the tree's <see cref="TreeViewBase{T}.SelectedItemChanged"/>
+        /// event and updates the status bar.
+        /// </summary>
+        private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
+        {
+            //txtOldItem.Text = String.Format("'{0}'", e.OldItem);
+            //txtNewItem.Text = String.Format("'{0}'", e.NewItem);
         }
     }
 }
