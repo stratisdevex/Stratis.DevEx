@@ -51,14 +51,21 @@ namespace Stratis.VS.StratisEVM.ViewModel
         #endregion
     }
 
-    internal class BlockchainViewModel : INotifyPropertyChanged
+    public class BlockchainViewModel : INotifyPropertyChanged
     {
+        #region Constructors
+        public BlockchainViewModel()
+        {
+            Objects = CreateTestData();
+        }
+        #endregion
+
         #region Fields
         internal ObservableCollection<BlockchainInfo> objects;
         #endregion
 
         #region Properties
-        internal ObservableCollection<BlockchainInfo> Objects
+        public ObservableCollection<BlockchainInfo> Objects
         {
             get => objects;
             set
@@ -116,7 +123,7 @@ namespace Stratis.VS.StratisEVM.ViewModel
             return null;
         }
 
-        public void CreateTestData()
+        public static ObservableCollection<BlockchainInfo> CreateTestData()
         {
             
             var data = new ObservableCollection<BlockchainInfo>();
@@ -125,7 +132,7 @@ namespace Stratis.VS.StratisEVM.ViewModel
             accts.AddChild(BlockchainInfoKind.Account, "acct 1", "This is account 1");
             var wall = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
             data.Add(eth);
-            this.Objects = data;
+            return data;
         }
         #endregion
 

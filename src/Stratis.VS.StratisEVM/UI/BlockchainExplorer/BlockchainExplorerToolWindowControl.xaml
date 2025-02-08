@@ -12,18 +12,22 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="BlockchainExplorerToolWindow">
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="BlockchainExplorerTreeResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!-- The view model that provides the data for the trees -->
+            <vm:BlockchainViewModel x:Key="Blockchains" />
         </ResourceDictionary>
     </UserControl.Resources>
-    
+    <!-- The view model that provides the data for the trees -->
+ 
     <Grid>
         <StackPanel Orientation="Vertical">
             <local:BlockchainExplorerTree x:Name="BlockchainExplorerTree"
-                    Items="{Binding Source={StaticResource Blockchains}, Path=Categories}"
+                    Items="{Binding Source={StaticResource Blockchains}, Path=Objects}"
                     RootNode="{StaticResource CustomRootNode}"
                     TreeNodeStyle="{StaticResource SimpleFolders}"
                     TreeStyle="{StaticResource SimpleTreeStyle}"

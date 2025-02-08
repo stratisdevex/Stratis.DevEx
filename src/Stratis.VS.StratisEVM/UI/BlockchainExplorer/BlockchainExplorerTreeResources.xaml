@@ -46,19 +46,19 @@
                    Value="Network">
         <Setter Property="Source"
                 TargetName="Folder"
-                Value="/Images/Music.png" />
+                Value="/Images3/Music.png" />
       </DataTrigger>
       <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}"
                    Value="Movies">
         <Setter Property="Source"
                 TargetName="Folder"
-                Value="/Images/Movie.png" />
+                Value="/Images3/Movie.png" />
       </DataTrigger>
       <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}"
                    Value="Books">
         <Setter Property="Source"
                 TargetName="Folder"
-                Value="/Images/Book.png" />
+                Value="/Images3/Book.png" />
       </DataTrigger>
 
     </DataTemplate.Triggers>
@@ -107,7 +107,7 @@
     <MenuItem Header="Add Subcategory"
               Command="New">
       <MenuItem.Icon>
-        <Image Source="/Images/Add.png"
+        <Image Source="/Images3/Add.png"
                Width="16"
                Height="16" />
       </MenuItem.Icon>
@@ -116,7 +116,7 @@
     <MenuItem Header="Remove Category"
               Command="Delete">
       <MenuItem.Icon>
-        <Image Source="/Images/Remove.png"
+        <Image Source="/Images3/Remove.png"
                Width="16"
                Height="16" />
       </MenuItem.Icon>
@@ -172,8 +172,7 @@
     <Setter Property="ToolTip"
             Value="Visit website" />
   </Style>
-    <!-- The view model that provides the data for the trees -->
-    <vm:BlockchainViewModel x:Key="Blockchains" />
+   
 
     <!-- a custom root node for the tree -->
     <TreeViewItem x:Key="CustomRootNode">
