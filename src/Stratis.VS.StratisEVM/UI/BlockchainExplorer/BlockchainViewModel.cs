@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Stratis.DevEx;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -32,11 +33,11 @@ namespace Stratis.VS.StratisEVM.ViewModel
         #endregion
 
         #region Properties
-        internal BlockchainInfoKind Kind { get; set; }
-        internal string Name { get; set; }
-        internal BlockchainInfo Parent { get; set; }
-        internal object Data { get; set; }
-        internal ObservableCollection<BlockchainInfo> Children = new ObservableCollection<BlockchainInfo>();
+        public BlockchainInfoKind Kind { get; set; }
+        public string Name { get; set; }
+        public BlockchainInfo Parent { get; set; }
+        public object Data { get; set; }
+        public ObservableCollection<BlockchainInfo> Children = new ObservableCollection<BlockchainInfo>();
         #endregion
 
         #region Methods
@@ -84,6 +85,8 @@ namespace Stratis.VS.StratisEVM.ViewModel
                 RaisePropertyChangedEvent("Objects");
             }
         }
+
+        public string AssemblyLocation => Runtime.AssemblyLocation;
         #endregion
 
         #region Methods
