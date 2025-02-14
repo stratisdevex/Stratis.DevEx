@@ -133,7 +133,7 @@ namespace Stratis.VS.StratisEVM.ViewModel
             var eth = new BlockchainInfo(BlockchainInfoKind.Network, "Ethereum");
             var accts = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
             accts.AddChild(BlockchainInfoKind.Account, "acct 1", "This is account 1");
-            var wall = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
+            //var wall = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
             data.Add(eth);
             return data;
         }

@@ -152,6 +152,7 @@
     <Content Include="Resources\solidity_16x16.png" />
     <Content Include="LanguageServer\SolidityLanguageSettings.json">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="solidity-0.0.165.tgz">
       <IncludeInVSIX>true</IncludeInVSIX>
