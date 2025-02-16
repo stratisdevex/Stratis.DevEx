@@ -13,12 +13,12 @@
     <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
       <Image x:Name="Folder"
              Source="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\\FolderClosed.png" />
-      <TextBlock x:Name="KindName" Margin="2,0,0,0" Text="{Binding Path=Kind}" /> 
+      <TextBlock x:Name="KindName" Margin="2,0,0,0" Text="{Binding Path=Name}" /> 
     </StackPanel>
 
     <DataTemplate.Triggers>
       <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
-        <Setter Property="Source" TargetName="Folder"
+        <Setter TargetName="Folder" Property="Source"
                 Value="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\FolderOpen.png" />
       </DataTrigger>
 
@@ -57,14 +57,9 @@
 
 
   <!-- this is the style that is applied to the tree -->
-    <Style x:Key="SimpleFolders"
-         TargetType="{x:Type TreeViewItem}">
-        <Setter Property="HeaderTemplate"
-            Value="{StaticResource BlockchainInfoTemplate}" />
-      
-        <Style.Triggers>
-    </Style.Triggers>
-  </Style>
+    <Style x:Key="SimpleFolders" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="HeaderTemplate" Value="{StaticResource BlockchainInfoTemplate}" />
+    </Style>
   
   <!-- 
     A default style for treeview controls. This one will automatically
@@ -72,7 +67,6 @@
   -->
     <Style x:Key="SimpleTreeStyle" TargetType="{x:Type TreeView}">
         <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsColors.ToolWindowBackgroundKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsColors.ToolWindowTextKey}}" />
     </Style> 
   
     
@@ -110,18 +104,12 @@
     <cm:SortDescription PropertyName="Header.CategoryName"
                         Direction="Descending" />
   </cm:SortDescriptionCollection>
-
-  
   
   <!-- default text style -->
   <Style TargetType="TextBlock">
-    <Setter Property="TextWrapping"
-            Value="Wrap" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+    <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
   </Style>
-
-  
-    <!-- the background of the main window -->
-
 
   <!-- default style for hyperlinks -->
   <Style TargetType="{x:Type Hyperlink}">
