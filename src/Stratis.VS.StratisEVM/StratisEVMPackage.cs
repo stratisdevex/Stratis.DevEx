@@ -182,6 +182,8 @@ namespace Stratis.VS.StratisEVM
 
             await InstallBuildSystemAsync();
 
+            await BlockchainNetworks.TestAsync();
+
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
             await BlockchainExplorerToolWindowCommand.InitializeAsync(this);
