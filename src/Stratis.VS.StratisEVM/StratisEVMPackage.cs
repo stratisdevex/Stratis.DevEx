@@ -182,7 +182,7 @@ namespace Stratis.VS.StratisEVM
 
             await InstallBuildSystemAsync();
 
-            //await BlockchainNetworks.TestAsync();
+            //var cid = await Stratis.DevEx.Ethereum.Network.GetChainIdAsync("HTTP://127.0.0.1:7545"); ;
 
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 

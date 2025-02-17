@@ -47,7 +47,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BlockchainNetworks.cs" />
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindow.cs" />
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowCommand.cs" />
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowControl.xaml.cs">
@@ -252,6 +251,10 @@
     <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj">
       <Project>{f54aa3e2-f4bf-4c94-8ac9-a476265a70bf}</Project>
       <Name>Stratis.DevEx.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Stratis.DevEx.Ethereum\Stratis.DevEx.Ethereum.csproj">
+      <Project>{6f344700-185b-4da6-b3a5-4cc18d8ad2a7}</Project>
+      <Name>Stratis.DevEx.Ethereum</Name>
     </ProjectReference>
     <ProjectReference Include="..\Stratis.VS.SolidityFileItemTemplate\Stratis.VS.SolidityFileItemTemplate.csproj">
       <Project>{72198956-89B5-48F4-B209-A963504B5279}</Project>
