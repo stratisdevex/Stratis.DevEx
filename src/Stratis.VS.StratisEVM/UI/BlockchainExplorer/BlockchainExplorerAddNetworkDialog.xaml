@@ -1,0 +1,49 @@
+﻿<Window x:Class="Stratis.VS.StratisEVM.UI.BlockchainExplorerAddNetworkDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:theming="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+        xmlns:numeric="http://gu.se/NumericInput"
+        Title="Add Network..."
+        Height="213"
+        Width="305"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ShowInTaskbar="False">
+    <StackPanel Margin="0,0,0,41">
+        <TextBlock Text="Enter the network name:" Margin="10,2,10,4" />
+        <TextBox x:Name="txtName" Margin="10,2,10,4" />
+        <TextBlock Text="Enter the network JSON-RPC URL:" Margin="10,2,10,4" />
+        <TextBox x:Name="txtRpcUrl" Margin="10,2,10,4" />
+        <TextBlock Text="Enter the network chain id:" Margin="10,2,10,4" />
+        <numeric:IntBox x:Name="txtChainId"  Margin="10,2,10,4" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnOk"
+                  Click="btnOk_Click"
+                  HorizontalAlignment="Right"
+                  Margin="10,10,10,4"
+                  IsDefault="True"
+                  Width="80"
+                  Content="OK">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="IsEnabled" Value="True" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=txtName, Path=Text.Length}" Value="-1">
+
+                                <Setter Property="IsEnabled" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    </Button.Style>
+            </Button>
+            <Button x:Name="btnCancel"
+              Click="btnOk_Click"
+              HorizontalAlignment="Right"
+              Margin="10,10,10,4"
+              IsDefault="True"
+              Width="80"
+              Content="Cancel" />
+        </StackPanel>
+    </StackPanel>
+</Window>

@@ -9,6 +9,29 @@ namespace Stratis.DevEx.Ethereum
 {
     public class Network : Runtime
     {
+        #region Constructor
+        public Network(string rpcUrl, BigInteger chainid)
+        {
+            if (GetChainIdAsync(rpcUrl).Result != chainid)
+            {
+                throw new ArgumentException();
+            }
+            this.rpcUrl = rpcUrl;
+            this.chainId = chainid;
+            web3 = new Web3(rpcUrl);
+        }
+        #endregion
+
+
+        #region Methods
+        public async Task<BigInteger> GetBlockNoAsync() => await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
+        #endregion
+        
+        #region Fields
+        public readonly string rpcUrl;
+        public readonly BigInteger chainId;
+        public readonly Web3 web3;
+        #endregion
         public static async Task<BigInteger> GetChainIdAsync(string rpcurl) => await new Web3(rpcurl).Eth.ChainId.SendRequestAsync();
        
     }

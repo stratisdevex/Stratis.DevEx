@@ -47,6 +47,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="UI\BlockchainExplorer\BlockchainExplorerAddNetworkDialog.xaml.cs">
+      <DependentUpon>BlockchainExplorerAddNetworkDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindow.cs" />
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowCommand.cs" />
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowControl.xaml.cs">
@@ -194,6 +197,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Gu.Wpf.NumericInput">
+      <Version>0.5.5</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Client">
       <Version>17.1.68</Version>
     </PackageReference>
@@ -290,6 +296,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="UI\BlockchainExplorer\BlockchainExplorerAddNetworkDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
