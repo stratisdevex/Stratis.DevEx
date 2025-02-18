@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace Stratis.VS.StratisEVM.ViewModel
+namespace Stratis.VS.StratisEVM.UI.ViewModel
 {
     public enum BlockchainInfoKind
     {

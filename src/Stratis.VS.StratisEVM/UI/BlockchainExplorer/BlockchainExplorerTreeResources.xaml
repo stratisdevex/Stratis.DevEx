@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Stratis.VS.StratisEVM;assembly="
-                    xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.ViewModel;assembly="
+                    xmlns:stratis="clr-namespace:Stratis.VS.StratisEVM;assembly="
+                    xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
+                    xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
                     xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
                     xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
                     xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
@@ -70,29 +71,15 @@
     </Style> 
   
     
-  <!-- the context menu for the tree -->
-  <ContextMenu x:Key="CategoryMenu">
-    <MenuItem Header="Add Subcategory"
-              Command="New">
-      <MenuItem.Icon>
-        <Image Source="/Images3/Add.png"
-               Width="16"
-               Height="16" />
-      </MenuItem.Icon>
-    </MenuItem>
+  <ContextMenu x:Key="TreeMenu">
+        <MenuItem Header="Add Network..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
+            <MenuItem.Icon>
+                <Image Source="/Images3/Add.png" Width="16" Height="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
 
-    <MenuItem Header="Remove Category"
-              Command="Delete">
-      <MenuItem.Icon>
-                <Image Source="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\\Remove.png"
-               Width="16"
-               Height="16" />
-      </MenuItem.Icon>
-    </MenuItem>
-    
-  </ContextMenu>
 
-  
   <!-- sorts categories by names in ascending order -->
   <cm:SortDescriptionCollection x:Key="AscendingNames">
     <cm:SortDescription PropertyName="Header.CategoryName"

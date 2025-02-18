@@ -19,7 +19,7 @@
         <numeric:IntBox x:Name="txtChainId"  Margin="10,2,10,4" />
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="btnOk"
-                  Click="btnOk_Click"
+                  
                   HorizontalAlignment="Right"
                   Margin="10,10,10,4"
                   IsDefault="True"
@@ -31,14 +31,14 @@
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ElementName=txtName, Path=Text.Length}" Value="-1">
 
-                                <Setter Property="IsEnabled" Value="False" />
+                               <Setter Property="IsEnabled" Value="False" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                     </Button.Style>
             </Button>
             <Button x:Name="btnCancel"
-              Click="btnOk_Click"
+              
               HorizontalAlignment="Right"
               Margin="10,10,10,4"
               IsDefault="True"

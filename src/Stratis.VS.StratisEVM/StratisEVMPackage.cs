@@ -57,11 +57,11 @@ namespace Stratis.VS.StratisEVM
         expression: "(SingleProject | MultipleProjects) & Solidity",
         termNames: new[] { "SingleProject", "MultipleProjects", "Solidity" },
         termValues: new[] { SolutionHasSingleProject_string, SolutionHasMultipleProjects_string, "HierSingleSelectionName:package.json$" })]
-    [ProvideToolWindow(typeof(BlockchainExplorerToolWindow), Style = VsDockStyle.Tabbed, Window = "{3AE79031-E1BC-11D0-8F78-00A0C9110057}")]
-    [ProvideToolWindowVisibility(typeof(BlockchainExplorerToolWindow), SolutionHasSingleProject_string)]
-    [ProvideToolWindowVisibility(typeof(BlockchainExplorerToolWindow), SolutionHasMultipleProjects_string)]
-    [ProvideToolWindowVisibility(typeof(BlockchainExplorerToolWindow), NoSolution_string)]
-    [ProvideToolWindowVisibility(typeof(BlockchainExplorerToolWindow), EmptySolution_string)]
+    [ProvideToolWindow(typeof(UI.BlockchainExplorerToolWindow), Style = VsDockStyle.Tabbed, Window = "{3AE79031-E1BC-11D0-8F78-00A0C9110057}")]
+    [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), SolutionHasSingleProject_string)]
+    [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), SolutionHasMultipleProjects_string)]
+    [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), NoSolution_string)]
+    [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), EmptySolution_string)]
     public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7, IVsSolutionEvents
     {
         #region Constructors
@@ -186,7 +186,7 @@ namespace Stratis.VS.StratisEVM
 
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            await BlockchainExplorerToolWindowCommand.InitializeAsync(this);
+            await UI.BlockchainExplorerToolWindowCommand.InitializeAsync(this);
             
         }
         #endregion

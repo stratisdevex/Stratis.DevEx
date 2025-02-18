@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Windows.Input;
+
 using Hardcodet.Wpf.GenericTreeView;
 
-using Stratis.VS.StratisEVM.ViewModel;
+using Stratis.VS.StratisEVM.UI.ViewModel;
 
-namespace Stratis.VS.StratisEVM
+namespace Stratis.VS.StratisEVM.UI
 {
     public class BlockchainExplorerTree : TreeViewBase<BlockchainInfo>
     {
@@ -17,5 +19,9 @@ namespace Stratis.VS.StratisEVM
         public override ICollection<BlockchainInfo> GetChildItems(BlockchainInfo parent) => parent.Children;
 
         public override BlockchainInfo GetParentItem(BlockchainInfo item) => item.Parent;
+
+
+        public static RoutedCommand NewNetworkCmd = new RoutedCommand();
+
     }
 }

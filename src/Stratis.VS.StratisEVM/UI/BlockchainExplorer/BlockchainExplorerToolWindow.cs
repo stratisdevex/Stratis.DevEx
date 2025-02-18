@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using System.Windows.Input;
 
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 
-namespace Stratis.VS.StratisEVM
+namespace Stratis.VS.StratisEVM.UI
 {
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -34,5 +35,7 @@ namespace Stratis.VS.StratisEVM
             // the object returned by the Content property.
             this.Content = new BlockchainExplorerToolWindowControl();
         }
+
+        
     }
 }

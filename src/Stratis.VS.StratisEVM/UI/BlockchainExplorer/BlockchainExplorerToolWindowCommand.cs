@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
-namespace Stratis.VS.StratisEVM
+namespace Stratis.VS.StratisEVM.UI
 {
     /// <summary>
     /// Command handler

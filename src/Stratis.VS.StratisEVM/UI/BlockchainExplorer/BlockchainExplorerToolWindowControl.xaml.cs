@@ -1,11 +1,14 @@
-﻿using Hardcodet.Wpf.GenericTreeView;
-using Stratis.VS.StratisEVM.ViewModel;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
-namespace Stratis.VS.StratisEVM
+using Hardcodet.Wpf.GenericTreeView;
+
+using Stratis.VS.StratisEVM.UI.ViewModel;
+
+namespace Stratis.VS.StratisEVM.UI
 {
     /// <summary>
     /// Interaction logic for BlockchainExplorerToolWindowControl.
@@ -43,5 +46,15 @@ namespace Stratis.VS.StratisEVM
             //txtOldItem.Text = String.Format("'{0}'", e.OldItem);
             //txtNewItem.Text = String.Format("'{0}'", e.NewItem);
         }
+
+        private void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            //var target = e.Source as Panel;
+            //if (target != null)
+            //{
+            //    target.Background = target.Background == Brushes.AliceBlue ? Brushes.LemonChiffon : Brushes.AliceBlue;
+            //}
+        }
+
     }
 }
