@@ -8,7 +8,7 @@
                     xmlns:vsutil="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Utilities"
                     xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog">
    
-    <Style TargetType="{x:Type vs:DialogWindow}">
+    <Style x:Key="DialogWindowStyle" TargetType="{x:Type vs:DialogWindow}">
         <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelColorKey}}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelTextBrushKey}}" />
         <Setter Property="UseLayoutRounding" Value="True" />
@@ -16,7 +16,7 @@
         <Setter Property="WindowStyle" Value="SingleBorderWindow" />
     </Style>
 
-    <Style TargetType="{x:Type TextBox}">
+    <Style x:Key="DialogWindowTextBoxStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Margin" Value="0,0,0,5" />
         <Style.Triggers>
             <Trigger Property="Validation.HasError" Value="true">
@@ -25,12 +25,19 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="{x:Type Button}">
+    <Style x:Key="DialogWindowButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="70" />
         <Setter Property="Height" Value="25" />
         <Setter Property="Margin" Value="5,0,0,0" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonTextBrushKey}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonBackgroundBrushKey}}" />
+    </Style>
+
+    <Style x:Key="DialogWindowStackPanelStyle" TargetType="StackPanel">
+        <Style.Resources>
+            <Style TargetType="TextBox" BasedOn="{StaticResource DialogWindowTextBoxStyle}"></Style>
+            <Style TargetType="Button" BasedOn="{StaticResource DialogWindowButtonStyle}"></Style>
+        </Style.Resources>
     </Style>
 
 </ResourceDictionary>

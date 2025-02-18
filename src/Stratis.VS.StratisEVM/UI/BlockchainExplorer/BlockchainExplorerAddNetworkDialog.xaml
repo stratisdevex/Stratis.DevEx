@@ -5,7 +5,8 @@
         xmlns:numeric="http://gu.se/NumericInput"
         Title="Add Network..."
         Height="213"
-        Width="305">
+        Width="305"
+        Style="{DynamicResource DialogWindowStyle}">
 
     <vs:DialogWindow.Resources>
         <ResourceDictionary>
@@ -14,8 +15,10 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </vs:DialogWindow.Resources>
-    
-    <StackPanel Margin="0,0,0,41">
+
+   
+    <StackPanel Margin="0,0,0,41" Style="{DynamicResource DialogWindowStackPanelStyle}">
+        
         <TextBlock Text="Enter the network name:" Margin="10,2,10,4" />
         <TextBox x:Name="txtName" Margin="10,2,10,4" />
         <TextBlock Text="Enter the network JSON-RPC URL:" Margin="10,2,10,4" />
