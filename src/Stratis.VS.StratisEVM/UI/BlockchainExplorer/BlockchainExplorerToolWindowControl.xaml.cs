@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
+
 using Hardcodet.Wpf.GenericTreeView;
 
 using Stratis.VS.StratisEVM.UI.ViewModel;
@@ -49,11 +50,9 @@ namespace Stratis.VS.StratisEVM.UI
 
         private void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            //var target = e.Source as Panel;
-            //if (target != null)
-            //{
-            //    target.Background = target.Background == Brushes.AliceBlue ? Brushes.LemonChiffon : Brushes.AliceBlue;
-            //}
+            var add = new BlockchainExplorerAddNetworkDialog();
+            add.ShowDialog();
+
         }
 
     }
