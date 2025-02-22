@@ -7,15 +7,6 @@
                     xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
                     xmlns:vsutil="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Utilities"
                     xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog">
-   
-    <Style x:Key="DialogWindowStyle" TargetType="{x:Type vs:DialogWindow}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelColorKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelTextBrushKey}}" />
-        <Setter Property="UseLayoutRounding" Value="True" />
-        <Setter Property="ResizeMode" Value="NoResize" />
-        <Setter Property="WindowStyle" Value="SingleBorderWindow" />
-    </Style>
-
     <Style x:Key="DialogWindowTextBoxStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Margin" Value="0,0,0,5" />
         <Style.Triggers>
@@ -33,11 +24,17 @@
         <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonBackgroundBrushKey}}" />
     </Style>
 
-    <Style x:Key="DialogWindowStackPanelStyle" TargetType="StackPanel">
+    <Style x:Key="DialogWindowStyle" TargetType="{x:Type vs:DialogWindow}">
+        <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelColorKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.WindowPanelTextBrushKey}}" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="ResizeMode" Value="NoResize" />
+        <Setter Property="WindowStyle" Value="SingleBorderWindow" />
         <Style.Resources>
             <Style TargetType="TextBox" BasedOn="{StaticResource DialogWindowTextBoxStyle}"></Style>
             <Style TargetType="Button" BasedOn="{StaticResource DialogWindowButtonStyle}"></Style>
         </Style.Resources>
     </Style>
+
 
 </ResourceDictionary>
