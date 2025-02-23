@@ -19,13 +19,12 @@ namespace Stratis.DevEx.Ethereum.Test
 
             n = new Network("https://rpc.stratisevm.com", 105105);
             a = await n.GetPredefinedAccountsAsync();
-            Assert.NotNull(a);  
+            Assert.NotNull(a);
 
+
+            Assert.False(Succedeed(await ExecuteAsync(Network.GetChainIdAsync("http://127.0.0.1:754")), out var r));
+            Assert.True(r.IsNetworkError());
             
-            if (Succedeed(await ExecuteAsync(n.GetPredefinedAccountsAsync()), out var r))
-            {
-                Assert.NotNull(r.Value);
-            }
         }
     }
 }

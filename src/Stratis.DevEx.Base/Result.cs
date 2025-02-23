@@ -32,7 +32,7 @@ namespace Stratis.DevEx
 
         public static Result<T> Success(T value) => new Result<T>(ResultType.Success, value);
 
-        public static Result<T> Failure(string? message, Exception? exception) => new Result<T>(ResultType.Success, message:message, exception: exception);
+        public static Result<T> Failure(string? message, Exception? exception) => new Result<T>(ResultType.Failure, message:message, exception: exception);
 
         public static async Task<Result<T>> ExecuteAsync(Task<T> task, string? errorMessage = null)
         {
