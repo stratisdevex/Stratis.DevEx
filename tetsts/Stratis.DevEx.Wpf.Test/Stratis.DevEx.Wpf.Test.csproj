@@ -74,7 +74,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="BlockchainExplorer\BlockchainExplorerToolWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -90,8 +90,8 @@
     </Compile>
     <Compile Include="BlockchainExplorer\BlockchainExplorerTree.cs" />
     <Compile Include="BlockchainExplorer\BlockchainViewModel.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="BlockchainExplorer\BlockchainExplorerToolWindow.xaml.cs">
+      <DependentUpon>BlockchainExplorerToolWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
