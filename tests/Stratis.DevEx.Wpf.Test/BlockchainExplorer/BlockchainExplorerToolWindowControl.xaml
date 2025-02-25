@@ -38,8 +38,6 @@
     <UserControl.CommandBindings>
         <!-- bindings for context menu commands -->
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}" Executed="NewNetworkCmdExecuted" />
-
-        
     </UserControl.CommandBindings>
 
 </UserControl>

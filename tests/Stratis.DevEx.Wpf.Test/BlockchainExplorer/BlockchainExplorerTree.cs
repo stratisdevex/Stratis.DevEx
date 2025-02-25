@@ -23,12 +23,7 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static RoutedCommand NewNetworkCmd = new RoutedCommand();
 
-        public static void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            var add = new BlockchainExplorerAddNetworkDialog();
-            add.ShowDialog();
-
-        }
+      
 
     }
 }

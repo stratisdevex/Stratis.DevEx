@@ -44,14 +44,15 @@ namespace Stratis.VS.StratisEVM.UI
         /// </summary>
         private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
         {
+            var i = 1;
             //txtOldItem.Text = String.Format("'{0}'", e.OldItem);
             //txtNewItem.Text = String.Format("'{0}'", e.NewItem);
         }
 
         private void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var add = new BlockchainExplorerAddNetworkDialog();
-            add.ShowDialog();
+            //var add = new BlockchainExplorerAddNetworkDialog();
+            //add.ShowDialog();
 
         }
 

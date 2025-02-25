@@ -119,7 +119,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solidity", "Solidity", "{FB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stratis.DevEx.Ethereum.Test", "..\tests\Stratis.DevEx.Ethereum.Test\Stratis.DevEx.Ethereum.Test.csproj", "{EE2C116E-AB11-4A12-A761-22ED15D11D98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.DevEx.Wpf.Test", "..\tetsts\Stratis.DevEx.Wpf.Test\Stratis.DevEx.Wpf.Test.csproj", "{7C6298A2-FCA4-4C2B-B024-0D2813DC40CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stratis.DevEx.Wpf.Test", "..\tests\Stratis.DevEx.Wpf.Test\Stratis.DevEx.Wpf.Test.csproj", "{7C6298A2-FCA4-4C2B-B024-0D2813DC40CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

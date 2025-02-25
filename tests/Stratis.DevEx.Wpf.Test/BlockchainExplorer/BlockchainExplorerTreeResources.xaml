@@ -68,7 +68,7 @@
   <ContextMenu x:Key="TreeMenu">
         <MenuItem Header="Add Network..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
             <MenuItem.Icon>
-                <Image Source="/Images3/Add.png" Width="16" Height="16" />
+                <Image Source="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\\Add.png" Width="16" Height="16" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
