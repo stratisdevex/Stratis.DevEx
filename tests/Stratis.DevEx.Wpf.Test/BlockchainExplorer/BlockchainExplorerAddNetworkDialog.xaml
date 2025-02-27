@@ -3,9 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:numeric="http://gu.se/NumericInput"
         Title="Add Network..."
-        Height="200"
-        Width="300"
-        Style="{DynamicResource DialogWindowStyle}">
+        Height="250"
+        Width="300">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -15,42 +14,40 @@
         </ResourceDictionary>
     </Window.Resources>
 
-   
-    <StackPanel Margin="0,0,0,0">
-        
-        <TextBlock Text="Enter the network name:" Margin="10,2,10,4" />
-        <TextBox x:Name="txtName" Margin="10,2,10,4" />
-        <TextBlock Text="Enter the network JSON-RPC URL:" Margin="10,2,10,4" />
-        <TextBox x:Name="txtRpcUrl" Margin="10,2,10,4" />
-        <TextBlock Text="Enter the network chain id:" Margin="10,2,10,4" />
-        <numeric:IntBox x:Name="txtChainId"  Margin="10,2,10,4" />
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="btnOk"
-                  
-                  HorizontalAlignment="Right"
-                  Margin="10,10,10,4"
-                  IsDefault="True"
-                  Width="80"
-                  Content="OK">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="IsEnabled" Value="True" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=txtName, Path=Text.Length}" Value="-1">
+    <Window.Style>
+        <Style TargetType="Window" BasedOn="{StaticResource DialogWindowStyle}"/>
+    </Window.Style>
 
-                               <Setter Property="IsEnabled" Value="False" />
+    <StackPanel Margin="0,0,0,0">
+        <TextBlock Text="Enter the network name:"/>
+        <TextBox x:Name="NameTextBox" />
+        <TextBlock Text="Enter the network JSON-RPC URL:"/>
+        <TextBox x:Name="RpcUrlTextBox" />
+        <TextBlock Text="Enter the network chain id:" />
+        <numeric:IntBox x:Name="ChainIdTextBox" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="OkButton" HorizontalAlignment="Right" Content="OK">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource DialogWindowButtonStyle}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text.Length, ElementName=NameTextBox, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Text.Length, ElementName=RpcUrlTextBox, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Text.Length, ElementName=ChainIdTextBox, UpdateSourceTrigger=PropertyChanged}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                    </Button.Style>
+                </Button.Style>
             </Button>
-            <Button x:Name="btnCancel"
-              
-              HorizontalAlignment="Right"
-              Margin="10,10,10,4"
-              IsDefault="True"
-              Width="80"
-              Content="Cancel" />
+            <Button x:Name="CancelButton" HorizontalAlignment="Right" IsDefault="True" Content="Cancel" />
         </StackPanel>
     </StackPanel>
+
+
+  
+    
 </Window>

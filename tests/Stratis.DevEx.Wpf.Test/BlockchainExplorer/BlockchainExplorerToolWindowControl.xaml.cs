@@ -51,8 +51,8 @@ namespace Stratis.VS.StratisEVM.UI
 
         private void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            //var add = new BlockchainExplorerAddNetworkDialog();
-            //add.ShowDialog();
+            var add = new BlockchainExplorerAddNetworkDialog();
+            add.ShowDialog();
 
         }
 
