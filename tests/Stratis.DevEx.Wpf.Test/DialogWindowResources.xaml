@@ -25,6 +25,7 @@
     <Style x:Key="DialogWindowStyle" TargetType="{x:Type Window}">
         <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="WindowStyle" Value="SingleBorderWindow" />
+        <Setter Property="ResizeMode" Value="NoResize" />
         <Style.Resources>
             <Style TargetType="TextBox" BasedOn="{StaticResource DialogWindowTextBoxStyle}"></Style>
             <Style TargetType="numeric:IntBox" BasedOn="{StaticResource DialogWindowTextBoxStyle}"></Style>

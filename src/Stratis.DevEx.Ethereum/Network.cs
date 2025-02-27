@@ -40,4 +40,14 @@ namespace Stratis.DevEx.Ethereum
         public readonly Web3 web3;
         #endregion
     }
+
+    public class StratisMainnet : Network
+    {
+        public StratisMainnet() : base("https://rpc.stratisevm.com", 505505)
+        { 
+        
+        }
+
+        //public const string ExplorerApiUrl = 
+    }
 }
