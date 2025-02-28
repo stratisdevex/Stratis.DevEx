@@ -5,9 +5,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 
 using Stratis.DevEx;
+using Stratis.DevEx.Ethereum.Explorers;
 
 namespace Stratis.VS.StratisEVM.UI.ViewModel
 {
@@ -89,6 +91,10 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         }
 
         public string AssemblyLocation => Runtime.AssemblyLocation;
+
+        public static BlockscoutClient BlockscoutClient { get; } = new BlockscoutClient(new HttpClient());  
+
+        
         #endregion
 
         #region Methods

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Nethereum.JsonRpc.Client;
 using Nethereum.Web3;
 
-
+using Stratis.DevEx.Ethereum.Explorers;
 
 namespace Stratis.DevEx.Ethereum
 {
@@ -48,6 +48,8 @@ namespace Stratis.DevEx.Ethereum
         
         }
 
-        //public const string ExplorerApiUrl = 
+        protected BlockscoutClient blockscout = new BlockscoutClient(new System.Net.Http.HttpClient());
+
+        public async Task<StatsResponse> GetExplorerStatsAsync() => await blockscout.Get_statsAsync();
     }
 }

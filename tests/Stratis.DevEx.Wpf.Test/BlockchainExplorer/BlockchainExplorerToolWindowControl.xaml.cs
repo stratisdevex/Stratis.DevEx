@@ -24,6 +24,11 @@ namespace Stratis.VS.StratisEVM.UI
             this.InitializeComponent();
         }
 
+        //protected override void OnInitialized(System.EventArgs e)
+        //{
+        //    base.OnInitialized(e);
+        //    var x = 1;
+        //}
         /// <summary>
         /// Handles click on the button by displaying a message box.
         /// </summary>
