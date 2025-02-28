@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
+using System.Threading.Tasks;
 
 using Hardcodet.Wpf.GenericTreeView;
 
@@ -47,11 +48,16 @@ namespace Stratis.VS.StratisEVM.UI
         /// Handles the tree's <see cref="TreeViewBase{T}.SelectedItemChanged"/>
         /// event and updates the status bar.
         /// </summary>
+        private async Task OnSelectedItemChangedAsync(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e) 
+        {
+            await Task.CompletedTask;
+
+        }
+
         private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
         {
-            var i = 1;
-            //txtOldItem.Text = String.Format("'{0}'", e.OldItem);
-            //txtNewItem.Text = String.Format("'{0}'", e.NewItem);
+            
+
         }
 
         private void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -61,5 +67,9 @@ namespace Stratis.VS.StratisEVM.UI
 
         }
 
+        private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }
