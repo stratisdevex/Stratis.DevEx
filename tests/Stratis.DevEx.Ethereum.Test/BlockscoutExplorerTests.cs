@@ -14,8 +14,8 @@ namespace Stratis.DevEx.Ethereum.Test
         public async Task CanCall()
         {
             var c = new BlockscoutClient(new HttpClient());
-            c.Get_statsAsync().Wait();  
             var t = await c.Get_statsAsync();
+            Assert.NotNull(t);
         }
     }
 }
