@@ -61,7 +61,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         #region Constructors
         public BlockchainViewModel()
         {
-            Objects = CreateTestData();
+            Objects = CreateInitialTreeData();
         }
         #endregion
 
@@ -143,6 +143,19 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             accts.AddChild(BlockchainInfoKind.Account, "acct 1", "This is account 1");
             //var wall = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
             data.Add(eth);
+            return data;
+        }
+
+        public static ObservableCollection<BlockchainInfo> CreateInitialTreeData()
+        {
+            var data = new ObservableCollection<BlockchainInfo>();
+            var mainnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Mainnet");
+            mainnet.AddChild(BlockchainInfoKind.Endpoint, "rpc.stratisevm.com", new Uri("https://rpc.stratisevm.com:8545"));
+            data.Add(mainnet);
+            var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Tesnet");
+            mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
+            data.Add(mainnet);
+            data.Add(testnet);
             return data;
         }
         #endregion
