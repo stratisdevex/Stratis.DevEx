@@ -28,7 +28,13 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static RoutedCommand NewNetworkCmd = new RoutedCommand();
 
-        public static BitmapImage NetworkIconPath { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "BlockChainNetwork.png")));
+        public static BitmapImage FolderClosedIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "FolderClosed.png")));
+
+        public static BitmapImage FolderOpenIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "FolderOpen.png")));
+
+        public static BitmapImage FolderSelectedIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "FolderOpen.png")));
+
+        public static BitmapImage NetworkIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "BlockChainNetwork.png")));
     }
 
     [ValueConversion(typeof(TreeViewItem), typeof(String))]
