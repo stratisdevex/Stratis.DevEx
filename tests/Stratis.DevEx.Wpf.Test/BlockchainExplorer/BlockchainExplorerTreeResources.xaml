@@ -16,8 +16,7 @@
 
     <DataTemplate.Triggers>
       <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
-        <Setter TargetName="Folder" Property="Source"
-                Value="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\FolderOpen.png" />
+        <Setter TargetName="Folder" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.NetworkIconPath}" />
       </DataTrigger>
 
       <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
@@ -35,7 +34,7 @@
                    Value="Network">
         <Setter Property="Source"
                 TargetName="Folder"
-                Value="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\Music.png" />
+                Value="{x:Static stratisui:BlockchainExplorerTree.NetworkIconPath}" />
       </DataTrigger>
       <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}"
                    Value="Movies">
@@ -115,16 +114,9 @@
     <!-- a custom root node for the tree -->
     <TreeViewItem x:Key="CustomRootNode">
         <TreeViewItem.Header>
-            <StackPanel Orientation="Horizontal"
-            Margin="0,2,0,2">
-                <Image x:Name="imgStatus"
-         Source="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\\Home.png"
-         Width="16"
-         Height="16" />
-                <TextBlock Margin="2,0,0,0"
-             VerticalAlignment="Center"
-             FontWeight="Bold"
-             Text="Blockchain Networks" />
+            <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
+                <Image x:Name="RootNodeImage" Source="{x:Static stratisui:BlockchainExplorerTree.NetworkIconPath}" Width="16" Height="16" />
+                <TextBlock Margin="2,0,0,0" VerticalAlignment="Center"  Text="EVM Networks" />
             </StackPanel>
         </TreeViewItem.Header>
     </TreeViewItem>

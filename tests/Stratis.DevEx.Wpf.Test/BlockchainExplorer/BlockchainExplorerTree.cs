@@ -13,6 +13,8 @@ using Hardcodet.Wpf.GenericTreeView;
 
 using Stratis.VS.StratisEVM.UI.ViewModel;
 using System.Windows.Controls;
+using Stratis.DevEx;
+using System.Windows.Media.Imaging;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -25,6 +27,8 @@ namespace Stratis.VS.StratisEVM.UI
         public override BlockchainInfo GetParentItem(BlockchainInfo item) => item.Parent;
 
         public static RoutedCommand NewNetworkCmd = new RoutedCommand();
+
+        public static BitmapImage NetworkIconPath { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "BlockChainNetwork.png")));
     }
 
     [ValueConversion(typeof(TreeViewItem), typeof(String))]

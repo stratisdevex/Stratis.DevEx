@@ -152,10 +152,10 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             var mainnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Mainnet");
             mainnet.AddChild(BlockchainInfoKind.Endpoint, "rpc.stratisevm.com", new Uri("https://rpc.stratisevm.com:8545"));
             data.Add(mainnet);
-            var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Tesnet");
-            mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
-            data.Add(mainnet);
-            data.Add(testnet);
+            //var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Testnet");
+            //mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
+            //data.Add(mainnet);
+            //data.Add(testnet);
             return data;
         }
         #endregion

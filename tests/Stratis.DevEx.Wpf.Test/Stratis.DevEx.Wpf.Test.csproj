@@ -136,5 +136,12 @@
       <Name>Stratis.DevEx.Ethereum</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\BlockChainNetwork.png">
+      <Link>Images\BlockChainNetwork.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
