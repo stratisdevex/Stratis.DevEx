@@ -142,6 +142,18 @@
       <Link>Images\BlockChainNetwork.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\FolderClosed.png">
+      <Link>Images\FolderClosed.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\FolderOpen.png">
+      <Link>Images\FolderOpen.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\FolderSelected.png">
+      <Link>Images\FolderSelected.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -47,7 +47,14 @@ namespace Stratis.VS.StratisEVM.UI
             if (t.HasHeader)
             {
                 var bi = t.Header as BlockchainInfo;
-                return bi.Kind.ToString();
+                if (bi is null)
+                {
+                    return "";
+                }
+                else
+                {
+                    return bi.Kind.ToString();
+                }
             }
             else
             {

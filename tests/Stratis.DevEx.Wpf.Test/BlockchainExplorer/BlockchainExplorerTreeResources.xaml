@@ -9,8 +9,7 @@
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
-          <Image x:Name="NodeImage"
-                 Source="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\\FolderClosed.png" />
+          <Image x:Name="NodeImage" Source="{x:Static stratisui:BlockchainExplorerTree.FolderOpenIcon}" />
           <TextBlock x:Name="Name" Margin="2,0,0,0" Text="{Binding Path=Name}" /> 
         </StackPanel>
 
@@ -19,18 +18,12 @@
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding Path=Kind}" Value="Folder" />
                     <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
-                    
                 </MultiDataTrigger.Conditions>
-                <Setter Property="Background" Value="Cyan" />
+                <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.FolderOpenIcon}" />
             </MultiDataTrigger>
-            
-            <DataTrigger Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
-                <Setter TargetName="Folder" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.NetworkIconPath}" />
-            </DataTrigger>
-
+  
             <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
-                <Setter Property="Foreground" TargetName="KindName" Value="White" />
-                <Setter Property="Source" TargetName="Folder" Value="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\FolderSelected.png" />
+                <Setter TargetName="Name" Property="Foreground"  Value="White" />
                 <Setter Property="BitmapEffect">
                     <Setter.Value>
                         <OuterGlowBitmapEffect GlowColor="Black" />
@@ -38,26 +31,18 @@
                 </Setter>
             </DataTrigger>
 
-            <!-- custom icons for the root nodes -->
-            <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}"
-                       Value="Network">
-                <Setter Property="Source"
-                    TargetName="Folder"
-                    Value="{x:Static stratisui:BlockchainExplorerTree.NetworkIconPath}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}"
-                       Value="Movies">
-                <Setter Property="Source"
-                    TargetName="Folder"
-                    Value="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\Movie.png" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}"
-                       Value="Books">
-                <Setter Property="Source"
-                    TargetName="Folder"
-                    Value="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\Book.png" />
-            </DataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Kind}" Value="Folder" />
+                    <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.FolderClosedIcon}" />
+            </MultiDataTrigger>
 
+            <!-- custom icons for the root nodes -->
+            <DataTrigger Binding="{Binding Path=Header.Kind, RelativeSource={RelativeSource TemplatedParent}}" Value="Network">
+                <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.NetworkIcon}" />
+            </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
 
@@ -124,7 +109,7 @@
     <TreeViewItem x:Key="CustomRootNode">
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
-                <Image x:Name="RootNodeImage" Source="{x:Static stratisui:BlockchainExplorerTree.NetworkIconPath}" Width="16" Height="16" />
+                <Image x:Name="RootNodeImage" Source="{x:Static stratisui:BlockchainExplorerTree.NetworkIcon}" Width="16" Height="16" />
                 <TextBlock Margin="2,0,0,0" VerticalAlignment="Center"  Text="EVM Networks" />
             </StackPanel>
         </TreeViewItem.Header>
