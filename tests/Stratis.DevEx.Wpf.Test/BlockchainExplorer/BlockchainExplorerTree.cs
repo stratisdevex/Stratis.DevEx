@@ -43,34 +43,17 @@ namespace Stratis.VS.StratisEVM.UI
         public static BitmapImage GlobeIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "Globe.png")));
 
         public static BitmapImage UrlIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "Url.png")));
-    }
 
-    [ValueConversion(typeof(TreeViewItem), typeof(String))]
-    public class BlockchainInfoKindConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        protected override TreeViewItem CreateTreeViewItem(BlockchainInfo data)
         {
-            if (value is null) return "";
-            var t = (TreeViewItem)value;
-            if (t.HasHeader)
+            var item =  base.CreateTreeViewItem(data);
+            if (data.Kind == BlockchainInfoKind.Network)
             {
-                var bi = t.Header as BlockchainInfo;
-                if (bi is null)
-                {
-                    return "";
-                }
-                else
-                {
-                    return bi.Kind.ToString();
-                }
+                item.ContextMenu = (ContextMenu) TryFindResource("TreeMenu2");
             }
-            else
-            {
-                return "";
-            }
+            return item;
         }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => DependencyProperty.UnsetValue;
-        
     }
+
+    
 }

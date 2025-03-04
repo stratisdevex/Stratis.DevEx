@@ -4,7 +4,9 @@
                     xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
                     xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase">
     
-    <stratisui:BlockchainInfoKindConverter x:Key="blockchainInfoKindConverter"/>
+    <stratisui:TreeViewItemKindConverter x:Key="TreeViewItemKindConverter"/>
+    <stratisui:TreeViewItemNameConverter x:Key="TreeViewItemNameConverter"/>
+    <stratisui:BlockchainInfoKindConverter x:Key="BlockchainInfoKindConverter"/>
 
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
@@ -19,6 +21,7 @@
                     <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.FolderOpenIcon}" />
+                
             </MultiDataTrigger>
 
             <MultiDataTrigger>
@@ -57,11 +60,21 @@
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.StratisIcon}" />
             </MultiDataTrigger>
+
+            
+            
         </DataTemplate.Triggers>
     </DataTemplate>
 
-
-  <!-- this is the style that is applied to the tree -->
+    <ContextMenu x:Key="TreeMenu2">
+        <MenuItem Header="Foo..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
+            <MenuItem.Icon>
+                <Image Source="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\\Add.png" Width="16" Height="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+    
+    <!-- this is the style that is applied to the tree items -->
     <Style x:Key="SimpleFolders" TargetType="{x:Type TreeViewItem}">
         <Setter Property="HeaderTemplate" Value="{StaticResource BlockchainInfoTemplate}" />
     </Style>
@@ -72,13 +85,7 @@
   -->
     <Style x:Key="SimpleTreeStyle" TargetType="{x:Type TreeView}">
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowFrameBrush}}" />
-
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=SelectedItem, RelativeSource={RelativeSource Self}, Converter={StaticResource blockchainInfoKindConverter}}" Value="1" >
-                <Setter Property="ContextMenu" Value="{StaticResource ResourceKey=TreeMenu}" />
-            </DataTrigger>
-        </Style.Triggers>
-
+        
     </Style> 
   
     
@@ -90,13 +97,7 @@
         </MenuItem>
     </ContextMenu>
 
-    <ContextMenu x:Key="TreeMenu2">
-        <MenuItem Header="Foo..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
-            <MenuItem.Icon>
-                <Image Source="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\\Add.png" Width="16" Height="16" />
-            </MenuItem.Icon>
-        </MenuItem>
-    </ContextMenu>
+  
     <!-- sorts categories by names in ascending order -->
   <cm:SortDescriptionCollection x:Key="AscendingNames">
     <cm:SortDescription PropertyName="Header.CategoryName"

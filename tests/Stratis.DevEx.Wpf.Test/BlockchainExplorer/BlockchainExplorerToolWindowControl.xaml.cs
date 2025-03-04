@@ -57,7 +57,7 @@ namespace Stratis.VS.StratisEVM.UI
         private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
         {
             
-
+            e.Handled = true;
         }
 
         private void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -67,9 +67,6 @@ namespace Stratis.VS.StratisEVM.UI
 
         }
 
-        private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-
-        }
+        
     }
 }
