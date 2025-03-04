@@ -35,6 +35,14 @@ namespace Stratis.VS.StratisEVM.UI
         public static BitmapImage FolderSelectedIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "FolderOpen.png")));
 
         public static BitmapImage NetworkIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "BlockChainNetwork.png")));
+
+        public static BitmapImage StratisMainnetIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "StratisLogo64x64.png")));
+
+        public static BitmapImage StratisIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "StratisIcon.png")));
+
+        public static BitmapImage GlobeIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "Globe.png")));
+
+        public static BitmapImage UrlIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "Url.png")));
     }
 
     [ValueConversion(typeof(TreeViewItem), typeof(String))]

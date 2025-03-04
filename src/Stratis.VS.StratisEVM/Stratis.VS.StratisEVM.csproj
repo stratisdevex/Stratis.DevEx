@@ -136,6 +136,11 @@
     <Content Include="BuildSystem\version.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Images\Globe.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\StratisIcon.png" />
+    <Content Include="Images\Url.png" />
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

@@ -16,6 +16,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
     public enum BlockchainInfoKind
     {
         Folder,
+        UserFolder,
         Network,
         Endpoint,
         Account,
@@ -40,6 +41,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         public BlockchainInfoKind Kind { get; set; }
         public string Name { get; set; }
         public BlockchainInfo Parent { get; set; }
+       
         public object Data { get; set; }
         public ObservableCollection<BlockchainInfo> Children = new ObservableCollection<BlockchainInfo>();
         #endregion
@@ -150,7 +152,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         {
             var data = new ObservableCollection<BlockchainInfo>();
             var mainnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Mainnet");
-            mainnet.AddChild(BlockchainInfoKind.Endpoint, "rpc.stratisevm.com", new Uri("https://rpc.stratisevm.com:8545"));
+            var endpoints = mainnet.AddChild(BlockchainInfoKind.Folder, "Endpoints");
+            endpoints.AddChild(BlockchainInfoKind.Endpoint, "rpc.stratisevm.com", new Uri("https://rpc.stratisevm.com:8545"));
             data.Add(mainnet);
             //var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Testnet");
             //mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
