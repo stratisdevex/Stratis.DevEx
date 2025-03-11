@@ -21,7 +21,6 @@
                     <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.FolderOpenIcon}" />
-                
             </MultiDataTrigger>
 
             <MultiDataTrigger>
@@ -65,34 +64,41 @@
             
         </DataTemplate.Triggers>
     </DataTemplate>
+    
+    
+    <!-- Context Menus -->
 
-    <ContextMenu x:Key="TreeMenu2">
-        <MenuItem Header="Foo..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
+    <ContextMenu x:Key="NetworkContextMenu">
+        <MenuItem Header="Add Endpoint..." Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
             <MenuItem.Icon>
-                <Image Source="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\\Add.png" Width="16" Height="16" />
+                <Image Source="{x:Static stratisui:BlockchainExplorerTree.GlobeIcon}" Width="16" Height="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+
+    <ContextMenu x:Key="StratisNetworkContextMenu">
+        <MenuItem Header="Statistics" Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
+            <MenuItem.Icon>
+                <Image Source="{x:Static stratisui:BlockchainExplorerTree.GlobeIcon}" Width="16" Height="16" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
     
+    
     <!-- this is the style that is applied to the tree items -->
-    <Style x:Key="SimpleFolders" TargetType="{x:Type TreeViewItem}">
+    <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
         <Setter Property="HeaderTemplate" Value="{StaticResource BlockchainInfoTemplate}" />
     </Style>
   
-  <!-- 
-    A default style for treeview controls. This one will automatically
-    be applied as the custom tree's 'TreeStyle' property is not set.
-  -->
-    <Style x:Key="SimpleTreeStyle" TargetType="{x:Type TreeView}">
+    <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}">
+        <Setter Property="Margin" Value="0,20,0,0" />
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowFrameBrush}}" />
-        
     </Style> 
   
-    
-  <ContextMenu x:Key="TreeMenu">
+    <ContextMenu x:Key="TreeMenu">
         <MenuItem Header="Add Network..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
             <MenuItem.Icon>
-                <Image Source="C:\\Projects\\Stratis.DevEx\\src\Stratis.VS.StratisEVM\\Images3\\Add.png" Width="16" Height="16" />
+                <Image Source="{x:Static stratisui:BlockchainExplorerTree.NetworkIcon}" Width="16" Height="16" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
@@ -127,12 +133,22 @@
    
 
     <!-- a custom root node for the tree -->
-    <TreeViewItem x:Key="CustomRootNode">
+    <TreeViewItem x:Key="RootNode">
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
                 <Image x:Name="RootNodeImage" Source="{x:Static stratisui:BlockchainExplorerTree.NetworkIcon}" Width="16" Height="16" />
                 <TextBlock Margin="2,0,0,0" VerticalAlignment="Center"  Text="EVM Networks" />
             </StackPanel>
         </TreeViewItem.Header>
+        <TreeViewItem.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Add Network..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
+                    <MenuItem.Icon>
+                        <Image Source="{x:Static stratisui:BlockchainExplorerTree.AddNetworkIcon}" Width="16" Height="16" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+
+        </TreeViewItem.ContextMenu>
     </TreeViewItem>
 </ResourceDictionary>

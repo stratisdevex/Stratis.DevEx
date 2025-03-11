@@ -16,6 +16,8 @@ namespace Stratis.VS.StratisEVM.UI
         #region Properties
         public static RoutedCommand NewNetworkCmd { get; } = new RoutedCommand();
 
+        public static RoutedCommand NewEndpointCmd { get; } = new RoutedCommand();
+
         public static BitmapImage FolderClosedIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "FolderClosed.png")));
 
         public static BitmapImage FolderOpenIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "FolderOpen.png")));
@@ -31,6 +33,9 @@ namespace Stratis.VS.StratisEVM.UI
         public static BitmapImage GlobeIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "Globe.png")));
 
         public static BitmapImage UrlIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "Url.png")));
+
+        public static BitmapImage AddNetworkIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "AddNetwork.png")));
+
         #endregion
 
         #region Methods

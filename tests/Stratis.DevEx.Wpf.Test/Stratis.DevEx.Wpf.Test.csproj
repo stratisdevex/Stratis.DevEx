@@ -70,6 +70,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="BlockchainExplorer\StratisDashboardToolWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DialogWindowResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -97,6 +101,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockchainExplorer\Converters.cs" />
+    <Compile Include="BlockchainExplorer\StratisDashboardToolWindow.xaml.cs">
+      <DependentUpon>StratisDashboardToolWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -169,6 +176,9 @@
     </Content>
     <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\Url.png">
       <Link>Images\Url.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\AddNetwork.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
