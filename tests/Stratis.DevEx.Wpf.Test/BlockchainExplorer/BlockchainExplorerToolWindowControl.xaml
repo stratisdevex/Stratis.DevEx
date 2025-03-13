@@ -31,7 +31,7 @@
                     NodeSortDescriptions="{StaticResource AscendingNames}"
                     NodeContextMenu="{StaticResource TreeMenu}"
                     SelectedItemChanged="OnSelectedItemChanged"
-                    Margin="0,20,0,0" />
+                    Margin="0,0,0,0" />
         </StackPanel>
     </Grid>
 
