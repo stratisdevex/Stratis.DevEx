@@ -7,7 +7,7 @@
         xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid Margin="10,10,10,2">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -19,10 +19,10 @@
         <Grid Grid.Row="0" Grid.Column="0">
             <stratisui:BlockchainExplorerToolWindowControl />
         </Grid>
-
-        <Grid Grid.Row="1" Grid.Column="2">
-
+        <Grid Grid.Row="0" Grid.Column="1">
+            <stratisui:StratisDashboardToolWindowControl />
         </Grid>
+
     </Grid>
 
 </Window>

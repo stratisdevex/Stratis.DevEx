@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Stratis.VS.StratisEVM.UI.BlockchainExplorer
+namespace Stratis.VS.StratisEVM.UI
 {
     /// <summary>
     /// Interaction logic for StratisExplorerSummaryControl.xaml
     /// </summary>
-    public partial class StratisExplorerSummaryControl : UserControl
+    public partial class StratisDashboardToolWindowControl : UserControl
     {
-        public StratisExplorerSummaryControl()
+        public StratisDashboardToolWindowControl()
         {
             InitializeComponent();
         }
