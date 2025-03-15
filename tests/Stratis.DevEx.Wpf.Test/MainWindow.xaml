@@ -16,13 +16,12 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0" Grid.Column="0">
-            <stratisui:BlockchainExplorerToolWindowControl />
-        </Grid>
-        <Grid Grid.Row="0" Grid.Column="1">
-            <stratisui:StratisDashboardToolWindowControl />
-        </Grid>
+        
+        <stratisui:BlockchainExplorerToolWindowControl x:Name="toolWindowControl" Grid.Row="0" Grid.Column="0" />
+            
 
-    </Grid>
+        <ContentControl x:Name="contentControl" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+
+        </Grid>
 
 </Window>

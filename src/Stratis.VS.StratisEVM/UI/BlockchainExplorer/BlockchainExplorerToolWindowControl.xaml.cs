@@ -55,5 +55,9 @@ namespace Stratis.VS.StratisEVM.UI
 
         }
 
+        private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

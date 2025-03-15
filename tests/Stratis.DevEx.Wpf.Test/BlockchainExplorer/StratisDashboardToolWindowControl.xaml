@@ -22,7 +22,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Row="0" Grid.Column="0">
-            <TextBlock>Hello</TextBlock>
+            <TextBlock Text="Hello" />
         </Grid>
     </Grid>
 </UserControl>

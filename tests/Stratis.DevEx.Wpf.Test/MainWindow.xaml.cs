@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Stratis.VS.StratisEVM.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,14 @@ namespace Stratis.VS.StratisEVM
         public MainWindow()
         {
             InitializeComponent();
+            this.toolWindowControl.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
         }
+
+        private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            contentControl.Content = dashboardToolWindowControl;
+        }
+
+        public StratisDashboardToolWindowControl dashboardToolWindowControl = new StratisDashboardToolWindowControl();  
     }
 }
