@@ -5,24 +5,62 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Loaded="UserControl_Loaded">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80" />
+            <RowDefinition Height="160" />
             <RowDefinition Height="*" />
             <RowDefinition Height="2*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="400" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0" Grid.Column="0">
-            <TextBlock Text="Hello" />
-        </Grid>
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0">
+            <StackPanel Orientation="Horizontal" Width="150">
+                <WrapPanel>
+                    <Label Content="Total blocks:" />
+                    <TextBlock x:Name="TotalBlocksTextBlock" FontSize="18" FontWeight="DemiBold" VerticalAlignment="Center"/>
+            </WrapPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="150">
+                <WrapPanel>
+                    <Label Content="Total transactions:" />
+                    <TextBlock x:Name="TotalTransactionsTextBlock" FontSize="18" FontWeight="DemiBold" />
+                </WrapPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="150">
+                <WrapPanel>
+                    <Label Content="Average block time:" />
+                    <TextBlock x:Name="AverageBlockTimeTextBlock" FontSize="18" FontWeight="DemiBold" />
+                </WrapPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="150">
+                <WrapPanel>
+                    <Label Content="Total addresses:" />
+                    <TextBlock x:Name="TotalAddressesTextBlock" FontSize="18" FontWeight="DemiBold" />
+                </WrapPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="150">
+                <WrapPanel>
+                    <Label Content="Transactions today:" />
+                    <TextBlock x:Name="TransactionsTodayTextBlock" FontSize="18" FontWeight="DemiBold" />
+                </WrapPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Width="150">
+                <WrapPanel>
+                    <Label Content="Network utilization:" />
+                    <TextBlock x:Name="NetworkUtilizationTextBlock" FontSize="18" FontWeight="DemiBold" />
+                </WrapPanel>
+            </StackPanel>
+        </StackPanel>
+
+        
     </Grid>
 </UserControl>

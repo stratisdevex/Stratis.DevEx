@@ -28,7 +28,14 @@ namespace Stratis.VS.StratisEVM
 
         private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            contentControl.Content = dashboardToolWindowControl;
+            if (sender is BlockchainExplorerTree tree && tree.SelectedItem != null)
+            {
+                if (tree.SelectedItem.Name == "Stratis Mainnet" && tree.SelectedItem.Kind == UI.ViewModel.BlockchainInfoKind.Network)
+                {
+                    contentControl.Content = dashboardToolWindowControl;
+                }
+                e.Handled = true;   
+            }
         }
 
         public StratisDashboardToolWindowControl dashboardToolWindowControl = new StratisDashboardToolWindowControl();  
