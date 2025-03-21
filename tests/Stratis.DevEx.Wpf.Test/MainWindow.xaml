@@ -20,7 +20,7 @@
         <stratisui:BlockchainExplorerToolWindowControl x:Name="toolWindowControl" Grid.Row="0" Grid.Column="0" />
             
 
-        <ContentControl x:Name="contentControl" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+        <Frame x:Name="contentControl" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
 
         </Grid>
 

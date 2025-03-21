@@ -3,11 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Loaded="UserControl_Loaded">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemesDictionary Theme="Light" />
+                <ui:ControlsDictionary />
+                
+
+                
+            </ResourceDictionary.MergedDictionaries>
+
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="160" />
@@ -61,6 +77,39 @@
             </StackPanel>
         </StackPanel>
 
-        
+        <ui:CardAction
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="0,0,4,0"
+                Padding="0"
+                VerticalAlignment="Stretch"
+            
+                IsChevronVisible="False">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+            
+                <StackPanel
+                        Grid.Column="1"
+                        Margin="24"
+                        VerticalAlignment="Center">
+                    <ui:TextBlock
+                            Margin="0"
+                            FontTypography="BodyStrong"
+                            Text="Basic input"
+                            TextWrapping="WrapWithOverflow" />
+                    <ui:TextBlock
+                            Appearance="Secondary"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="Buttons, CheckBoxes, Sliders..."
+                            TextWrapping="WrapWithOverflow" />
+                </StackPanel>
+            </Grid>
+        </ui:CardAction>
+
+
     </Grid>
 </UserControl>

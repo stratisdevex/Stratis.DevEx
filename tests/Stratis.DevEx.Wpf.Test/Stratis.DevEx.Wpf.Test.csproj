@@ -52,6 +52,12 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Wpf.Ui, Version=4.0.0.0, Culture=neutral, PublicKeyToken=11f9f5cc97b3ffd6, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\WPF-UI.4.0.2\lib\net472\Wpf.Ui.dll</HintPath>
+    </Reference>
+    <Reference Include="Wpf.Ui.Abstractions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=11f9f5cc97b3ffd6, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\WPF-UI.Abstractions.4.0.2\lib\net472\Wpf.Ui.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -69,6 +75,10 @@
     <Page Include="BlockchainExplorer\BlockchainExplorerTreeResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="BlockchainExplorer\StratisDashboardPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="BlockchainExplorer\StratisDashboardToolWindowControl.xaml">
       <SubType>Designer</SubType>
@@ -105,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockchainExplorer\Converters.cs" />
+    <Compile Include="BlockchainExplorer\StratisDashboardPage.xaml.cs">
+      <DependentUpon>StratisDashboardPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="BlockchainExplorer\StratisDashboardToolWindowControl.xaml.cs">
       <DependentUpon>StratisDashboardToolWindowControl.xaml</DependentUpon>
     </Compile>

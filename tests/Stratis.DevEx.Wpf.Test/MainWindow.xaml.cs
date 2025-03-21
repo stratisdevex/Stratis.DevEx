@@ -38,6 +38,6 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public StratisDashboardToolWindowControl dashboardToolWindowControl = new StratisDashboardToolWindowControl();  
+        public StratisDashboardPage dashboardToolWindowControl = new StratisDashboardPage();  
     }
 }
