@@ -62,6 +62,7 @@ namespace Stratis.VS.StratisEVM
     [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), SolutionHasMultipleProjects_string)]
     [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), NoSolution_string)]
     [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), EmptySolution_string)]
+    [ProvideToolWindow(typeof(UI.StratisEVMBlockchainDashboardToolWindow), Style = VsDockStyle.MDI)]
     public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7, IVsSolutionEvents
     {
         #region Constructors
@@ -187,6 +188,7 @@ namespace Stratis.VS.StratisEVM
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
             await UI.BlockchainExplorerToolWindowCommand.InitializeAsync(this);
+            await UI.StratisEVMBlockchainDashboardToolWindowCommand.InitializeAsync(this);
             
         }
         #endregion
