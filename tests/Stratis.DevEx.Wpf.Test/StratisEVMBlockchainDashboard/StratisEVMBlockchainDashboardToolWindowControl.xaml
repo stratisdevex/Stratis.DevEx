@@ -4,8 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="800" d:DesignWidth="800"
+             ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+             ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+             Width="800"
              Name="MyToolWindow">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,44 +29,27 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Border
-        Grid.Row="0"
-        Height="200"
-        CornerRadius="8">
+        <Border Grid.Row="0" Height="200" CornerRadius="8">
             <Border CornerRadius="8">
                 <Border.Background>
                     <RadialGradientBrush>
-                        <GradientStop Offset="0" Color="#1F000000" />
-                        <GradientStop Offset="1" Color="#4F000000" />
+                        <GradientStop Offset="0" Color="#101112" />
+                        <GradientStop Offset="1" Color="#000000" />
                     </RadialGradientBrush>
                 </Border.Background>
                 <Grid>
-                    <StackPanel
-                    Margin="48,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Background="Transparent">
-                        <ui:TextBlock
-                        FontTypography="Title"
-                        Foreground="#FFFFFF"
-                        Text="Fluent UI" />
-                        <ui:TextBlock
-                        FontTypography="Subtitle"
-                        Foreground="#B7FFFFFF"
-                        Text="Windows Presentation Foundation" />
-                        <ui:TextBlock
-                        FontTypography="BodyStrong"
-                        Foreground="#B7FFFFFF"
-                        Text="Build Fluent experiences on Windows using WPF UI." />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="48,0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
+                        <ui:Image Source="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.StratisHeaderImage}" />
                     </StackPanel>
-                    <ui:TextBlock
-                    Margin="12"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    FontTypography="Caption"
-                    Foreground="#57FFFFFF"
-                    Text="Created by lepo.co" />
+                    
                 </Grid>
+
+                
+
             </Border>
         </Border>
 

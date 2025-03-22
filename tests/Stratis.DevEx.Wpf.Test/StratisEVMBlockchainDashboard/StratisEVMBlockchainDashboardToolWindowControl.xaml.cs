@@ -1,6 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+
+using Stratis.DevEx;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -32,5 +36,7 @@ namespace Stratis.VS.StratisEVM.UI
                 string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
                 "StratisEVMBlockchainDashboardToolWindow");
         }
+
+        public static BitmapImage StratisHeaderImage { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "StratisHeader.jpg")));
     }
 }

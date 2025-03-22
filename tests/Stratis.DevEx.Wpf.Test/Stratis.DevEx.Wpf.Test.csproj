@@ -79,14 +79,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="BlockchainExplorer\StratisDashboardPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="BlockchainExplorer\StratisDashboardToolWindowControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="DialogWindowResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -122,12 +114,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockchainExplorer\Converters.cs" />
-    <Compile Include="BlockchainExplorer\StratisDashboardPage.xaml.cs">
-      <DependentUpon>StratisDashboardPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="BlockchainExplorer\StratisDashboardToolWindowControl.xaml.cs">
-      <DependentUpon>StratisDashboardToolWindowControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -191,6 +177,10 @@
     </Content>
     <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\Globe.png">
       <Link>Images\Globe.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\StratisHeader.jpg">
+      <Link>Images\StratisHeader.jpg</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\StratisIcon.png">

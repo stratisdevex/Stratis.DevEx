@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Stratis.VS.StratisEVM"
         xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="1200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
