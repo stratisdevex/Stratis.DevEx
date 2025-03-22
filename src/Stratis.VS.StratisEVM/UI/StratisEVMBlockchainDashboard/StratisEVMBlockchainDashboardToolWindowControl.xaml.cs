@@ -14,6 +14,8 @@ namespace Stratis.VS.StratisEVM.UI
         /// </summary>
         public StratisEVMBlockchainDashboardToolWindowControl()
         {
+            var _ = new Wpf.Ui.Controls.Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
+
             this.InitializeComponent();
         }
 
