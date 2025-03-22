@@ -64,6 +64,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml.cs">
+      <DependentUpon>StratisEVMBlockchainDashboardToolWindowControl.xaml</DependentUpon>
+    </Compile>
     <Page Include="BlockchainExplorer\BlockchainExplorerAddNetworkDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -111,6 +114,10 @@
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

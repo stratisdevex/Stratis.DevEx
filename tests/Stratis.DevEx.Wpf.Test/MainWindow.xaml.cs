@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Stratis.VS.StratisEVM
+namespace Stratis.VS.StratisEVM.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -38,6 +38,6 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public StratisDashboardPage dashboardToolWindowControl = new StratisDashboardPage();  
+        public StratisEVMBlockchainDashboardToolWindowControl dashboardToolWindowControl = new StratisEVMBlockchainDashboardToolWindowControl();  
     }
 }
