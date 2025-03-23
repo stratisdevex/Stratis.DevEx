@@ -48,12 +48,11 @@ namespace Stratis.VS.StratisEVM.UI
 
             var Stats = await GetStatsAsync();
             TotalBlocksTextBlock.Text = Int64.Parse(Stats.Total_blocks).ToString("N");
-            AverageBlockTimeTextBlock.Text = Stats.Average_block_time.ToString();
-            //TotalTransactionsTextBlock.Text = Stats.Total_transactions.ToString();
-            //AverageBlockTimeTextBlock.Text = Stats.Average_block_time.ToString();
-            //TotalAddressesTextBlock.Text = Stats.Total_addresses.ToString();
-            //TransactionsTodayTextBlock.Text = Stats.Transactions_today.ToString();
-            //NetworkUtilizationTextBlock.Text = Stats.Network_utilization_percentage.ToString();
+            AverageBlockTimeTextBlock.Text = (Stats.Average_block_time / 1000.0).ToString() + "s";
+            TransactionsTodayTextBlock.Text = Stats.Transactions_today;
+            TotalTransactionsTextBlock.Text = Int64.Parse(Stats.Total_transactions).ToString("N");
+            TotalAddressesTextBlock.Text = Int64.Parse(Stats.Total_addresses).ToString("N");
+            NetworkUtilizationTextBlock.Text = Stats.Network_utilization_percentage.ToString("N");
         }
 
         public async Task<StatsResponse> GetStatsAsync()

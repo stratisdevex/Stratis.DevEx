@@ -16,7 +16,6 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
@@ -60,17 +59,18 @@
         Padding="0"
         ItemsSource="{Binding ViewModel.NavigationCards, Mode=OneWay}" />-->
 
-        <Grid Grid.Row="1" Margin="0,24,0,0">
+        <Grid Grid.Row="1" Margin="0,0,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
-                <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="240" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <ui:CardControl Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" Padding="0" Icon="{ui:SymbolIcon Cube20}">
+            <ui:CardControl Grid.Row="0" Grid.Column="0" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon Cube20}">
                 <ui:CardControl.Header>
                     <StackPanel>
                         <ui:TextBlock Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Total blocks: " TextWrapping="WrapWithOverflow" />
@@ -78,72 +78,52 @@
                     </StackPanel>
                 </ui:CardControl.Header>
             </ui:CardControl>
-            <ui:CardControl Grid.Row="0" Grid.Column="1" Margin="0,0,4,0" Padding="0" Header="Total blocks:"  Icon="{ui:SymbolIcon Clock20}">
-                <ui:TextBlock HorizontalAlignment="Left" Name="AverageBlockTimeTextBlock" TextWrapping="Wrap"/>
+            
+            <ui:CardControl Grid.Row="0" Grid.Column="1" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon Clock20}">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Block time: " TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Name="AverageBlockTimeTextBlock" TextWrapping="WrapWithOverflow" />
+                    </StackPanel>
+                </ui:CardControl.Header>
             </ui:CardControl>
             
-            <ui:CardAction Grid.Row="1" Grid.Column="1"
-            Margin="4,0,4,0"
-            Padding="0"
-            VerticalAlignment="Stretch"
-                         IsChevronVisible="False">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-
-                    <StackPanel
-                    Grid.Column="1"
-                    Margin="24"
-                    VerticalAlignment="Center">
-                        <ui:TextBlock
-                        Margin="0"
-                        FontTypography="BodyStrong"
-                        Text="Dialogs &amp; Flyouts"
-                        TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock
-                        Appearance="Secondary"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="Contextual notifications."
-                        TextWrapping="WrapWithOverflow" />
+            <ui:CardControl Grid.Row="0" Grid.Column="2" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon Money16}">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Text="Transactions Today: " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Name="TransactionsTodayTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
                     </StackPanel>
-                </Grid>
-            </ui:CardAction>
+                </ui:CardControl.Header>
+            </ui:CardControl>
 
-            <ui:CardAction
-            Grid.Row="1"
-            Grid.Column="2"
-            Margin="4,0,4,0"
-            Padding="0"
-            VerticalAlignment="Stretch"
-          
-            IsChevronVisible="False">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-
-                    <StackPanel
-                    Grid.Column="1"
-                    Margin="24"
-                    VerticalAlignment="Center">
-                        <ui:TextBlock
-                        Margin="0"
-                        FontTypography="BodyStrong"
-                        Text="Navigation"
-                        TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock
-                        Appearance="Secondary"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="Managing the displayed pages."
-                        TextWrapping="WrapWithOverflow" />
+            <ui:CardControl Grid.Row="1" Grid.Column="0" Margin="4,4,4,4" Padding="0" Icon="{ui:SymbolIcon MoneyCalculator24}">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Text="Total Transactions: " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Name="TotalTransactionsTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
                     </StackPanel>
-                </Grid>
-            </ui:CardAction>
+                </ui:CardControl.Header>
+            </ui:CardControl>
+
+            <ui:CardControl Grid.Row="1" Grid.Column="1" Margin="4,4,4,4" Padding="0" Icon="{ui:SymbolIcon WalletCreditCard16}">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Text="Total Addresses: " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Name="TotalAddressesTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
+                    </StackPanel>
+                </ui:CardControl.Header>
+            </ui:CardControl>
+
+            <ui:CardControl Grid.Row="1" Grid.Column="2" Margin="4,4,4,4" Padding="0" Icon="{ui:SymbolIcon DataUsage24}">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Text="Network Utilization: " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Name="NetworkUtilizationTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
+                    </StackPanel>
+                </ui:CardControl.Header>
+            </ui:CardControl>
+
         </Grid>
 
         <StackPanel Grid.Row="2" Margin="0,24,0,0">
