@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 using Stratis.DevEx;
+using Stratis.DevEx.Ethereum;
+using Stratis.DevEx.Ethereum.Explorers;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -38,5 +42,24 @@ namespace Stratis.VS.StratisEVM.UI
         }
 
         public static BitmapImage StratisHeaderImage { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "StratisHeader.jpg")));
+
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            var Stats = await GetStatsAsync();
+            TotalBlocksTextBlock.Text = Int64.Parse(Stats.Total_blocks).ToString("N");
+            AverageBlockTimeTextBlock.Text = Stats.Average_block_time.ToString();
+            //TotalTransactionsTextBlock.Text = Stats.Total_transactions.ToString();
+            //AverageBlockTimeTextBlock.Text = Stats.Average_block_time.ToString();
+            //TotalAddressesTextBlock.Text = Stats.Total_addresses.ToString();
+            //TransactionsTodayTextBlock.Text = Stats.Transactions_today.ToString();
+            //NetworkUtilizationTextBlock.Text = Stats.Network_utilization_percentage.ToString();
+        }
+
+        public async Task<StatsResponse> GetStatsAsync()
+        {
+            var bsc = new BlockscoutClient(new System.Net.Http.HttpClient());
+            return await bsc.Get_statsAsync();
+        }
     }
 }

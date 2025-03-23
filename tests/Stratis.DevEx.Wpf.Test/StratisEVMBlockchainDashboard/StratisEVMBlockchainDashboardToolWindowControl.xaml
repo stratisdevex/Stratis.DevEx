@@ -11,7 +11,8 @@
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
              Foreground="{DynamicResource TextFillColorPrimaryBrush}"
              Width="800"
-             Name="MyToolWindow">
+             Name="MyToolWindow"
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -33,8 +34,8 @@
             <Border CornerRadius="8">
                 <Border.Background>
                     <RadialGradientBrush>
-                        <GradientStop Offset="0" Color="#101112" />
-                        <GradientStop Offset="1" Color="#000000" />
+                        <GradientStop Offset="1" Color="#101112" />
+                        <GradientStop Offset="0" Color="#000000" />
                     </RadialGradientBrush>
                 </Border.Background>
                 <Grid>
@@ -61,50 +62,27 @@
 
         <Grid Grid.Row="1" Margin="0,24,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="200" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <ui:CardAction
-            Grid.Row="0"
-            Grid.Column="0"
-            Margin="0,0,4,0"
-            Padding="0"
-            VerticalAlignment="Stretch"
-         
-            IsChevronVisible="False">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-
-                    <StackPanel
-                    Grid.Column="1"
-                    Margin="24"
-                    VerticalAlignment="Center">
-                        <ui:TextBlock
-                        Margin="0"
-                        FontTypography="BodyStrong"
-                        Text="Basic input"
-                        TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock
-                        Appearance="Secondary"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="Buttons, CheckBoxes, Sliders..."
-                        TextWrapping="WrapWithOverflow" />
+            <ui:CardControl Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" Padding="0" Icon="{ui:SymbolIcon Cube20}">
+                <ui:CardControl.Header>
+                    <StackPanel>
+                        <ui:TextBlock Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Total blocks: " TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Name="TotalBlocksTextBlock" TextWrapping="WrapWithOverflow" />
                     </StackPanel>
-                </Grid>
-            </ui:CardAction>
-
-            <ui:CardAction
-            Grid.Row="0"
-            Grid.Column="1"
+                </ui:CardControl.Header>
+            </ui:CardControl>
+            <ui:CardControl Grid.Row="0" Grid.Column="1" Margin="0,0,4,0" Padding="0" Header="Total blocks:"  Icon="{ui:SymbolIcon Clock20}">
+                <ui:TextBlock HorizontalAlignment="Left" Name="AverageBlockTimeTextBlock" TextWrapping="Wrap"/>
+            </ui:CardControl>
+            
+            <ui:CardAction Grid.Row="1" Grid.Column="1"
             Margin="4,0,4,0"
             Padding="0"
             VerticalAlignment="Stretch"
@@ -135,7 +113,7 @@
             </ui:CardAction>
 
             <ui:CardAction
-            Grid.Row="0"
+            Grid.Row="1"
             Grid.Column="2"
             Margin="4,0,4,0"
             Padding="0"
