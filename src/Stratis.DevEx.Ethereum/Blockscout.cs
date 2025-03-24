@@ -15,6 +15,8 @@
 
 namespace Stratis.DevEx.Ethereum.Explorers
 {
+    using System;
+    using System.Collections.Generic;
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -5249,8 +5251,8 @@ namespace Stratis.DevEx.Ethereum.Explorers
         [Newtonsoft.Json.JsonProperty("from", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public AddressParam From { get; set; } = new AddressParam();
 
-        [Newtonsoft.Json.JsonProperty("token_transfers", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<TokenTransfer> Token_transfers { get; set; } = new System.Collections.ObjectModel.Collection<TokenTransfer>();
+        [Newtonsoft.Json.JsonProperty("token_transfers", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Include)]
+        public Token_Transfer[] Token_transfers { get; set; } = Array.Empty<Token_Transfer>();
 
         [Newtonsoft.Json.JsonProperty("transaction_types", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<string> Transaction_types { get; set; } = new System.Collections.ObjectModel.Collection<string>();
@@ -5274,7 +5276,7 @@ namespace Stratis.DevEx.Ethereum.Explorers
         //public System.Collections.Generic.ICollection<Actions> Actions { get; set; } = new System.Collections.ObjectModel.Collection<Actions>();
 
         [Newtonsoft.Json.JsonProperty("decoded_input", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public DecodedInput Decoded_input { get; set; } = new DecodedInput();
+        public Decoded_Input Decoded_input { get; set; } = new Decoded_Input();
 
         [Newtonsoft.Json.JsonProperty("token_transfers_overflow", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Token_transfers_overflow { get; set; }
@@ -5288,8 +5290,9 @@ namespace Stratis.DevEx.Ethereum.Explorers
         [Newtonsoft.Json.JsonProperty("max_priority_fee_per_gas", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Max_priority_fee_per_gas { get; set; }
 
+
         [Newtonsoft.Json.JsonProperty("revert_reason", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Revert_reason { get; set; }
+        public Revert_Reason Revert_reason { get; set; }
 
         [Newtonsoft.Json.JsonProperty("confirmation_duration", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public object Confirmation_duration { get; set; } = new object();
@@ -8023,6 +8026,124 @@ namespace Stratis.DevEx.Ethereum.Explorers
             Result = result;
         }
     }
+
+
+    public partial class Revert_Reason
+    {
+        public string method_call { get; set; }
+        public string method_id { get; set; }
+        public Revert_Reason_Parameter[] parameters { get; set; }
+    }
+
+    public class Revert_Reason_Parameter
+    {
+        public string name { get; set; }
+        public string type { get; set; }
+        public string value { get; set; }
+    }
+
+    public class Decoded_Input
+    {
+        public string method_call { get; set; }
+        public string method_id { get; set; }
+        public Decoded_Input_Parameter[] parameters { get; set; }
+    }
+
+    public class Decoded_Input_Parameter
+    {
+        public string name { get; set; }
+        public string type { get; set; }
+        public string value { get; set; }
+    }
+
+
+    public class Token_Transfer
+    {
+        public string block_hash { get; set; }
+        public int block_number { get; set; }
+        public From from { get; set; }
+        public int log_index { get; set; }
+        public object method { get; set; }
+        public object timestamp { get; set; }
+        public To to { get; set; }
+        public Token token { get; set; }
+        public object total { get; set; }
+        public string transaction_hash { get; set; }
+        public string type { get; set; }
+    }
+
+    public class From
+    {
+        public object ens_domain_name { get; set; }
+        public string hash { get; set; }
+        public object[] implementations { get; set; }
+        public bool is_contract { get; set; }
+        public bool is_scam { get; set; }
+        public bool is_verified { get; set; }
+        public object metadata { get; set; }
+        public object name { get; set; }
+        public object[] private_tags { get; set; }
+        public object proxy_type { get; set; }
+        public object[] public_tags { get; set; }
+        public object[] watchlist_names { get; set; }
+    }
+
+    public class To
+    {
+        public object ens_domain_name { get; set; }
+        public string hash { get; set; }
+        public object[] implementations { get; set; }
+        public bool is_contract { get; set; }
+        public bool is_scam { get; set; }
+        public bool is_verified { get; set; }
+        public object metadata { get; set; }
+        public object name { get; set; }
+        public object[] private_tags { get; set; }
+        public object proxy_type { get; set; }
+        public object[] public_tags { get; set; }
+        public object[] watchlist_names { get; set; }
+    }
+
+   
+
+    public class Total
+    {
+        public string token_id { get; set; }
+        public Token_Instance token_instance { get; set; }
+    }
+
+    public class Token_Instance
+    {
+        public object animation_url { get; set; }
+        public object external_app_url { get; set; }
+        public string id { get; set; }
+        public string image_url { get; set; }
+        public object is_unique { get; set; }
+        public object media_type { get; set; }
+        public string media_url { get; set; }
+        public Dictionary<string,object> metadata { get; set; }
+        public object owner { get; set; }
+        public object thumbnails { get; set; }
+        public Token1 token { get; set; }
+    }
+
+    
+
+    public class Token1
+    {
+        public string address { get; set; }
+        public object circulating_market_cap { get; set; }
+        public object decimals { get; set; }
+        public object exchange_rate { get; set; }
+        public string holders { get; set; }
+        public object icon_url { get; set; }
+        public string name { get; set; }
+        public string symbol { get; set; }
+        public object total_supply { get; set; }
+        public string type { get; set; }
+        public object volume_24h { get; set; }
+    }
+
 
 }
 

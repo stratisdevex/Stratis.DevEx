@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,8 +48,9 @@ namespace Stratis.VS.StratisEVM.UI
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-
-            var Stats = await GetStatsAsync();
+            var hc = new HttpClient();  
+            var Stats = await GetStatsAsync(hc);
+            var transactions = await GetLatestTransactions(hc);
             TotalBlocksTextBlock.Text = Int64.Parse(Stats.Total_blocks).ToString("N");
             AverageBlockTimeTextBlock.Text = (Stats.Average_block_time / 1000.0).ToString() + "s";
             TransactionsTodayTextBlock.Text = Stats.Transactions_today;
@@ -56,21 +58,22 @@ namespace Stratis.VS.StratisEVM.UI
             TotalAddressesTextBlock.Text = Int64.Parse(Stats.Total_addresses).ToString("N");
             NetworkUtilizationTextBlock.Text = Stats.Network_utilization_percentage.ToString("N");
 
-            var transactions = await GetLatestTransactions();
+            
+            TransactionsListView.ItemsSource = transactions;
         }
 
         
-        public async Task<StatsResponse> GetStatsAsync()
+        public async Task<StatsResponse> GetStatsAsync(HttpClient hc)
         {
-            var bsc = new BlockscoutClient(new System.Net.Http.HttpClient());
+            var bsc = new BlockscoutClient(hc);
             return await bsc.Get_statsAsync();
         }
 
-        public static async Task <ICollection<Transaction>> GetLatestTransactions()
+        public static async Task <ICollection<Transaction>> GetLatestTransactions(HttpClient hc)
         {
-            var bsc = new BlockscoutClient(new System.Net.Http.HttpClient());
+            var bsc = new BlockscoutClient(hc);
             var r = await bsc.Get_txsAsync();
-            return r.Items.Take(10).ToArray();
+            return r.Items.ToArray();
         }
 
         public static Transaction[] SampleTransactionData => BlockscoutSampleData.Transactions;

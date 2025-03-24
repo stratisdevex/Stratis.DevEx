@@ -3,17 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:stratisethexp="clr-namespace:Stratis.DevEx.Ethereum.Explorers;assembly=Stratis.DevEx.Ethereum"
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
-             
-             mc:Ignorable="d"
+   
              d:DesignHeight="800" 
              d:DesignWidth="800"
              ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
              Foreground="{DynamicResource TextFillColorPrimaryBrush}"
              Width="800"
+             Height="1280"
              Name="MyToolWindow"
              Loaded="UserControl_Loaded">
     <UserControl.Resources>
@@ -24,6 +25,8 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    
+    
 
     <Grid>
         <Grid.RowDefinitions>
@@ -54,11 +57,7 @@
             </Border>
         </Border>
 
-        <!--<controls:GalleryNavigationPresenter
-        Grid.Row="1"
-        Margin="0,24,0,0"
-        Padding="0"
-        ItemsSource="{Binding ViewModel.NavigationCards, Mode=OneWay}" />-->
+
 
         <Grid Grid.Row="1" Margin="0,4,0,0">
             <Grid.ColumnDefinitions>
@@ -129,20 +128,27 @@
 
         <Grid Grid.Row="2" Margin="0,4,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="240" />
+                <ColumnDefinition Width="640" />
                 <ColumnDefinition Width="480" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ui:ListView Name="TransactionsListView" MaxHeight="200"
-                d:ItemsSource="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.SampleTransactionData}"
-                
-                SelectedIndex="2"
-                SelectionMode="Single">
+            
+            <ui:TextBlock Grid.Row="0" FontSize="18" FontWeight="DemiBold" Text="Latest transactions" Appearance="Primary" />
+            <ui:ListView Name="TransactionsListView" Grid.Row="1" Grid.Column="0" MaxHeight="200" SelectionMode="Single" 
+                         d:ItemsSource="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.SampleTransactionData}">
                 <ui:ListView.ItemTemplate>
                     <DataTemplate DataType="{x:Type stratisethexp:Transaction}">
-                        <TextBlock Margin="8,4" Text="{Binding Name, Mode=OneWay}" />
+                        <ui:CardControl Margin="0,0,0,0" Padding="0" Icon="{ui:SymbolIcon ArrowSwap24}">
+                            <ui:CardControl.Header>
+                                <StackPanel>
+                                    <ui:TextBlock Appearance="Secondary"  Text="{Binding Hash, Mode=OneWay}" />
+                                </StackPanel>
+                            </ui:CardControl.Header>
+                        </ui:CardControl>
+                        
                     </DataTemplate>
                 </ui:ListView.ItemTemplate>
             </ui:ListView>
