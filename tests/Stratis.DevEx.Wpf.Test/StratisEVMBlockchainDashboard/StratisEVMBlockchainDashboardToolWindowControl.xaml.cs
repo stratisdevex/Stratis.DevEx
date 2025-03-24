@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -53,12 +55,24 @@ namespace Stratis.VS.StratisEVM.UI
             TotalTransactionsTextBlock.Text = Int64.Parse(Stats.Total_transactions).ToString("N");
             TotalAddressesTextBlock.Text = Int64.Parse(Stats.Total_addresses).ToString("N");
             NetworkUtilizationTextBlock.Text = Stats.Network_utilization_percentage.ToString("N");
+
+            var transactions = await GetLatestTransactions();
         }
 
+        
         public async Task<StatsResponse> GetStatsAsync()
         {
             var bsc = new BlockscoutClient(new System.Net.Http.HttpClient());
             return await bsc.Get_statsAsync();
         }
+
+        public static async Task <ICollection<Transaction>> GetLatestTransactions()
+        {
+            var bsc = new BlockscoutClient(new System.Net.Http.HttpClient());
+            var r = await bsc.Get_txsAsync();
+            return r.Items.Take(10).ToArray();
+        }
+
+        public static Transaction[] SampleTransactionData => BlockscoutSampleData.Transactions;
     }
 }
