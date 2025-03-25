@@ -5275,8 +5275,8 @@ namespace Stratis.DevEx.Ethereum.Explorers
         //[Newtonsoft.Json.JsonProperty("actions", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         //public System.Collections.Generic.ICollection<Actions> Actions { get; set; } = new System.Collections.ObjectModel.Collection<Actions>();
 
-        [Newtonsoft.Json.JsonProperty("decoded_input", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Decoded_Input Decoded_input { get; set; } = new Decoded_Input();
+        //[Newtonsoft.Json.JsonProperty("decoded_input", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        //public Decoded_Input Decoded_input { get; set; } = new Decoded_Input();
 
         [Newtonsoft.Json.JsonProperty("token_transfers_overflow", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Token_transfers_overflow { get; set; }

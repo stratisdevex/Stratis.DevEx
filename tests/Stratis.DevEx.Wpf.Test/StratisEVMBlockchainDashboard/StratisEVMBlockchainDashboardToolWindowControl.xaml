@@ -26,8 +26,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    
-
+   
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -52,12 +51,9 @@
                     <StackPanel Grid.Column="0" Margin="48,0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
                         <ui:Image Source="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.StratisHeaderImage}" />
                     </StackPanel>
-
                 </Grid>
             </Border>
         </Border>
-
-
 
         <Grid Grid.Row="1" Margin="0,4,0,0">
             <Grid.ColumnDefinitions>
@@ -135,23 +131,39 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            
+
             <ui:TextBlock Grid.Row="0" FontSize="18" FontWeight="DemiBold" Text="Latest transactions" Appearance="Primary" />
             <ui:ListView Name="TransactionsListView" Grid.Row="1" Grid.Column="0" MaxHeight="200" SelectionMode="Single" 
-                         d:ItemsSource="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.SampleTransactionData}">
+                        d:ItemsSource="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.SampleTransactionData}">
                 <ui:ListView.ItemTemplate>
                     <DataTemplate DataType="{x:Type stratisethexp:Transaction}">
-                        <ui:CardControl Margin="0,0,0,0" Padding="0" Icon="{ui:SymbolIcon ArrowSwap24}">
-                            <ui:CardControl.Header>
-                                <StackPanel>
-                                    <ui:TextBlock Appearance="Secondary"  Text="{Binding Hash, Mode=OneWay}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" TextElement.Foreground="White">
+                                <ui:TextBlock Name="TransactionTypeTextBox" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="White" Background="LightBlue"  Text="Contract call" Width="100" />
+                                <StackPanel Orientation="Horizontal" Background="LightGreen">
+                                <ui:SymbolIcon FontSize="12" Symbol="CheckmarkCircle12"    />
+                                <ui:TextBlock Name="TransactionStatusTextBox" HorizontalAlignment="Left"  Text="Success" Width="100" />
                                 </StackPanel>
-                            </ui:CardControl.Header>
-                        </ui:CardControl>
-                        
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" TextElement.Foreground="{ui:ThemeResource AccentTextFillColorPrimaryBrush}">
+                                <ui:SymbolIcon Symbol="ArrowSwap24" FontSize="16" />
+                                <ui:TextBlock FontWeight="SemiBold"   Text="{Binding Hash, Mode=OneWay}" />   
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ui:ListView.ItemTemplate>
             </ui:ListView>
+            
         </Grid>
         <StackPanel Grid.Row="3" Margin="0,24,0,0">
             <TextBlock
