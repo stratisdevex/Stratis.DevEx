@@ -77,5 +77,7 @@ namespace Stratis.VS.StratisEVM.UI
         }
 
         public static Transaction[] SampleTransactionData => BlockscoutSampleData.Transactions;
+
+       
     }
 }

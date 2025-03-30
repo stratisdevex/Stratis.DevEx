@@ -148,16 +148,28 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" TextElement.Foreground="White">
-                                <ui:TextBlock Name="TransactionTypeTextBox" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="White" Background="LightBlue"  Text="Contract call" Width="100" />
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Height="20" TextElement.Foreground="White">
+                                <ui:TextBlock Name="TransactionTypeTextBox" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="White" Background="LightBlue"  Text="{Binding TransactionType, Mode=OneWay}" Width="100" />
                                 <StackPanel Orientation="Horizontal" Background="LightGreen">
-                                <ui:SymbolIcon FontSize="12" Symbol="CheckmarkCircle12"    />
-                                <ui:TextBlock Name="TransactionStatusTextBox" HorizontalAlignment="Left"  Text="Success" Width="100" />
+                                    <ui:SymbolIcon FontSize="12" Symbol="CheckmarkCircle12" Margin="0,0,4,0" />
+                                    <ui:TextBlock Name="TransactionStatusTextBox" HorizontalAlignment="Left" Text="{Binding TransactionResult}" Width="55" />
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" TextElement.Foreground="{ui:ThemeResource AccentTextFillColorPrimaryBrush}">
+                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top" TextElement.Foreground="{ui:ThemeResource AccentTextFillColorPrimaryBrush}">
                                 <ui:SymbolIcon Symbol="ArrowSwap24" FontSize="16" />
-                                <ui:TextBlock FontWeight="SemiBold"   Text="{Binding Hash, Mode=OneWay}" />   
+                                <ui:TextBlock FontWeight="SemiBold"   Text="{Binding ShortenedHash, Mode=OneWay}" />
+                                <ui:TextBlock Margin="4,0,0,0" FontWeight="UltraLight"   Text="{Binding TransactionTime, Mode=OneWay}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="34,0,0,0" Orientation="Vertical" TextElement.Foreground="{ui:ThemeResource AccentTextFillColorPrimaryBrush}">
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:SymbolIcon Symbol="ArrowDown48" FontSize="16" />
+                                    <ui:SymbolIcon Symbol="InprivateAccount16" FontSize="16" />
+                                    <ui:TextBlock  FontWeight="UltraLight"   Text="{Binding ShortenedFrom, Mode=OneWay}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="16,0,0,0">
+                                    <ui:SymbolIcon Symbol="InprivateAccount24" FontSize="16" />
+                                    <ui:TextBlock  FontWeight="UltraLight"   Text="{Binding ShortenedTo, Mode=OneWay}" />
+                                </StackPanel>
                             </StackPanel>
                         </Grid>
                     </DataTemplate>
@@ -165,41 +177,81 @@
             </ui:ListView>
             
         </Grid>
-        <StackPanel Grid.Row="3" Margin="0,24,0,0">
-            <TextBlock
-            FontSize="18"
-            FontWeight="DemiBold"
-            Text="Learn more" />
-            <ui:HyperlinkButton
-            Margin="8,8,0,0"
-            Padding="4"
-            Content="Documentation"
-            NavigateUri="https://wpfui.lepo.co/"
-            ToolTip="https://wpfui.lepo.co/" />
-            <ui:HyperlinkButton
-            Margin="8,0,0,0"
-            Padding="4"
-            Content="Microsoft Store"
-            NavigateUri="https://apps.microsoft.com/store/detail/wpf-ui/9N9LKV8R9VGM"
-            ToolTip="https://apps.microsoft.com/store/detail/wpf-ui/9N9LKV8R9VGM" />
-            <ui:HyperlinkButton
-            Margin="8,0,0,0"
-            Padding="4"
-            Content="GitHub"
-            NavigateUri="https://github.com/lepoco/wpfui"
-            ToolTip="https://github.com/lepoco/wpfui" />
-            <ui:HyperlinkButton
-            Margin="8,0,0,0"
-            Padding="4"
-            Content="NuGet"
-            NavigateUri="https://www.nuget.org/packages/wpf-ui/"
-            ToolTip="https://www.nuget.org/packages/wpf-ui/" />
-            <ui:HyperlinkButton
-            Margin="8,0,0,0"
-            Padding="4"
-            Content="Visual Studio Marketplace"
-            NavigateUri="https://marketplace.visualstudio.com/items?itemName=lepo.wpf-ui"
-            ToolTip="https://marketplace.visualstudio.com/items?itemName=lepo.wpf-ui" />
-        </StackPanel>
+        <ui:NavigationView Grid.Row="3"
+                MinHeight="300"
+                Margin="0"
+                IsBackButtonVisible="Auto"
+                IsPaneToggleVisible="False"
+                PaneDisplayMode="Bottom">
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem
+                        Content="Menu Item 1"
+                        Icon="{ui:SymbolIcon Home24}"
+                        TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+                <ui:NavigationViewItem
+                        Content="Menu Item 2"
+                        Icon="{ui:SymbolIcon AppFolder24}"
+                        TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+                <ui:NavigationViewItem
+                        Content="Menu Item 3"
+                        Icon="{ui:SymbolIcon BezierCurveSquare20}"
+                        TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+                <ui:NavigationViewItem
+                        Content="Menu Item 4"
+                        Icon="{ui:SymbolIcon Library24}"
+                        TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+            </ui:NavigationView.MenuItems>
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem Icon="{ui:SymbolIcon Settings24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+            </ui:NavigationView.FooterMenuItems>
+            <ui:NavigationView.AutoSuggestBox>
+                <ui:AutoSuggestBox
+                        MinWidth="140"
+                        Margin="0"
+                        PlaceholderText="Search" />
+            </ui:NavigationView.AutoSuggestBox>
+            <ui:NavigationView.PaneHeader>
+                <Border
+                        Margin="8,0"
+                        VerticalAlignment="Stretch"
+                        Background="{DynamicResource StripedBackgroundBrush}"
+                        CornerRadius="4">
+                    <TextBlock
+                            Margin="24,0"
+                            VerticalAlignment="Center"
+                            FontWeight="Medium"
+                            Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                            Text="Pane Header" />
+                </Border>
+            </ui:NavigationView.PaneHeader>
+            <ui:NavigationView.PaneFooter>
+                <Border
+                        Margin="8,0"
+                        VerticalAlignment="Stretch"
+                        Background="{DynamicResource StripedBackgroundBrush}"
+                        CornerRadius="4">
+                    <TextBlock
+                            Margin="24,0"
+                            VerticalAlignment="Center"
+                            FontWeight="Medium"
+                            Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                            Text="Pane Footer" />
+                </Border>
+            </ui:NavigationView.PaneFooter>
+            <ui:NavigationView.Header>
+                <Border
+                        Margin="8"
+                        Background="{DynamicResource StripedBackgroundBrush}"
+                        CornerRadius="4">
+                    <TextBlock
+                            Margin="24"
+                            VerticalAlignment="Center"
+                            FontWeight="Medium"
+                            Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                            Text="NavigationView Header" />
+                </Border>
+            </ui:NavigationView.Header>
+        </ui:NavigationView>
+
     </Grid>
 </UserControl>
