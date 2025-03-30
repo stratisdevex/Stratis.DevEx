@@ -67,6 +67,12 @@
     <Compile Include="StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml.cs">
       <DependentUpon>StratisEVMBlockchainDashboardToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StratisEVMBlockchainDashboard\StratisEVMBlockchainHomeUserControl.xaml.cs">
+      <DependentUpon>StratisEVMBlockchainHomeUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StratisEVMBlockchainDashboard\StratisEVMTransactionsUserControl.xaml.cs">
+      <DependentUpon>StratisEVMTransactionsUserControl.xaml</DependentUpon>
+    </Compile>
     <Page Include="BlockchainExplorer\BlockchainExplorerAddNetworkDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -110,6 +116,14 @@
     <Page Include="StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StratisEVMBlockchainDashboard\StratisEVMBlockchainHomeUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StratisEVMBlockchainDashboard\StratisEVMTransactionsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

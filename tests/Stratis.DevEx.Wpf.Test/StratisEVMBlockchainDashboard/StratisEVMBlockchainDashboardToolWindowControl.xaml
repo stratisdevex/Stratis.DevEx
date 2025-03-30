@@ -17,6 +17,7 @@
              Height="1280"
              Name="MyToolWindow"
              Loaded="UserControl_Loaded">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,232 +27,46 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-   
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <Border Grid.Row="0" Height="200" CornerRadius="8">
-            <Border CornerRadius="8">
-                <Border.Background>
-                    <RadialGradientBrush>
-                        <GradientStop Offset="1" Color="#101112" />
-                        <GradientStop Offset="0" Color="#000000" />
-                    </RadialGradientBrush>
-                </Border.Background>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Margin="48,0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
-                        <ui:Image Source="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.StratisHeaderImage}" />
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </Border>
-
-        <Grid Grid.Row="1" Margin="0,4,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="240" />
-                <ColumnDefinition Width="240" />
-                <ColumnDefinition Width="240" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <ui:CardControl Grid.Row="0" Grid.Column="0" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon Cube20}">
-                <ui:CardControl.Header>
-                    <StackPanel>
-                        <ui:TextBlock Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Total blocks: " TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Name="TotalBlocksTextBlock" TextWrapping="WrapWithOverflow" />
-                    </StackPanel>
-                </ui:CardControl.Header>
-            </ui:CardControl>
-            
-            <ui:CardControl Grid.Row="0" Grid.Column="1" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon Clock20}">
-                <ui:CardControl.Header>
-                    <StackPanel>
-                        <ui:TextBlock Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Block time: " TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Name="AverageBlockTimeTextBlock" TextWrapping="WrapWithOverflow" />
-                    </StackPanel>
-                </ui:CardControl.Header>
-            </ui:CardControl>
-            
-            <ui:CardControl Grid.Row="0" Grid.Column="2" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon Money16}">
-                <ui:CardControl.Header>
-                    <StackPanel>
-                        <ui:TextBlock Text="Transactions Today: " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock Name="TransactionsTodayTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
-                    </StackPanel>
-                </ui:CardControl.Header>
-            </ui:CardControl>
-
-            <ui:CardControl Grid.Row="1" Grid.Column="0" Margin="4,4,4,4" Padding="0" Icon="{ui:SymbolIcon MoneyCalculator24}">
-                <ui:CardControl.Header>
-                    <StackPanel>
-                        <ui:TextBlock Text="Total Transactions: " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock Name="TotalTransactionsTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
-                    </StackPanel>
-                </ui:CardControl.Header>
-            </ui:CardControl>
-
-            <ui:CardControl Grid.Row="1" Grid.Column="1" Margin="4,4,4,4" Padding="0" Icon="{ui:SymbolIcon WalletCreditCard16}">
-                <ui:CardControl.Header>
-                    <StackPanel>
-                        <ui:TextBlock Text="Total Addresses: " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock Name="TotalAddressesTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
-                    </StackPanel>
-                </ui:CardControl.Header>
-            </ui:CardControl>
-
-            <ui:CardControl Grid.Row="1" Grid.Column="2" Margin="4,4,4,4" Padding="0" Icon="{ui:SymbolIcon DataUsage24}">
-                <ui:CardControl.Header>
-                    <StackPanel>
-                        <ui:TextBlock Text="Network Utilization: " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock Name="NetworkUtilizationTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
-                    </StackPanel>
-                </ui:CardControl.Header>
-            </ui:CardControl>
-
-        </Grid>
-
-        <Grid Grid.Row="2" Margin="0,4,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="640" />
-                <ColumnDefinition Width="480" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <ui:TextBlock Grid.Row="0" FontSize="18" FontWeight="DemiBold" Text="Latest transactions" Appearance="Primary" />
-            <ui:ListView Name="TransactionsListView" Grid.Row="1" Grid.Column="0" MaxHeight="200" SelectionMode="Single" 
-                        d:ItemsSource="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.SampleTransactionData}">
-                <ui:ListView.ItemTemplate>
-                    <DataTemplate DataType="{x:Type stratisethexp:Transaction}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Height="20" TextElement.Foreground="White">
-                                <ui:TextBlock Name="TransactionTypeTextBox" HorizontalAlignment="Left" Margin="0,0,5,0" Foreground="White" Background="LightBlue"  Text="{Binding TransactionType, Mode=OneWay}" Width="100" />
-                                <StackPanel Orientation="Horizontal" Background="LightGreen">
-                                    <ui:SymbolIcon FontSize="12" Symbol="CheckmarkCircle12" Margin="0,0,4,0" />
-                                    <ui:TextBlock Name="TransactionStatusTextBox" HorizontalAlignment="Left" Text="{Binding TransactionResult}" Width="55" />
-                                </StackPanel>
-                            </StackPanel>
-                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top" TextElement.Foreground="{ui:ThemeResource AccentTextFillColorPrimaryBrush}">
-                                <ui:SymbolIcon Symbol="ArrowSwap24" FontSize="16" />
-                                <ui:TextBlock FontWeight="SemiBold"   Text="{Binding ShortenedHash, Mode=OneWay}" />
-                                <ui:TextBlock Margin="4,0,0,0" FontWeight="UltraLight"   Text="{Binding TransactionTime, Mode=OneWay}" />
-                            </StackPanel>
-                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="34,0,0,0" Orientation="Vertical" TextElement.Foreground="{ui:ThemeResource AccentTextFillColorPrimaryBrush}">
-                                <StackPanel Orientation="Horizontal">
-                                    <ui:SymbolIcon Symbol="ArrowDown48" FontSize="16" />
-                                    <ui:SymbolIcon Symbol="InprivateAccount16" FontSize="16" />
-                                    <ui:TextBlock  FontWeight="UltraLight"   Text="{Binding ShortenedFrom, Mode=OneWay}" />
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="16,0,0,0">
-                                    <ui:SymbolIcon Symbol="InprivateAccount24" FontSize="16" />
-                                    <ui:TextBlock  FontWeight="UltraLight"   Text="{Binding ShortenedTo, Mode=OneWay}" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ui:ListView.ItemTemplate>
-            </ui:ListView>
-            
-        </Grid>
-        <ui:NavigationView Grid.Row="3"
-                MinHeight="300"
-                Margin="0"
-                IsBackButtonVisible="Auto"
-                IsPaneToggleVisible="False"
-                PaneDisplayMode="Bottom">
+        <ui:NavigationView Name="DasboardNavigationView" MinHeight="800" Margin="0" IsBackButtonVisible="Auto" IsPaneToggleVisible="True" PaneDisplayMode="Top" >
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem
-                        Content="Menu Item 1"
-                        Icon="{ui:SymbolIcon Home24}"
-                        TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
-                <ui:NavigationViewItem
-                        Content="Menu Item 2"
-                        Icon="{ui:SymbolIcon AppFolder24}"
-                        TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
-                <ui:NavigationViewItem
-                        Content="Menu Item 3"
-                        Icon="{ui:SymbolIcon BezierCurveSquare20}"
-                        TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
-                <ui:NavigationViewItem
-                        Content="Menu Item 4"
-                        Icon="{ui:SymbolIcon Library24}"
-                        TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+                <ui:NavigationViewItem Content="Home" Icon="{ui:SymbolIcon Home24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainHomeUserControl}"  />
+                <ui:NavigationViewItem Content="Transactions" Icon="{ui:SymbolIcon AppFolder24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+                <ui:NavigationViewItem Content="Blocks" Icon="{ui:SymbolIcon BezierCurveSquare20}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+                <ui:NavigationViewItem Content="Accounts" Icon="{ui:SymbolIcon Library24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+                <ui:NavigationViewItem Content="Contracts" Icon="{ui:SymbolIcon Library24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
                 <ui:NavigationViewItem Icon="{ui:SymbolIcon Settings24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
             </ui:NavigationView.FooterMenuItems>
             <ui:NavigationView.AutoSuggestBox>
-                <ui:AutoSuggestBox
-                        MinWidth="140"
-                        Margin="0"
-                        PlaceholderText="Search" />
+                <ui:AutoSuggestBox MinWidth="300" Margin="0" PlaceholderText="Search" />
             </ui:NavigationView.AutoSuggestBox>
-            <ui:NavigationView.PaneHeader>
-                <Border
-                        Margin="8,0"
-                        VerticalAlignment="Stretch"
-                        Background="{DynamicResource StripedBackgroundBrush}"
-                        CornerRadius="4">
-                    <TextBlock
-                            Margin="24,0"
-                            VerticalAlignment="Center"
-                            FontWeight="Medium"
-                            Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
-                            Text="Pane Header" />
-                </Border>
-            </ui:NavigationView.PaneHeader>
-            <ui:NavigationView.PaneFooter>
-                <Border
-                        Margin="8,0"
-                        VerticalAlignment="Stretch"
-                        Background="{DynamicResource StripedBackgroundBrush}"
-                        CornerRadius="4">
-                    <TextBlock
-                            Margin="24,0"
-                            VerticalAlignment="Center"
-                            FontWeight="Medium"
-                            Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
-                            Text="Pane Footer" />
-                </Border>
-            </ui:NavigationView.PaneFooter>
             <ui:NavigationView.Header>
-                <Border
-                        Margin="8"
-                        Background="{DynamicResource StripedBackgroundBrush}"
-                        CornerRadius="4">
-                    <TextBlock
-                            Margin="24"
-                            VerticalAlignment="Center"
-                            FontWeight="Medium"
-                            Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
-                            Text="NavigationView Header" />
+                <Border Height="200" CornerRadius="8">
+                    <Border CornerRadius="8">
+                        <Border.Background>
+                            <RadialGradientBrush>
+                                <GradientStop Offset="1" Color="#101112" />
+                                <GradientStop Offset="0" Color="#000000" />
+                            </RadialGradientBrush>
+                        </Border.Background>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="48,0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
+                                <ui:Image Source="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.StratisHeaderImage}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                 </Border>
+
             </ui:NavigationView.Header>
+            
         </ui:NavigationView>
 
-    </Grid>
+
+        
+   
 </UserControl>

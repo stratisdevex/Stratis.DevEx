@@ -46,38 +46,12 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static BitmapImage StratisHeaderImage { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "StratisHeader.jpg")));
 
-        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            var hc = new HttpClient();  
-            var Stats = await GetStatsAsync(hc);
-            var transactions = await GetLatestTransactions(hc);
-            TotalBlocksTextBlock.Text = Int64.Parse(Stats.Total_blocks).ToString("N");
-            AverageBlockTimeTextBlock.Text = (Stats.Average_block_time / 1000.0).ToString() + "s";
-            TransactionsTodayTextBlock.Text = Stats.Transactions_today;
-            TotalTransactionsTextBlock.Text = Int64.Parse(Stats.Total_transactions).ToString("N");
-            TotalAddressesTextBlock.Text = Int64.Parse(Stats.Total_addresses).ToString("N");
-            NetworkUtilizationTextBlock.Text = Stats.Network_utilization_percentage.ToString("N");
-
-            
-            TransactionsListView.ItemsSource = transactions;
-        }
-
-        
-        public async Task<StatsResponse> GetStatsAsync(HttpClient hc)
-        {
-            var bsc = new BlockscoutClient(hc);
-            return await bsc.Get_statsAsync();
-        }
-
-        public static async Task <ICollection<Transaction>> GetLatestTransactions(HttpClient hc)
-        {
-            var bsc = new BlockscoutClient(hc);
-            var r = await bsc.Get_txsAsync();
-            return r.Items.ToArray();
-        }
-
+       
         public static Transaction[] SampleTransactionData => BlockscoutSampleData.Transactions;
 
-       
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            DasboardNavigationView.Navigate(typeof(StratisEVMBlockchainHomeUserControl));
+        }
     }
 }
