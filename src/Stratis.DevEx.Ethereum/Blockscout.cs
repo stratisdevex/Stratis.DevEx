@@ -5313,20 +5313,20 @@ namespace Stratis.DevEx.Ethereum.Explorers
         }
 
         [Newtonsoft.Json.JsonIgnore]
-        public string ShortenedHash => Hash?.Substring(0,30) + "..." + new string(Hash.Reverse().Take(4).ToArray());
+        public string ShortenedHash => Hash?.Substring(0,30) + "..." + new string(Hash.Reverse().Take(6).Reverse().ToArray());
 
         [Newtonsoft.Json.JsonIgnore]
-        public string ShortenedTo => To?.Hash.Substring(0, 4) + "..." + new string(To?.Hash.Reverse().Take(4).ToArray());
+        public string ShortenedTo => To?.Hash.Substring(0, 6) + "..." + new string(To?.Hash.Reverse().Take(6).Reverse().ToArray());
 
         [Newtonsoft.Json.JsonIgnore]
-        public string ShortenedFrom => From?.Hash.Substring(0, 4) + "..." + new string(From?.Hash.Reverse().Take(4).ToArray());
+        public string ShortenedFrom => From?.Hash.Substring(0, 6) + "..." + new string(From?.Hash.Reverse().Take(6).Reverse().ToArray());
 
         [Newtonsoft.Json.JsonIgnore]
         public DateTime TransactionTime => DateTime.Parse(Timestamp);
 
         public string TransactionType => Transaction_types.Contains("token_transfer") ? "Token Transfer" :
-                                         Transaction_types.Contains("contract_call") ? "Contract Call" :
-                                         Transaction_types.Contains("coin_transfer") ? "Coin Transfer" :
+                                         Transaction_types.Contains("contract_call")  ? "Contract Call " :
+                                         Transaction_types.Contains("coin_transfer")  ? "Coin Transfer " :
                                          Transaction_types.First();
 
         public string TransactionResult => Result[0].ToString().ToUpper() + Result.Substring(1);
@@ -5830,7 +5830,7 @@ namespace Stratis.DevEx.Ethereum.Explorers
 
         [Newtonsoft.Json.JsonIgnore]
         public string ShortenedHash =>
-          this?.Hash.Substring(0, 4) + "..." + new string(this?.Hash.Reverse().Take(4).ToArray());
+          this?.Hash.Substring(0, 6) + "..." + new string(this?.Hash.Reverse().Take(6).Reverse().ToArray());
 
     }
 
