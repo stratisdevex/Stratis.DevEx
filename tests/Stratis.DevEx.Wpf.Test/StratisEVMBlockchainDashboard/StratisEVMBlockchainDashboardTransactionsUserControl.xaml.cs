@@ -30,11 +30,13 @@ namespace Stratis.VS.StratisEVM.UI
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             var hc = new HttpClient();
+            var stats = await GetStatsAsync(hc);
+            var pt = await GetLatestPendingTransactions(hc);
+            TransactionsTodayTextBlock.Text = stats.Transactions_today;   
+            PendingTransactionsTodayTextBlock.Text = pt.Count.ToString();   
+            GasUsedTodayTextBlock.Text = stats.Gas_used_today;
             var transactions = await GetLatestTransactions(hc);
-            TransactionsTodayTextBlock.Text = transactions.Count.ToString();    
-            PendingTransactionsTodayTextBlock.Text = transactions.Count(t => t.Status != "validated").ToString();
-            TransactionFeesTodayTextBlock.Text = transactions.Sum(t => Double.Parse(t.Fee.Value)).ToString();
-            TransactionsListView.ItemsSource = transactions;    
+            TransactionsListView.ItemsSource = transactions;
         }
 
         public async Task<StatsResponse> GetStatsAsync(HttpClient hc)
@@ -50,10 +52,10 @@ namespace Stratis.VS.StratisEVM.UI
             return r.Items.ToArray();
         }
 
-        public static async Task<ICollection<Transaction>> GetLatestValidatedTransactions(HttpClient hc)
+        public static async Task<ICollection<Transaction>> GetLatestPendingTransactions(HttpClient hc)
         {
             var bsc = new BlockscoutClient(hc);
-            var r = await bsc.Get_txsAsync(filter:"validated");
+            var r = await bsc.Get_txsAsync(filter:"pending");
             return r.Items.ToArray();
         }
     }

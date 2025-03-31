@@ -45,8 +45,8 @@
             <ui:CardControl Grid.Row="1" Grid.Column="0" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon ArrowSwap24}" Foreground="Green">
                 <ui:CardControl.Header>
                     <StackPanel>
-                        <ui:TextBlock Text="Transactions(24h): " Margin="0" FontTypography="Body" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock Name="TransactionsTodayTextBlock" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Text="Transactions(24h): " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Name="TransactionsTodayTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
                     </StackPanel>
                 </ui:CardControl.Header>
             </ui:CardControl>
@@ -54,17 +54,17 @@
             <ui:CardControl Grid.Row="1" Grid.Column="1" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon ArrowSwap24}" Foreground="Orange">
                 <ui:CardControl.Header>
                     <StackPanel>
-                        <ui:TextBlock Text="Pending Transactions(24h): " Margin="0" FontTypography="Body" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock Name="PendingTransactionsTodayTextBlock" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Text="Pending transactions(24h): " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Name="PendingTransactionsTodayTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
                     </StackPanel>
                 </ui:CardControl.Header>
             </ui:CardControl>
 
-            <ui:CardControl Grid.Row="1" Grid.Column="2" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon MoneyCalculator20}" Foreground="Blue">
+            <ui:CardControl Grid.Row="1" Grid.Column="2" Margin="4,4,4,0" Padding="0" Icon="{ui:SymbolIcon GasPump20}" Foreground="Blue">
                 <ui:CardControl.Header>
                     <StackPanel>
-                        <ui:TextBlock Text="Transaction fees(24h): " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
-                        <ui:TextBlock Name="TransactionFeesTodayTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Text="Gas used(24h): " Margin="0" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="WrapWithOverflow" />
+                        <ui:TextBlock Name="GasUsedTodayTextBlock" Appearance="Secondary" Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="WrapWithOverflow" />
                     </StackPanel>
                 </ui:CardControl.Header>
             </ui:CardControl>
@@ -89,7 +89,7 @@
                         <DataTemplate DataType="{x:Type stratisethexp:Transaction}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="425" />
+                                    <ColumnDefinition Width="450" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
@@ -103,7 +103,7 @@
                                         <ui:TextBlock Name="TransactionStatusTextBox" HorizontalAlignment="Left" Text="{Binding TransactionResult}" Width="55" />
                                     </StackPanel>
                                 </StackPanel>
-                                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top" TextElement.Foreground="{ui:ThemeResource AccentTextFillColorPrimaryBrush}">
+                                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
                                     <ui:SymbolIcon Symbol="ArrowSwap24" FontSize="16" />
                                     <ui:TextBlock FontWeight="SemiBold"   Text="{Binding ShortenedHash, Mode=OneWay}" />
                                     <ui:TextBlock Margin="4,0,0,0" FontWeight="UltraLight"   Text="{Binding TransactionTime, Mode=OneWay}" />

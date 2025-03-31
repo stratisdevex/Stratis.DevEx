@@ -144,7 +144,7 @@
                         <DataTemplate DataType="{x:Type stratisethexp:Transaction}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="425" />
+                                    <ColumnDefinition Width="450" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
@@ -158,7 +158,7 @@
                                         <ui:TextBlock Name="TransactionStatusTextBox" HorizontalAlignment="Left" Text="{Binding TransactionResult}" Width="55" />
                                     </StackPanel>
                                 </StackPanel>
-                                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top" TextElement.Foreground="{ui:ThemeResource AccentTextFillColorPrimaryBrush}">
+                                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top">
                                     <ui:SymbolIcon Symbol="ArrowSwap24" FontSize="16" />
                                     <ui:TextBlock FontWeight="SemiBold"   Text="{Binding ShortenedHash, Mode=OneWay}" />
                                     <ui:TextBlock Margin="4,0,0,0" FontWeight="UltraLight"   Text="{Binding TransactionTime, Mode=OneWay}" />
