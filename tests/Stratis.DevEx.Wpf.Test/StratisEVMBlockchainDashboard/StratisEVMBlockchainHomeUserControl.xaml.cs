@@ -26,6 +26,7 @@ namespace Stratis.VS.StratisEVM.UI
             var hc = new HttpClient();
             var Stats = await GetStatsAsync(hc);
             var transactions = await GetLatestTransactions(hc);
+            var blocks = await GetLatestBlocks(hc);
             TotalBlocksTextBlock.Text = Int64.Parse(Stats.Total_blocks).ToString("N");
             AverageBlockTimeTextBlock.Text = (Stats.Average_block_time / 1000.0).ToString() + "s";
             TransactionsTodayTextBlock.Text = Stats.Transactions_today;
@@ -33,6 +34,7 @@ namespace Stratis.VS.StratisEVM.UI
             TotalAddressesTextBlock.Text = Int64.Parse(Stats.Total_addresses).ToString("N");
             NetworkUtilizationTextBlock.Text = Stats.Network_utilization_percentage.ToString("N");
             TransactionsListView.ItemsSource = transactions;
+            BlocksListView.ItemsSource = blocks;    
         }
 
         public async Task<StatsResponse> GetStatsAsync(HttpClient hc)
@@ -45,6 +47,13 @@ namespace Stratis.VS.StratisEVM.UI
         {
             var bsc = new BlockscoutClient(hc);
             var r = await bsc.Get_txsAsync();
+            return r.Items.ToArray();
+        }
+
+        public static async Task<ICollection<Block>> GetLatestBlocks(HttpClient hc)
+        {
+            var bsc = new BlockscoutClient(hc);
+            var r = await bsc.Get_blocksAsync();
             return r.Items.ToArray();
         }
 

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 
-namespace Stratis.DevEx.Ethereum
+using Stratis.DevEx.Ethereum.Explorers;
+
+namespace Stratis.DevEx
 {
     public static class Extensions
     {
@@ -13,8 +16,8 @@ namespace Stratis.DevEx.Ethereum
             else
             {
                 var n = result.Exception.GetType().Name;
-                return n.Contains("RpcClient") || n.Contains(("Http"));  
+                return n.Contains("RpcClient") || n.Contains(("Http"));
             }
-        }
+        }  
     }
 }

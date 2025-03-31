@@ -4882,6 +4882,8 @@ namespace Stratis.DevEx.Ethereum.Explorers
             set { _additionalProperties = value; }
         }
 
+        [Newtonsoft.Json.JsonIgnore]
+        public DateTime Time => DateTime.Parse(Timestamp);
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -5825,6 +5827,10 @@ namespace Stratis.DevEx.Ethereum.Explorers
             get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
             set { _additionalProperties = value; }
         }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public string ShortenedHash =>
+          this?.Hash.Substring(0, 4) + "..." + new string(this?.Hash.Reverse().Take(4).ToArray());
 
     }
 

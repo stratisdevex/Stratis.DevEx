@@ -7,11 +7,11 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI"
              xmlns:stratisethexp="clr-namespace:Stratis.DevEx.Ethereum.Explorers;assembly=Stratis.DevEx.Ethereum"
-             d:DesignHeight="800" d:DesignWidth="800"
+             d:DesignHeight="800" d:DesignWidth="1000"
              ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
              Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-             Width="800"
+             Width="1000"
              Height="1000"
              Loaded="UserControl_Loaded">
     <UserControl.Resources>
@@ -96,16 +96,40 @@
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="200" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <ui:TextBlock Grid.Row="0" Grid.Column="0" Margin="0,4,0,0" FontSize="18" FontWeight="DemiBold" Text="Latest blocks" Appearance="Primary" />
-            <ui:ListView Name="BlocksListView" Grid.Row="1" Grid.Column="0" MaxHeight="800" SelectionMode="Single"  d:ItemsSource="{x:Static stratisui:StratisEVMBlockchainHomeUserControl.SampleBlockData}">
+            <ui:TextBlock Grid.Row="0" Grid.Column="0" Margin="10,0,0,0" FontSize="18" FontWeight="DemiBold" Text="Latest blocks" Appearance="Primary" />
+            <ui:ListView Name="BlocksListView" Grid.Row="1" Grid.Column="0" Margin="0,0,0,10" MaxHeight="800" SelectionMode="Single"  d:ItemsSource="{x:Static stratisui:StratisEVMBlockchainHomeUserControl.SampleBlockData}">
+                <ui:ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type stratisethexp:Block}">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon FontSize="20" Symbol="Cube20" />
+                                <ui:TextBlock Margin="5" FontTypography="BodyStrong" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Height}" TextWrapping="WrapWithOverflow" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:TextBlock Margin="0,0,6,0" FontTypography="Body" Text="Time: " TextWrapping="WrapWithOverflow" />
+                                <ui:TextBlock Margin="27,0,6,0" FontTypography="Body" Text="{Binding Time.TimeOfDay}" TextWrapping="WrapWithOverflow" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:TextBlock Margin="0,0,6,0" FontTypography="Body" Text="Txns: " TextWrapping="WrapWithOverflow" />
+                                <ui:TextBlock Margin="27,0,6,0" FontTypography="Body" Text="{Binding Transaction_count}" TextWrapping="WrapWithOverflow" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ui:TextBlock Margin="0,0,6,0" FontTypography="Body" Text="Validator: " TextWrapping="WrapWithOverflow" />
+                                <ui:TextBlock Margin="0,0,6,0" FontTypography="Body" Text="{Binding Miner.ShortenedHash}" TextWrapping="WrapWithOverflow" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ui:ListView.ItemTemplate>
             </ui:ListView>
-            <Grid Grid.Row="0" Grid.Column="1" Margin="0,4,0,0">
+            <ui:TextBlock Margin="10,0,0,0" Grid.Row="0" Grid.Column="1" FontSize="18" FontWeight="DemiBold" Text="Latest transactions" Appearance="Primary" />
+            <Grid Grid.Row="1" Grid.Column="1" Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="640" />
                     <ColumnDefinition Width="480" />
@@ -114,16 +138,13 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <ui:TextBlock Grid.Row="0" FontSize="18" FontWeight="DemiBold" Text="Latest transactions" Appearance="Primary" />
                 <ui:ListView Name="TransactionsListView" Grid.Row="1" Grid.Column="0" MaxHeight="800" SelectionMode="Single" 
                             d:ItemsSource="{x:Static stratisui:StratisEVMBlockchainHomeUserControl.SampleTransactionData}">
                     <ui:ListView.ItemTemplate>
                         <DataTemplate DataType="{x:Type stratisethexp:Transaction}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="425" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
