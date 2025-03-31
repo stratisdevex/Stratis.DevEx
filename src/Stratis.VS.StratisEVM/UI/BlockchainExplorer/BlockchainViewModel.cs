@@ -1,17 +1,22 @@
-﻿using Stratis.DevEx;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+
+using Stratis.DevEx;
+using Stratis.DevEx.Ethereum.Explorers;
 
 namespace Stratis.VS.StratisEVM.UI.ViewModel
 {
     public enum BlockchainInfoKind
     {
         Folder,
+        UserFolder,
         Network,
         Endpoint,
         Account,
@@ -36,6 +41,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         public BlockchainInfoKind Kind { get; set; }
         public string Name { get; set; }
         public BlockchainInfo Parent { get; set; }
+       
         public object Data { get; set; }
         public ObservableCollection<BlockchainInfo> Children = new ObservableCollection<BlockchainInfo>();
         #endregion
@@ -57,7 +63,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         #region Constructors
         public BlockchainViewModel()
         {
-            Objects = CreateTestData();
+            Objects = CreateInitialTreeData();
         }
         #endregion
 
@@ -87,6 +93,10 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         }
 
         public string AssemblyLocation => Runtime.AssemblyLocation;
+
+        public static BlockscoutClient BlockscoutClient { get; } = new BlockscoutClient(new HttpClient());  
+
+        
         #endregion
 
         #region Methods
@@ -135,6 +145,20 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             accts.AddChild(BlockchainInfoKind.Account, "acct 1", "This is account 1");
             //var wall = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
             data.Add(eth);
+            return data;
+        }
+
+        public static ObservableCollection<BlockchainInfo> CreateInitialTreeData()
+        {
+            var data = new ObservableCollection<BlockchainInfo>();
+            var mainnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Mainnet");
+            var endpoints = mainnet.AddChild(BlockchainInfoKind.Folder, "Endpoints");
+            endpoints.AddChild(BlockchainInfoKind.Endpoint, "rpc.stratisevm.com", new Uri("https://rpc.stratisevm.com:8545"));
+            data.Add(mainnet);
+            //var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Testnet");
+            //mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
+            //data.Add(mainnet);
+            //data.Add(testnet);
             return data;
         }
         #endregion

@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:stratis="clr-namespace:Stratis.VS.StratisEVM;assembly="
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
              xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
              xmlns:wpftv="clr-namespace:Hardcodet.Wpf.GenericTreeView;assembly=Hardcodet.Wpf.GenericTreeView" 
@@ -26,22 +25,19 @@
         <StackPanel Orientation="Vertical">
             <stratisui:BlockchainExplorerTree x:Name="BlockchainExplorerTree"
                     Items="{Binding Source={StaticResource Blockchains}, Path=Objects}"
-                    RootNode="{StaticResource CustomRootNode}"
-                    TreeNodeStyle="{StaticResource SimpleFolders}"
-                    TreeStyle="{StaticResource SimpleTreeStyle}"
+                    RootNode="{StaticResource RootNode}"
+                    TreeNodeStyle="{StaticResource TreeViewItemStyle}"
+                    TreeStyle="{StaticResource TreeViewStyle}"
                     NodeSortDescriptions="{StaticResource AscendingNames}"
                     NodeContextMenu="{StaticResource TreeMenu}"
-                    SelectedItemChanged="OnSelectedItemChanged"          
-                    MouseDoubleClick="BlockchainExplorerTree_MouseDoubleClick"
-                    Margin="0,20,0,0" />
+                    SelectedItemChanged="OnSelectedItemChanged"
+                    Margin="0,0,0,0" />
         </StackPanel>
     </Grid>
 
     <UserControl.CommandBindings>
         <!-- bindings for context menu commands -->
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}" Executed="NewNetworkCmdExecuted" />
-
-        
     </UserControl.CommandBindings>
 
 </UserControl>

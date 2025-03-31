@@ -47,6 +47,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="UI\BlockchainExplorer\Converters.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindow.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowCommand.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml.cs">
@@ -81,6 +82,12 @@
     <Compile Include="UI\SolidityProjectWizardDialogWindow.xaml.cs">
       <DependentUpon>SolidityProjectWizardDialogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardTransactionsUserControl.xaml.cs">
+      <DependentUpon>StratisEVMBlockchainDashboardTransactionsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainHomeUserControl.xaml.cs">
+      <DependentUpon>StratisEVMBlockchainHomeUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VSUtil.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +101,11 @@
     </Content>
     <Content Include="Images\AddNetwork.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Images\BlockchainNetwork.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Images\FolderClosed.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -146,15 +158,19 @@
     </Content>
     <Content Include="Images\Globe.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Images\StratisHeader.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Images\StratisIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Images\Url.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -312,6 +328,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardTransactionsUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainHomeUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Resource Include="Images\SolidityProjectProjectIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

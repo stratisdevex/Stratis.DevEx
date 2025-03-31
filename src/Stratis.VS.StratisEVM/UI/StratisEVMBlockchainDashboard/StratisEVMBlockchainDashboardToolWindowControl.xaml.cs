@@ -1,6 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+
+using Stratis.DevEx;
+using Stratis.DevEx.Ethereum;
+using Stratis.DevEx.Ethereum.Explorers;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -31,6 +42,16 @@ namespace Stratis.VS.StratisEVM.UI
             MessageBox.Show(
                 string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
                 "StratisEVMBlockchainDashboardToolWindow");
+        }
+
+        public static BitmapImage StratisHeaderImage { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "StratisHeader.jpg")));
+
+       
+        public static Transaction[] SampleTransactionData => BlockscoutSampleData.Transactions;
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            DasboardNavigationView.Navigate(typeof(StratisEVMBlockchainHomeUserControl));
         }
     }
 }
