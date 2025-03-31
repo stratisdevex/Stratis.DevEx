@@ -88,6 +88,7 @@
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainHomeUserControl.xaml.cs">
       <DependentUpon>StratisEVMBlockchainHomeUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VsTheme.cs" />
     <Compile Include="VSUtil.cs" />
   </ItemGroup>
   <ItemGroup>

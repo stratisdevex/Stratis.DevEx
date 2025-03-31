@@ -13,15 +13,16 @@
              ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
              ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
              Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-             Width="800"
-             Height="1280"
+             
+             Width="Auto"
+             Height="Auto"
              Name="MyToolWindow"
              Loaded="UserControl_Loaded">
     
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemesDictionary Theme="Light" />
+                <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -50,15 +51,7 @@
                             <GradientStop Offset="0" Color="#000000" />
                         </RadialGradientBrush>
                     </Border.Background>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Margin="48,0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
-                            <ui:Image Source="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.StratisHeaderImage}" />
-                        </StackPanel>
-                    </Grid>
+                    <ui:Image Source="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.StratisHeaderImage}" Stretch="UniformToFill" />
                 </Border>
             </Border>
         </ui:NavigationView.Header>

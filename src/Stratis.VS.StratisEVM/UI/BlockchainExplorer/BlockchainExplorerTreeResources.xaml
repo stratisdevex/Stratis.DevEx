@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
                     xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
-                    xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase">
-    
+                    xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                    xmlns:vs_shell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
     <stratisui:TreeViewItemKindConverter x:Key="TreeViewItemKindConverter"/>
     <stratisui:TreeViewItemNameConverter x:Key="TreeViewItemNameConverter"/>
     <stratisui:BlockchainInfoKindConverter x:Key="BlockchainInfoKindConverter"/>
@@ -11,7 +11,7 @@
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
             <Image x:Name="NodeImage" Source="{x:Static stratisui:BlockchainExplorerTree.FolderOpenIcon}" Width="16" Height="16"  />
-          <TextBlock x:Name="Name" Margin="2,0,0,0" Text="{Binding Path=Name}" /> 
+            <TextBlock x:Name="Name" Margin="2,0,0,0" Text="{Binding Path=Name}" /> 
         </StackPanel>
 
         <DataTemplate.Triggers>
@@ -92,7 +92,8 @@
   
     <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}">
         <Setter Property="Margin" Value="0,20,0,0" />
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowFrameBrush}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vs_shell:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static vs_shell:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
     </Style> 
   
     <ContextMenu x:Key="TreeMenu">
