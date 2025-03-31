@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Stratis.DevEx.Ethereum.Explorers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +25,36 @@ namespace Stratis.VS.StratisEVM.UI
         public StratisEVMBlockchainDashboardTransactionsUserControl()
         {
             InitializeComponent();
+        }
+
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            var hc = new HttpClient();
+            var transactions = await GetLatestTransactions(hc);
+            TransactionsTodayTextBlock.Text = transactions.Count.ToString();    
+            PendingTransactionsTodayTextBlock.Text = transactions.Count(t => t.Status != "validated").ToString();
+            TransactionFeesTodayTextBlock.Text = transactions.Sum(t => Double.Parse(t.Fee.Value)).ToString();
+            TransactionsListView.ItemsSource = transactions;    
+        }
+
+        public async Task<StatsResponse> GetStatsAsync(HttpClient hc)
+        {
+            var bsc = new BlockscoutClient(hc);
+            return await bsc.Get_statsAsync();
+        }
+
+        public static async Task<ICollection<Transaction>> GetLatestTransactions(HttpClient hc)
+        {
+            var bsc = new BlockscoutClient(hc);
+            var r = await bsc.Get_txsAsync();
+            return r.Items.ToArray();
+        }
+
+        public static async Task<ICollection<Transaction>> GetLatestValidatedTransactions(HttpClient hc)
+        {
+            var bsc = new BlockscoutClient(hc);
+            var r = await bsc.Get_txsAsync(filter:"validated");
+            return r.Items.ToArray();
         }
     }
 }
