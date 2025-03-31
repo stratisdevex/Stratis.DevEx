@@ -18,9 +18,9 @@ namespace Stratis.VS.StratisEVM.UI
     /// <summary>
     /// Interaction logic for StratisEVMTransactions.xaml
     /// </summary>
-    public partial class StratisEVMTransactions : UserControl
+    public partial class StratisEVMBlockchainDashboardTransactionsUserControl : UserControl
     {
-        public StratisEVMTransactions()
+        public StratisEVMBlockchainDashboardTransactionsUserControl()
         {
             InitializeComponent();
         }

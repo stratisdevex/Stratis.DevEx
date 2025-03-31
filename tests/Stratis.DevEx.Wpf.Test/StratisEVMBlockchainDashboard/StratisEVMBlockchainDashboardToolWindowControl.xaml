@@ -26,47 +26,41 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-        <ui:NavigationView Name="DasboardNavigationView" MinHeight="800" Margin="0" IsBackButtonVisible="Auto" IsPaneToggleVisible="True" PaneDisplayMode="Top" >
-            <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="Home" Icon="{ui:SymbolIcon Home24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainHomeUserControl}"  />
-                <ui:NavigationViewItem Content="Transactions" Icon="{ui:SymbolIcon AppFolder24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
-                <ui:NavigationViewItem Content="Blocks" Icon="{ui:SymbolIcon BezierCurveSquare20}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
-                <ui:NavigationViewItem Content="Accounts" Icon="{ui:SymbolIcon Library24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
-                <ui:NavigationViewItem Content="Contracts" Icon="{ui:SymbolIcon Library24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
-            </ui:NavigationView.MenuItems>
-            <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Icon="{ui:SymbolIcon Settings24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
-            </ui:NavigationView.FooterMenuItems>
-            <ui:NavigationView.AutoSuggestBox>
-                <ui:AutoSuggestBox MinWidth="300" Margin="0" PlaceholderText="Search" />
-            </ui:NavigationView.AutoSuggestBox>
-            <ui:NavigationView.Header>
-                <Border Height="200" CornerRadius="8">
-                    <Border CornerRadius="8">
-                        <Border.Background>
-                            <RadialGradientBrush>
-                                <GradientStop Offset="1" Color="#101112" />
-                                <GradientStop Offset="0" Color="#000000" />
-                            </RadialGradientBrush>
-                        </Border.Background>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Margin="48,0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
-                                <ui:Image Source="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.StratisHeaderImage}" />
-                            </StackPanel>
-                        </Grid>
-                    </Border>
+
+    <ui:NavigationView Name="DasboardNavigationView" MinHeight="800" Margin="0" IsBackButtonVisible="Auto" IsPaneToggleVisible="True" PaneDisplayMode="Top" >
+        <ui:NavigationView.MenuItems>
+            <ui:NavigationViewItem Content="Home" Icon="{ui:SymbolIcon Home24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainHomeUserControl}"  />
+            <ui:NavigationViewItem Content="Transactions" Icon="{ui:SymbolIcon AppFolder24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardTransactionsUserControl}" />
+            <ui:NavigationViewItem Content="Blocks" Icon="{ui:SymbolIcon BezierCurveSquare20}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+            <ui:NavigationViewItem Content="Accounts" Icon="{ui:SymbolIcon Library24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+            <ui:NavigationViewItem Content="Contracts" Icon="{ui:SymbolIcon Library24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+        </ui:NavigationView.MenuItems>
+        <ui:NavigationView.FooterMenuItems>
+            <ui:NavigationViewItem Icon="{ui:SymbolIcon Settings24}" TargetPageType="{x:Type stratisui:StratisEVMBlockchainDashboardToolWindowControl}" />
+        </ui:NavigationView.FooterMenuItems>
+        <ui:NavigationView.AutoSuggestBox>
+            <ui:AutoSuggestBox MinWidth="250" Margin="0" PlaceholderText="Search" />
+        </ui:NavigationView.AutoSuggestBox>
+        <ui:NavigationView.Header>
+            <Border Height="200" CornerRadius="8">
+                <Border CornerRadius="8">
+                    <Border.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Offset="1" Color="#101112" />
+                            <GradientStop Offset="0" Color="#000000" />
+                        </RadialGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="48,0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent">
+                            <ui:Image Source="{x:Static stratisui:StratisEVMBlockchainDashboardToolWindowControl.StratisHeaderImage}" />
+                        </StackPanel>
+                    </Grid>
                 </Border>
-
-            </ui:NavigationView.Header>
-            
-        </ui:NavigationView>
-
-
-        
-   
+            </Border>
+        </ui:NavigationView.Header>
+    </ui:NavigationView>
 </UserControl>
