@@ -8,12 +8,15 @@
              xmlns:wpftv="clr-namespace:Hardcodet.Wpf.GenericTreeView;assembly=Hardcodet.Wpf.GenericTreeView" 
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              stratisui:VsTheme.UseVsTheme="true"
              Name="BlockchainExplorerToolWindow">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ui:ThemesDictionary Theme="Light" />
+                <ui:ControlsDictionary />
                 <ResourceDictionary Source="BlockchainExplorerTreeResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!-- The view model that provides the data for the trees -->

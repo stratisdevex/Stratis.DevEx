@@ -159,14 +159,14 @@
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
         <Icon guid="guidImages2" id="bmpPic1" />
         <Strings>
-          <ButtonText>BlockchainExplorerToolWindow</ButtonText>
+          <ButtonText>Blockchain Explorer</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidStratisEVMPackageCmdSet" id="cmdidStratisEVMBlockchainDashboardToolWindowCommand" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
         <Icon guid="guidImages3" id="bmpPic1" />
         <Strings>
-          <ButtonText>StratisEVMBlockchainDashboardToolWindow</ButtonText>
+          <ButtonText>StratisEVM Blockchain Dashboard</ButtonText>
         </Strings>
       </Button>
     </Buttons>

@@ -1,16 +1,18 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                     xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
                     xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-                    xmlns:vs_shell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
+                    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
     <stratisui:TreeViewItemKindConverter x:Key="TreeViewItemKindConverter"/>
     <stratisui:TreeViewItemNameConverter x:Key="TreeViewItemNameConverter"/>
     <stratisui:BlockchainInfoKindConverter x:Key="BlockchainInfoKindConverter"/>
 
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
-            <Image x:Name="NodeImage" Source="{x:Static stratisui:BlockchainExplorerTree.FolderOpenIcon}" Width="16" Height="16"  />
+            <ui:SymbolIcon  x:Name="NodeIcon" Symbol="Globe12" />
+            <Image x:Name="NodeImage" Width="16" Height="16" Visibility="Hidden" Source="{x:Static stratisui:BlockchainExplorerTree.FolderOpenIcon}"/>
             <TextBlock x:Name="Name" Margin="2,0,0,0" Text="{Binding Path=Name}" /> 
         </StackPanel>
 
@@ -20,7 +22,7 @@
                     <Condition Binding="{Binding Path=Kind}" Value="UserFolder" />
                     <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
                 </MultiDataTrigger.Conditions>
-                <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.FolderOpenIcon}" />
+                <Setter TargetName="NodeIcon" Property="Symbol" Value="FolderOpen20" />
             </MultiDataTrigger>
 
             <MultiDataTrigger>
@@ -28,7 +30,7 @@
                     <Condition Binding="{Binding Path=Kind}" Value="UserFolder" />
                     <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="False" />
                 </MultiDataTrigger.Conditions>
-                <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.FolderClosedIcon}" />
+                <Setter TargetName="NodeIcon" Property="Symbol" Value="Folder20" />
             </MultiDataTrigger>
 
             <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
@@ -45,11 +47,11 @@
                     <Condition Binding="{Binding Path=Kind}" Value="Folder" />
                     <Condition Binding="{Binding Path=Name}" Value="Endpoints" />
                 </MultiDataTrigger.Conditions>
-                <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.GlobeIcon}" />
+                <Setter TargetName="NodeIcon" Property="Symbol" Value="Globe32" />
             </MultiDataTrigger>
             
             <DataTrigger Binding="{Binding Path=Kind}" Value="Endpoint">
-                <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.UrlIcon}" />
+                <Setter TargetName="NodeIcon" Property="Symbol" Value="CloudLink16" />
             </DataTrigger>
 
             <MultiDataTrigger>
@@ -57,7 +59,9 @@
                     <Condition Binding="{Binding Path=Kind}" Value="Network" />
                     <Condition Binding="{Binding Path=Name}" Value="Stratis Mainnet" />
                 </MultiDataTrigger.Conditions>
+                <Setter TargetName="NodeImage" Property="Visibility" Value="Visible" />
                 <Setter TargetName="NodeImage" Property="Source" Value="{x:Static stratisui:BlockchainExplorerTree.StratisIcon}" />
+                <Setter TargetName="NodeIcon" Property="Visibility" Value="Hidden" />
             </MultiDataTrigger>
 
             
@@ -88,12 +92,13 @@
     <!-- this is the style that is applied to the tree items -->
     <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
         <Setter Property="HeaderTemplate" Value="{StaticResource BlockchainInfoTemplate}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
     </Style>
   
     <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}">
         <Setter Property="Margin" Value="0,20,0,0" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vs_shell:EnvironmentColors.ToolWindowTextBrushKey}}"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static vs_shell:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
+        
     </Style> 
   
     <ContextMenu x:Key="TreeMenu">

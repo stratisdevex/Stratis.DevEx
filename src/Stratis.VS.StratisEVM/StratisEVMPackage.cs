@@ -189,7 +189,12 @@ namespace Stratis.VS.StratisEVM
 
             await UI.BlockchainExplorerToolWindowCommand.InitializeAsync(this);
             await UI.StratisEVMBlockchainDashboardToolWindowCommand.InitializeAsync(this);
-            
+
+            //var shellSettingsManager = new Microsoft.VisualStudio.Shell.Settings.ShellSettingsManager(this);
+            //var store = shellSettingsManager.GetReadOnlySettingsStore(Microsoft.VisualStudio.Settings.SettingsScope.UserSettings);
+            //var theme = store.GetString("Theme", "BackupThemeId", string.Empty);
+
+
         }
         #endregion
 
@@ -234,7 +239,7 @@ namespace Stratis.VS.StratisEVM
             var receivingBlock = new ActionBlock<IProjectVersionedValue<IProjectSubscriptionUpdate>>(async u =>
             {
                 await this.JoinableTaskFactory.SwitchToMainThreadAsync();
-                VSUtil.LogInfo("Stratis EVM", "updatw");
+                //VSUtil.LogInfo("Stratis EVM", "update");
             });
             subscriptionService.JointRuleSource.SourceBlock.LinkTo(receivingBlock, new JointRuleDataflowLinkOptions() { PropagateCompletion = true}); 
         }

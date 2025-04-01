@@ -25,6 +25,7 @@ namespace Stratis.VS.StratisEVM.UI
         /// </summary>
         public BlockchainExplorerToolWindowControl()
         {
+            var _ = new Wpf.Ui.Controls.Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
             this.InitializeComponent();
             this.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
         }
