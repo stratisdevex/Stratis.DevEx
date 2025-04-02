@@ -6,12 +6,11 @@
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
              xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
              xmlns:wpftv="clr-namespace:Hardcodet.Wpf.GenericTreeView;assembly=Hardcodet.Wpf.GenericTreeView" 
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             stratisui:VsTheme.UseVsTheme="true"
              Name="BlockchainExplorerToolWindow">
-
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

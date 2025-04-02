@@ -50,7 +50,7 @@ namespace Stratis.VS.StratisEVM.UI
             var item = base.CreateTreeViewItem(data);
             if (data.Kind == BlockchainInfoKind.Network)
             {
-                item.ContextMenu = (ContextMenu)TryFindResource("TreeMenu2");
+                item.ContextMenu = (ContextMenu)TryFindResource("TreeMenu");
             }
             return item;
         }

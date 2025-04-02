@@ -34,7 +34,7 @@ namespace Stratis.VS.StratisEVM.UI
         {
             if (sender is BlockchainExplorerTree tree && tree.SelectedItem != null)
             {
-                if (tree.SelectedItem.Name == "Stratis Mainnet" && tree.SelectedItem.Kind == UI.ViewModel.BlockchainInfoKind.Network)
+                if (tree.SelectedItem.Name == "Stratis Mainnet" && tree.SelectedItem.Kind == BlockchainInfoKind.Network)
                 {
                     IVsUIShell vsUIShell = (IVsUIShell) Package.GetGlobalService(typeof(SVsUIShell));
                     Guid guid = typeof(StratisEVMBlockchainDashboardToolWindow).GUID;
@@ -71,20 +71,19 @@ namespace Stratis.VS.StratisEVM.UI
         }
 
         internal BlockchainExplorerToolWindow window;
-        /// <summary>
-        /// Handles the tree's <see cref="TreeViewBase{T}.SelectedItemChanged"/>
-        /// event and updates the status bar.
-        /// </summary>
-        private async Task OnSelectedItemChangedAsync(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e) 
-        {
-            await Task.CompletedTask;
-
-        }
+       
 
         private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
         {
-            
-            e.Handled = true;
+
+            if (sender is BlockchainExplorerTree tree && tree.SelectedItem != null)
+            {
+                if (tree.SelectedItem.Name == "Stratis Mainnet" && tree.SelectedItem.Kind == BlockchainInfoKind.Network)
+                {
+                    
+                    //e.Handled = true;
+                }
+            }
         }
 
         private void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)

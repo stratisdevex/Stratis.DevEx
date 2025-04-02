@@ -83,6 +83,20 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="AddNetworkDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V64 H64 V0 H0 Z">
+                <DrawingGroup Opacity="1" Transform="0.1,0,0,-0.1,0,64">
+                    <GeometryDrawing Brush="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}" Geometry="F1 M64,64z M0,0z M112,528C96,512 96,368 112,352 119,345 154,340 200,340 246,340 281,345 288,352 304,368 304,512 288,528 281,535 246,540 200,540 154,540 119,535 112,528z M260,440L260,380 200,380 140,380 140,440 140,500 200,500 260,500 260,440z" />
+                    <GeometryDrawing Brush="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}" Geometry="F1 M64,64z M0,0z M352,528C345,521 340,486 340,440 340,394 345,359 352,352 359,345 394,340 440,340 486,340 521,345 528,352 544,368 544,512 528,528 521,535 486,540 440,540 394,540 359,535 352,528z M500,440L500,380 440,380 380,380 380,440 380,500 440,500 500,500 500,440z" />
+                    <GeometryDrawing Brush="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}" Geometry="F1 M64,64z M0,0z M112,288C96,272 96,128 112,112 119,105 154,100 200,100 246,100 281,105 288,112 304,128 304,272 288,288 272,304 128,304 112,288z M260,200L260,140 200,140 140,140 140,200 140,260 200,260 260,260 260,200z" />
+                    <GeometryDrawing Brush="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}" Geometry="F1 M64,64z M0,0z M420,260L420,220 380,220C347,220 340,217 340,200 340,183 347,180 380,180L420,180 420,140C420,107 423,100 440,100 457,100 460,107 460,140L460,180 500,180C533,180 540,183 540,200 540,217 533,220 500,220L460,220 460,260C460,293 457,300 440,300 423,300 420,293 420,260z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    
 
     <!-- Tree view items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
@@ -122,47 +136,49 @@
                     <Condition Binding="{Binding Path=Kind}" Value="Network" />
                     <Condition Binding="{Binding Path=Name}" Value="Stratis Mainnet" />
                 </MultiDataTrigger.Conditions>
-                <Setter TargetName="NodeImage" Property="Source" Value="{DynamicResource StratisIconDrawingImage}" />
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource StratisIconDrawingImage}" />
             </MultiDataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
-    
-    
-    <!-- Context Menus -->
 
-    <ContextMenu x:Key="NetworkContextMenu">
-        <MenuItem Header="Add Endpoint..." Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
-            <MenuItem.Icon>
-                <Image Source="{x:Static stratisui:BlockchainExplorerTree.GlobeIcon}" Width="16" Height="16" />
-            </MenuItem.Icon>
-        </MenuItem>
-    </ContextMenu>
-
-    <ContextMenu x:Key="StratisNetworkContextMenu">
-        <MenuItem Header="Statistics" Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
-            <MenuItem.Icon>
-                <Image Source="{x:Static stratisui:BlockchainExplorerTree.GlobeIcon}" Width="16" Height="16" />
-            </MenuItem.Icon>
-        </MenuItem>
-    </ContextMenu>
-    
-    
-    <!-- this is the style that is applied to the tree items -->
+    <!-- Tree items style -->
     <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
         <Setter Property="HeaderTemplate" Value="{StaticResource BlockchainInfoTemplate}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}"/>
         <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
     </Style>
-  
+
     <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}">
         <Setter Property="Margin" Value="0,20,0,0" />
-        
-    </Style> 
-  
-    <ContextMenu x:Key="TreeMenu">
+    </Style>
+    
+   <!-- Context menu style -->
+    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
+    </Style>
+ 
+    <!-- Context Menus -->
+    <ContextMenu x:Key="NetworkContextMenu" Style="{DynamicResource ContextMenuStyle}">
+        <MenuItem Header="Add Endpoint..." Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource GlobeDrawingImage}" Width="16" Height="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+
+    <ContextMenu x:Key="StratisNetworkContextMenu" Style="{DynamicResource ContextMenuStyle}">
+        <MenuItem Header="Statistics" Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource GlobeDrawingImage}" Width="16" Height="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+
+    <ContextMenu x:Key="TreeMenu" Style="{DynamicResource ContextMenuStyle}">
         <MenuItem Header="Add Network..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
             <MenuItem.Icon>
-                <Image Source="{x:Static stratisui:BlockchainExplorerTree.NetworkIcon}" Width="16" Height="16" />
+                <Image Source="{DynamicResource AddNetworkDrawingImage}" Width="16" Height="16" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
@@ -178,40 +194,26 @@
     <cm:SortDescription PropertyName="Header.CategoryName" Direction="Descending" />
   </cm:SortDescriptionCollection>
   
-  
-
-  <!-- default style for hyperlinks -->
-  <Style TargetType="{x:Type Hyperlink}">
-    <Setter Property="Foreground"
-            Value="#FFA72222" />
-    <Setter Property="TextDecorations"
-            Value="None" />
-    <Setter Property="ToolTip"
-            Value="Visit website" />
-  </Style>
-
-    <!-- a custom root node for the tree -->
-    <TreeViewItem x:Key="RootNode">
+    <!-- The root node for the tree -->
+    <TreeViewItem x:Key="RootNode"  
+                  Foreground="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}"
+                  Background="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowBackgroundBrushKey}}">
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
-                <Image x:Name="RootNodeImage" Source="{StaticResource BlockchainNetworkDrawingImage}" Width="16" Height="16" />
-                <TextBlock Text="EVM Networks" Margin="4,0,0,0" 
-                           Foreground="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+                <Image x:Name="RootNodeImage" Source="{DynamicResource BlockchainNetworkDrawingImage}" Width="16" Height="16" />
+                <TextBlock Text="EVM Networks" Margin="4,0,0,0" />
             </StackPanel>
         </TreeViewItem.Header>
         <TreeViewItem.ContextMenu>
-            <ContextMenu>
+            <ContextMenu Style="{StaticResource ContextMenuStyle}">
                 <MenuItem Header="Add Network..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
                     <MenuItem.Icon>
-                        <Image Source="{x:Static stratisui:BlockchainExplorerTree.AddNetworkIcon}" Width="16" Height="16" />
+                        <Image Source="{StaticResource AddNetworkDrawingImage}" Width="16" Height="16" />
                     </MenuItem.Icon>
                 </MenuItem>
             </ContextMenu>
-
         </TreeViewItem.ContextMenu>
     </TreeViewItem>
-
-
 
 
 </ResourceDictionary>
