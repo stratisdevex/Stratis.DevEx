@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Windows;
+using System.Threading.Tasks;
+//using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio;
-
+using Microsoft.VisualStudio.PlatformUI;
 using Hardcodet.Wpf.GenericTreeView;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Extensions;
@@ -28,10 +29,12 @@ namespace Stratis.VS.StratisEVM.UI
         public BlockchainExplorerToolWindowControl()
         {
             var _ = new Wpf.Ui.Controls.Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
-            this.InitializeComponent();
+            InitializeComponent();
+            cds.SetDialogHost(RootContentDialog);
             this.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
         }
 
+        #region Event handlers
         private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (sender is BlockchainExplorerTree tree && tree.SelectedItem != null)
@@ -52,29 +55,7 @@ namespace Stratis.VS.StratisEVM.UI
                 e.Handled = true;
             }
         }
-
-        //protected override void OnInitialized(System.EventArgs e)
-        //{
-        //    base.OnInitialized(e);
-        //    var x = 1;
-        //}
-        /// <summary>
-        /// Handles click on the button by displaying a message box.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event args.</param>
-        [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.MessageBox.Show(
-                string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
-                "BlockchainExplorerToolWindow");
-        }
-
-        internal BlockchainExplorerToolWindow window;
-       
-
+        
         private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
         {
 
@@ -90,21 +71,42 @@ namespace Stratis.VS.StratisEVM.UI
 
         private async void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var cs = new ContentDialogService();
-            cs.SetDialogHost(RootContentDialog);
-            ContentDialogResult result = await cs.ShowSimpleDialogAsync(
-            new SimpleContentDialogCreateOptions()
+            var dw = new BlockchainExplorerDialogWindow();
+           
+            dw.Content = (StackPanel)TryFindResource("AddNetworkDialogContent");
+            
+            dw.ShowModal();
+            var sp = (StackPanel)dw.Content;
+            var to = (StackPanel)sp.Children[0]; 
+            var t = (Wpf.Ui.Controls.TextBox) to.Children[1];   
+            var te = t.Text;
+            /*
+            try
             {
-                Title = "Save your work?",
-                Content = (StackPanel)TryFindResource("DialogContent"),
-                PrimaryButtonText = "Save",
-                SecondaryButtonText = "Don't Save",
-                CloseButtonText = "Cancel",
-            });
+                
+                var r = await cds.ShowSimpleDialogAsync(new SimpleContentDialogCreateOptions()
+                {
+                    Title = "Add EVM Network",
+                    Content = (StackPanel)TryFindResource("AddNetworkDialogContent"),
+                    PrimaryButtonText = "Save",
+                    SecondaryButtonText = "Don't Save",
+                    CloseButtonText = "Cancel",
+                });
 
+            }
 
+            
+            catch {}*/
+            
         }
+        #endregion
 
-        
+        #region Fields
+        internal BlockchainExplorerToolWindow window;
+        internal ContentDialogService cds = new ContentDialogService();
+
+        public string AddNetworkName;
+        #endregion
+
     }
 }

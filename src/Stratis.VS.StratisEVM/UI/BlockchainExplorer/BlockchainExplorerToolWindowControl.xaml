@@ -22,10 +22,9 @@
             <vm:BlockchainViewModel x:Key="Blockchains" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <!-- The view model that provides the data for the trees -->
- 
+   
     <Grid>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Grid.Row="0">
             <stratisui:BlockchainExplorerTree x:Name="BlockchainExplorerTree"
                     Items="{Binding Source={StaticResource Blockchains}, Path=Objects}"
                     RootNode="{StaticResource RootNode}"
@@ -36,7 +35,7 @@
                     SelectedItemChanged="OnSelectedItemChanged"
                     Margin="0,0,0,0" />
         </StackPanel>
-        <ContentPresenter x:Name="RootContentDialog" />
+        <ContentPresenter x:Name="RootContentDialog" Grid.Row="0"/>
     </Grid>
 
     <UserControl.CommandBindings>
