@@ -4,14 +4,16 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-using System.Threading.Tasks;
-
-using Hardcodet.Wpf.GenericTreeView;
-
-using Stratis.VS.StratisEVM.UI.ViewModel;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio;
+
+using Hardcodet.Wpf.GenericTreeView;
+using Wpf.Ui.Controls;
+using Wpf.Ui.Extensions;
+
+using Stratis.VS.StratisEVM.UI.ViewModel;
+using Wpf.Ui;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -65,7 +67,7 @@ namespace Stratis.VS.StratisEVM.UI
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
                 "BlockchainExplorerToolWindow");
         }
@@ -86,10 +88,20 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
-        private void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var add = new BlockchainExplorerAddNetworkDialog();
-            add.ShowDialog();
+            var cs = new ContentDialogService();
+            cs.SetDialogHost(RootContentDialog);
+            ContentDialogResult result = await cs.ShowSimpleDialogAsync(
+            new SimpleContentDialogCreateOptions()
+            {
+                Title = "Save your work?",
+                Content = (StackPanel)TryFindResource("DialogContent"),
+                PrimaryButtonText = "Save",
+                SecondaryButtonText = "Don't Save",
+                CloseButtonText = "Cancel",
+            });
+
 
         }
 

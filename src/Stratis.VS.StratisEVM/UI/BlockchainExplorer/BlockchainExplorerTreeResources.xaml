@@ -6,9 +6,6 @@
                     xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
                     xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
                     xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
-    <stratisui:TreeViewItemKindConverter x:Key="TreeViewItemKindConverter"/>
-    <stratisui:TreeViewItemNameConverter x:Key="TreeViewItemNameConverter"/>
-    <stratisui:BlockchainInfoKindConverter x:Key="BlockchainInfoKindConverter"/>
     
     <!--- Icons -->
     <DrawingImage x:Key="StratisIconDrawingImage">
@@ -95,8 +92,6 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
-
-    
 
     <!-- Tree view items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
@@ -208,12 +203,18 @@
             <ContextMenu Style="{StaticResource ContextMenuStyle}">
                 <MenuItem Header="Add Network..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
                     <MenuItem.Icon>
-                        <Image Source="{StaticResource AddNetworkDrawingImage}" Width="16" Height="16" />
+                        <Image Source="{StaticResource BlockchainNetworkDrawingImage}" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     </MenuItem.Icon>
                 </MenuItem>
             </ContextMenu>
         </TreeViewItem.ContextMenu>
     </TreeViewItem>
+    
+    <!-- Dialogs -->
+    <StackPanel x:Key="DialogContent">
+        <TextBlock Text="Lorem ipsum dolor sit amet, adipisicing elit." TextWrapping="Wrap" />
+        <CheckBox Content="Upload your content to the cloud." />
+    </StackPanel>
 
 
 </ResourceDictionary>
