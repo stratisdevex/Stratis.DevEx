@@ -71,7 +71,10 @@ namespace Stratis.VS.StratisEVM.UI
 
         private async void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+
+            /*
             var dw = new BlockchainExplorerDialogWindow();
+            
            
             dw.Content = (StackPanel)TryFindResource("AddNetworkDialogContent");
             
@@ -80,24 +83,32 @@ namespace Stratis.VS.StratisEVM.UI
             var to = (StackPanel)sp.Children[0]; 
             var t = (Wpf.Ui.Controls.TextBox) to.Children[1];   
             var te = t.Text;
-            /*
+            */
+            var dw = new ContentDialog(RootContentDialog)
+            {
+                Title = "Add EVM Network",
+                PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                Content = (StackPanel)TryFindResource("AddNetworkDialogContent"),
+                PrimaryButtonText = "Save",
+                CloseButtonText = "Cancel",
+                Background = (System.Windows.Media.Brush) TryFindResource(EnvironmentColors.ToolWindowBackgroundBrushKey)
+            }; 
             try
             {
-                
-                var r = await cds.ShowSimpleDialogAsync(new SimpleContentDialogCreateOptions()
+                var r = await dw.ShowAsync(); 
+                if (r!= ContentDialogResult.Primary) 
                 {
-                    Title = "Add EVM Network",
-                    Content = (StackPanel)TryFindResource("AddNetworkDialogContent"),
-                    PrimaryButtonText = "Save",
-                    SecondaryButtonText = "Don't Save",
-                    CloseButtonText = "Cancel",
-                });
-
+                    return;
+                }
             }
+            catch {
+                return;
+            }
+            var sp = (StackPanel)dw.Content;
+            var to = (StackPanel)sp.Children[0];
+            var t = (Wpf.Ui.Controls.TextBox)to.Children[1];
+            var te = t.Text;
 
-            
-            catch {}*/
-            
         }
         #endregion
 

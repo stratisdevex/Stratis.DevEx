@@ -211,25 +211,26 @@
     </TreeViewItem>
     
     <!-- Dialogs -->
-    <StackPanel x:Key="AddNetworkDialogContent" Orientation="Vertical" Width="500" Height="200" VerticalAlignment="Top">
+    <StackPanel x:Key="AddNetworkDialogContent" Orientation="Vertical" VerticalAlignment="Top" Background="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowBackgroundBrushKey}}">
         <StackPanel Orientation="Horizontal">
-            <ui:TextBlock Text="Enter the network name:" Margin="10,2,10,4" />
-            <ui:TextBox x:Name="NameTextBox" Width="50" Margin="10,2,10,4" />
+            <TextBlock Text="Name:" VerticalAlignment="Center" />
+            <ui:TextBox x:Name="NameTextBox" Width="150" Margin="10,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-            <ui:TextBlock Text="Enter the network JSON-RPC URL:" Margin="10,2,10,4" />
-            <ui:TextBox x:Name="RpcUrlTextBox" Width="50" Margin="10,2,10,4" />
+            <TextBlock Text="JSON-RPC URL:" VerticalAlignment="Center" />
+            <ui:TextBox x:Name="RpcUrlTextBox" Width="150" Margin="10,2,10,4" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-            <ui:TextBlock Text="Enter the network chain id:" Margin="10,2,10,4" />
-            <ui:NumberBox Name="ChainIdNumberBox" MaxDecimalPlaces="0" />
+            <TextBlock Text="Chain Id:" VerticalAlignment="Center" />
+            <ui:NumberBox Name="ChainIdNumberBox" MaxDecimalPlaces="0" Minimum="0" Width="50" Margin="10,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
     </StackPanel>
 
-    <Style x:Name="DialogWindowStyle" TargetType="{x:Type vsshell:DialogWindow}">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowTextBrushKey}}"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
-    </Style>
+   
+  
+
+    
+
 
 
 </ResourceDictionary>
