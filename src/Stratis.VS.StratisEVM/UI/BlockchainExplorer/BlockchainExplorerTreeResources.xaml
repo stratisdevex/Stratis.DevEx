@@ -211,7 +211,7 @@
     </TreeViewItem>
     
     <!-- Dialogs -->
-    <StackPanel x:Key="AddNetworkDialogContent" Orientation="Vertical" VerticalAlignment="Top" Background="{DynamicResource {x:Static vsshell:EnvironmentColors.ToolWindowBackgroundBrushKey}}">
+    <StackPanel x:Key="AddNetworkDialogContent" Orientation="Vertical" VerticalAlignment="Top">
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Name:" VerticalAlignment="Center" />
             <ui:TextBox x:Name="NameTextBox" Width="150" Margin="10,2,10,4" VerticalAlignment="Center"/>
@@ -222,15 +222,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Chain Id:" VerticalAlignment="Center" />
-            <ui:NumberBox Name="ChainIdNumberBox" MaxDecimalPlaces="0" Minimum="0" Width="50" Margin="10,2,10,4" VerticalAlignment="Center"/>
+            <ui:NumberBox Name="ChainIdNumberBox" MaxDecimalPlaces="4"  Minimum="0" Width="100" Margin="10,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
     </StackPanel>
-
-   
-  
-
-    
-
-
-
 </ResourceDictionary>

@@ -5,6 +5,7 @@ using System.Windows.Input;
 
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -38,6 +39,14 @@ namespace Stratis.VS.StratisEVM.UI
             this.Content = control;
         }
 
-        
+        protected override void OnClose()
+        {
+            base.OnClose();
+        }
+
+        protected override void OnInfoBarClosed(IVsInfoBarUIElement infoBarUI, IVsInfoBar infoBar)
+        {
+            base.OnInfoBarClosed(infoBarUI, infoBar);
+        }
     }
 }

@@ -47,14 +47,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="UI\BlockchainExplorer\BlockchainExplorerDialog3.cs" />
     <Compile Include="UI\BlockchainExplorer\Converters.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindow.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowCommand.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml.cs">
       <DependentUpon>StratisEVMBlockchainDashboardToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\BlockchainExplorer\BlockchainExplorerDialogWindow.xaml.cs">
-      <DependentUpon>BlockchainExplorerDialogWindow.xaml</DependentUpon>
+    <Compile Include="UI\BlockchainExplorer\BlockchainExplorerDialog2.xaml.cs">
+      <DependentUpon>BlockchainExplorerDialog2.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindow.cs" />
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowCommand.cs" />
@@ -353,7 +354,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\BlockchainExplorer\BlockchainExplorerDialogWindow.xaml">
+    <Page Include="UI\BlockchainExplorer\BlockchainExplorerDialog2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
