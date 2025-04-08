@@ -1,24 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using Wpf.Ui.Controls;
 
-using System.Windows;
-
-using Microsoft.VisualStudio.PlatformUI;
-
-
-
 namespace Stratis.VS.StratisEVM.UI
-{
-    public class BlockchainExplorerDialog : ContentDialog
+{ 
+    /// <summary>
+    /// Interaction logic for BlockchainExplorerAddNetwork.xaml
+    /// </summary>
+    public partial class BlockchainExplorerDialog : ContentDialog
     {
-        public BlockchainExplorerDialog(ContentPresenter host) : base(host) 
+        public BlockchainExplorerDialog(ContentPresenter host) : base(host)
         {
-           
+            InitializeComponent();
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -29,7 +24,7 @@ namespace Stratis.VS.StratisEVM.UI
             }
             else
             {
-                return new Size(0, 0);
+                return new Size(0, 0);  
             }
 
         }

@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Windows;
+using System.Threading.Tasks;
+
 using System.Windows.Controls;
 using System.Windows.Input;
 
-using System.Threading.Tasks;
-
 using Hardcodet.Wpf.GenericTreeView;
+using Wpf.Ui.Controls;
+using Wpf.Ui.Extensions;
 
 using Stratis.VS.StratisEVM.UI.ViewModel;
+using Wpf.Ui;
+using System.IO.Packaging;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -22,51 +25,80 @@ namespace Stratis.VS.StratisEVM.UI
         /// </summary>
         public BlockchainExplorerToolWindowControl()
         {
-            this.InitializeComponent();
+            var _ = new Wpf.Ui.Controls.Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
+            InitializeComponent();
+            this.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
         }
 
-        //protected override void OnInitialized(System.EventArgs e)
-        //{
-        //    base.OnInitialized(e);
-        //    var x = 1;
-        //}
-        /// <summary>
-        /// Handles click on the button by displaying a message box.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event args.</param>
-        [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
-        private void button1_Click(object sender, RoutedEventArgs e)
+        #region Event handlers
+        private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show(
-                string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
-                "BlockchainExplorerToolWindow");
-        }
-
-        /// <summary>
-        /// Handles the tree's <see cref="TreeViewBase{T}.SelectedItemChanged"/>
-        /// event and updates the status bar.
-        /// </summary>
-        private async Task OnSelectedItemChangedAsync(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e) 
-        {
-            await Task.CompletedTask;
-
+            
         }
 
         private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
         {
-            
-            e.Handled = true;
+
+            if (sender is BlockchainExplorerTree tree && tree.SelectedItem != null)
+            {
+                if (tree.SelectedItem.Name == "Stratis Mainnet" && tree.SelectedItem.Kind == BlockchainInfoKind.Network)
+                {
+
+                    //e.Handled = true;
+                }
+            }
         }
 
-        private void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var add = new BlockchainExplorerAddNetworkDialog();
-            add.ShowDialog();
+
+            /*
+            var dw = new BlockchainExplorerDialogWindow();
+            
+           
+            dw.Content = (StackPanel)TryFindResource("AddNetworkDialogContent");
+            
+            dw.ShowModal();
+            var sp = (StackPanel)dw.Content;
+            var to = (StackPanel)sp.Children[0]; 
+            var t = (Wpf.Ui.Controls.TextBox) to.Children[1];   
+            var te = t.Text;
+            */
+
+            try
+            {
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Add EVM Network",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("AddNetworkDialogContent"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                    Height = 400
+                };
+
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    return;
+                }
+                var sp = (StackPanel)dw.Content;
+                var to = (StackPanel)sp.Children[0];
+                var t = (Wpf.Ui.Controls.TextBox)to.Children[1];
+                var te = t.Text;
+            }
+            catch
+            {
+
+            }
+
 
         }
+        #endregion
 
-        
+        #region Fields
+        internal BlockchainExplorerToolWindow window;
+        #endregion
+
     }
 }

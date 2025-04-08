@@ -30,13 +30,13 @@ namespace Stratis.VS.StratisEVM.UI
         {
             var _ = new Wpf.Ui.Controls.Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
             InitializeComponent();
-            cds.SetDialogHost(RootContentDialog);
             this.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
         }
 
         #region Event handlers
         private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (sender is BlockchainExplorerTree tree && tree.SelectedItem != null)
             {
                 if (tree.SelectedItem.Name == "Stratis Mainnet" && tree.SelectedItem.Kind == BlockchainInfoKind.Network)
@@ -52,7 +52,6 @@ namespace Stratis.VS.StratisEVM.UI
                     if (result == VSConstants.S_OK)                                                                           // Show MyToolWindow
                         ErrorHandler.ThrowOnFailure(windowFrame.Show());
                 }
-                e.Handled = true;
             }
         }
         
@@ -87,13 +86,14 @@ namespace Stratis.VS.StratisEVM.UI
            
             try
             {
-                var dw = new BlockchainExplorerDialog2(RootContentDialog)
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
                 {
                     Title = "Add EVM Network",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
                     Content = (StackPanel)TryFindResource("AddNetworkDialogContent"),
                     PrimaryButtonText = "Save",
                     CloseButtonText = "Cancel",
+                    Width = this.Width
                 };
                 
                 var r = await dw.ShowAsync(); 
@@ -116,9 +116,6 @@ namespace Stratis.VS.StratisEVM.UI
 
         #region Fields
         internal BlockchainExplorerToolWindow window;
-        internal ContentDialogService cds = new ContentDialogService();
-
-        public string AddNetworkName;
         #endregion
 
     }

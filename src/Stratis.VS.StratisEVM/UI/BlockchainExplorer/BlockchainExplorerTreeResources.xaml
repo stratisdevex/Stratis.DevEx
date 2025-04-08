@@ -213,16 +213,16 @@
     <!-- Dialogs -->
     <StackPanel x:Key="AddNetworkDialogContent" Orientation="Vertical" VerticalAlignment="Top">
         <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Name:" VerticalAlignment="Center" />
-            <ui:TextBox x:Name="NameTextBox" Width="150" Margin="10,2,10,4" VerticalAlignment="Center"/>
+            <ui:TextBlock Text="Name:" VerticalAlignment="Center" />
+            <ui:TextBox x:Name="NameTextBox" PlaceholderText="Enter the network name" Width="200" Margin="10,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-            <TextBlock Text="JSON-RPC URL:" VerticalAlignment="Center" />
-            <ui:TextBox x:Name="RpcUrlTextBox" Width="150" Margin="10,2,10,4" VerticalAlignment="Center" />
+            <ui:TextBlock Text="Rpc Url:" VerticalAlignment="Center" />
+            <ui:TextBox x:Name="RpcUrlTextBox" PlaceholderText="Enter the network JSON-RPC Url" Width="200" Margin="10,2,10,4" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel Orientation="Horizontal">
-            <TextBlock Text="Chain Id:" VerticalAlignment="Center" />
-            <ui:NumberBox Name="ChainIdNumberBox" MaxDecimalPlaces="4"  Minimum="0" Width="100" Margin="10,2,10,4" VerticalAlignment="Center"/>
+            <ui:TextBlock Text="Chain id:" VerticalAlignment="Center" />
+            <ui:TextBox Name="ChainIdNumberBox" PlaceholderText="Enter the network chain id" Width="100" Margin="10,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
     </StackPanel>
 </ResourceDictionary>

@@ -10,9 +10,9 @@ namespace Stratis.VS.StratisEVM.UI
     /// <summary>
     /// Interaction logic for BlockchainExplorerAddNetwork.xaml
     /// </summary>
-    public partial class BlockchainExplorerDialog2 : ContentDialog
+    public partial class BlockchainExplorerDialog : ContentDialog
     {
-        public BlockchainExplorerDialog2(ContentPresenter host) : base(host)
+        public BlockchainExplorerDialog(ContentPresenter host) : base(host)
         {
             InitializeComponent();
         }

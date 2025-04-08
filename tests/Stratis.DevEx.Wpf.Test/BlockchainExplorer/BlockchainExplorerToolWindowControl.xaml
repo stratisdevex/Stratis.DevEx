@@ -8,21 +8,22 @@
              xmlns:wpftv="clr-namespace:Hardcodet.Wpf.GenericTreeView;assembly=Hardcodet.Wpf.GenericTreeView" 
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              Name="BlockchainExplorerToolWindow">
-
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ui:ThemesDictionary Theme="Light" />
+                <ui:ControlsDictionary />
                 <ResourceDictionary Source="BlockchainExplorerTreeResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!-- The view model that provides the data for the trees -->
             <vm:BlockchainViewModel x:Key="Blockchains" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <!-- The view model that provides the data for the trees -->
- 
+
     <Grid>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Grid.Row="0">
             <stratisui:BlockchainExplorerTree x:Name="BlockchainExplorerTree"
                     Items="{Binding Source={StaticResource Blockchains}, Path=Objects}"
                     RootNode="{StaticResource RootNode}"
@@ -33,6 +34,7 @@
                     SelectedItemChanged="OnSelectedItemChanged"
                     Margin="0,0,0,0" />
         </StackPanel>
+        <ContentPresenter x:Name="RootContentDialog" Grid.Row="0"/>
     </Grid>
 
     <UserControl.CommandBindings>
