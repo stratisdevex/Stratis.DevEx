@@ -10,8 +10,9 @@ using Wpf.Ui.Controls;
 using Wpf.Ui.Extensions;
 
 using Stratis.VS.StratisEVM.UI.ViewModel;
-using Wpf.Ui;
+using Wpc = Wpf.Ui.Controls;
 using System.IO.Packaging;
+using System.Windows;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -64,7 +65,10 @@ namespace Stratis.VS.StratisEVM.UI
             var t = (Wpf.Ui.Controls.TextBox) to.Children[1];   
             var te = t.Text;
             */
-
+            var w = (BlockchainExplorerToolWindowControl)sender;
+            var tree = w.BlockchainExplorerTree;
+            
+          
             try
             {
                 var dw = new BlockchainExplorerDialog(RootContentDialog)
@@ -73,19 +77,46 @@ namespace Stratis.VS.StratisEVM.UI
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
                     Content = (StackPanel)TryFindResource("AddNetworkDialogContent"),
                     PrimaryButtonText = "Save",
-                    CloseButtonText = "Cancel",
-                    Height = 400
+                    CloseButtonText = "Cancel"
                 };
-
+                var sp = (StackPanel)dw.Content;
+                var name = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[1]).Children[1];
+                var chainid = (Wpc.NumberBox)((StackPanel)sp.Children[2]).Children[1];
+                var validForClose = false;
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    if (args.Button == ContentDialogButton.Primary)
+                    {
+                        
+                        if (!string.IsNullOrEmpty(name.Text) && !string.IsNullOrEmpty(rpcurl.Text) && !string.IsNullOrEmpty(chainid.Text))
+                        {
+                            validForClose = true;   
+                            return;
+                        }
+                        else
+                        {
+                           
+                        }
+                    }
+                    else
+                    {
+                        validForClose = true;    
+                    }
+                };
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                   
+                };
                 var r = await dw.ShowAsync();
                 if (r != ContentDialogResult.Primary)
                 {
                     return;
                 }
-                var sp = (StackPanel)dw.Content;
-                var to = (StackPanel)sp.Children[0];
-                var t = (Wpf.Ui.Controls.TextBox)to.Children[1];
-                var te = t.Text;
+                tree.SelectedItem.AddChild(BlockchainInfoKind.Network, name.Text);
+                //var t = (Wpf.Ui.Controls.TextBox)to.Children[1];
+                //if (name == null)
             }
             catch
             {
@@ -93,6 +124,16 @@ namespace Stratis.VS.StratisEVM.UI
             }
 
 
+        }
+
+        private void Dw_ButtonClicked(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Dw_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

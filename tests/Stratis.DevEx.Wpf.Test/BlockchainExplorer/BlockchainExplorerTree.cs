@@ -14,7 +14,7 @@ namespace Stratis.VS.StratisEVM.UI
     public class BlockchainExplorerTree : TreeViewBase<BlockchainInfo>
     {
         #region Properties
-        public static RoutedCommand NewNetworkCmd { get; } = new RoutedCommand();
+        public static RoutedCommand NewNetworkCmd { get; } = new RoutedCommand("new", typeof(BlockchainExplorerTree));
 
         public static RoutedCommand NewEndpointCmd { get; } = new RoutedCommand();
 
