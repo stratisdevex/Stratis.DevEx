@@ -101,7 +101,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         #region Methods
         private void OnRootCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) =>
-            RaisePropertyChangedEvent("Categories");
+            RaisePropertyChangedEvent("Objects");
 
         /// <summary>
         /// Fires the <see cref="PropertyChanged"/> event for a

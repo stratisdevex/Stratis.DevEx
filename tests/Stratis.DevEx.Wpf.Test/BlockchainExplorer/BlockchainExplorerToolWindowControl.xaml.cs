@@ -115,8 +115,6 @@ namespace Stratis.VS.StratisEVM.UI
                     return;
                 }
                 tree.SelectedItem.AddChild(BlockchainInfoKind.Network, name.Text);
-                //var t = (Wpf.Ui.Controls.TextBox)to.Children[1];
-                //if (name == null)
             }
             catch
             {

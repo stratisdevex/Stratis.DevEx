@@ -39,7 +39,7 @@ namespace Stratis.VS.StratisEVM.UI
         #endregion
 
         #region Methods
-        public override string GetItemKey(BlockchainInfo item) => (item.Parent?.Name) ?? "Root" + "_" + item.Kind + "_" + item.Name;
+        public override string GetItemKey(BlockchainInfo item) => ((item.Parent?.Name) ?? "Root") + "_" + item.Kind + "_" + item.Name;
 
         public override ICollection<BlockchainInfo> GetChildItems(BlockchainInfo parent) => parent.Children;
 

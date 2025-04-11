@@ -33,6 +33,7 @@
                     NodeContextMenu="{StaticResource TreeMenu}"
                     SelectNodesOnRightClick="True"
                     SelectedItemChanged="OnSelectedItemChanged"
+                    IsLazyLoading="False"
                     Margin="0,0,0,0" />
         </StackPanel>
         <ContentPresenter x:Name="RootContentDialog" Grid.Row="0"/>
