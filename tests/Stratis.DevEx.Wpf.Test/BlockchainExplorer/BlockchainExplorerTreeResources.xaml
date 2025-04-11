@@ -210,21 +210,17 @@
     </TreeViewItem>
 
     <!-- Dialogs -->
-    <StackPanel x:Key="AddNetworkDialogContent" Orientation="Vertical" VerticalAlignment="Top">
+    <StackPanel x:Key="AddNetworkDialog" Orientation="Vertical" VerticalAlignment="Top">
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Text="Name:" VerticalAlignment="Center" />
-            <ui:TextBox x:Name="NameTextBox" PlaceholderText="Enter the network name" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
+            <ui:TextBlock Text="Enter the network name:" VerticalAlignment="Center" />
+            <ui:TextBox x:Name="NetworkNameTextBox" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Text="Rpc Url:" VerticalAlignment="Center" />
-            <ui:TextBox x:Name="RpcUrlTextBox" PlaceholderText="Enter the network JSON-RPC Url" Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+            <ui:TextBlock Text="Enter the network chain id:" VerticalAlignment="Center" />
+            <ui:NumberBox SpinButtonPlacementMode="Hidden" Icon="{ui:SymbolIcon NumberSymbolSquare24}" Name="NetworkChainIdNumberBox" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Text="Chain id:" VerticalAlignment="Center" />
-            <ui:NumberBox SpinButtonPlacementMode="Hidden" Icon="{ui:SymbolIcon NumberSymbolSquare24}" Name="ChainIdNumberBox" PlaceholderText="Netwrk chain id" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
-        </StackPanel>
-        <StackPanel Orientation="Vertical">
-            <ui:TextBlock Name = "ValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" />
+            <ui:TextBlock Name = "AddNetworkDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel.Resources>
             <Style TargetType="{x:Type ui:TextBlock}">
@@ -235,5 +231,22 @@
             </Style>
         </StackPanel.Resources>
     </StackPanel>
-    
+
+    <StackPanel x:Key="AddEndpointDialog" Orientation="Vertical" VerticalAlignment="Top">
+        <StackPanel Orientation="Vertical">
+            <ui:TextBlock Text="Rpc Url:" VerticalAlignment="Center" />
+            <ui:TextBox x:Name="EndpointRpcUrlTextBox" PlaceholderText="Enter the network JSON-RPC Url" Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical">
+            <ui:TextBlock Name = "AddEndpointDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel.Resources>
+            <Style TargetType="{x:Type ui:TextBlock}">
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+            <Style TargetType="{x:Type ui:TextBox}">
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+        </StackPanel.Resources>
+    </StackPanel>
 </ResourceDictionary>

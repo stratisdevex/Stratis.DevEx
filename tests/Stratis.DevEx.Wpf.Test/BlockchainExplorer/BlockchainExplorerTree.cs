@@ -14,7 +14,7 @@ namespace Stratis.VS.StratisEVM.UI
     public class BlockchainExplorerTree : TreeViewBase<BlockchainInfo>
     {
         #region Properties
-        public static RoutedCommand NewNetworkCmd { get; } = new RoutedCommand("new", typeof(BlockchainExplorerTree));
+        public static RoutedCommand NewNetworkCmd { get; } = new RoutedCommand();
 
         public static RoutedCommand NewEndpointCmd { get; } = new RoutedCommand();
 
@@ -50,7 +50,7 @@ namespace Stratis.VS.StratisEVM.UI
             var item = base.CreateTreeViewItem(data);
             if (data.Kind == BlockchainInfoKind.Network)
             {
-                item.ContextMenu = (ContextMenu)TryFindResource("TreeMenu2");
+                item.ContextMenu = (ContextMenu)TryFindResource("NetworkContextMenu");
             }
             return item;
         }

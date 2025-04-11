@@ -23,6 +23,9 @@
     </UserControl.Resources>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" Grid.Row="0">
             <stratisui:BlockchainExplorerTree x:Name="BlockchainExplorerTree"
                     Items="{Binding Source={StaticResource Blockchains}, Path=Objects}"
@@ -42,6 +45,7 @@
     <UserControl.CommandBindings>
         <!-- bindings for context menu commands -->
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}" Executed="NewNetworkCmdExecuted" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}" Executed="NewEndpointCmd_Executed" />
     </UserControl.CommandBindings>
 
 </UserControl>

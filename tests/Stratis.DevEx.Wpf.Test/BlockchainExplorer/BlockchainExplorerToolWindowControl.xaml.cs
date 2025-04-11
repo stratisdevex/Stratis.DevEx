@@ -75,21 +75,20 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     Title = "Add EVM Network",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
-                    Content = (StackPanel)TryFindResource("AddNetworkDialogContent"),
+                    Content = (StackPanel)TryFindResource("AddNetworkDialog"),
                     PrimaryButtonText = "Save",
                     CloseButtonText = "Cancel"
                 };
                 var sp = (StackPanel)dw.Content;
                 var name = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
-                var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[1]).Children[1];
-                var chainid = (Wpc.NumberBox)((StackPanel)sp.Children[2]).Children[1];
+                var chainid = (Wpc.NumberBox)((StackPanel)sp.Children[1]).Children[1];
                 var validForClose = false;
                 dw.ButtonClicked += (cd, args) =>
                 {
                     if (args.Button == ContentDialogButton.Primary)
                     {
                         
-                        if (!string.IsNullOrEmpty(name.Text) && !string.IsNullOrEmpty(rpcurl.Text) && !string.IsNullOrEmpty(chainid.Text))
+                        if (!string.IsNullOrEmpty(name.Text) && !string.IsNullOrEmpty(chainid.Text))
                         {
                             validForClose = true;   
                             return;
@@ -124,20 +123,68 @@ namespace Stratis.VS.StratisEVM.UI
 
         }
 
-        private void Dw_ButtonClicked(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private async void NewEndpointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var window  = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Add EVM network endpoint",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("AddEndpointDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel"
+                };
+                var sp = (StackPanel)dw.Content;
+                var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var validForClose = false;
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    if (args.Button == ContentDialogButton.Primary)
+                    {
+
+                        if (!string.IsNullOrEmpty(rpcurl.Text))
+                        {
+                            validForClose = true;
+                            return;
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        validForClose = true;
+                    }
+                };
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+
+                };
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    return;
+                }
+                tree.SelectedItem.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
+            }
+            catch
+            {
+
+            }
         }
 
-        private void Dw_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
-        {
-            throw new NotImplementedException();
-        }
+      
         #endregion
 
         #region Fields
         internal BlockchainExplorerToolWindow window;
         #endregion
 
+       
     }
 }
