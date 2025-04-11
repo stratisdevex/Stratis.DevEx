@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 using Hardcodet.Wpf.GenericTreeView;
 using Wpf.Ui.Controls;
-using Wpf.Ui.Extensions;
+using Wpc = Wpf.Ui.Controls;
 
 using Stratis.VS.StratisEVM.UI.ViewModel;
-using Wpc = Wpf.Ui.Controls;
-using System.IO.Packaging;
-using System.Windows;
+using Stratis.DevEx.Ethereum;
+using static Stratis.DevEx.Result;
+using System.Security.Policy;
+using System.Numerics;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -52,25 +51,10 @@ namespace Stratis.VS.StratisEVM.UI
 
         private async void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-
-            /*
-            var dw = new BlockchainExplorerDialogWindow();
-            
-           
-            dw.Content = (StackPanel)TryFindResource("AddNetworkDialogContent");
-            
-            dw.ShowModal();
-            var sp = (StackPanel)dw.Content;
-            var to = (StackPanel)sp.Children[0]; 
-            var t = (Wpf.Ui.Controls.TextBox) to.Children[1];   
-            var te = t.Text;
-            */
-            var w = (BlockchainExplorerToolWindowControl)sender;
-            var tree = w.BlockchainExplorerTree;
-            
-          
             try
             {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
                 var dw = new BlockchainExplorerDialog(RootContentDialog)
                 {
                     Title = "Add EVM Network",
@@ -81,22 +65,47 @@ namespace Stratis.VS.StratisEVM.UI
                 };
                 var sp = (StackPanel)dw.Content;
                 var name = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
-                var chainid = (Wpc.NumberBox)((StackPanel)sp.Children[1]).Children[1];
+                var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[1]).Children[1];
+                var chainid = (Wpc.NumberBox)((StackPanel)sp.Children[2]).Children[1];
+                var errors =  (Wpc.TextBlock) ((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[0];
+                var progressring = (Wpc.ProgressRing) ((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[1];
                 var validForClose = false;
-                dw.ButtonClicked += (cd, args) =>
+                dw.ButtonClicked += async (cd, args) =>
                 {
+                    errors.Visibility = Visibility.Hidden;
                     if (args.Button == ContentDialogButton.Primary)
                     {
-                        
-                        if (!string.IsNullOrEmpty(name.Text) && !string.IsNullOrEmpty(chainid.Text))
+                        if (!string.IsNullOrEmpty(name.Text) && !string.IsNullOrEmpty(rpcurl.Text) && Uri.TryCreate(rpcurl.Text, UriKind.Absolute, out var _))
                         {
-                            validForClose = true;   
-                            return;
+                            ShowProgressRing(progressring);
+                            var result = await ExecuteAsync(Network.GetChainIdAsync(rpcurl.Text)).ConfigureAwait(true);
+                            HideProgressRing(progressring);
+                            if (Succedeed(result, out var cid))
+                            {
+                                if (!string.IsNullOrEmpty(chainid.Text) && cid.Value == BigInteger.Parse(chainid.Text))
+                                {
+                                    validForClose = true;
+                                }
+                                else if (string.IsNullOrEmpty(chainid.Text))
+                                {
+                                    chainid.Text = cid.Value.ToString();
+                                    validForClose = true;
+                                }
+                                else
+                                {
+                                    ShowValidationErrors(errors, string.Format("The specified chain id {0} does not match the chain id returned by the network endpoint: {1}.", chainid.Text, cid.Value));
+                                }
+                            }
+                            else
+                            {
+                                ShowValidationErrors(errors, "Error connecting to JSON-RPC URL: " + cid.Exception.Message + " " + cid.Exception.InnerException?.Message);
+                            }
                         }
-                        else
+                        else 
                         {
-                           
-                        }
+                            validForClose = false;
+                            ShowValidationErrors(errors, "Enter a network name and a valid JSON-RPC URL.");
+                        }   
                     }
                     else
                     {
@@ -115,12 +124,10 @@ namespace Stratis.VS.StratisEVM.UI
                 }
                 tree.SelectedItem.AddChild(BlockchainInfoKind.Network, name.Text);
             }
-            catch
+            catch (Exception ex)
             {
-
+                System.Windows.MessageBox.Show(ex.Message);
             }
-
-
         }
 
         private async void NewEndpointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -135,24 +142,26 @@ namespace Stratis.VS.StratisEVM.UI
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
                     Content = (StackPanel)TryFindResource("AddEndpointDialog"),
                     PrimaryButtonText = "Save",
-                    CloseButtonText = "Cancel"
+                    CloseButtonText = "Cancel",
                 };
                 var sp = (StackPanel)dw.Content;
                 var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var errors = (Wpc.TextBlock)((StackPanel)sp.Children[1]).Children[0];
                 var validForClose = false;
+            
                 dw.ButtonClicked += (cd, args) =>
                 {
+                    errors.Visibility = Visibility.Hidden;
                     if (args.Button == ContentDialogButton.Primary)
                     {
-
-                        if (!string.IsNullOrEmpty(rpcurl.Text))
+                        if (!string.IsNullOrEmpty(rpcurl.Text) && Uri.TryCreate(rpcurl.Text, UriKind.Absolute, out var _))
                         {
                             validForClose = true;
-                            return;
                         }
                         else
                         {
-
+                            validForClose = false;
+                            ShowValidationErrors(errors, "Enter a valid URL for the network JSON-RPC endpoint.");
                         }
                     }
                     else
@@ -163,22 +172,43 @@ namespace Stratis.VS.StratisEVM.UI
                 dw.Closing += (d, args) =>
                 {
                     args.Cancel = !validForClose;
-
                 };
                 var r = await dw.ShowAsync();
                 if (r != ContentDialogResult.Primary)
                 {
+                    rpcurl.Text = "";
                     return;
                 }
-                tree.SelectedItem.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
+      
+                var uri = new Uri(rpcurl.Text);
+                var endpoints = tree.SelectedItem.GetChild("Endpoints", BlockchainInfoKind.Folder); 
+                endpoints.AddChild(BlockchainInfoKind.Endpoint, uri.ToString(), uri);
             }
-            catch
+            catch (Exception ex)
             {
-
+                System.Windows.MessageBox.Show(ex.Message);
             }
         }
 
-      
+        private void ShowValidationErrors(Wpc.TextBlock textBlock, string message)
+        {
+            textBlock.Visibility = Visibility.Visible;
+            textBlock.Text = message;
+        }
+
+        private void ShowProgressRing(ProgressRing progressRing)
+        {
+            progressRing.IsEnabled = true;
+            progressRing.Visibility = Visibility.Visible;
+        }
+
+        private void HideProgressRing(ProgressRing progressRing)
+        {
+            progressRing.IsEnabled = false;
+            progressRing.Visibility = Visibility.Hidden;
+        }
+
+
         #endregion
 
         #region Fields

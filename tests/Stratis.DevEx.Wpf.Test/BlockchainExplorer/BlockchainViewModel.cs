@@ -54,7 +54,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return info;
         }
 
-        public BlockchainInfo[] GetChildren(string name) => Children.Where(c =>  c.Name == name).ToArray(); 
+        public BlockchainInfo GetChild(string name, BlockchainInfoKind kind) => Children.Single(c =>  c.Name == name && c.Kind == kind); 
         #endregion
     }
 
@@ -96,7 +96,6 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public static BlockscoutClient BlockscoutClient { get; } = new BlockscoutClient(new HttpClient());  
 
-        
         #endregion
 
         #region Methods
@@ -134,18 +133,6 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             }
 
             return null;
-        }
-
-        public static ObservableCollection<BlockchainInfo> CreateTestData()
-        {
-            
-            var data = new ObservableCollection<BlockchainInfo>();
-            var eth = new BlockchainInfo(BlockchainInfoKind.Network, "Ethereum");
-            var accts = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
-            accts.AddChild(BlockchainInfoKind.Account, "acct 1", "This is account 1");
-            //var wall = eth.AddChild(BlockchainInfoKind.Folder, "Accounts");
-            data.Add(eth);
-            return data;
         }
 
         public static ObservableCollection<BlockchainInfo> CreateInitialTreeData()

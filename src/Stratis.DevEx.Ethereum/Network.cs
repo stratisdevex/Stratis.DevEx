@@ -14,10 +14,6 @@ namespace Stratis.DevEx.Ethereum
         #region Constructor
         public Network(string rpcUrl, BigInteger chainid)
         {
-            if (GetChainIdAsync(rpcUrl).Result != chainid)
-            {
-                throw new ArgumentException();
-            }
             this.rpcUrl = rpcUrl;
             this.chainId = chainid;
             web3 = new Web3(rpcUrl);

@@ -92,7 +92,7 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
-    <!-- Tree view items data template-->
+    <!-- TreeView items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
             <ui:Image x:Name="NodeImage" Width="16" Height="16" Source="{StaticResource StratisIconDrawingImage}"/>
@@ -212,40 +212,52 @@
     <!-- Dialogs -->
     <StackPanel x:Key="AddNetworkDialog" Orientation="Vertical" VerticalAlignment="Top">
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Text="Enter the network name:" VerticalAlignment="Center" />
+            <ui:TextBlock Text="Enter the network name:" VerticalAlignment="Center"  Margin="1,0,0,2" />
             <ui:TextBox x:Name="NetworkNameTextBox" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
+        <StackPanel Orientation="Vertical" >
+            <ui:TextBlock Text="JSON-RPC Url:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="NetworkRpcUrlTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+        </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Text="Enter the network chain id:" VerticalAlignment="Center" />
+            <ui:TextBlock Text="Network chain id (optional):" VerticalAlignment="Center" Margin="1,0,0,2" />
             <ui:NumberBox SpinButtonPlacementMode="Hidden" Icon="{ui:SymbolIcon NumberSymbolSquare24}" Name="NetworkChainIdNumberBox" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Name = "AddNetworkDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" />
+            <Grid>
+                <ui:TextBlock Name = "AddNetworkDialogValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                <ui:ProgressRing Name="AddNetworkDialogProgressRing" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" Visibility="Hidden" />
+            </Grid>
         </StackPanel>
         <StackPanel.Resources>
-            <Style TargetType="{x:Type ui:TextBlock}">
+            <Style TargetType="{x:Type ui:TextBox}">
                 <Setter Property="FontSize" Value="12" />
             </Style>
-            <Style TargetType="{x:Type ui:TextBox}">
-                <Setter Property="FontSize" Value="14" />
+            <Style TargetType="{x:Type ui:NumberBox}">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+            </Style>
+            <Style TargetType="{x:Type ui:TextBlock}">
+                <Setter Property="FontSize" Value="12" />
             </Style>
         </StackPanel.Resources>
     </StackPanel>
 
     <StackPanel x:Key="AddEndpointDialog" Orientation="Vertical" VerticalAlignment="Top">
-        <StackPanel Orientation="Vertical">
-            <ui:TextBlock Text="Rpc Url:" VerticalAlignment="Center" />
-            <ui:TextBox x:Name="EndpointRpcUrlTextBox" PlaceholderText="Enter the network JSON-RPC Url" Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+        <StackPanel Orientation="Vertical" >
+            <ui:TextBlock Text="JSON-RPC Url:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EndpointRpcUrlTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Name = "AddEndpointDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" />
+            <ui:TextBlock Name = "AddEndpointDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" />
         </StackPanel>
         <StackPanel.Resources>
-            <Style TargetType="{x:Type ui:TextBlock}">
+            <Style TargetType="{x:Type ui:TextBox}">
                 <Setter Property="FontSize" Value="12" />
             </Style>
-            <Style TargetType="{x:Type ui:TextBox}">
-                <Setter Property="FontSize" Value="14" />
+            <Style TargetType="{x:Type ui:TextBlock}">
+                <Setter Property="FontSize" Value="12" />
             </Style>
         </StackPanel.Resources>
     </StackPanel>
