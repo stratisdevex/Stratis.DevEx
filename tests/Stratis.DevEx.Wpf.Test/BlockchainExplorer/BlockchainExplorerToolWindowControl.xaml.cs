@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,6 +13,7 @@ using Stratis.DevEx.Ethereum;
 using static Stratis.DevEx.Result;
 using System.Security.Policy;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -70,7 +72,11 @@ namespace Stratis.VS.StratisEVM.UI
                 var errors =  (Wpc.TextBlock) ((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[0];
                 var progressring = (Wpc.ProgressRing) ((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[1];
                 var validForClose = false;
-                dw.ButtonClicked += async (cd, args) =>
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+                dw.ButtonClicked += (cd, args) =>
                 {
                     errors.Visibility = Visibility.Hidden;
                     if (args.Button == ContentDialogButton.Primary)
@@ -78,7 +84,12 @@ namespace Stratis.VS.StratisEVM.UI
                         if (!string.IsNullOrEmpty(name.Text) && !string.IsNullOrEmpty(rpcurl.Text) && Uri.TryCreate(rpcurl.Text, UriKind.Absolute, out var _))
                         {
                             ShowProgressRing(progressring);
-                            var result = await ExecuteAsync(Network.GetChainIdAsync(rpcurl.Text)).ConfigureAwait(true);
+                            var text = rpcurl.Text;
+#if IncludeAssemblyInVSIXContainer
+                            var result = Task.Run(() => ExecuteAsync(Network.GetChainIdAsync(text), true)).Result;
+#else
+                            var result = Task.Run(() => ExecuteAsync(Network.GetChainIdAsync(text))).Result;
+#endif
                             HideProgressRing(progressring);
                             if (Succedeed(result, out var cid))
                             {
@@ -112,17 +123,13 @@ namespace Stratis.VS.StratisEVM.UI
                         validForClose = true;    
                     }
                 };
-                dw.Closing += (d, args) =>
-                {
-                    args.Cancel = !validForClose;
-                   
-                };
+               
                 var r = await dw.ShowAsync();
                 if (r != ContentDialogResult.Primary)
                 {
                     return;
                 }
-                tree.SelectedItem.AddChild(BlockchainInfoKind.Network, name.Text);
+                tree.Items.First().AddChild(BlockchainInfoKind.Network, name.Text);
             }
             catch (Exception ex)
             {
