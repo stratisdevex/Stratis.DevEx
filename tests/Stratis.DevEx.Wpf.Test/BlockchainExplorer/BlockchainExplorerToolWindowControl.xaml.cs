@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+
+#if IS_VSIX
+using Microsoft.VisualStudio.Shell;
+#endif
 
 using Hardcodet.Wpf.GenericTreeView;
 using Wpf.Ui.Controls;
@@ -11,9 +17,6 @@ using Wpc = Wpf.Ui.Controls;
 using Stratis.VS.StratisEVM.UI.ViewModel;
 using Stratis.DevEx.Ethereum;
 using static Stratis.DevEx.Result;
-using System.Security.Policy;
-using System.Numerics;
-using System.Threading.Tasks;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -35,7 +38,7 @@ namespace Stratis.VS.StratisEVM.UI
         #region Event handlers
         private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            
+
         }
 
         private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
@@ -69,8 +72,8 @@ namespace Stratis.VS.StratisEVM.UI
                 var name = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
                 var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[1]).Children[1];
                 var chainid = (Wpc.NumberBox)((StackPanel)sp.Children[2]).Children[1];
-                var errors =  (Wpc.TextBlock) ((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[0];
-                var progressring = (Wpc.ProgressRing) ((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[1];
+                var errors = (Wpc.TextBlock)((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[0];
+                var progressring = (Wpc.ProgressRing)((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[1];
                 var validForClose = false;
                 dw.Closing += (d, args) =>
                 {
@@ -85,8 +88,8 @@ namespace Stratis.VS.StratisEVM.UI
                         {
                             ShowProgressRing(progressring);
                             var text = rpcurl.Text;
-#if IncludeAssemblyInVSIXContainer
-                            var result = Task.Run(() => ExecuteAsync(Network.GetChainIdAsync(text), true)).Result;
+#if IS_VSIX
+                            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetChainIdAsync(text)));
 #else
                             var result = Task.Run(() => ExecuteAsync(Network.GetChainIdAsync(text))).Result;
 #endif
@@ -112,18 +115,18 @@ namespace Stratis.VS.StratisEVM.UI
                                 ShowValidationErrors(errors, "Error connecting to JSON-RPC URL: " + cid.Exception.Message + " " + cid.Exception.InnerException?.Message);
                             }
                         }
-                        else 
+                        else
                         {
                             validForClose = false;
                             ShowValidationErrors(errors, "Enter a network name and a valid JSON-RPC URL.");
-                        }   
+                        }
                     }
                     else
                     {
-                        validForClose = true;    
+                        validForClose = true;
                     }
                 };
-               
+
                 var r = await dw.ShowAsync();
                 if (r != ContentDialogResult.Primary)
                 {
@@ -141,7 +144,7 @@ namespace Stratis.VS.StratisEVM.UI
         {
             try
             {
-                var window  = (BlockchainExplorerToolWindowControl)sender;
+                var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var dw = new BlockchainExplorerDialog(RootContentDialog)
                 {
@@ -155,7 +158,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
                 var errors = (Wpc.TextBlock)((StackPanel)sp.Children[1]).Children[0];
                 var validForClose = false;
-            
+
                 dw.ButtonClicked += (cd, args) =>
                 {
                     errors.Visibility = Visibility.Hidden;
@@ -186,9 +189,9 @@ namespace Stratis.VS.StratisEVM.UI
                     rpcurl.Text = "";
                     return;
                 }
-      
+
                 var uri = new Uri(rpcurl.Text);
-                var endpoints = tree.SelectedItem.GetChild("Endpoints", BlockchainInfoKind.Folder); 
+                var endpoints = tree.SelectedItem.GetChild("Endpoints", BlockchainInfoKind.Folder);
                 endpoints.AddChild(BlockchainInfoKind.Endpoint, uri.ToString(), uri);
             }
             catch (Exception ex)
@@ -222,6 +225,6 @@ namespace Stratis.VS.StratisEVM.UI
         internal BlockchainExplorerToolWindow window;
         #endregion
 
-       
+
     }
 }

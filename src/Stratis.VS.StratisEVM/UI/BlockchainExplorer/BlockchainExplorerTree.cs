@@ -39,7 +39,7 @@ namespace Stratis.VS.StratisEVM.UI
         #endregion
 
         #region Methods
-        public override string GetItemKey(BlockchainInfo item) => (item.Parent?.Name) ?? "Root" + "_" + item.Kind + "_" + item.Name;
+        public override string GetItemKey(BlockchainInfo item) => ((item.Parent?.Name) ?? "Root") + "_" + item.Kind + "_" + item.Name;
 
         public override ICollection<BlockchainInfo> GetChildItems(BlockchainInfo parent) => parent.Children;
 
@@ -50,7 +50,7 @@ namespace Stratis.VS.StratisEVM.UI
             var item = base.CreateTreeViewItem(data);
             if (data.Kind == BlockchainInfoKind.Network)
             {
-                item.ContextMenu = (ContextMenu)TryFindResource("TreeMenu");
+                item.ContextMenu = (ContextMenu)TryFindResource("NetworkContextMenu");
             }
             return item;
         }
