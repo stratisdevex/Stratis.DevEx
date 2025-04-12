@@ -132,7 +132,10 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     return;
                 }
-                tree.Items.First().AddChild(BlockchainInfoKind.Network, name.Text);
+                var n = new Network(rpcurl.Text, BigInteger.Parse(chainid.Text));
+                var t = tree.SelectedItem.AddChild(BlockchainInfoKind.Network, name.Text, n);
+                var endpoints = t.AddChild(BlockchainInfoKind.Folder, "Endpoints");
+                endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);   
             }
             catch (Exception ex)
             {

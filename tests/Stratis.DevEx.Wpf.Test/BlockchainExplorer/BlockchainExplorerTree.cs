@@ -17,25 +17,6 @@ namespace Stratis.VS.StratisEVM.UI
         public static RoutedCommand NewNetworkCmd { get; } = new RoutedCommand();
 
         public static RoutedCommand NewEndpointCmd { get; } = new RoutedCommand();
-
-        public static BitmapImage FolderClosedIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "FolderClosed.png")));
-
-        public static BitmapImage FolderOpenIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "FolderOpen.png")));
-
-        public static BitmapImage FolderSelectedIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "FolderOpen.png")));
-
-        public static BitmapImage NetworkIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "BlockChainNetwork.png")));
-
-        public static BitmapImage StratisMainnetIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "StratisLogo64x64.png")));
-
-        public static BitmapImage StratisIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "StratisIcon.png")));
-
-        public static BitmapImage GlobeIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "Globe.png")));
-
-        public static BitmapImage UrlIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "Url.png")));
-
-        public static BitmapImage AddNetworkIcon { get; } = new BitmapImage(new Uri(Runtime.AssemblyLocation.CombinePath("Images", "AddNetwork.png")));
-
         #endregion
 
         #region Methods
@@ -48,7 +29,11 @@ namespace Stratis.VS.StratisEVM.UI
         protected override TreeViewItem CreateTreeViewItem(BlockchainInfo data)
         {
             var item = base.CreateTreeViewItem(data);
-            if (data.Kind == BlockchainInfoKind.Network)
+            if (data.Kind == BlockchainInfoKind.Folder && data.Name == "EVM Networks")
+            {
+                item.ContextMenu = (ContextMenu)TryFindResource("RootContextMenu");
+            }
+            else if (data.Kind == BlockchainInfoKind.Network)
             {
                 item.ContextMenu = (ContextMenu)TryFindResource("NetworkContextMenu");
             }

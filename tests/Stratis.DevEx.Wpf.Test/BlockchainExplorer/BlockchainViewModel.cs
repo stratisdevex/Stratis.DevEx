@@ -138,10 +138,11 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         public static ObservableCollection<BlockchainInfo> CreateInitialTreeData()
         {
             var data = new ObservableCollection<BlockchainInfo>();
-            var mainnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Mainnet");
+            var root = new BlockchainInfo(BlockchainInfoKind.Folder, "EVM Networks");
+            var mainnet = root.AddChild(BlockchainInfoKind.Network, "Stratis Mainnet");
             var endpoints = mainnet.AddChild(BlockchainInfoKind.Folder, "Endpoints");
             endpoints.AddChild(BlockchainInfoKind.Endpoint, "rpc.stratisevm.com", new Uri("https://rpc.stratisevm.com:8545"));
-            data.Add(mainnet);
+            data.Add(root); 
             //var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Testnet");
             //mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
             //data.Add(mainnet);

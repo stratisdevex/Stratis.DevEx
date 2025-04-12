@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Stratis.VS.StratisEVM"
         xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="1200">
@@ -15,13 +14,7 @@
             <ColumnDefinition Width="300" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-
-        
         <stratisui:BlockchainExplorerToolWindowControl x:Name="toolWindowControl" Grid.Row="0" Grid.Column="0" />
-            
-
         <ContentControl x:Name="contentControl" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-
-        </Grid>
-
+    </Grid>
 </Window>

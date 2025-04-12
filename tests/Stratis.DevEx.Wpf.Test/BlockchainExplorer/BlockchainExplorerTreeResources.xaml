@@ -101,6 +101,30 @@
         <DataTemplate.Triggers>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Kind}" Value="Folder" />
+                    <Condition Binding="{Binding Path=Name}" Value="EVM Networks" />
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource BlockchainNetworkDrawingImage}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Kind}" Value="Folder" />
+                    <Condition Binding="{Binding Path=Name}" Value="Endpoints" />
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource GlobeDrawingImage}" />
+            </MultiDataTrigger>
+            <DataTrigger Binding="{Binding Path=Kind}" Value="Endpoint">
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource UrlDrawingImage}" />
+            </DataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Kind}" Value="Network" />
+                    <Condition Binding="{Binding Path=Name}" Value="Stratis Mainnet" />
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource StratisIconDrawingImage}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding Path=Kind}" Value="UserFolder" />
                     <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="True" />
                 </MultiDataTrigger.Conditions>
@@ -112,25 +136,6 @@
                     <Condition Binding="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Value="False" />
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource FolderDrawingImage}" />
-            </MultiDataTrigger>
-            <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding Path=Kind}" Value="Folder" />
-                    <Condition Binding="{Binding Path=Name}" Value="Endpoints" />
-                </MultiDataTrigger.Conditions>
-                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource GlobeDrawingImage}" />
-            </MultiDataTrigger>
-
-            <DataTrigger Binding="{Binding Path=Kind}" Value="Endpoint">
-                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource UrlDrawingImage}" />
-            </DataTrigger>
-
-            <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding Path=Kind}" Value="Network" />
-                    <Condition Binding="{Binding Path=Name}" Value="Stratis Mainnet" />
-                </MultiDataTrigger.Conditions>
-                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource StratisIconDrawingImage}" />
             </MultiDataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
@@ -150,13 +155,20 @@
     <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
         <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
         <Setter Property="Background" Value="{DynamicResource ApplicationBackgroundBrush}"/>
+        <Style.Resources>
+            <Style TargetType="{x:Type Image}">
+                <Setter Property="Height" Value="16" />
+                <Setter Property="Width" Value="16" />
+                <Setter Property="Margin" Value="-8,2,8,0" />
+            </Style>
+        </Style.Resources>
     </Style>
 
     <!-- Context Menus -->
     <ContextMenu x:Key="NetworkContextMenu" Style="{DynamicResource ContextMenuStyle}">
         <MenuItem Header="Add Endpoint..." Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
             <MenuItem.Icon>
-                <Image Source="{StaticResource GlobeDrawingImage}" Width="16" Height="16" />
+                <Image Source="{StaticResource GlobeDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
@@ -164,15 +176,15 @@
     <ContextMenu x:Key="StratisNetworkContextMenu" Style="{DynamicResource ContextMenuStyle}">
         <MenuItem Header="Statistics" Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
             <MenuItem.Icon>
-                <Image Source="{StaticResource GlobeDrawingImage}" Width="16" Height="16" />
+                <Image Source="{StaticResource GlobeDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
 
-    <ContextMenu x:Key="TreeMenu" Style="{DynamicResource ContextMenuStyle}">
+    <ContextMenu x:Key="RootContextMenu" Style="{DynamicResource ContextMenuStyle}">
         <MenuItem Header="Add Network..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
             <MenuItem.Icon>
-                <Image Source="{DynamicResource AddNetworkDrawingImage}" Width="16" Height="16" />
+                <Image Source="{DynamicResource AddNetworkDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
@@ -188,29 +200,24 @@
         <cm:SortDescription PropertyName="Header.CategoryName" Direction="Descending" />
     </cm:SortDescriptionCollection>
 
-    <!-- The root node for the tree -->
-    <TreeViewItem x:Key="RootNode"  
-                  Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                  Background="{DynamicResource TextBackgroundBrush}">
-        <TreeViewItem.Header>
-            <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
-                <Image x:Name="RootNodeImage" Source="{DynamicResource BlockchainNetworkDrawingImage}" Width="16" Height="16" />
-                <TextBlock Text="EVM Networks" Margin="4,0,0,0" />
-            </StackPanel>
-        </TreeViewItem.Header>
-        <TreeViewItem.ContextMenu>
-            <ContextMenu Style="{StaticResource ContextMenuStyle}">
-                <MenuItem Header="Add Network..." Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource BlockchainNetworkDrawingImage}" Width="16" Height="16" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </ContextMenu>
-        </TreeViewItem.ContextMenu>
-    </TreeViewItem>
+    <!-- Dialog style -->
+    <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
+        <Style.Resources>
+            <Style TargetType="{x:Type ui:TextBox}">
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+            <Style TargetType="{x:Type ui:NumberBox}">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+            </Style>
+            <Style TargetType="{x:Type ui:TextBlock}">
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+        </Style.Resources>
+    </Style>
 
     <!-- Dialogs -->
-    <StackPanel x:Key="AddNetworkDialog" Orientation="Vertical" VerticalAlignment="Top">
+    <StackPanel x:Key="AddNetworkDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
         <StackPanel Orientation="Vertical">
             <ui:TextBlock Text="Enter the network name:" VerticalAlignment="Center"  Margin="1,0,0,2" />
             <ui:TextBox x:Name="NetworkNameTextBox" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
@@ -226,25 +233,13 @@
         <StackPanel Orientation="Vertical">
             <Grid>
                 <ui:TextBlock Name = "AddNetworkDialogValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
-                          ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                            ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
                 <ui:ProgressRing Name="AddNetworkDialogProgressRing" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" Visibility="Hidden" />
             </Grid>
         </StackPanel>
-        <StackPanel.Resources>
-            <Style TargetType="{x:Type ui:TextBox}">
-                <Setter Property="FontSize" Value="12" />
-            </Style>
-            <Style TargetType="{x:Type ui:NumberBox}">
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="HorizontalContentAlignment" Value="Right" />
-            </Style>
-            <Style TargetType="{x:Type ui:TextBlock}">
-                <Setter Property="FontSize" Value="12" />
-            </Style>
-        </StackPanel.Resources>
     </StackPanel>
 
-    <StackPanel x:Key="AddEndpointDialog" Orientation="Vertical" VerticalAlignment="Top">
+    <StackPanel x:Key="AddEndpointDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
         <StackPanel Orientation="Vertical" >
             <ui:TextBlock Text="JSON-RPC Url:" VerticalAlignment="Center" Margin="1,0,0,2" />
             <ui:TextBox x:Name="EndpointRpcUrlTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
@@ -252,13 +247,5 @@
         <StackPanel Orientation="Vertical">
             <ui:TextBlock Name = "AddEndpointDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" />
         </StackPanel>
-        <StackPanel.Resources>
-            <Style TargetType="{x:Type ui:TextBox}">
-                <Setter Property="FontSize" Value="12" />
-            </Style>
-            <Style TargetType="{x:Type ui:TextBlock}">
-                <Setter Property="FontSize" Value="12" />
-            </Style>
-        </StackPanel.Resources>
     </StackPanel>
 </ResourceDictionary>

@@ -29,11 +29,9 @@
         <StackPanel Orientation="Vertical" Grid.Row="0">
             <stratisui:BlockchainExplorerTree x:Name="BlockchainExplorerTree"
                     Items="{Binding Source={StaticResource Blockchains}, Path=Objects}"
-                    RootNode="{StaticResource RootNode}"
                     TreeNodeStyle="{StaticResource TreeViewItemStyle}"
                     TreeStyle="{StaticResource TreeViewStyle}"
                     NodeSortDescriptions="{StaticResource AscendingNames}"
-                    NodeContextMenu="{StaticResource TreeMenu}"
                     SelectNodesOnRightClick="True"
                     SelectedItemChanged="OnSelectedItemChanged"
                     IsLazyLoading="False"

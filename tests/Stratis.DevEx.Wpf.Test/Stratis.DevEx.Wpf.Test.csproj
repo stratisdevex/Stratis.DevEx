@@ -181,24 +181,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\BlockChainNetwork.png">
-      <Link>Images\BlockChainNetwork.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\FolderClosed.png">
-      <Link>Images\FolderClosed.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\FolderOpen.png">
-      <Link>Images\FolderOpen.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\FolderSelected.png">
       <Link>Images\FolderSelected.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\Globe.png">
-      <Link>Images\Globe.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\StratisHeader.jpg">
@@ -211,10 +195,6 @@
     </Content>
     <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\StratisLogo64x64.png">
       <Link>Images\StratisLogo64x64.png</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\src\Stratis.VS.StratisEVM\Images\Url.png">
-      <Link>Images\Url.png</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\AddNetwork.png">
