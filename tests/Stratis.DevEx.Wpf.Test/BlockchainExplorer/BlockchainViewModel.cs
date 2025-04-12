@@ -54,7 +54,15 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return info;
         }
 
-        public BlockchainInfo GetChild(string name, BlockchainInfoKind kind) => Children.Single(c =>  c.Name == name && c.Kind == kind); 
+        public void DeleteChild(BlockchainInfo child) => Children.Remove(child);
+
+        public void DeleteChild(string name, BlockchainInfoKind kind) => Children.Remove(GetChild(name, kind)); 
+
+        public BlockchainInfo GetChild(string name, BlockchainInfoKind kind) => Children.Single(c =>  c.Name == name && c.Kind == kind);
+
+        public IEnumerable<BlockchainInfo> GetChildren(BlockchainInfoKind kind) => Children.Where(c => c.Kind == kind);
+
+        public IEnumerable<BlockchainInfo> GetEndPoints() => GetChildren(BlockchainInfoKind.Endpoint);  
         #endregion
     }
 

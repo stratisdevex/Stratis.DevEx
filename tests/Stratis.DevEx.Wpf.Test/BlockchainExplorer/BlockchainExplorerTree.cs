@@ -17,6 +17,8 @@ namespace Stratis.VS.StratisEVM.UI
         public static RoutedCommand NewNetworkCmd { get; } = new RoutedCommand();
 
         public static RoutedCommand NewEndpointCmd { get; } = new RoutedCommand();
+
+        public static RoutedCommand DeleteEndpointCmd { get; } = new RoutedCommand();
         #endregion
 
         #region Methods
@@ -36,6 +38,10 @@ namespace Stratis.VS.StratisEVM.UI
             else if (data.Kind == BlockchainInfoKind.Network)
             {
                 item.ContextMenu = (ContextMenu)TryFindResource("NetworkContextMenu");
+            }
+            else if (data.Kind == BlockchainInfoKind.Endpoint)
+            {
+                item.ContextMenu = (ContextMenu)TryFindResource("EndpointContextMenu");
             }
             return item;
         }

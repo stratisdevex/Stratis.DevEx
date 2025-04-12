@@ -118,7 +118,7 @@ namespace Stratis.VS.StratisEVM.UI
                         else
                         {
                             validForClose = false;
-                            ShowValidationErrors(errors, "Enter a network name and a valid JSON-RPC URL.");
+                            ShowValidationErrors(errors, "Enter a network name and a valid JSON-RPC endpoint URL.");
                         }
                     }
                     else
@@ -203,6 +203,12 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
+        private BlockchainInfo GetSelectedItem(object sender)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            return tree.SelectedItem;
+        }
         private void ShowValidationErrors(Wpc.TextBlock textBlock, string message)
         {
             textBlock.Visibility = Visibility.Visible;
@@ -226,8 +232,24 @@ namespace Stratis.VS.StratisEVM.UI
 
         #region Fields
         internal BlockchainExplorerToolWindow window;
+
         #endregion
 
+        private void DeleteEndpointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+        }
 
+        private void DeleteEndpointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var item = GetSelectedItem(sender);
+            var endpoints = item.GetEndPoints();    
+            if (endpoints.Count() == 1)
+            {
+                e.CanExecute = false;
+            }
+            e.CanExecute =  (item.Parent.Name == "Stratis MainNet");
+        }
     }
 }
