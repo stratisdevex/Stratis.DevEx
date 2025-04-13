@@ -284,6 +284,14 @@ namespace Stratis.VS.StratisEVM.UI
         private void PropertiesCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var item = GetSelectedItem(sender);
+            var dw = new BlockchainExplorerDialog(RootContentDialog)
+            {
+                Title = item.Name + " properties",
+                PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                Content = (StackPanel)TryFindResource("AddEndpointDialog"),
+                PrimaryButtonText = "Save",
+                CloseButtonText = "Cancel",
+            };
         }
     }
 }

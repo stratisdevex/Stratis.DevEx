@@ -51,8 +51,22 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         [JsonProperty(ItemReferenceLoopHandling = ReferenceLoopHandling.Serialize)] 
         public ObservableCollection<BlockchainInfo> Children = new ObservableCollection<BlockchainInfo>();
 
-
         public string Key => ((this.Parent?.Key) ?? "Root") + "_" + this.Kind + "_" + this.Name;
+
+        [JsonIgnore]
+        public string ToolTip
+        {
+            get
+            {
+                switch (Kind)
+                {
+                    case BlockchainInfoKind.Network:
+                        return string.Format("Chain id: {0}", Data["ChainId"]);
+                    default:
+                        return "";
+                }
+            }
+        }
         #endregion
 
         #region Methods
@@ -232,7 +246,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         {
             var data = new ObservableCollection<BlockchainInfo>();
             var root = new BlockchainInfo(BlockchainInfoKind.Folder, "EVM Networks");
-            var mainnet = root.AddChild(BlockchainInfoKind.Network, "Stratis Mainnet");
+            var mainnet = root.AddNetwork("Stratis Mainnet", 50505, "https://rpc.stratisevm.com:8545");
             var endpoints = mainnet.AddChild(BlockchainInfoKind.Folder, "Endpoints");
             endpoints.AddChild(BlockchainInfoKind.Endpoint, "https://rpc.stratisevm.com:8545");
             data.Add(root); 

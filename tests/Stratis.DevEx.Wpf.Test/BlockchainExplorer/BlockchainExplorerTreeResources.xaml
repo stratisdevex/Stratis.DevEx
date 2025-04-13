@@ -139,7 +139,7 @@
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
             <ui:Image x:Name="NodeImage" Width="16" Height="16" Source="{StaticResource StratisIconDrawingImage}"/>
-            <ui:TextBlock x:Name="Name" Text="{Binding Path=Name}" Margin="8,0,0,0" TextWrapping="Wrap" />
+            <ui:TextBlock x:Name="NodeText" Text="{Binding Path=Name}" Margin="8,0,0,0" TextWrapping="Wrap" />
         </StackPanel>
         <DataTemplate.Triggers>
             <MultiDataTrigger>
@@ -156,6 +156,11 @@
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource GlobeDrawingImage}" />
             </MultiDataTrigger>
+            <DataTrigger Binding="{Binding Path=Kind}" Value="Network">
+                <Setter TargetName="NodeText" Property="ToolTipService.InitialShowDelay" Value="100" />
+                <Setter TargetName="NodeText" Property="ToolTipService.Placement" Value="MousePoint" />
+                <Setter TargetName="NodeText" Property="ToolTipService.ToolTip" Value="{Binding Path=ToolTip}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding Path=Kind}" Value="Endpoint">
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource UrlDrawingImage}" />
             </DataTrigger>
@@ -212,11 +217,6 @@
         <MenuItem Header="Add Endpoint..." Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
             <MenuItem.Icon>
                 <Image Source="{StaticResource GlobeDrawingImage}" />
-            </MenuItem.Icon>
-        </MenuItem>
-        <MenuItem Header="Properties..." Command="{x:Static stratisui:BlockchainExplorerTree.PropertiesCmd}">
-            <MenuItem.Icon>
-                <Image Source="{StaticResource PropertiesDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
