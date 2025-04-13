@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 using Newtonsoft.Json;
@@ -36,18 +37,21 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             Parent = parent;
             Data = data;
         }
-
-
         #endregion
 
         #region Properties
         public BlockchainInfoKind Kind { get; set; }
         public string Name { get; set; }
+        [JsonProperty(ItemIsReference = true)]
         public BlockchainInfo Parent { get; set; }
        
         public object Data { get; set; }
         [JsonProperty(ItemReferenceLoopHandling = ReferenceLoopHandling.Serialize)] 
         public ObservableCollection<BlockchainInfo> Children = new ObservableCollection<BlockchainInfo>();
+
+
+
+        public string Key => ((this.Parent?.Name) ?? "Root") + "_" + this.Kind + "_" + this.Name;
         #endregion
 
         #region Methods
@@ -72,7 +76,6 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<BlockchainInfo> GetEndPoints() => GetChildren(BlockchainInfoKind.Endpoint);
 
-        public string Key => ((this.Parent?.Name) ?? "Root") + "_" + this.Kind + "_" + this.Name;
 
         public bool Save(string path, out Exception e )
         {
@@ -80,7 +83,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             {
                 var json = JsonConvert.SerializeObject(this, new JsonSerializerSettings()
                 {
-                    PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                    PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Serialize,   
                     
                 });
 #if !IS_VSIX
@@ -98,6 +102,15 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public static BlockchainInfo Load(string path, out Exception e)
         {
+            void FixParents(BlockchainInfo bi, BlockchainInfo p = null) 
+            {
+                bi.Parent = p;
+                foreach (var c in bi.Children)
+                {
+                    FixParents(c, bi);
+                }                
+            }
+
             try
             {
 #if !IS_VSIX
@@ -106,7 +119,13 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                     e = null;
                     return null;
                 }
-                var b = JsonConvert.DeserializeObject<BlockchainInfo>(File.ReadAllText(Path.Combine(Runtime.AssemblyLocation, path + ".json")));
+                var b = JsonConvert.DeserializeObject<BlockchainInfo>(File.ReadAllText(Path.Combine(Runtime.AssemblyLocation, path + ".json")),
+                    new JsonSerializerSettings()
+                    {
+                        PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                    });
+                FixParents(b);
                 e = null;
                 return b;
 #endif   
