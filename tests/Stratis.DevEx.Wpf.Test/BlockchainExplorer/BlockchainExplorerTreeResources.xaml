@@ -120,6 +120,21 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="PropertiesDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0" Y="2.1316282072803006E-14" />
+                </DrawingGroup.Transform>
+                <DrawingGroup Opacity="1">
+                    <DrawingGroup Opacity="1" Transform="1,0,0,1,85.333333,42.666667">
+                        <GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}" Geometry="F0 M512,512z M0,0z M222.169889,-2.13162821E-14L341.333333,119.163444 341.333732,209.124352C328.37638,201.628866,313.98315,196.339524,298.667665,193.769948L298.666667,136.853333 204.48,42.6666667 42.6666667,42.6666667 42.6666667,384 166.457109,383.999404C176.363874,401.125458,190.124655,415.743148,206.553524,426.666547L1.42108547E-14,426.666667 1.42108547E-14,-2.13162821E-14 222.169889,-2.13162821E-14z M306.847154,213.333333L306.84783,236.169297C317.251058,239.846405,326.765408,245.405183,334.98194,252.43669L354.778753,241.006655 384.408382,292.326679 364.624464,303.749991C365.597738,309.018468 366.106413,314.44983 366.106413,320 366.106413,325.550277 365.597718,330.981742 364.624408,336.250315L384.408382,347.673321 354.778753,398.993345 334.98194,387.56331C326.765408,394.594817,317.251058,400.153595,306.84783,403.830703L306.847154,426.666667 247.587895,426.666667 247.587219,403.830703C237.184377,400.153731,227.670347,394.595229,219.454023,387.564092L199.656296,398.993345 170.026667,347.673321 189.810642,336.250315C188.837331,330.981742 188.328636,325.550277 188.328636,320 188.328636,314.449479 188.837376,309.017781 189.81077,303.74899L170.026667,292.326679 199.656296,241.006655 219.453029,252.436758C227.66958,245.405219,237.183957,239.846417,247.587219,236.169297L247.587895,213.333333 306.847154,213.333333z M277.217525,284.444444C257.580733,284.444444 241.661969,300.363209 241.661969,320 241.661969,339.636791 257.580733,355.555556 277.217525,355.555556 296.854316,355.555556 312.77308,339.636791 312.77308,320 312.77308,300.363209 296.854316,284.444444 277.217525,284.444444z" />
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
     <!-- TreeView items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
@@ -197,6 +212,11 @@
         <MenuItem Header="Add Endpoint..." Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
             <MenuItem.Icon>
                 <Image Source="{StaticResource GlobeDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Properties..." Command="{x:Static stratisui:BlockchainExplorerTree.PropertiesCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource PropertiesDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>

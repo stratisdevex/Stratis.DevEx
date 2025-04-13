@@ -1,17 +1,16 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
 using Stratis.DevEx;
 using Stratis.DevEx.Ethereum.Explorers;
 
@@ -30,7 +29,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
     public class BlockchainInfo
     {
         #region Constructors
-        public BlockchainInfo(BlockchainInfoKind kind, string name, BlockchainInfo parent = null, object data = null)
+        public BlockchainInfo(BlockchainInfoKind kind, string name, BlockchainInfo parent = null, Dictionary<string,object> data = null)
         {
             Kind = kind;
             Name = name;
@@ -41,25 +40,37 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         #region Properties
         public BlockchainInfoKind Kind { get; set; }
+        
         public string Name { get; set; }
+        
+        public Dictionary<string, object> Data { get; } = new Dictionary<string, object>();
+        
         [JsonProperty(ItemIsReference = true)]
         public BlockchainInfo Parent { get; set; }
-       
-        public object Data { get; set; }
+
         [JsonProperty(ItemReferenceLoopHandling = ReferenceLoopHandling.Serialize)] 
         public ObservableCollection<BlockchainInfo> Children = new ObservableCollection<BlockchainInfo>();
 
 
-
-        public string Key => ((this.Parent?.Name) ?? "Root") + "_" + this.Kind + "_" + this.Name;
+        public string Key => ((this.Parent?.Key) ?? "Root") + "_" + this.Kind + "_" + this.Name;
         #endregion
 
         #region Methods
-        public BlockchainInfo AddChild(BlockchainInfoKind kind, string name, object data = null)
+        public BlockchainInfo AddChild(BlockchainInfoKind kind, string name, Dictionary<string, object> data = null)
         {
             var info = new BlockchainInfo(kind, name, this, data);
             Children.Add(info);
             return info;
+        }
+
+        public BlockchainInfo AddNetwork(string name, BigInteger chainid, string uri)
+        {
+            var data = new Dictionary<string, object>()
+            {
+                {"ChainId", chainid },
+                {"EndpointUri", uri }
+            };
+            return AddChild(BlockchainInfoKind.Network, name, data);    
         }
 
         public override int GetHashCode() => Key.GetHashCode();
@@ -68,14 +79,15 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             
         public void DeleteChild(BlockchainInfo child) => Children.Remove(child);
 
-        public void DeleteChild(string name, BlockchainInfoKind kind) => Children.Remove(GetChild(name, kind)); 
+        public void DeleteChild(string name, BlockchainInfoKind kind) => Children.Remove(GetChild(name, kind));
 
+        public bool HasChild(string name, BlockchainInfoKind kind) => Children.Count(bi => bi.Name == name && bi.Kind == kind) > 0;
+        
         public BlockchainInfo GetChild(string name, BlockchainInfoKind kind) => Children.Single(c =>  c.Name == name && c.Kind == kind);
 
         public IEnumerable<BlockchainInfo> GetChildren(BlockchainInfoKind kind) => Children.Where(c => c.Kind == kind);
 
         public IEnumerable<BlockchainInfo> GetEndPoints() => GetChildren(BlockchainInfoKind.Endpoint);
-
 
         public bool Save(string path, out Exception e )
         {
@@ -222,7 +234,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             var root = new BlockchainInfo(BlockchainInfoKind.Folder, "EVM Networks");
             var mainnet = root.AddChild(BlockchainInfoKind.Network, "Stratis Mainnet");
             var endpoints = mainnet.AddChild(BlockchainInfoKind.Folder, "Endpoints");
-            endpoints.AddChild(BlockchainInfoKind.Endpoint, "rpc.stratisevm.com", new Uri("https://rpc.stratisevm.com:8545"));
+            endpoints.AddChild(BlockchainInfoKind.Endpoint, "https://rpc.stratisevm.com:8545");
             data.Add(root); 
             //var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Testnet");
             //mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
