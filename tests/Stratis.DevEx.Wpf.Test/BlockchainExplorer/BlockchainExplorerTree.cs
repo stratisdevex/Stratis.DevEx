@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.Linq;
 using System.Windows.Media.Imaging;
 
 using Hardcodet.Wpf.GenericTreeView;
@@ -19,10 +20,12 @@ namespace Stratis.VS.StratisEVM.UI
         public static RoutedCommand NewEndpointCmd { get; } = new RoutedCommand();
 
         public static RoutedCommand DeleteEndpointCmd { get; } = new RoutedCommand();
+
+        public BlockchainInfo RootItem => Items?.First();
         #endregion
 
-        #region Methods
-        public override string GetItemKey(BlockchainInfo item) => ((item.Parent?.Name) ?? "Root") + "_" + item.Kind + "_" + item.Name;
+        #region Overriden Members
+        public override string GetItemKey(BlockchainInfo item) => item.Key;
 
         public override ICollection<BlockchainInfo> GetChildItems(BlockchainInfo parent) => parent.Children;
 
@@ -46,6 +49,5 @@ namespace Stratis.VS.StratisEVM.UI
             return item;
         }
         #endregion
-
-    }    
+    }
 }

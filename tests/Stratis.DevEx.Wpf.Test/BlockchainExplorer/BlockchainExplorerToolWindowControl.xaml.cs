@@ -132,10 +132,15 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     return;
                 }
-                var n = new Network(rpcurl.Text, BigInteger.Parse(chainid.Text));
-                var t = tree.SelectedItem.AddChild(BlockchainInfoKind.Network, name.Text, n);
+                var t = tree.SelectedItem.AddChild(BlockchainInfoKind.Network, name.Text);
                 var endpoints = t.AddChild(BlockchainInfoKind.Folder, "Endpoints");
-                endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);   
+                endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if !IS_VSIX
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                }
             }
             catch (Exception ex)
             {
@@ -196,6 +201,11 @@ namespace Stratis.VS.StratisEVM.UI
                 var uri = new Uri(rpcurl.Text);
                 var endpoints = tree.SelectedItem.GetChild("Endpoints", BlockchainInfoKind.Folder);
                 endpoints.AddChild(BlockchainInfoKind.Endpoint, uri.ToString(), uri);
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+                }
+                
             }
             catch (Exception ex)
             {

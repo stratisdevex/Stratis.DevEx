@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Stratis.DevEx;
 using Stratis.DevEx.Ethereum.Explorers;
 
@@ -43,6 +46,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         public BlockchainInfo Parent { get; set; }
        
         public object Data { get; set; }
+        [JsonProperty(ItemReferenceLoopHandling = ReferenceLoopHandling.Serialize)] 
         public ObservableCollection<BlockchainInfo> Children = new ObservableCollection<BlockchainInfo>();
         #endregion
 
@@ -54,6 +58,10 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return info;
         }
 
+        public override int GetHashCode() => Key.GetHashCode();
+
+        public override bool Equals(object obj) => obj is BlockchainInfo bi ? Key == bi.Key : false; 
+            
         public void DeleteChild(BlockchainInfo child) => Children.Remove(child);
 
         public void DeleteChild(string name, BlockchainInfoKind kind) => Children.Remove(GetChild(name, kind)); 
@@ -62,7 +70,53 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<BlockchainInfo> GetChildren(BlockchainInfoKind kind) => Children.Where(c => c.Kind == kind);
 
-        public IEnumerable<BlockchainInfo> GetEndPoints() => GetChildren(BlockchainInfoKind.Endpoint);  
+        public IEnumerable<BlockchainInfo> GetEndPoints() => GetChildren(BlockchainInfoKind.Endpoint);
+
+        public string Key => ((this.Parent?.Name) ?? "Root") + "_" + this.Kind + "_" + this.Name;
+
+        public bool Save(string path, out Exception e )
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(this, new JsonSerializerSettings()
+                {
+                    PreserveReferencesHandling = PreserveReferencesHandling.Objects
+                    
+                });
+#if !IS_VSIX
+                File.WriteAllText(Path.Combine(Runtime.AssemblyLocation, path + ".json"), json);
+#endif
+                e = null;
+                return true;
+            }
+            catch (Exception ex) 
+            {
+                e = ex;
+                return false;   
+            }
+        }
+
+        public static BlockchainInfo Load(string path, out Exception e)
+        {
+            try
+            {
+#if !IS_VSIX
+                if (!File.Exists(Path.Combine(Runtime.AssemblyLocation, path + ".json")))
+                {
+                    e = null;
+                    return null;
+                }
+                var b = JsonConvert.DeserializeObject<BlockchainInfo>(File.ReadAllText(Path.Combine(Runtime.AssemblyLocation, path + ".json")));
+                e = null;
+                return b;
+#endif   
+            }
+            catch (Exception ex) 
+            {
+                e = ex;
+                return null;   
+            }
+        }
         #endregion
     }
 
@@ -71,7 +125,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         #region Constructors
         public BlockchainViewModel()
         {
-            Objects = CreateInitialTreeData();
+            Objects = LoadTreeData();
         }
         #endregion
 
@@ -157,6 +211,19 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             //data.Add(testnet);
             return data;
         }
+
+        public static ObservableCollection<BlockchainInfo> LoadTreeData()
+        {
+            var b = BlockchainInfo.Load("BlockchainExplorerTree", out var e);
+            if (b == null)
+            {
+                return CreateInitialTreeData();
+            }
+            else
+            {
+                return new ObservableCollection<BlockchainInfo> { b };
+            }
+        }
         #endregion
 
         #region Events
@@ -171,4 +238,22 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
     }
+
+    /*
+    public class BlockchainInfoReferenceResolver : IReferenceResolver
+    {
+        public BlockchainInfoReferenceResolver() { }
+
+        protected Dictionary<string, BlockchainInfo> references = new Dictionary<string, BlockchainInfo>();
+
+        public void AddReference(object context, string reference, object value)
+        {
+            if (value is BlockchainInfo bi)
+            {
+                references.Add(reference, value);
+            }
+        }
+
+    }
+    */
 }
