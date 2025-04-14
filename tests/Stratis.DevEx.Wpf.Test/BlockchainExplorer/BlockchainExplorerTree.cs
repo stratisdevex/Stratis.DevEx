@@ -23,6 +23,8 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static RoutedCommand NewFolderCmd { get; } = new RoutedCommand();
 
+        public static RoutedCommand DeleteFolderCmd { get; } = new RoutedCommand();
+
         public static RoutedCommand DeleteEndpointCmd { get; } = new RoutedCommand();
 
         public BlockchainInfo RootItem => Items?.First();
@@ -49,6 +51,10 @@ namespace Stratis.VS.StratisEVM.UI
             else if (data.Kind == BlockchainInfoKind.Endpoint)
             {
                 item.ContextMenu = (ContextMenu)TryFindResource("EndpointContextMenu");
+            }
+            else if (data.Kind == BlockchainInfoKind.UserFolder)
+            {
+                item.ContextMenu = (ContextMenu)TryFindResource("UserFolderContextMenu");
             }
             return item;
         }

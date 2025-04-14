@@ -60,6 +60,7 @@ namespace Stratis.VS.StratisEVM.UI
             {
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender);
                 var dw = new BlockchainExplorerDialog(RootContentDialog)
                 {
                     Title = "Add EVM Network",
@@ -143,7 +144,7 @@ namespace Stratis.VS.StratisEVM.UI
                     chainid.Text = "";
                     return;
                 }
-                var t = tree.RootItem.AddNetwork(name.Text, BigInteger.Parse(chainid.Text), rpcurl.Text);
+                var t = item.AddNetwork(name.Text, BigInteger.Parse(chainid.Text), rpcurl.Text);
                 var endpoints = t.AddChild(BlockchainInfoKind.Folder, "Endpoints");
                 endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
@@ -350,11 +351,30 @@ namespace Stratis.VS.StratisEVM.UI
                     foldername.Text = "";
                     return;
                 }
+                var f = item.AddChild(BlockchainInfoKind.UserFolder, foldername.Text);
+                if (!item.Save("BlockchainExplorerTree", out var ex))
+                {
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+                }
 
             }
             catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void DeleteFolderCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if !IS_VSIX
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
             }
         }
     }
