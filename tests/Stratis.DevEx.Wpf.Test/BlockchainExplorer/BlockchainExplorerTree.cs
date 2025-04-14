@@ -21,6 +21,8 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static RoutedCommand NewEndpointCmd { get; } = new RoutedCommand();
 
+        public static RoutedCommand NewFolderCmd { get; } = new RoutedCommand();
+
         public static RoutedCommand DeleteEndpointCmd { get; } = new RoutedCommand();
 
         public BlockchainInfo RootItem => Items?.First();

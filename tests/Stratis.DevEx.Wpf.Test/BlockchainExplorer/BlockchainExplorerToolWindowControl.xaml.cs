@@ -293,5 +293,69 @@ namespace Stratis.VS.StratisEVM.UI
                 CloseButtonText = "Cancel",
             };
         }
+
+        private async void NewFolderCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var item = GetSelectedItem(sender);
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Add Folder",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("AddFolderDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+                var sp = (StackPanel)dw.Content;
+                var foldername = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var errors = (Wpc.TextBlock)((StackPanel)sp.Children[1]).Children[0];
+                var validForClose = false;
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    validForClose = false;
+                    errors.Visibility = Visibility.Hidden;
+                    if (args.Button == ContentDialogButton.Primary)
+                    {
+                        if (!string.IsNullOrEmpty(foldername.Text))
+                        {
+                            if (item.HasChild(foldername.Text, BlockchainInfoKind.Endpoint))
+                            {
+                                ShowValidationErrors(errors, "Enter a unique folder name.");
+                                return;
+                            }
+                            else
+                            {
+                                validForClose = true;
+                            }
+                        }
+                        else
+                        {
+                            validForClose = false;
+                            ShowValidationErrors(errors, "Enter a valid folder name.");
+                        }
+                    }
+                    else
+                    {
+                        validForClose = true;
+                    }
+                };
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    foldername.Text = "";
+                    return;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
     }
 }

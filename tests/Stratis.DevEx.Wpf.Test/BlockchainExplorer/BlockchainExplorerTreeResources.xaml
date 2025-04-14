@@ -135,6 +135,17 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="AddFolderDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V32 H32 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="5.5511151231257827E-15" Y="1.7763568394002505E-15" />
+                </DrawingGroup.Transform>
+                <GeometryDrawing Brush="{DynamicResource TextFillColorPrimaryBrush}" Geometry="F1 M32,32z M0,0z M0,26.016Q0,28.512 1.76,30.24 3.52,31.968 6.016,32L23.008,32Q25.44,32 27.52,30.784 29.6,29.568 30.816,27.488 32.032,25.408 32,23.008L32,10.016Q32,7.52 30.24,5.76 28.48,4 26.016,4L19.648,4Q19.008,2.24 17.472,1.12 15.936,-1.77635683940025E-15 14.016,-1.77635683940025E-15L6.01599999999999,-1.77635683940025E-15Q3.51999999999999,-1.77635683940025E-15 1.75999999999999,1.76 -5.77315972805081E-15,3.52 -5.55111512312578E-15,6.016L-5.55111512312578E-15,26.016z M4,26.016L4,6.016Q4,5.184 4.576,4.608 5.152,4.032 6.016,4L14.016,4Q14.816,4 15.424,4.608 16.032,5.216 16,6.016L16,8 26.016,8Q26.816,8 27.424,8.576 28.032,9.152 28,9.984L28,15.52Q25.728,13.984 23.008,13.984 21.184,13.984 19.52,14.72 17.856,15.456 16.64,16.64 15.424,17.824 14.72,19.488 14.016,21.152 14.016,23.008 14.016,25.728 15.52,28L6.016,28Q5.184,28 4.576,27.424 3.968,26.848 4,26.016z M18.016,23.008Q18.016,20.928 19.456,19.456 20.896,17.984 23.008,17.984 25.12,17.984 26.528,19.456 27.936,20.928 28,23.008 28,25.088 26.496,26.528 24.992,27.968 23.008,28 20.928,28 19.456,26.528 17.984,25.056 18.016,23.008z M20,24L22.016,24 22.016,25.984 24,25.984 24,24 26.016,24 26.016,21.984 24,21.984 24,20 22.016,20 22.016,21.984 20,21.984 20,24z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
     <!-- TreeView items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
@@ -243,6 +254,11 @@
                 <Image Source="{DynamicResource AddNetworkDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
+        <MenuItem Header="Add Folder..." Command="{x:Static stratisui:BlockchainExplorerTree.NewFolderCmd}">
+            <MenuItem.Icon>
+                <Image Source="{DynamicResource AddFolderDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
     </ContextMenu>
 
 
@@ -299,6 +315,16 @@
         <StackPanel Orientation="Vertical" >
             <ui:TextBlock Text="JSON-RPC Url:" VerticalAlignment="Center" Margin="1,0,0,2" />
             <ui:TextBox x:Name="EndpointRpcUrlTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical">
+            <ui:TextBlock Name = "AddEndpointDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" />
+        </StackPanel>
+    </StackPanel>
+
+    <StackPanel x:Key="AddFolderDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
+        <StackPanel Orientation="Vertical" >
+            <ui:TextBlock Text="Folder name:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="FolderNameTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel Orientation="Vertical">
             <ui:TextBlock Name = "AddEndpointDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" />
