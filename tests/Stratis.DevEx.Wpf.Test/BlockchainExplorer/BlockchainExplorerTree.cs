@@ -17,6 +17,8 @@ namespace Stratis.VS.StratisEVM.UI
         #region Properties
         public static RoutedCommand NewNetworkCmd { get; } = new RoutedCommand();
 
+        public static RoutedCommand DeleteNetworkCmd { get; } = new RoutedCommand();
+
         public static RoutedCommand PropertiesCmd { get; } = new RoutedCommand();
 
         public static RoutedCommand NewEndpointCmd { get; } = new RoutedCommand();

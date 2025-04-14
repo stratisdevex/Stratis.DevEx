@@ -54,7 +54,7 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
-        private async void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void NewNetworkCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
@@ -365,6 +365,20 @@ namespace Stratis.VS.StratisEVM.UI
         }
 
         private void DeleteFolderCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if !IS_VSIX
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+            }
+        }
+
+        private void DeleteNetworkCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var window = (BlockchainExplorerToolWindowControl)sender;
             var tree = window.BlockchainExplorerTree;
