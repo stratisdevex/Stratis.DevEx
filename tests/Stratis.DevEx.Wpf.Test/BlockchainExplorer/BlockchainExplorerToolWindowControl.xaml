@@ -43,7 +43,7 @@
     <UserControl.CommandBindings>
         <!-- bindings for context menu commands -->
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}" Executed="NewNetworkCmd_Executed" />
-        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteNetworkCmd}" Executed="DeleteNetworkCmd_Executed" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteNetworkCmd}" Executed="DeleteNetworkCmd_Executed" CanExecute="DeleteNetworkCmd_CanExecute" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewFolderCmd}" Executed="NewFolderCmd_Executed" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.PropertiesCmd}" Executed="PropertiesCmd_Executed" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteFolderCmd}" Executed="DeleteFolderCmd_Executed" />

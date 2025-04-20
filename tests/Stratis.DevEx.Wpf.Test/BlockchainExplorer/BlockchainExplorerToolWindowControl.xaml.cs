@@ -219,7 +219,8 @@ namespace Stratis.VS.StratisEVM.UI
                 }
 
                 var uri = new Uri(rpcurl.Text);
-                var endpoints = tree.SelectedItem.GetChild("Endpoints", BlockchainInfoKind.Folder);
+
+                var endpoints = tree.SelectedItem.Kind == BlockchainInfoKind.Network ? tree.SelectedItem.GetChild("Endpoints", BlockchainInfoKind.Folder) : tree.SelectedItem;
                 endpoints.AddChild(BlockchainInfoKind.Endpoint, uri.ToString());
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
                 {
@@ -390,6 +391,21 @@ namespace Stratis.VS.StratisEVM.UI
                 System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
 #endif
             }
+        }
+
+        private void DeleteNetworkCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+           
+            var item = GetSelectedItem(sender);
+            if (item.Name == "Stratis Mainnet")
+            {
+                e.CanExecute = false;
+            }
+            else
+            {
+                e.CanExecute = true;
+            }
+            
         }
     }
 }

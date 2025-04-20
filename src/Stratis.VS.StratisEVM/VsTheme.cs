@@ -7,19 +7,19 @@ using Microsoft.VisualStudio.Shell;
 
 namespace Stratis.VS.StratisEVM.UI
 {
-    public static class VsTheme
+    public static class VSTheme
     {
-        private static Dictionary<UIElement, bool> _isUsingVsTheme = new Dictionary<UIElement, bool>();
+        private static Dictionary<UIElement, bool> _isUsingVSTheme = new Dictionary<UIElement, bool>();
         private static Dictionary<UIElement, object> _originalBackgrounds = new Dictionary<UIElement, object>();
 
-        public static DependencyProperty UseVsThemeProperty = DependencyProperty.RegisterAttached("UseVsTheme", typeof(bool), typeof(VsTheme), new PropertyMetadata(false, UseVsThemePropertyChanged));
+        public static DependencyProperty UseVSThemeProperty = DependencyProperty.RegisterAttached("UseVSTheme", typeof(bool), typeof(VSTheme), new PropertyMetadata(false, UseVSThemePropertyChanged));
 
-        private static void UseVsThemePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void UseVSThemePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            SetUseVsTheme((UIElement)d, (bool)e.NewValue);
+            SetUseVSTheme((UIElement)d, (bool)e.NewValue);
         }
 
-        public static void SetUseVsTheme(UIElement element, bool value)
+        public static void SetUseVSTheme(UIElement element, bool value)
         {
             if (value)
             {
@@ -35,12 +35,12 @@ namespace Stratis.VS.StratisEVM.UI
                 ((ContentControl)element).ShouldNotBeThemed();
             }
 
-            _isUsingVsTheme[element] = value;
+            _isUsingVSTheme[element] = value;
         }
 
-        public static bool GetUseVsTheme(UIElement element)
+        public static bool GetUseVSTheme(UIElement element)
         {
-            return _isUsingVsTheme.TryGetValue(element, out bool value) && value;
+            return _isUsingVSTheme.TryGetValue(element, out bool value) && value;
         }
 
         private static ResourceDictionary BuildThemeResources()
@@ -123,7 +123,7 @@ namespace Stratis.VS.StratisEVM.UI
             }
 
             //If we're themed now and we're something with a background property, reset it
-            if (GetUseVsTheme(control) && control is Control c)
+            if (GetUseVSTheme(control) && control is Control c)
             {
                 if (_originalBackgrounds.TryGetValue(control, out object background))
                 {

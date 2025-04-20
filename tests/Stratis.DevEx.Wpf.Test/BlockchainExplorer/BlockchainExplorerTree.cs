@@ -58,6 +58,10 @@ namespace Stratis.VS.StratisEVM.UI
             {
                 item.ContextMenu = (ContextMenu)TryFindResource("UserFolderContextMenu");
             }
+            else if (data.Kind == BlockchainInfoKind.Folder && data.Name == "Endpoints")
+            {
+                item.ContextMenu = (ContextMenu)TryFindResource("EndpointsFolderContextMenu"); ;
+            }
             return item;
         }
         #endregion

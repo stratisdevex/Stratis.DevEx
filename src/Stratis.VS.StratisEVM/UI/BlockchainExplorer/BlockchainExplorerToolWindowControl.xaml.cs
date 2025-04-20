@@ -54,12 +54,13 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
-        private async void NewNetworkCmdExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void NewNetworkCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender);
                 var dw = new BlockchainExplorerDialog(RootContentDialog)
                 {
                     Title = "Add EVM Network",
@@ -81,11 +82,17 @@ namespace Stratis.VS.StratisEVM.UI
                 };
                 dw.ButtonClicked += (cd, args) =>
                 {
+                    validForClose = false;
                     errors.Visibility = Visibility.Hidden;
                     if (args.Button == ContentDialogButton.Primary)
                     {
                         if (!string.IsNullOrEmpty(name.Text) && !string.IsNullOrEmpty(rpcurl.Text) && Uri.TryCreate(rpcurl.Text, UriKind.Absolute, out var _))
                         {
+                            if (tree.RootItem.HasChild(name.Text, BlockchainInfoKind.Network))
+                            {
+                                ShowValidationErrors(errors, "Enter a unique name for the network name.");
+                                return;
+                            }
                             ShowProgressRing(progressring);
                             var text = rpcurl.Text;
 #if IS_VSIX
@@ -108,17 +115,19 @@ namespace Stratis.VS.StratisEVM.UI
                                 else
                                 {
                                     ShowValidationErrors(errors, string.Format("The specified chain id {0} does not match the chain id returned by the network endpoint: {1}.", chainid.Text, cid.Value));
+                                    return;
                                 }
                             }
                             else
                             {
                                 ShowValidationErrors(errors, "Error connecting to JSON-RPC URL: " + cid.Exception.Message + " " + cid.Exception.InnerException?.Message);
+                                return;
                             }
                         }
                         else
                         {
-                            validForClose = false;
-                            ShowValidationErrors(errors, "Enter a network name and a valid JSON-RPC URL.");
+                            ShowValidationErrors(errors, "Enter a network name and a valid JSON-RPC endpoint URL.");
+                            return;
                         }
                     }
                     else
@@ -130,9 +139,20 @@ namespace Stratis.VS.StratisEVM.UI
                 var r = await dw.ShowAsync();
                 if (r != ContentDialogResult.Primary)
                 {
+                    name.Text = "";
+                    rpcurl.Text = "";
+                    chainid.Text = "";
                     return;
                 }
-                tree.Items.First().AddChild(BlockchainInfoKind.Network, name.Text);
+                var t = item.AddNetwork(name.Text, BigInteger.Parse(chainid.Text), rpcurl.Text);
+                var endpoints = t.AddChild(BlockchainInfoKind.Folder, "Endpoints");
+                endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if !IS_VSIX
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                }
             }
             catch (Exception ex)
             {
@@ -158,15 +178,23 @@ namespace Stratis.VS.StratisEVM.UI
                 var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
                 var errors = (Wpc.TextBlock)((StackPanel)sp.Children[1]).Children[0];
                 var validForClose = false;
-
                 dw.ButtonClicked += (cd, args) =>
                 {
+                    validForClose = false;
                     errors.Visibility = Visibility.Hidden;
                     if (args.Button == ContentDialogButton.Primary)
                     {
                         if (!string.IsNullOrEmpty(rpcurl.Text) && Uri.TryCreate(rpcurl.Text, UriKind.Absolute, out var _))
                         {
-                            validForClose = true;
+                            if (tree.SelectedItem.HasChild(rpcurl.Text, BlockchainInfoKind.Endpoint))
+                            {
+                                ShowValidationErrors(errors, "Enter a unique network endpoint URL.");
+                                return;
+                            }
+                            else
+                            {
+                                validForClose = true;
+                            }
                         }
                         else
                         {
@@ -191,8 +219,14 @@ namespace Stratis.VS.StratisEVM.UI
                 }
 
                 var uri = new Uri(rpcurl.Text);
-                var endpoints = tree.SelectedItem.GetChild("Endpoints", BlockchainInfoKind.Folder);
-                endpoints.AddChild(BlockchainInfoKind.Endpoint, uri.ToString(), uri);
+
+                var endpoints = tree.SelectedItem.Kind == BlockchainInfoKind.Network ? tree.SelectedItem.GetChild("Endpoints", BlockchainInfoKind.Folder) : tree.SelectedItem;
+                endpoints.AddChild(BlockchainInfoKind.Endpoint, uri.ToString());
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+                }
+                
             }
             catch (Exception ex)
             {
@@ -200,6 +234,12 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
+        private BlockchainInfo GetSelectedItem(object sender)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            return tree.SelectedItem;
+        }
         private void ShowValidationErrors(Wpc.TextBlock textBlock, string message)
         {
             textBlock.Visibility = Visibility.Visible;
@@ -223,8 +263,149 @@ namespace Stratis.VS.StratisEVM.UI
 
         #region Fields
         internal BlockchainExplorerToolWindow window;
+
         #endregion
 
+        private void DeleteEndpointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+        }
 
+        private void DeleteEndpointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var item = GetSelectedItem(sender);
+            var endpoints = item.GetEndPoints();    
+            if (endpoints.Count() == 1)
+            {
+                e.CanExecute = false;
+            }
+            e.CanExecute =  (item.Parent.Name == "Stratis MainNet");
+        }
+
+        private void PropertiesCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var item = GetSelectedItem(sender);
+            var dw = new BlockchainExplorerDialog(RootContentDialog)
+            {
+                Title = item.Name + " properties",
+                PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                Content = (StackPanel)TryFindResource("AddEndpointDialog"),
+                PrimaryButtonText = "Save",
+                CloseButtonText = "Cancel",
+            };
+        }
+
+        private async void NewFolderCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var item = GetSelectedItem(sender);
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Add Folder",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("AddFolderDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+                var sp = (StackPanel)dw.Content;
+                var foldername = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var errors = (Wpc.TextBlock)((StackPanel)sp.Children[1]).Children[0];
+                var validForClose = false;
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    validForClose = false;
+                    errors.Visibility = Visibility.Hidden;
+                    if (args.Button == ContentDialogButton.Primary)
+                    {
+                        if (!string.IsNullOrEmpty(foldername.Text))
+                        {
+                            if (item.HasChild(foldername.Text, BlockchainInfoKind.Endpoint))
+                            {
+                                ShowValidationErrors(errors, "Enter a unique folder name.");
+                                return;
+                            }
+                            else
+                            {
+                                validForClose = true;
+                            }
+                        }
+                        else
+                        {
+                            validForClose = false;
+                            ShowValidationErrors(errors, "Enter a valid folder name.");
+                        }
+                    }
+                    else
+                    {
+                        validForClose = true;
+                    }
+                };
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    foldername.Text = "";
+                    return;
+                }
+                var f = item.AddChild(BlockchainInfoKind.UserFolder, foldername.Text);
+                if (!item.Save("BlockchainExplorerTree", out var ex))
+                {
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void DeleteFolderCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if !IS_VSIX
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+            }
+        }
+
+        private void DeleteNetworkCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if !IS_VSIX
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+            }
+        }
+
+        private void DeleteNetworkCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+           
+            var item = GetSelectedItem(sender);
+            if (item.Name == "Stratis Mainnet")
+            {
+                e.CanExecute = false;
+            }
+            else
+            {
+                e.CanExecute = true;
+            }
+            
+        }
     }
 }

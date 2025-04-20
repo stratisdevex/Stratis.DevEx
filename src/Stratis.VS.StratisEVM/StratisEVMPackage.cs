@@ -23,23 +23,6 @@ using Microsoft.VisualStudio.ProjectSystem.Properties;
 
 namespace Stratis.VS.StratisEVM
 {
-    /// <summary>
-    /// This is the class that implements the package exposed by this assembly.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The minimum requirement for a class to be considered a valid package for Visual Studio
-    /// is to implement the IVsPackage interface and register itself with the shell.
-    /// This package uses the helper classes defined inside the Managed Package Framework (MPF)
-    /// to do it: it derives from the Package class that provides the implementation of the
-    /// IVsPackage interface and uses the registration attributes defined in the framework to
-    /// register itself and its components with the shell. These attributes tell the pkgdef creation
-    /// utility what data to put into .pkgdef file.
-    /// </para>
-    /// <para>
-    /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
-    /// </para>
-    /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", "0.1", IconResourceID = 400)]
     [Guid(PackageGuidString)]
@@ -63,7 +46,7 @@ namespace Stratis.VS.StratisEVM
     [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), NoSolution_string)]
     [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), EmptySolution_string)]
     [ProvideToolWindow(typeof(UI.StratisEVMBlockchainDashboardToolWindow), Style = VsDockStyle.MDI)]
-    public sealed class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7, IVsSolutionEvents
+    public sealed partial class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7, IVsSolutionEvents
     {
         #region Constructors
         static StratisEVMPackage()
@@ -76,29 +59,18 @@ namespace Stratis.VS.StratisEVM
 
         #region IVsSolutionEvents7 members
 
-        public void OnBeforeCloseFolder(string folderPath)
-        {
+        public void OnBeforeCloseFolder(string folderPath) {}
 
-        }
+        public void OnAfterCloseFolder(string folderPath) {}
 
-        public void OnAfterCloseFolder(string folderPath)
-        {
-
-        }
-
-        public void OnQueryCloseFolder(string folderPath, ref int s)
-        {
-
-        }
+        public void OnQueryCloseFolder(string folderPath, ref int s) {}
+        
         public void OnAfterOpenFolder(string folderPath)
         {
             Runtime.Info("Opened solution folder {f}.", folderPath);
         }
 
-        public void OnAfterLoadAllDeferredProjects()
-        {
-
-        }
+        public void OnAfterLoadAllDeferredProjects() {}
         #endregion
 
         #region IVsSolutionEvents members
@@ -183,7 +155,7 @@ namespace Stratis.VS.StratisEVM
 
             await InstallBuildSystemAsync();
 
-            //var cid = await Stratis.DevEx.Ethereum.Network.GetChainIdAsync("HTTP://127.0.0.1:7545"); ;
+  
 
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -236,9 +208,10 @@ namespace Stratis.VS.StratisEVM
         {
             var subscriptionService = unconfiguredProject.Services.ActiveConfiguredProjectSubscription;
             
-            var receivingBlock = new ActionBlock<IProjectVersionedValue<IProjectSubscriptionUpdate>>(async u =>
+            var receivingBlock = new ActionBlock<IProjectVersionedValue<IProjectSubscriptionUpdate>>(u =>
             {
-                await this.JoinableTaskFactory.SwitchToMainThreadAsync();
+                
+                //await this.JoinableTaskFactory.SwitchToMainThreadAsync();
                 //VSUtil.LogInfo("Stratis EVM", "update");
             });
             subscriptionService.JointRuleSource.SourceBlock.LinkTo(receivingBlock, new JointRuleDataflowLinkOptions() { PropagateCompletion = true}); 
@@ -248,9 +221,6 @@ namespace Stratis.VS.StratisEVM
         #endregion
 
         #region Constants
-        /// <summary>
-        /// Stratis.VS.StratisEVMPackage GUID string.
-        /// </summary>
         public const string PackageGuidString = "711b90a1-97e6-4b9a-91c4-3d62ccd32d4e";
 
         public const string SolidityFileUIContextRule = "82268519-FB9D-4B7E-8B01-2A311F4181E2";
@@ -258,8 +228,5 @@ namespace Stratis.VS.StratisEVM
         public const string NPMFileUIContextRule = "9A7CA75A-FA6E-45B2-B6E9-4BFF0AB7BB88";
         #endregion
 
-        #region Fields
-        //public static Dispatcher _dispatcher;
-        #endregion
     }
 }

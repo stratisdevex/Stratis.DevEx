@@ -6,7 +6,6 @@
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
              xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
              xmlns:wpftv="clr-namespace:Hardcodet.Wpf.GenericTreeView;assembly=Hardcodet.Wpf.GenericTreeView" 
-             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
@@ -29,24 +28,27 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" Grid.Row="0">
             <stratisui:BlockchainExplorerTree x:Name="BlockchainExplorerTree"
-                Items="{Binding Source={StaticResource Blockchains}, Path=Objects}"
-                RootNode="{StaticResource RootNode}"
-                TreeNodeStyle="{StaticResource TreeViewItemStyle}"
-                TreeStyle="{StaticResource TreeViewStyle}"
-                NodeSortDescriptions="{StaticResource AscendingNames}"
-                NodeContextMenu="{StaticResource TreeMenu}"
-                SelectNodesOnRightClick="True"
-                SelectedItemChanged="OnSelectedItemChanged"
-                IsLazyLoading="False"
-                Margin="0,0,0,0" />
+                    Items="{Binding Source={StaticResource Blockchains}, Path=Objects}"
+                    TreeNodeStyle="{StaticResource TreeViewItemStyle}"
+                    TreeStyle="{StaticResource TreeViewStyle}"
+                    NodeSortDescriptions="{StaticResource AscendingNames}"
+                    SelectNodesOnRightClick="True"
+                    SelectedItemChanged="OnSelectedItemChanged"
+                    IsLazyLoading="False"
+                    Margin="0,0,0,0" />
         </StackPanel>
         <ContentPresenter x:Name="RootContentDialog" Grid.Row="0"/>
     </Grid>
 
     <UserControl.CommandBindings>
         <!-- bindings for context menu commands -->
-        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}" Executed="NewNetworkCmdExecuted" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewNetworkCmd}" Executed="NewNetworkCmd_Executed" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteNetworkCmd}" Executed="DeleteNetworkCmd_Executed" CanExecute="DeleteNetworkCmd_CanExecute" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewFolderCmd}" Executed="NewFolderCmd_Executed" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.PropertiesCmd}" Executed="PropertiesCmd_Executed" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteFolderCmd}" Executed="DeleteFolderCmd_Executed" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}" Executed="NewEndpointCmd_Executed" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteEndpointCmd}" Executed="DeleteEndpointCmd_Executed" CanExecute="DeleteEndpointCmd_CanExecute" />
     </UserControl.CommandBindings>
 
 </UserControl>
