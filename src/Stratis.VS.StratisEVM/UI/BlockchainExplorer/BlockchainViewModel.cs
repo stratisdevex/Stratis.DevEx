@@ -117,7 +117,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 File.WriteAllText(Path.Combine(Runtime.AssemblyLocation, path + ".json"), json);
 #else
                 Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-                VSUtil.SaveUserSettings(Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider, path, json);
+                VSUtil.SaveUserSettings(StratisEVMPackage.Instance, path, json);
 #endif
 
                 e = null;
@@ -161,7 +161,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 return b;
 #else
                 Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-                var json = VSUtil.LoadUserSettings(Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider, path, "");
+                var json = VSUtil.LoadUserSettings(StratisEVMPackage.Instance, path, "");
                 var b = JsonConvert.DeserializeObject<BlockchainInfo>(json,
                     new JsonSerializerSettings()
                     {

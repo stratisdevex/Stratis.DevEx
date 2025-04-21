@@ -117,6 +117,7 @@ namespace Stratis.VS.StratisEVM
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
+            Instance = this;
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
@@ -162,6 +163,7 @@ namespace Stratis.VS.StratisEVM
             await UI.BlockchainExplorerToolWindowCommand.InitializeAsync(this);
             await UI.StratisEVMBlockchainDashboardToolWindowCommand.InitializeAsync(this);
 
+            Instance = this;    
             //var shellSettingsManager = new Microsoft.VisualStudio.Shell.Settings.ShellSettingsManager(this);
             //var store = shellSettingsManager.GetReadOnlySettingsStore(Microsoft.VisualStudio.Settings.SettingsScope.UserSettings);
             //var theme = store.GetString("Theme", "BackupThemeId", string.Empty);
@@ -220,6 +222,9 @@ namespace Stratis.VS.StratisEVM
 
         #endregion
 
+        #region Fields
+        public static StratisEVMPackage Instance { get; private set; }
+        #endregion
         #region Constants
         public const string PackageGuidString = "711b90a1-97e6-4b9a-91c4-3d62ccd32d4e";
 

@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Wpf.Ui.Controls;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -26,7 +27,7 @@ namespace Stratis.VS.StratisEVM.UI
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockchainExplorerToolWindow"/> class.
         /// </summary>
-        public BlockchainExplorerToolWindow() : base(null)
+        public BlockchainExplorerToolWindow() : base(StratisEVMPackage.Instance)
         {
             this.Caption = "Blockchain Explorer";
             this.BitmapImageMoniker = KnownMonikers.CloudServer;
@@ -34,6 +35,7 @@ namespace Stratis.VS.StratisEVM.UI
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
+            var _ = new Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
             var control = new BlockchainExplorerToolWindowControl();
             control.window = this;
             this.Content = control;
