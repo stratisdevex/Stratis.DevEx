@@ -103,7 +103,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<BlockchainInfo> GetEndPoints() => GetChildren(BlockchainInfoKind.Endpoint);
 
-        public bool Save(string path, out Exception e )
+        public bool Save(string path, out Exception e)
         {
             try
             {
@@ -115,7 +115,11 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 });
 #if !IS_VSIX
                 File.WriteAllText(Path.Combine(Runtime.AssemblyLocation, path + ".json"), json);
+#else
+                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                VSUtil.SaveUserSettings(Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider, path, json);
 #endif
+
                 e = null;
                 return true;
             }
@@ -130,6 +134,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         {
             void FixParents(BlockchainInfo bi, BlockchainInfo p = null) 
             {
+                if (bi == null) return;
                 bi.Parent = p;
                 foreach (var c in bi.Children)
                 {
@@ -155,12 +160,9 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 e = null;
                 return b;
 #else
-                if (!File.Exists(Path.Combine(Runtime.AssemblyLocation, path + ".json")))
-                {
-                    e = null;
-                    return null;
-                }
-                var b = JsonConvert.DeserializeObject<BlockchainInfo>(File.ReadAllText(Path.Combine(Runtime.AssemblyLocation, path + ".json")),
+                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                var json = VSUtil.LoadUserSettings(Microsoft.VisualStudio.Shell.ServiceProvider.GlobalProvider, path, "");
+                var b = JsonConvert.DeserializeObject<BlockchainInfo>(json,
                     new JsonSerializerSettings()
                     {
                         PreserveReferencesHandling = PreserveReferencesHandling.Objects,

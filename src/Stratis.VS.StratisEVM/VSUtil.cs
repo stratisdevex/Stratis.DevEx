@@ -11,6 +11,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 
 using Stratis.DevEx;
+using Microsoft.VisualStudio.Settings;
+using Microsoft.VisualStudio.Shell.Settings;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -217,6 +219,21 @@ namespace Stratis.VS.StratisEVM
         }
 
         public static UnconfiguredProject GetUnconfiguredProject(IVsHierarchy hierarchy) => GetUnconfiguredProject(GetDTEProject(hierarchy));
+
+        public static string LoadUserSettings(IServiceProvider serviceProvider, string propertyName, string defaultValue = null)
+        {
+            SettingsManager settingsManager = new ShellSettingsManager(serviceProvider);
+            SettingsStore settingsStore = settingsManager.GetReadOnlySettingsStore(SettingsScope.UserSettings);
+            return settingsStore.GetString("StratisEVM", propertyName, defaultValue);
+        }
+
+        public static void SaveUserSettings(IServiceProvider serviceProvider, string propertyName, string value)
+        {
+            SettingsManager settingsManager = new ShellSettingsManager(serviceProvider);
+            WritableSettingsStore settingsStore = settingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+            settingsStore.CreateCollection("StratisEVM");
+            settingsStore.SetString("StratisEVM", propertyName, value);
+        }
         
         public static bool VSServicesInitialized = false;
     }

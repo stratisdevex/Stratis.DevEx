@@ -355,13 +355,31 @@ namespace Stratis.VS.StratisEVM.UI
                 var f = item.AddChild(BlockchainInfoKind.UserFolder, foldername.Text);
                 if (!item.Save("BlockchainExplorerTree", out var ex))
                 {
+#if !IS_VSIX
                     System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#else
+                    var dialog = new Microsoft.VisualStudio.PlatformUI.DialogWindow()
+                    {
+                        Title = "Error",
+                        Content = "Error saving Blockchain Explorer tree state: " + ex?.Message,
+                    };
+                    dialog.ShowModal();
+#endif
                 }
-
             }
             catch (Exception ex)
             {
+#if !IS_VSIX
                 System.Windows.MessageBox.Show(ex.Message);
+#else
+                
+                var dialog = new Microsoft.VisualStudio.PlatformUI.DialogWindow()
+                {
+                    Title = "Error",
+                    Content = "Error saving Blockchain Explorer tree state: " + ex?.Message,
+                };
+                dialog.ShowModal();
+#endif
             }
         }
 
