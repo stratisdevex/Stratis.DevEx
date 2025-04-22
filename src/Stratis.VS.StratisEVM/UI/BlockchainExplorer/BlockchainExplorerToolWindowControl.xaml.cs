@@ -17,6 +17,8 @@ using Wpc = Wpf.Ui.Controls;
 using Stratis.VS.StratisEVM.UI.ViewModel;
 using Stratis.DevEx.Ethereum;
 using static Stratis.DevEx.Result;
+using System.IO;
+using Stratis.DevEx;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -28,7 +30,7 @@ namespace Stratis.VS.StratisEVM.UI
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockchainExplorerToolWindowControl"/> class.
         /// </summary>
-        public BlockchainExplorerToolWindowControl()
+        public BlockchainExplorerToolWindowControl() : base()
         {
             var _ = new Wpf.Ui.Controls.Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
             InitializeComponent();
@@ -149,14 +151,20 @@ namespace Stratis.VS.StratisEVM.UI
                 endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
                 {
-#if !IS_VSIX
-                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#if IS_VSIX
+                    VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                    System.Windows.MessageBox.Show("Error saving tree data: " +  ex?.Message);
 #endif
                 }
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.Message);
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
             }
         }
 
@@ -230,7 +238,11 @@ namespace Stratis.VS.StratisEVM.UI
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.Message);
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
             }
         }
 
@@ -355,30 +367,19 @@ namespace Stratis.VS.StratisEVM.UI
                 var f = item.AddChild(BlockchainInfoKind.UserFolder, foldername.Text);
                 if (!item.Save("BlockchainExplorerTree", out var ex))
                 {
-#if !IS_VSIX
-                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#if IS_VSIX
+                    VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
 #else
-                    var dialog = new Microsoft.VisualStudio.PlatformUI.DialogWindow()
-                    {
-                        Title = "Error",
-                        Content = "Error saving Blockchain Explorer tree state: " + ex?.Message,
-                    };
-                    dialog.ShowModal();
+                    System.Windows.MessageBox.Show("Error saving tree data: " +  ex?.Message);
 #endif
                 }
             }
             catch (Exception ex)
             {
-#if !IS_VSIX
-                System.Windows.MessageBox.Show(ex.Message);
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
 #else
-                
-                var dialog = new Microsoft.VisualStudio.PlatformUI.DialogWindow()
-                {
-                    Title = "Error",
-                    Content = "Error saving Blockchain Explorer tree state: " + ex?.Message,
-                };
-                dialog.ShowModal();
+                System.Windows.MessageBox.Show(ex?.Message);
 #endif
             }
         }
@@ -391,8 +392,10 @@ namespace Stratis.VS.StratisEVM.UI
             item.Parent.DeleteChild(item);
             if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
             {
-#if !IS_VSIX
-                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                System.Windows.MessageBox.Show("Error saving tree data: " +  ex?.Message);
 #endif
             }
         }
@@ -405,15 +408,16 @@ namespace Stratis.VS.StratisEVM.UI
             item.Parent.DeleteChild(item);
             if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
             {
-#if !IS_VSIX
-                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                System.Windows.MessageBox.Show("Error saving tree data: " +  ex?.Message);
 #endif
             }
         }
 
         private void DeleteNetworkCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-           
             var item = GetSelectedItem(sender);
             if (item.Name == "Stratis Mainnet")
             {
@@ -422,8 +426,7 @@ namespace Stratis.VS.StratisEVM.UI
             else
             {
                 e.CanExecute = true;
-            }
-            
+            }   
         }
     }
 }

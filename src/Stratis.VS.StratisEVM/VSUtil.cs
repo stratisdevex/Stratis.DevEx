@@ -235,6 +235,15 @@ namespace Stratis.VS.StratisEVM
             settingsStore.SetString("StratisEVM", propertyName, value);
         }
         
+        public static void ShowModalErrorDialogBox(string text, string title = null)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();            
+            VsShellUtilities.ShowMessageBox(StratisEVMPackage.Instance, text, title ?? "StratisEVM error",
+            OLEMSGICON.OLEMSGICON_CRITICAL,
+            OLEMSGBUTTON.OLEMSGBUTTON_OK,
+            OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
         public static bool VSServicesInitialized = false;
     }
 }
