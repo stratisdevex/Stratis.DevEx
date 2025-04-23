@@ -77,12 +77,13 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return info;
         }
 
-        public BlockchainInfo AddNetwork(string name, BigInteger chainid, string uri)
+        public BlockchainInfo AddNetwork(string name, string uri, BigInteger chainid, string nid)
         {
             var data = new Dictionary<string, object>()
             {
-                {"ChainId", chainid },
-                {"EndpointUri", uri }
+                {"EndpointUri", uri},
+                {"ChainId", chainid},
+                {"NetworkId", nid }
             };
             return AddChild(BlockchainInfoKind.Network, name, data);    
         }
@@ -103,7 +104,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<BlockchainInfo> GetEndPoints() => GetChildren(BlockchainInfoKind.Endpoint);
 
-        public bool Save(string path, out Exception e )
+        public bool Save(string path, out Exception e)
         {
             try
             {
@@ -115,7 +116,11 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 });
 #if !IS_VSIX
                 File.WriteAllText(Path.Combine(Runtime.AssemblyLocation, path + ".json"), json);
+#else
+                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                VSUtil.SaveUserSettings(StratisEVMPackage.Instance, path, json);
 #endif
+
                 e = null;
                 return true;
             }
@@ -130,6 +135,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         {
             void FixParents(BlockchainInfo bi, BlockchainInfo p = null) 
             {
+                if (bi == null) return;
                 bi.Parent = p;
                 foreach (var c in bi.Children)
                 {
@@ -146,6 +152,18 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                     return null;
                 }
                 var b = JsonConvert.DeserializeObject<BlockchainInfo>(File.ReadAllText(Path.Combine(Runtime.AssemblyLocation, path + ".json")),
+                    new JsonSerializerSettings()
+                    {
+                        PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                        ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                    });
+                FixParents(b);
+                e = null;
+                return b;
+#else
+                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+                var json = VSUtil.LoadUserSettings(StratisEVMPackage.Instance, path, "");
+                var b = JsonConvert.DeserializeObject<BlockchainInfo>(json,
                     new JsonSerializerSettings()
                     {
                         PreserveReferencesHandling = PreserveReferencesHandling.Objects,
@@ -246,7 +264,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         {
             var data = new ObservableCollection<BlockchainInfo>();
             var root = new BlockchainInfo(BlockchainInfoKind.Folder, "EVM Networks");
-            var mainnet = root.AddNetwork("Stratis Mainnet", 50505, "https://rpc.stratisevm.com:8545");
+            var mainnet = root.AddNetwork("Stratis Mainnet", "https://rpc.stratisevm.com", 10505, "10505");
             var endpoints = mainnet.AddChild(BlockchainInfoKind.Folder, "Endpoints");
             endpoints.AddChild(BlockchainInfoKind.Endpoint, "https://rpc.stratisevm.com:8545");
             data.Add(root); 

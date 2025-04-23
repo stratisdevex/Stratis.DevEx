@@ -77,12 +77,13 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return info;
         }
 
-        public BlockchainInfo AddNetwork(string name, BigInteger chainid, string uri)
+        public BlockchainInfo AddNetwork(string name, string uri, BigInteger chainid, string nid)
         {
             var data = new Dictionary<string, object>()
             {
-                {"ChainId", chainid },
-                {"EndpointUri", uri }
+                {"EndpointUri", uri},
+                {"ChainId", chainid},
+                {"NetworkId", nid }
             };
             return AddChild(BlockchainInfoKind.Network, name, data);    
         }
@@ -263,7 +264,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         {
             var data = new ObservableCollection<BlockchainInfo>();
             var root = new BlockchainInfo(BlockchainInfoKind.Folder, "EVM Networks");
-            var mainnet = root.AddNetwork("Stratis Mainnet", 50505, "https://rpc.stratisevm.com:8545");
+            var mainnet = root.AddNetwork("Stratis Mainnet", "https://rpc.stratisevm.com", 10505, "10505");
             var endpoints = mainnet.AddChild(BlockchainInfoKind.Folder, "Endpoints");
             endpoints.AddChild(BlockchainInfoKind.Endpoint, "https://rpc.stratisevm.com:8545");
             data.Add(root); 

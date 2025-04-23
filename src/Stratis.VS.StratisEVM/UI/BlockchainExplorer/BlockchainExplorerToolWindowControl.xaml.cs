@@ -75,6 +75,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var name = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
                 var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[1]).Children[1];
                 var chainid = (Wpc.NumberBox)((StackPanel)sp.Children[2]).Children[1];
+                var nid = "";
                 var errors = (Wpc.TextBlock)((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[0];
                 var progressring = (Wpc.ProgressRing)((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[1];
                 var validForClose = false;
@@ -98,31 +99,33 @@ namespace Stratis.VS.StratisEVM.UI
                             ShowProgressRing(progressring);
                             var text = rpcurl.Text;
 #if IS_VSIX
-                            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetChainIdAsync(text)));
+                            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetChainandNetworkIdAsync(text)));
 #else
-                            var result = Task.Run(() => ExecuteAsync(Network.GetChainIdAsync(text))).Result;
+                            var result = Task.Run(() => ExecuteAsync(Network.GetChainandNetworkIdAsync(text))).Result;
 #endif
                             HideProgressRing(progressring);
-                            if (Succedeed(result, out var cid))
+                            if (Succedeed(result, out var cnid))
                             {
-                                if (!string.IsNullOrEmpty(chainid.Text) && cid.Value == BigInteger.Parse(chainid.Text))
+                                if (!string.IsNullOrEmpty(chainid.Text) && cnid.Value.Item1 == BigInteger.Parse(chainid.Text))
                                 {
+                                    nid = cnid.Value.Item2;
                                     validForClose = true;
                                 }
                                 else if (string.IsNullOrEmpty(chainid.Text))
                                 {
-                                    chainid.Text = cid.Value.ToString();
+                                    chainid.Text = cnid.Value.Item1.ToString();
+                                    nid = cnid.Value.Item2;
                                     validForClose = true;
                                 }
                                 else
                                 {
-                                    ShowValidationErrors(errors, string.Format("The specified chain id {0} does not match the chain id returned by the network endpoint: {1}.", chainid.Text, cid.Value));
+                                    ShowValidationErrors(errors, string.Format("The specified chain id {0} does not match the chain id returned by the network endpoint: {1}.", chainid.Text, cnid.Value.Item1));
                                     return;
                                 }
                             }
                             else
                             {
-                                ShowValidationErrors(errors, "Error connecting to JSON-RPC URL: " + cid.Exception.Message + " " + cid.Exception.InnerException?.Message);
+                                ShowValidationErrors(errors, "Error connecting to JSON-RPC URL: " + cnid.Exception.Message + " " + cnid.Exception.InnerException?.Message);
                                 return;
                             }
                         }
@@ -144,9 +147,10 @@ namespace Stratis.VS.StratisEVM.UI
                     name.Text = "";
                     rpcurl.Text = "";
                     chainid.Text = "";
+                    nid = "";
                     return;
                 }
-                var t = item.AddNetwork(name.Text, BigInteger.Parse(chainid.Text), rpcurl.Text);
+                var t = item.AddNetwork(name.Text, rpcurl.Text, BigInteger.Parse(chainid.Text), nid);
                 var endpoints = t.AddChild(BlockchainInfoKind.Folder, "Endpoints");
                 endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
@@ -246,38 +250,6 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
-        private BlockchainInfo GetSelectedItem(object sender)
-        {
-            var window = (BlockchainExplorerToolWindowControl)sender;
-            var tree = window.BlockchainExplorerTree;
-            return tree.SelectedItem;
-        }
-        private void ShowValidationErrors(Wpc.TextBlock textBlock, string message)
-        {
-            textBlock.Visibility = Visibility.Visible;
-            textBlock.Text = message;
-        }
-
-        private void ShowProgressRing(ProgressRing progressRing)
-        {
-            progressRing.IsEnabled = true;
-            progressRing.Visibility = Visibility.Visible;
-        }
-
-        private void HideProgressRing(ProgressRing progressRing)
-        {
-            progressRing.IsEnabled = false;
-            progressRing.Visibility = Visibility.Hidden;
-        }
-
-
-        #endregion
-
-        #region Fields
-        internal BlockchainExplorerToolWindow window;
-
-        #endregion
-
         private void DeleteEndpointCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var item = GetSelectedItem(sender);
@@ -287,12 +259,12 @@ namespace Stratis.VS.StratisEVM.UI
         private void DeleteEndpointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             var item = GetSelectedItem(sender);
-            var endpoints = item.GetEndPoints();    
+            var endpoints = item.GetEndPoints();
             if (endpoints.Count() == 1)
             {
                 e.CanExecute = false;
             }
-            e.CanExecute =  (item.Parent.Name == "Stratis MainNet");
+            e.CanExecute = (item.Parent.Name == "Stratis MainNet");
         }
 
         private void PropertiesCmd_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -426,7 +398,40 @@ namespace Stratis.VS.StratisEVM.UI
             else
             {
                 e.CanExecute = true;
-            }   
+            }
         }
+        #endregion
+
+        #region Methods
+        private BlockchainInfo GetSelectedItem(object sender)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            return tree.SelectedItem;
+        }
+        private void ShowValidationErrors(Wpc.TextBlock textBlock, string message)
+        {
+            textBlock.Visibility = Visibility.Visible;
+            textBlock.Text = message;
+        }
+
+        private void ShowProgressRing(ProgressRing progressRing)
+        {
+            progressRing.IsEnabled = true;
+            progressRing.Visibility = Visibility.Visible;
+        }
+
+        private void HideProgressRing(ProgressRing progressRing)
+        {
+            progressRing.IsEnabled = false;
+            progressRing.Visibility = Visibility.Hidden;
+        }
+
+        #endregion
+
+        #region Fields
+        internal BlockchainExplorerToolWindow window;
+
+        #endregion
     }
 }

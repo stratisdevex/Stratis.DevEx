@@ -21,13 +21,21 @@ namespace Stratis.DevEx.Ethereum
         #endregion
 
         #region Methods
-        public static async Task<BigInteger> GetChainIdAsync(string rpcurl) => await new Web3(rpcurl).Eth.ChainId.SendRequestAsync();
-
         public async Task<BigInteger> GetBlockNoAsync() => await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync();
 
         public async Task<string[]> GetPredefinedAccountsAsync() => await web3.Eth.Accounts.SendRequestAsync();
 
         public async Task<BigInteger> GetBalanceAsync(string acct) => await web3.Eth.GetBalance.SendRequestAsync(acct);
+
+        public static async Task<BigInteger> GetChainIdAsync(string rpcurl) => await new Web3(rpcurl).Eth.ChainId.SendRequestAsync();
+
+        public static async Task<string> GetNetworkIdAsync(string rpcurl) => await new Web3(rpcurl).Net.Version.SendRequestAsync();
+
+        public static async Task<(BigInteger, string)> GetChainandNetworkIdAsync(string rpcurl)
+        {
+            var web3 = new Web3(rpcurl);
+            return (await web3.Eth.ChainId.SendRequestAsync(), await web3.Net.Version.SendRequestAsync());
+        }
         #endregion
 
         #region Fields

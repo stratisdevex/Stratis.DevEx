@@ -104,7 +104,7 @@ namespace Stratis.VS.StratisEVM
                 }
                 else
                 {
-                    Error("Could not initialize Visual Studio Ouput Window.");
+                    Error("Could not initialize Visual Studio Output Window.");
                     return false;
                 }
                 
