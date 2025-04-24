@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow ;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Build;
+using Microsoft.VisualStudio.Shell;
+using Stratis.VS.StratisEVM.UI;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -13,19 +15,13 @@ namespace Stratis.VS.StratisEVM
     internal class SolidityProjectDeployProvider : IDeployProvider
     {
         [ImportingConstructor] 
-        public SolidityProjectDeployProvider() 
-        {
-            
-
-        }
+        public SolidityProjectDeployProvider()  {}
 
         public bool IsDeploySupported => true;
 
         public async Task DeployAsync(CancellationToken cancellationToken, TextWriter outputPaneWriter)
         {
-            await outputPaneWriter.WriteLineAsync("Get out your popcorn, folks...");
-            //await DoMassiveWorkAsync(cancellationToken);
-            //outputPaneWriter.WriteLine("The party's over. Get back to work!");
+            ToolWindowPane window = await StratisEVMPackage.Instance.ShowToolWindowAsync(typeof(DeploySolidityProjectToolWindow), 0, true, StratisEVMPackage.Instance.DisposalToken);
         }
 
         /// <summary>

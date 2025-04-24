@@ -18,16 +18,16 @@ namespace Stratis.VS.StratisEVM
 {
     public class VSUtil : Runtime
     {
-        protected static Dictionary<string, Guid> logWindowPanes = new Dictionary<string, Guid> ();
+        protected static Dictionary<string, Guid> logWindowPanes = new Dictionary<string, Guid>();
 
         protected static IVsUIShell uiShell;
-        
+
         protected static IVsOutputWindow outputWindow;
 
         protected static string[] LogWindowNames = new string[] { "Stratis EVM", "Solidity Compiler" };
         protected static IVsOutputWindowPane GetLogOutputPane(string name)
         {
-            ThreadHelper.ThrowIfNotOnUIThread ();
+            ThreadHelper.ThrowIfNotOnUIThread();
             IVsOutputWindowPane outputPane = null;
             if (!logWindowPanes.ContainsKey(name) || ErrorHandler.Failed(outputWindow.GetPane(logWindowPanes[name], out outputPane)))
             {
@@ -46,7 +46,7 @@ namespace Stratis.VS.StratisEVM
             ThreadHelper.ThrowIfNotOnUIThread();
             Info("(" + logname + ") " + text);
             IVsOutputWindowPane outputPane = GetLogOutputPane(logname);
-            if (outputPane is null) 
+            if (outputPane is null)
             {
                 Error("Could not get output window pane {l}.", logname);
                 return;
@@ -98,7 +98,7 @@ namespace Stratis.VS.StratisEVM
             if (outputWindow is null)
             {
                 var ow = provider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-                if (ow != null) 
+                if (ow != null)
                 {
                     outputWindow = ow;
                 }
@@ -107,7 +107,7 @@ namespace Stratis.VS.StratisEVM
                     Error("Could not initialize Visual Studio Output Window.");
                     return false;
                 }
-                
+
             }
             IVsOutputWindowPane outputPane = null;
             foreach (var name in LogWindowNames)
@@ -141,9 +141,9 @@ namespace Stratis.VS.StratisEVM
                 uiShell.FindToolWindow(flags, VSConstants.StandardToolWindows.Output, out windowFrame);
                 windowFrame.Show();
                 var p = GetLogOutputPane(pane);
-                if (p != null) 
+                if (p != null)
                 {
-                    p.Activate();   
+                    p.Activate();
                 }
                 else
                 {
@@ -159,7 +159,7 @@ namespace Stratis.VS.StratisEVM
         public static bool CheckRunCmdOutput(Dictionary<string, object> output, string logname, string checktext)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            if (output.ContainsKey("error") || output.ContainsKey("exception")) 
+            if (output.ContainsKey("error") || output.ContainsKey("exception"))
             {
                 if (output.ContainsKey("error"))
                 {
@@ -167,7 +167,7 @@ namespace Stratis.VS.StratisEVM
                 }
                 if (output.ContainsKey("exception"))
                 {
-                    LogError(logname, (Exception) output["exception"]);
+                    LogError(logname, (Exception)output["exception"]);
                 }
                 return false;
             }
@@ -234,14 +234,27 @@ namespace Stratis.VS.StratisEVM
             settingsStore.CreateCollection("StratisEVM");
             settingsStore.SetString("StratisEVM", propertyName, value);
         }
-        
+
         public static void ShowModalErrorDialogBox(string text, string title = null)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();            
+            ThreadHelper.ThrowIfNotOnUIThread();
             VsShellUtilities.ShowMessageBox(StratisEVMPackage.Instance, text, title ?? "StratisEVM error",
             OLEMSGICON.OLEMSGICON_CRITICAL,
             OLEMSGBUTTON.OLEMSGBUTTON_OK,
             OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
+        public static bool IsProjectLoaded()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var dte = StratisEVMPackage.Instance.GetService<EnvDTE.DTE, EnvDTE80.DTE2>();
+            if (dte == null)
+            {
+                ShowModalErrorDialogBox("Could not get dte");
+                return false;
+            }
+            Array a = (Array)dte.ActiveSolutionProjects;
+            return a == null || a.Length == 0;
         }
 
         public static bool VSServicesInitialized = false;

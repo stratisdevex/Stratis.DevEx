@@ -48,6 +48,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="UI\BlockchainExplorer\Converters.cs" />
+    <Compile Include="UI\DeploySolidityProject\DeploySolidityProjectToolWindow.cs" />
+    <Compile Include="UI\DeploySolidityProject\DeploySolidityProjectToolWindowCommand.cs" />
+    <Compile Include="UI\DeploySolidityProject\DeploySolidityProjectToolWindowControl.xaml.cs">
+      <DependentUpon>DeploySolidityProjectToolWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindow.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowCommand.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml.cs">
@@ -96,6 +101,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\DeploySolidityProjectToolWindowCommand.png" />
     <Resource Include="Images\SolidityProjectProjectIcon.png" />
     <Resource Include="Images\SoliditySourceFileIcon.png" />
     <Content Include="BuildSystem\version.txt">
@@ -269,6 +275,10 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Page Include="UI\DeploySolidityProject\DeploySolidityProjectToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardTransactionsUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
