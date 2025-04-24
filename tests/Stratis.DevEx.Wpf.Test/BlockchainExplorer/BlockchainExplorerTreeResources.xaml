@@ -259,7 +259,7 @@
     <!-- Tree items style -->
     <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
         <Setter Property="HeaderTemplate" Value="{StaticResource BlockchainInfoTemplate}" />
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"/>
         <Setter Property="Background" Value="{DynamicResource ApplicationBackgroundBrush}"/>
     </Style>
 

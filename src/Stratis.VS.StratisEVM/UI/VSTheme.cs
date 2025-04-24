@@ -2,13 +2,43 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
+using Wpf.Ui.Appearance;
 
 namespace Stratis.VS.StratisEVM.UI
 {
     public static class VSTheme
     {
+        public static ApplicationTheme ApplicationThemeGuess
+        {
+            get
+            {
+                var c = VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey);
+                var b = c.GetBrightness();
+                var h = c.GetHue();
+                var s = c.GetSaturation();
+                if (b < .25)
+                {
+                    return ApplicationTheme.Dark;
+                }
+                else
+                {
+                    return ApplicationTheme.Light;
+                }
+            }
+        }
+
+        public static object ToolWindowTextKey => VsBrushes.ToolWindowTextKey;
+        
+        public static object ToolWindowBackgroundKey => VsBrushes.ToolWindowBackgroundKey;
+
+        public static void WatchThemeChanges()
+        {
+            VSColorTheme.ThemeChanged += _ => ApplicationThemeManager.Apply(ApplicationThemeGuess, Wpf.Ui.Controls.WindowBackdropType.Mica, true); ;
+        }
+
         private static Dictionary<UIElement, bool> _isUsingVSTheme = new Dictionary<UIElement, bool>();
         private static Dictionary<UIElement, object> _originalBackgrounds = new Dictionary<UIElement, object>();
 

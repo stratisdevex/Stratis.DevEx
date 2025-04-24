@@ -47,10 +47,7 @@ namespace Stratis.DevEx.Ethereum
 
     public class StratisMainnet : Network
     {
-        public StratisMainnet() : base("https://rpc.stratisevm.com", 505505)
-        { 
-        
-        }
+        public StratisMainnet() : base("https://rpc.stratisevm.com", 105105) {}
 
         protected BlockscoutClient blockscout = new BlockscoutClient(new System.Net.Http.HttpClient());
 
