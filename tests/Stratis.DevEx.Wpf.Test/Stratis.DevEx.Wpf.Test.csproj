@@ -80,6 +80,7 @@
     <Compile Include="StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardTransactionsUserControl.xaml.cs">
       <DependentUpon>StratisEVMBlockchainDashboardTransactionsUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VSTheme.cs" />
     <Page Include="BlockchainExplorer\BlockchainExplorerDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
