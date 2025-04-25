@@ -232,6 +232,7 @@ namespace Stratis.VS.StratisEVM
         #region Fields
         public static StratisEVMPackage Instance { get; private set; }
         #endregion
+
         #region Constants
         public const string PackageGuidString = "711b90a1-97e6-4b9a-91c4-3d62ccd32d4e";
 

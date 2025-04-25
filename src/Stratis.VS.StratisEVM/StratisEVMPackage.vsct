@@ -104,6 +104,8 @@
       <Button guid="guidStratisEVMPackageCmdSet3" id="SolidityProjectMenuCmdId3" priority="0x0101" type="Button">
         <Parent guid="guidStratisEVMPackageCmdSet3" id="MyGroupForCommands2" />
         <Icon guid="guidDeploySolidityIcon" id="pngDeploySolidity" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>AllowParams</CommandFlag>
         <Strings>
           <ButtonText>Show Deploy tool window...</ButtonText>
@@ -221,6 +223,7 @@
   <VisibilityConstraints>
     <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" context="SolidityFileUIContextRule" />
     <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="SolidityProjectMenuCmdId2" context="NPMFileUIContextRule" />
+    <VisibilityItem guid="guidStratisEVMPackageCmdSet3" id="SolidityProjectMenuCmdId3" context="SolidityProjectFileUIContextRule" />
   </VisibilityConstraints>
   
   <Symbols>

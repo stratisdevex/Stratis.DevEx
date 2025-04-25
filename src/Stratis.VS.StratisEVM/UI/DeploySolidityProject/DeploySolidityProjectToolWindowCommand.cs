@@ -17,12 +17,12 @@ namespace Stratis.VS.StratisEVM.UI
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4130;
+        public const int CommandId = 0x0103;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("5e1dc4ca-7f1b-4ff0-a794-7e162ab8f421");
+        public static readonly Guid CommandSet = new Guid("edaae768-9fc5-4b43-9421-cc1313528cda");
 
         /// <summary>
         /// VS Package that provides this command, not null.
