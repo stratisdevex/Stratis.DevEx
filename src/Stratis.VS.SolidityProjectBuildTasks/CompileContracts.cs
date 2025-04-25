@@ -27,6 +27,9 @@ namespace Stratis.VS
         [Required]
         public string OutputPath { get; set; }
 
+        [Required]
+        public string EVMVersion { get; set; }
+
         public string BindingsNS { get; set; } = "Ethereum";
 
         public Dictionary<string, Source> Sources => Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
@@ -86,7 +89,7 @@ namespace Stratis.VS
                 Language = "Solidity",
                 Settings = new Settings()
                 {
-                    EvmVersion = "shanghai",
+                    EvmVersion = EVMVersion,
                     OutputSelection = new Dictionary<string, Dictionary<string, string[]>>()
                     {
                         {"*", new Dictionary<string, string[]>()

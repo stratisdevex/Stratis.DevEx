@@ -127,7 +127,7 @@ namespace Stratis.VS.StratisEVM
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            await SolidityProjectMenuCommands.InitializeAsync(this);
+
             if (!VSUtil.VSServicesInitialized)
             {
                 if (VSUtil.InitializeVSServices(ServiceProvider.GlobalProvider))
@@ -140,42 +140,17 @@ namespace Stratis.VS.StratisEVM
                     return;
                 }
             }
-
             IVsSolution solution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
             solution.AdviseSolutionEvents(this, out var c);
-            // Here we initialize our internal IPackageService implementations, both in global and project services scope.
-
-            // Get access to global MEF services.
-            IComponentModel componentModel = await this.GetServiceAsync<SComponentModel, IComponentModel>();
-
-            // Get access to project services scope services.
-            IProjectServiceAccessor projectServiceAccessor = componentModel.GetService<IProjectServiceAccessor>();
-
-            //projectServiceAccessor.GetProjectService().
-            // Find package services in global scope.
-            //IEnumerable<ISolidityProjectServices> globalPackageServices = componentModel.GetExtensions<ISolidityProjectServices>();
-
-            // Find package services in project service scope.
             
-        
             await TaskScheduler.Default;
-
             await InstallBuildSystemAsync();
 
-  
-
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-
+            await SolidityProjectMenuCommands.InitializeAsync(this);
             await UI.BlockchainExplorerToolWindowCommand.InitializeAsync(this);
             await UI.StratisEVMBlockchainDashboardToolWindowCommand.InitializeAsync(this);
-            await UI.DeploySolidityProjectToolWindowCommand.InitializeAsync(this);
-
-            Instance = this;    
-            //var shellSettingsManager = new Microsoft.VisualStudio.Shell.Settings.ShellSettingsManager(this);
-            //var store = shellSettingsManager.GetReadOnlySettingsStore(Microsoft.VisualStudio.Settings.SettingsScope.UserSettings);
-            //var theme = store.GetString("Theme", "BackupThemeId", string.Empty);
-
-
+            await UI.DeploySolidityProjectToolWindowCommand.InitializeAsync(this); 
         }
         #endregion
 

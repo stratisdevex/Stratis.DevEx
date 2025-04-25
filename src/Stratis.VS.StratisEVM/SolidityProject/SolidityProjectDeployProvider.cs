@@ -23,6 +23,8 @@ namespace Stratis.VS.StratisEVM
         {
             ToolWindowPane window = await StratisEVMPackage.Instance.ShowToolWindowAsync(typeof(DeploySolidityProjectToolWindow), 0, true, StratisEVMPackage.Instance.DisposalToken);
             //window.on
+
+            //UnconfiguredProject.
         }
 
         /// <summary>

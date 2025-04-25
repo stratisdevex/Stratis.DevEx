@@ -39,6 +39,19 @@
 		<EnumValue Name="0.8.27" />
 	</EnumProperty>
 
+  <EnumProperty Name="EVMVersion" DisplayName="EVM Version">
+    <EnumProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+    </EnumProperty.DataSource>
+    <EnumValue Name="cancun" />
+    <EnumValue Name="shanghai" />
+    <EnumValue Name="paris" />
+    <EnumValue Name="london" />
+    <EnumValue Name="berlin" />
+    <EnumValue Name="istanbul" />
+    <EnumValue Name="constantinople" />
+  </EnumProperty>
+  
   <StringProperty Name="BindingsNS" DisplayName=".NET Bindings Namespace">
     <StringProperty.DataSource>
       <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />

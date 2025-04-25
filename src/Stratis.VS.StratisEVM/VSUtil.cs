@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Threading;
 using Stratis.DevEx;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
+using Microsoft.VisualStudio.ComponentModelHost;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -250,11 +251,22 @@ namespace Stratis.VS.StratisEVM
             var dte = StratisEVMPackage.Instance.GetService<EnvDTE.DTE, EnvDTE80.DTE2>();
             if (dte == null)
             {
-                ShowModalErrorDialogBox("Could not get dte");
+                ShowModalErrorDialogBox("Could not get DTE service.");
                 return false;
             }
             Array a = (Array)dte.ActiveSolutionProjects;
             return a == null || a.Length == 0;
+        }
+
+        public IProjectLockService GetProjectLockService()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            // Get access to global MEF services.
+            IComponentModel componentModel = StratisEVMPackage.Instance.GetService<SComponentModel, IComponentModel>();
+            // Get access to project services scope services.
+            IProjectServiceAccessor projectServiceAccessor = componentModel.GetService<IProjectServiceAccessor>();
+            var projectService = projectServiceAccessor.GetProjectService();
+            return projectService.Services.ProjectLockService;
         }
 
         public static bool VSServicesInitialized = false;

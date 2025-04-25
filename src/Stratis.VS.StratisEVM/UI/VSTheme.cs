@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls;
+
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
+
 using Wpf.Ui.Appearance;
 
 namespace Stratis.VS.StratisEVM.UI
@@ -30,9 +31,9 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
-        public static object ToolWindowTextKey => VsBrushes.ToolWindowTextKey;
+        public static object ToolWindowTextKey => VsBrushes.WindowTextKey;
         
-        public static object ToolWindowBackgroundKey => VsBrushes.ToolWindowBackgroundKey;
+        public static object ToolWindowBackgroundKey => VsBrushes.WindowKey;
 
         public static void WatchThemeChanges()
         {
