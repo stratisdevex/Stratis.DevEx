@@ -55,6 +55,11 @@
       <Groups>
         <Group guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" />
       </Groups>
+      
+      <Groups>
+        <Group guid="guidStratisEVMPackageCmdSet3" id="MyGroupForCommands2" />
+      </Groups>
+
 
 		<Group guid="guidBlockchainExplorer" id="TWindowToolbarGroup" priority="0x0000">
 			<Parent guid="guidBlockchainExplorer" id="TWindowToolbar" />
@@ -82,15 +87,7 @@
         </Strings>
       </Button>
 
-      <Button guid="guidStratisEVMPackageCmdSet" id="CmdId2" priority="0x0101" type="Button">
-        <Parent guid="guidStratisEVMPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Solidity Command 2</ButtonText>
-        </Strings>
-      </Button>
+    
       
       
       <Button guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" priority="0x0100" type="Button">
@@ -98,9 +95,18 @@
         <Icon guid="guidSolidityIcon" id="pngSolidity" />
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>DefaultInvisible</CommandFlag>
-		<CommandFlag>AllowParams</CommandFlag>
+		    <CommandFlag>AllowParams</CommandFlag>
         <Strings>
           <ButtonText>Compile Solidity File</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidStratisEVMPackageCmdSet3" id="SolidityProjectMenuCmdId3" priority="0x0101" type="Button">
+        <Parent guid="guidStratisEVMPackageCmdSet3" id="MyGroupForCommands2" />
+        <Icon guid="guidDeploySolidityIcon" id="pngDeploySolidity" />
+        <CommandFlag>AllowParams</CommandFlag>
+        <Strings>
+          <ButtonText>Show Deploy tool window...</ButtonText>
         </Strings>
       </Button>
 
@@ -190,6 +196,7 @@
       <Bitmap guid="guidImages" href="Resources\Commands.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidSolidityIcon" href="Resources\solidity_16x16.png" usedList="pngSolidity" />
       <Bitmap guid="guidNPMIcon" href="Resources\NodeJSPackage_16x.png" usedList="pngNPM" />
+      <Bitmap guid="guidDeploySolidityIcon" href="Resources\DeploySolidity_16x16.png" usedList="pngDeploySolidity" />
       <Bitmap guid="guidImages1" href="Resources\SolidityProjectMenuCommands.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages2" href="Resources\BlockchainExplorerToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages3" href="Resources\StratisEVMBlockchainDashboardToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
@@ -204,6 +211,13 @@
     </CommandPlacement>
   </CommandPlacements>
 
+  <CommandPlacements>
+    <CommandPlacement guid="guidStratisEVMPackageCmdSet3" id="MyGroupForCommands2" priority="0x0100">
+      <!-- The parent of the group will be the file context menu -->
+              <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
+    </CommandPlacement>
+  </CommandPlacements>
+
   <VisibilityConstraints>
     <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" context="SolidityFileUIContextRule" />
     <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="SolidityProjectMenuCmdId2" context="NPMFileUIContextRule" />
@@ -213,6 +227,7 @@
     <!-- This is the package guid. -->
     <GuidSymbol name="guidStratisEVMPackage" value="{711b90a1-97e6-4b9a-91c4-3d62ccd32d4e}" />
     <GuidSymbol name="SolidityFileUIContextRule" value="{82268519-FB9D-4B7E-8B01-2A311F4181E2}" />
+    <GuidSymbol name="SolidityProjectFileUIContextRule" value="{9d4c64d4-52eb-4ebe-aa01-1d975eb3a9d7}" />
     <GuidSymbol name="NPMFileUIContextRule" value="{9A7CA75A-FA6E-45B2-B6E9-4BFF0AB7BB88}" />
 
     <!-- This is the guid used to group the menu commands together -->
@@ -238,6 +253,10 @@
       <IDSymbol name="pngSolidity" value="1" />
     </GuidSymbol>
 
+    <GuidSymbol name="guidDeploySolidityIcon" value="{ec68fb4e-61c8-4243-8092-33520e331e9b}">
+      <IDSymbol name="pngDeploySolidity" value="1" />
+    </GuidSymbol>
+
     <GuidSymbol name="guidNPMIcon" value="{8DBD10FD-7591-4323-AD99-59EABB9E334D}">
       <IDSymbol name="pngNPM" value="1" />
     </GuidSymbol>
@@ -251,6 +270,12 @@
       <IDSymbol value="4128" name="MyGroupForCommands" />
       <IDSymbol value="0x0100" name="cmdidSolidityProjectMenuCommands" />
       <IDSymbol value="0x0101" name="SolidityProjectMenuCmdId2" />
+     
+    </GuidSymbol>
+
+    <GuidSymbol name="guidStratisEVMPackageCmdSet3" value="{edaae768-9fc5-4b43-9421-cc1313528cda}">
+      <IDSymbol value="8256" name="MyGroupForCommands2" />
+      <IDSymbol value="0x0103" name="SolidityProjectMenuCmdId3" />
     </GuidSymbol>
   
     <GuidSymbol value="{2cf4a158-77c9-4d4f-93b4-beb73cfeda88}" name="guidImages1">

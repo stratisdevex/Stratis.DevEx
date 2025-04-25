@@ -129,6 +129,7 @@
     </Content>
     <Content Include="Resources\BlockchainExplorerToolWindowCommand.png" />
     <Content Include="Resources\Commands.png" />
+    <Content Include="Resources\DeploySolidity_16x16.png" />
     <Content Include="Resources\NodeJSPackage_16x.png" />
     <Content Include="Resources\SolidityProjectMenuCommands.png" />
     <Content Include="Resources\solidity_16x16.png" />

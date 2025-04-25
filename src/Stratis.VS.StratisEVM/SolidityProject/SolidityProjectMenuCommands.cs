@@ -21,6 +21,7 @@ namespace Stratis.VS.StratisEVM
 
         public const int InstallPackagesCommandId = 0x0101;
 
+        public const int ShowDeployToolWindowCommandId = 0x0102;
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
@@ -45,6 +46,12 @@ namespace Stratis.VS.StratisEVM
             menuItem.ParametersDescription = "$";
             commandService.AddCommand(menuItem);
             menuCommandID = new CommandID(CommandSet, InstallPackagesCommandId);
+            menuItem = new OleMenuCommand(InstallNPMPackages, menuCommandID)
+            {
+                Supported = false
+            };
+            commandService.AddCommand(menuItem);
+            menuCommandID = new CommandID(CommandSet, ShowDeployToolWindowCommandId);
             menuItem = new OleMenuCommand(InstallNPMPackages, menuCommandID)
             {
                 Supported = false

@@ -22,6 +22,7 @@ namespace Stratis.VS.StratisEVM
         public async Task DeployAsync(CancellationToken cancellationToken, TextWriter outputPaneWriter)
         {
             ToolWindowPane window = await StratisEVMPackage.Instance.ShowToolWindowAsync(typeof(DeploySolidityProjectToolWindow), 0, true, StratisEVMPackage.Instance.DisposalToken);
+            //window.on
         }
 
         /// <summary>
