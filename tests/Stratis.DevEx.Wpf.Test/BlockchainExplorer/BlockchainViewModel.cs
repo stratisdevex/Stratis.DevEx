@@ -62,8 +62,25 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 {
                     case BlockchainInfoKind.Network:
                         return string.Format("Chain id: {0}", Data["ChainId"]);
+                    case BlockchainInfoKind.Account:
+                        return Name;
                     default:
                         return "";
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public string DisplayName
+        {
+            get
+            {
+                switch (Kind)
+                {
+                    case BlockchainInfoKind.Account:
+                        return Name.Substring(0, 6) + "..." + new string(Name.Reverse().Take(6).Reverse().ToArray());
+                    default:
+                        return Name;
                 }
             }
         }

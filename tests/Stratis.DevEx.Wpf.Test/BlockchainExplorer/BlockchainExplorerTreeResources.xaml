@@ -187,10 +187,28 @@
     <DrawingImage x:Key="GanacheDrawingImage">
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V128 H128 V0 H0 Z">
-                
                 <DrawingGroup Opacity="1" Transform="0.1,0,0,-0.1,0,128">
-                    
                     <GeometryDrawing Brush="SaddleBrown" Geometry="F1 M128,128z M0,0z M70,563C70,395 73,360 88,330 102,300 142,274 355,150 548,38 612,5 640,5 667,5 731,38 920,147 1058,226 1174,299 1185,315 1202,338 1205,360 1208,481L1212,620 1188,620C1129,620 1071,491 1084,390 1089,354 1087,340 1075,330 1051,310 1046,325 1045,415 1045,514 1027,546 963,569 927,582 920,581 884,564 862,553 833,527 817,503 785,454 753,442 709,460 668,477 633,461 614,414 597,373 576,374 572,416 562,526 525,589 454,616 410,633 404,633 340,617 304,607 266,602 257,606 248,609 225,632 205,656 173,694 92,760 76,760 73,760 70,671 70,563z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="AccountDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M24,24z M0,0z M12,14L12,22 4,22A8,8,0,0,1,12,14z M12,13C8.685,13 6,10.315 6,7 6,3.685 8.685,1 12,1 15.315,1 18,3.685 18,7 18,10.315 15.315,13 12,13z M21,17L22,17 22,22 14,22 14,17 15,17 15,16A3,3,0,0,1,21,16L21,17z M19,17L19,16A1,1,0,0,0,17,16L17,17 19,17z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="AccountsDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M24,24z M0,0z M2,22A8,8,0,1,1,18,22L2,22z M10,13C6.685,13 4,10.315 4,7 4,3.685 6.685,1 10,1 13.315,1 16,3.685 16,7 16,10.315 13.315,13 10,13z M17.363,15.233A7.505,7.505,0,0,1,22.983,22L20,22C20,19.39,19,17.014,17.363,15.233z M15.34,12.957A7.98,7.98,0,0,0,18,7A7.964,7.964,0,0,0,16.985,3.097A5,5,0,0,1,21,8A4.999,4.999,0,0,1,15.34,12.957z" />
                 </DrawingGroup>
             </DrawingGroup>
         </DrawingImage.Drawing>
@@ -200,7 +218,7 @@
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
             <ui:Image x:Name="NodeImage" Width="16" Height="16" Source="{StaticResource StratisIconDrawingImage}"/>
-            <ui:TextBlock x:Name="NodeText" Text="{Binding Path=Name}" Margin="8,0,0,0" TextWrapping="Wrap" />
+            <ui:TextBlock x:Name="NodeText" Text="{Binding Path=DisplayName}" Margin="8,0,0,0" TextWrapping="Wrap" />
         </StackPanel>
         <DataTemplate.Triggers>
             <MultiDataTrigger>
@@ -217,13 +235,28 @@
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource GlobeDrawingImage}" />
             </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Kind}" Value="Folder" />
+                    <Condition Binding="{Binding Path=Name}" Value="Accounts" />
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource AccountsDrawingImage}" />
+            </MultiDataTrigger>
             <DataTrigger Binding="{Binding Path=Kind}" Value="Network">
+                <Setter TargetName="NodeText" Property="ToolTipService.InitialShowDelay" Value="100" />
+                <Setter TargetName="NodeText" Property="ToolTipService.Placement" Value="MousePoint" />
+                <Setter TargetName="NodeText" Property="ToolTipService.ToolTip" Value="{Binding Path=ToolTip}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=Kind}" Value="Account">
                 <Setter TargetName="NodeText" Property="ToolTipService.InitialShowDelay" Value="100" />
                 <Setter TargetName="NodeText" Property="ToolTipService.Placement" Value="MousePoint" />
                 <Setter TargetName="NodeText" Property="ToolTipService.ToolTip" Value="{Binding Path=ToolTip}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=Kind}" Value="Endpoint">
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource UrlDrawingImage}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=Kind}" Value="Account">
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource AccountDrawingImage}" />
             </DataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>

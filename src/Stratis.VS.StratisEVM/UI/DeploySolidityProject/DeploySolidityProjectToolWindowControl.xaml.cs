@@ -15,6 +15,7 @@ namespace Stratis.VS.StratisEVM.UI
         public DeploySolidityProjectToolWindowControl()
         {
             this.InitializeComponent();
+            VSTheme.WatchThemeChanges();
         }
 
         /// <summary>

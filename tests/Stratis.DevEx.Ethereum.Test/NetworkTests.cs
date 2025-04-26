@@ -16,11 +16,8 @@ namespace Stratis.DevEx.Ethereum.Test
         {
             var c = await Network.GetNetworkIdAsync("http://127.0.0.1:7545");
             var c2 = await Network.GetChainandNetworkIdAsync("https://rpc.stratisevm.com");
-
             Assert.Equal("c", c);
-
         }
-
 
         [Fact]
         public async Task CanGetManagedAccounts()
@@ -36,6 +33,16 @@ namespace Stratis.DevEx.Ethereum.Test
             Assert.False(Succedeed(await ExecuteAsync(Network.GetChainIdAsync("http://127.0.0.1:754")), out var r));
             Assert.True(r.IsNetworkError());
             
+        }
+
+        [Fact]
+        public async Task CanGetProtocolversion()
+        {
+            //var c = await Network.GetNetworkIdAsync("http://127.0.0.1:7545");
+            var v = await Network.GetProtocolVersion("http://127.0.0.1:7545");
+
+            Assert.Equal("c", v);
+
         }
     }
 }

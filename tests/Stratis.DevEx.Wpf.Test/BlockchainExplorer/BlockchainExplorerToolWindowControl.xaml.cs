@@ -79,6 +79,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[1]).Children[1];
                 var chainid = (Wpc.NumberBox)((StackPanel)sp.Children[2]).Children[1];
                 var nid = "";
+                string[] accts = Array.Empty<string>();
                 var errors = (Wpc.TextBlock)((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[0];
                 var progressring = (Wpc.ProgressRing)((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[1];
                 var validForClose = false;
@@ -104,7 +105,7 @@ namespace Stratis.VS.StratisEVM.UI
 #if IS_VSIX
                             var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetChainandNetworkIdAsync(text)));
 #else
-                            var result = Task.Run(() => ExecuteAsync(Network.GetChainandNetworkIdAsync(text))).Result;
+                            var result = Task.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync(text))).Result;
 #endif
                             HideProgressRing(progressring);
                             if (Succedeed(result, out var cnid))
@@ -112,12 +113,14 @@ namespace Stratis.VS.StratisEVM.UI
                                 if (!string.IsNullOrEmpty(chainid.Text) && cnid.Value.Item1 == BigInteger.Parse(chainid.Text))
                                 {
                                     nid = cnid.Value.Item2;
+                                    accts = cnid.Value.Item3;
                                     validForClose = true;
                                 }
                                 else if (string.IsNullOrEmpty(chainid.Text))
                                 {
                                     chainid.Text = cnid.Value.Item1.ToString();
                                     nid = cnid.Value.Item2;
+                                    accts = cnid.Value.Item3;
                                     validForClose = true;
                                 }
                                 else
@@ -151,11 +154,17 @@ namespace Stratis.VS.StratisEVM.UI
                     rpcurl.Text = "";
                     chainid.Text = "";
                     nid = "";
+                    accts = Array.Empty<string>();  
                     return;
                 }
                 var t = item.AddNetwork(name.Text, rpcurl.Text, BigInteger.Parse(chainid.Text), nid);
                 var endpoints = t.AddChild(BlockchainInfoKind.Folder, "Endpoints");
                 endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
+                var accounts = t.AddChild(BlockchainInfoKind.Folder, "Accounts");
+                foreach (var acct in accts)
+                {
+                    accounts.AddChild(BlockchainInfoKind.Account, acct);   
+                }
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
                 {
 #if IS_VSIX

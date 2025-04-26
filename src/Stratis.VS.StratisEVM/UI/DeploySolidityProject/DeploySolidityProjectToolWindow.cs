@@ -11,7 +11,7 @@ namespace Stratis.VS.StratisEVM.UI
         /// <summary>
         /// Initializes a new instance of the <see cref="DeploySolidityProjectToolWindow"/> class.
         /// </summary>
-        public DeploySolidityProjectToolWindow() : base(null)
+        public DeploySolidityProjectToolWindow() : base(StratisEVMPackage.Instance)
         {
             this.Caption = "Deploy Solidity Project";
 

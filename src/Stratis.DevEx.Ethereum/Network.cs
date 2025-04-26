@@ -27,14 +27,16 @@ namespace Stratis.DevEx.Ethereum
 
         public async Task<BigInteger> GetBalanceAsync(string acct) => await web3.Eth.GetBalance.SendRequestAsync(acct);
 
+        public static async Task<string> GetProtocolVersion(string rpcurl) => await new Web3(rpcurl).Eth.ProtocolVersion.SendRequestAsync();
+        
         public static async Task<BigInteger> GetChainIdAsync(string rpcurl) => await new Web3(rpcurl).Eth.ChainId.SendRequestAsync();
 
         public static async Task<string> GetNetworkIdAsync(string rpcurl) => await new Web3(rpcurl).Net.Version.SendRequestAsync();
 
-        public static async Task<(BigInteger, string)> GetChainandNetworkIdAsync(string rpcurl)
+        public static async Task<(BigInteger, string, string[])> GetNetworkDetailsAsync(string rpcurl)
         {
             var web3 = new Web3(rpcurl);
-            return (await web3.Eth.ChainId.SendRequestAsync(), await web3.Net.Version.SendRequestAsync());
+            return (await web3.Eth.ChainId.SendRequestAsync(), await web3.Net.Version.SendRequestAsync(), await web3.Eth.Accounts.SendRequestAsync());
         }
         #endregion
 
