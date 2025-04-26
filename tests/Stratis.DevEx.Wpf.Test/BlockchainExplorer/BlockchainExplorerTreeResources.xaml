@@ -455,7 +455,16 @@
             <ui:TextBox x:Name="FolderNameTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Name = "AddEndpointDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" />
+            <ui:TextBlock Name = "AddFolderDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" />
+        </StackPanel>
+    </StackPanel>
+
+    <StackPanel x:Key="EditAccountDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
+        <StackPanel Orientation="Vertical" >
+            <ui:TextBlock Text="Account Public Key:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBlock x:Name="AccountPublicKeyTextBox" TextWrapping="Wrap" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True"  Width="160" Height="75" VerticalAlignment="Center" Margin="1,0,0,2"   />
+            <ui:TextBlock Text="Account Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="AccountLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
         </StackPanel>
     </StackPanel>
 </ResourceDictionary>

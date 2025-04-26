@@ -78,7 +78,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 switch (Kind)
                 {
                     case BlockchainInfoKind.Account:
-                        return Name.Substring(0, 6) + "..." + new string(Name.Reverse().Take(6).Reverse().ToArray());
+                        return (Data.ContainsKey("Label") && !string.IsNullOrEmpty((string) Data["Label"]))? (string)Data["Label"] :
+                        Name.Substring(0, 6) + "..." + new string(Name.Reverse().Take(6).Reverse().ToArray());
                     default:
                         return Name;
                 }
@@ -105,6 +106,14 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return AddChild(BlockchainInfoKind.Network, name, data);    
         }
 
+        public BlockchainInfo AddAccount(string pubkey, string label = null)
+        {
+            var data = new Dictionary<string, object>()
+            {
+                {"Label",  label}
+            };
+            return AddChild(BlockchainInfoKind.Account, pubkey, data);  
+        }
         public override int GetHashCode() => Key.GetHashCode();
 
         public override bool Equals(object obj) => obj is BlockchainInfo bi ? Key == bi.Key : false; 

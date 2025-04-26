@@ -43,7 +43,13 @@ namespace Stratis.VS.StratisEVM.UI
         #region Event handlers
         private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-
+            if (sender is BlockchainExplorerTree tree && tree.SelectedItem != null)
+            {
+                if (tree.SelectedItem.Kind == BlockchainInfoKind.Account)
+                {
+                    BlockchainExplorerTree.EditAccountCmd.Execute(tree, null);
+                }
+            }
         }
 
         private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
@@ -163,7 +169,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var accounts = t.AddChild(BlockchainInfoKind.Folder, "Accounts");
                 foreach (var acct in accts)
                 {
-                    accounts.AddChild(BlockchainInfoKind.Account, acct);   
+                    accounts.AddAccount(acct);   
                 }
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
                 {
@@ -445,5 +451,64 @@ namespace Stratis.VS.StratisEVM.UI
         internal BlockchainExplorerToolWindow window;
 
         #endregion
+
+        private async void EditAccountCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender);
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Edit Account",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("EditAccountDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+                var sp = (StackPanel)dw.Content;
+                var acctpubkey = (Wpc.TextBlock)((StackPanel)sp.Children[0]).Children[1];
+                acctpubkey.Text = item.Name;
+                var acctlabel = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[3];
+                acctlabel.Text = (string)item.Data["Label"]; 
+                var validForClose = false;
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    validForClose = true;
+                };
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    acctlabel.Text = (string) item.Data["Label"];
+                    return;
+                }
+                item.Data["Label"] = acctlabel.Text;
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if IS_VSIX
+                    VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                }
+                else
+                {
+                    tree.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
+            }
+        }
     }
 }
