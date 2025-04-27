@@ -71,6 +71,12 @@
     <Compile Include="BlockchainExplorer\BlockchainExplorerDialog.xaml.cs">
       <DependentUpon>BlockchainExplorerDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeploySolidityProject\DeploySolidityProjectToolWindow.xaml.cs">
+      <DependentUpon>DeploySolidityProjectToolWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeploySolidityProject\DeploySolidityProjectToolWindowControl.xaml.cs">
+      <DependentUpon>DeploySolidityProjectToolWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml.cs">
       <DependentUpon>StratisEVMBlockchainDashboardToolWindowControl.xaml</DependentUpon>
     </Compile>
@@ -90,6 +96,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="BlockchainExplorer\BlockchainExplorerTreeResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DeploySolidityProject\DeploySolidityProjectToolWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DeploySolidityProject\DeploySolidityProjectToolWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

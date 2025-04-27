@@ -171,6 +171,7 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     accounts.AddAccount(acct);   
                 }
+                t.AddChild(BlockchainInfoKind.Folder, "Deploy Profiles");
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
                 {
 #if IS_VSIX
@@ -277,7 +278,7 @@ namespace Stratis.VS.StratisEVM.UI
         private void DeleteEndpointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             var item = GetSelectedItem(sender);
-            var endpoints = item.GetEndPoints();
+            var endpoints = item.GetNetworkEndPoints();
             if (endpoints.Count() == 1)
             {
                 e.CanExecute = false;
@@ -509,6 +510,39 @@ namespace Stratis.VS.StratisEVM.UI
                 System.Windows.MessageBox.Show(ex?.Message);
 #endif
             }
+        }
+
+        private async void NewDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            var dw = new BlockchainExplorerDialog(RootContentDialog)
+            {
+                Title = "Add Deploy Profile",
+                PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                Content = (StackPanel)TryFindResource("AddDeployProfileDialog"),
+                PrimaryButtonText = "Save",
+                CloseButtonText = "Cancel",
+            };
+            var sp = (StackPanel)dw.Content;
+            var name = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+            var endpoint = (ComboBox)((StackPanel)sp.Children[1]).Children[1];
+            var accounts = (ComboBox)((StackPanel)sp.Children[2]).Children[1];
+            endpoint.ItemsSource = item.GetNetworkEndPoints();
+            endpoint.SelectedIndex = 0; 
+            accounts.ItemsSource = item.GetNetworkAccounts();
+            var validForClose = false;
+
+            dw.ButtonClicked += (cd, args) =>
+            {
+                validForClose = true;
+            };
+            dw.Closing += (d, args) =>
+            {
+                args.Cancel = !validForClose;
+            };
+            var r = await dw.ShowAsync();
         }
     }
 }

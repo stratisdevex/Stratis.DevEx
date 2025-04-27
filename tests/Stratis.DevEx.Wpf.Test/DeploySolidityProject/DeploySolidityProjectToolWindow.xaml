@@ -1,0 +1,12 @@
+﻿<Window x:Class="Stratis.VS.StratisEVM.UI.DeploySolidityProjectToolWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wpftv="clr-namespace:Hardcodet.Wpf.GenericTreeView;assembly=Hardcodet.Wpf.GenericTreeView"
+        xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI"
+        xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <stratisui:DeploySolidityProjectToolWindowControl />
+</Window>

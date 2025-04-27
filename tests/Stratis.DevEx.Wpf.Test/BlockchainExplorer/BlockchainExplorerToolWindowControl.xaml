@@ -50,6 +50,7 @@
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}" Executed="NewEndpointCmd_Executed" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteEndpointCmd}" Executed="DeleteEndpointCmd_Executed" CanExecute="DeleteEndpointCmd_CanExecute" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.EditAccountCmd}" Executed="EditAccountCmd_Executed" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewDeployProfileCmd}" Executed="NewDeployProfileCmd_Executed" />
     </UserControl.CommandBindings>
 
 </UserControl>

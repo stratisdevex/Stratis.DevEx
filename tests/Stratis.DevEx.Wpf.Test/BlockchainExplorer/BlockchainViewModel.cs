@@ -23,7 +23,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         Network,
         Endpoint,
         Account,
-        Contract
+        Contract,
+        DeployProfile
     }
     
     public class BlockchainInfo
@@ -128,7 +129,9 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<BlockchainInfo> GetChildren(BlockchainInfoKind kind) => Children.Where(c => c.Kind == kind);
 
-        public IEnumerable<BlockchainInfo> GetEndPoints() => GetChildren(BlockchainInfoKind.Endpoint);
+        public IEnumerable<string> GetNetworkEndPoints() => GetChild("Endpoints", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.Endpoint).Select(bi => bi.Name);
+
+        public IEnumerable<string> GetNetworkAccounts() => GetChild("Accounts", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.Account).Select(bi => bi.Name);
 
         public bool Save(string path, out Exception e)
         {
