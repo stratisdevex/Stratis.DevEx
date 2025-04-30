@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
+using System.Text;
+using System.Security.Cryptography;
 using System.Linq;
 using System.Numerics;
 using System.Net.Http;
@@ -115,6 +117,21 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             };
             return AddChild(BlockchainInfoKind.Account, pubkey, data);  
         }
+
+        public BlockchainInfo AddDeployProfile(string name, string endpoint, string account, byte[] pkey = null)
+        {
+            var data = new Dictionary<string, object>()
+            {
+                {"EndPoint",  endpoint},
+                {"Account",  account},
+            };
+            if (pkey != null)
+            {
+                data["PrivateKey"] = pkey;
+            }
+            return AddChild(BlockchainInfoKind.DeployProfile, name, data);
+        }
+
         public override int GetHashCode() => Key.GetHashCode();
 
         public override bool Equals(object obj) => obj is BlockchainInfo bi ? Key == bi.Key : false; 
@@ -132,6 +149,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         public IEnumerable<string> GetNetworkEndPoints() => GetChild("Endpoints", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.Endpoint).Select(bi => bi.Name);
 
         public IEnumerable<string> GetNetworkAccounts() => GetChild("Accounts", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.Account).Select(bi => bi.Name);
+
+        public IEnumerable<string> GetNetworkDeployProfiles() => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).Select(bi => bi.Name);
 
         public bool Save(string path, out Exception e)
         {

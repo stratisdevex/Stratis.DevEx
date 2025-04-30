@@ -300,6 +300,9 @@
             <DataTrigger Binding="{Binding Path=Kind}" Value="Account">
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource AccountDrawingImage}" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding Path=Kind}" Value="DeployProfile">
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource DeployProfileDrawingImage}" />
+            </DataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding Path=Kind}" Value="Network" />
@@ -450,15 +453,9 @@
     <!-- Dialog style -->
     <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
         <Style.Resources>
-            <Style TargetType="{x:Type ui:TextBox}">
-                <Setter Property="FontSize" Value="12" />
-            </Style>
             <Style TargetType="{x:Type ui:NumberBox}">
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="HorizontalContentAlignment" Value="Right" />
-            </Style>
-            <Style TargetType="{x:Type ui:TextBlock}">
-                <Setter Property="FontSize" Value="12" />
             </Style>
         </Style.Resources>
     </Style>
@@ -517,26 +514,25 @@
 
     <StackPanel x:Key="AddDeployProfileDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
         <StackPanel Orientation="Vertical" >
-            <ui:TextBlock Text="Deploy Profile Name:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBlock Text="Name:" VerticalAlignment="Center" Margin="1,0,0,2" />
             <ui:TextBox x:Name="DeployProfileNameTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Text="Select the deployment endpoint:" VerticalAlignment="Center"  Margin="1,0,0,2" />
+            <ui:TextBlock Text="Endpoint:" VerticalAlignment="Center"  Margin="1,0,0,2" />
             <ComboBox x:Name="DeployProfileEndpointListView" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Text="Select the account to use:" VerticalAlignment="Center"  Margin="1,0,0,2" />
+            <ui:TextBlock Text="Account:" VerticalAlignment="Center"  Margin="1,0,0,2" />
             <ComboBox x:Name="DeployProfileAccountListView" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock Text="Account private key (optional):" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBlock Text="Private Key (optional):" VerticalAlignment="Center" Margin="1,0,0,2" />
             <ui:PasswordBox Name="DeployProfileAccountPrivateKeyPasswordBox" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <Grid>
-                <ui:TextBlock Name = "AddDeployProfileDialogValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+            <ui:TextBlock Name = "AddDeployProfileDialogValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
-            </Grid>
+ 
         </StackPanel>
     </StackPanel>
 </ResourceDictionary>
