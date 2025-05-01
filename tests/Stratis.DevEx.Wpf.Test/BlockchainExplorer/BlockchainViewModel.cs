@@ -118,16 +118,16 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return AddChild(BlockchainInfoKind.Account, pubkey, data);  
         }
 
-        public BlockchainInfo AddDeployProfile(string name, string endpoint, string account, byte[] pkey = null)
+        public BlockchainInfo AddDeployProfile(string name, string endpoint, string account, string pkey = null)
         {
             var data = new Dictionary<string, object>()
             {
-                {"EndPoint",  endpoint},
+                {"Endpoint",  endpoint},
                 {"Account",  account},
             };
-            if (pkey != null)
+            if (!string.IsNullOrEmpty(pkey))
             {
-                data["PrivateKey"] = pkey;
+                data["PrivateKey"] = SetDeployProfilePrivateKey(pkey);
             }
             return AddChild(BlockchainInfoKind.DeployProfile, name, data);
         }
@@ -227,6 +227,38 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 e = ex;
                 return null;   
             }
+        }
+
+        public string GetDeployProfilePrivateKey()
+        {
+            var data = (byte[])Data["PrivateKey"];
+            var length = BitConverter.ToInt32(data, 0);
+            var kdata = data.Skip(4).ToArray();
+            ProtectedMemory.Unprotect(kdata, MemoryProtectionScope.SameLogon);
+            return Encoding.UTF8.GetString(kdata.Take(length).ToArray());  
+        }
+
+        public byte[] SetDeployProfilePrivateKey(string pkey)
+        {
+            int roundUp(int numToRound, int multiple)
+            {
+                if (multiple == 0)
+                    return numToRound;
+
+                int remainder = numToRound % multiple;
+                if (remainder == 0)
+                    return numToRound;
+
+                return numToRound + multiple - remainder;
+            }
+
+            byte[] pkeydata = UnicodeEncoding.UTF8.GetBytes(pkey);
+            var len = pkeydata.Length;
+            var lb = BitConverter.GetBytes(len);
+            var round = roundUp(pkeydata.Length, 16);
+            Array.Resize(ref pkeydata, round);
+            ProtectedMemory.Protect(pkeydata, MemoryProtectionScope.SameLogon);
+            return lb.Concat(pkeydata).ToArray();
         }
         #endregion
     }

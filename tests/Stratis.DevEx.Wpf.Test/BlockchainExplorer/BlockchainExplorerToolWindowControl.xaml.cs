@@ -486,23 +486,17 @@ namespace Stratis.VS.StratisEVM.UI
 
         private async void NewDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            int roundUp(int numToRound, int multiple)
-            {
-                if (multiple == 0)
-                    return numToRound;
-
-                int remainder = numToRound % multiple;
-                if (remainder == 0)
-                    return numToRound;
-
-                return numToRound + multiple - remainder;
-            }
+            
 
             try
             {
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
+                if (item.Kind == BlockchainInfoKind.Folder && item.Name == "Deploy Profiles")
+                {
+                    item = item.Parent;
+                }
                 var dw = new BlockchainExplorerDialog(RootContentDialog)
                 {
                     Title = "Add Deploy Profile",
@@ -565,20 +559,116 @@ namespace Stratis.VS.StratisEVM.UI
                     accounts.ItemsSource = null;
                     return;
                 }
-                else if (!string.IsNullOrEmpty(pkey.Text))
+                else 
                 {
-                    byte[] pkeydata = UnicodeEncoding.ASCII.GetBytes(pkey.Text);
-                    var len = pkeydata.Length; 
-                    var lb = BitConverter.GetBytes(len);
-                    var round = roundUp(pkeydata.Length, 16);
-                    Array.Resize(ref pkeydata, round);  
-                    ProtectedMemory.Protect(pkeydata, MemoryProtectionScope.SameLogon);
-                    var encodeddata = lb.Concat(pkeydata).ToArray();  
-                    item.AddDeployProfile(name.Text, (string)endpoint.SelectedValue, (string)accounts.SelectedValue, encodeddata);
+                    item.GetChild("Deploy Profiles", BlockchainInfoKind.Folder).AddDeployProfile(name.Text, (string)endpoint.SelectedValue, (string)accounts.SelectedValue, pkey.Text);
+                }
+              
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
                 }
                 else
                 {
-                    item.AddDeployProfile(name.Text, (string)endpoint.SelectedValue, (string)accounts.SelectedValue);
+                    tree.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
+            }
+        }
+
+        private async void EditDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender);
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Edit Deploy Profile",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("AddDeployProfileDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+                var sp = (StackPanel)dw.Content;
+                var name = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var endpoint = (ComboBox)((StackPanel)sp.Children[1]).Children[1];
+                var accounts = (ComboBox)((StackPanel)sp.Children[2]).Children[1];
+                var pkey = (Wpc.TextBox)((StackPanel)sp.Children[3]).Children[1];
+                var errors = (Wpc.TextBlock)((StackPanel)sp.Children[4]).Children[0];
+                name.Text = item.Name;
+                endpoint.ItemsSource = item.Parent.Parent.GetNetworkEndPoints();
+                endpoint.SelectedValue = item.Data["Endpoint"];
+                accounts.ItemsSource = item.Parent.Parent.GetNetworkAccounts();
+                accounts.SelectedValue = item.Data["Account"];
+                if (item.Data.ContainsKey("PrivateKey"))
+                {
+                    pkey.Text = item.GetDeployProfilePrivateKey();  
+                }
+                var validForClose = false;
+
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    validForClose = false;
+                    errors.Visibility = Visibility.Hidden;
+
+                    if (args.Button == ContentDialogButton.Primary)
+                    {
+                        if (!string.IsNullOrEmpty(name.Text) && accounts.SelectedValue != null && endpoint.SelectedValue != null)
+                        {
+                            var dp = item.Parent.Parent.GetNetworkDeployProfiles();
+                            if (dp.Contains(name.Text))
+                            {
+                                ShowValidationErrors(errors, "The " + name.Text + " deploy profile already exists.");
+                            }
+                            else
+                            {
+                                validForClose = true;
+                            }
+                        }
+                        else
+                        {
+                            ShowValidationErrors(errors, "Enter a deploy profile name and select a valid endpoint and account");
+                        }
+                    }
+                    else
+                    {
+                        validForClose = true;
+                    }
+                };
+
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    name.Text = "";
+                    endpoint.ItemsSource = null;
+                    accounts.ItemsSource = null;
+                    return;
+                }
+                               
+                item.Name = name.Text;
+                item.Data["Account"] = accounts.SelectedValue;
+                item.Data["Endpoint"] = endpoint.SelectedValue;
+                if (!string.IsNullOrEmpty(pkey.Text))
+                {
+                    item.Data["PrivateKey"] = item.SetDeployProfilePrivateKey(pkey.Text);
                 }
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
                 {
@@ -636,5 +726,23 @@ namespace Stratis.VS.StratisEVM.UI
 
         #endregion
 
+        private void DeleteDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+            }
+            tree.Refresh(); 
+        }
+
+        
     }
 }

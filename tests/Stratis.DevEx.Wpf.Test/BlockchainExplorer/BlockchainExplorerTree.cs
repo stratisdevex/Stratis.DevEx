@@ -33,6 +33,10 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static RoutedCommand NewDeployProfileCmd { get; } = new RoutedCommand();
 
+        public static RoutedCommand DeleteDeployProfileCmd { get; } = new RoutedCommand();
+
+        public static RoutedCommand EditDeployProfileCmd { get; } = new RoutedCommand();
+
         public BlockchainInfo RootItem => Items?.First();
         #endregion
 
@@ -62,9 +66,17 @@ namespace Stratis.VS.StratisEVM.UI
             {
                 item.ContextMenu = (ContextMenu)TryFindResource("UserFolderContextMenu");
             }
+            else if (data.Kind == BlockchainInfoKind.DeployProfile)
+            {
+                item.ContextMenu = (ContextMenu)TryFindResource("DeployProfileContextMenu");
+            }
             else if (data.Kind == BlockchainInfoKind.Folder && data.Name == "Endpoints")
             {
                 item.ContextMenu = (ContextMenu)TryFindResource("EndpointsFolderContextMenu"); ;
+            }
+            else if (data.Kind == BlockchainInfoKind.Folder && data.Name == "Deploy Profiles")
+            {
+                item.ContextMenu = (ContextMenu)TryFindResource("DeployProfilesFolderContextMenu"); ;
             }
             return item;
         }

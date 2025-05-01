@@ -221,14 +221,7 @@
                 <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M36,36z M0,0z M12.46,10.73A1,1,0,0,0,11.46,10.73L2.78,15.73 12,21 21.19,15.74z" />
                 <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M36,36z M0,0z M2,27.73A1,1,0,0,0,2.5,28.6L11,33.46 11,22.46 2,17.28z" />
                 <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M36,36z M0,0z M13,33.46L21.5,28.6A1,1,0,0,0,22,27.73L22,17.29 13,22.44z" />
-                <GeometryDrawing>
-                    <GeometryDrawing.Brush>
-                        <SolidColorBrush Color="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Opacity="0" />
-                    </GeometryDrawing.Brush>
-                    <GeometryDrawing.Geometry>
-                        <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,0,36,36" />
-                    </GeometryDrawing.Geometry>
-                </GeometryDrawing>
+                
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
@@ -245,6 +238,23 @@
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
                 <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M24,24z M0,0z M19,5L23,5 23,6 19,6 19,10 18,10 18,6 14,6 14,5 18,5 18,1 19,1z M20,12L21,12 21,22 2,22 2,3 12,3 12,12z M11,13L3,13 3,21 11,21z M11,4L3,4 3,12 11,12z M20,13L12,13 12,21 20,21z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="DeleteDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M24,24z M0,0z M4,23L20,23A1,1,0,0,0,21,22L21,6A1,1,0,0,0,20.707,5.293L16.707,1.293A1,1,0,0,0,16,1L4,1A1,1,0,0,0,3,2L3,22A1,1,0,0,0,4,23z M5,3L15.586,3 19,6.414 19,21 5,21z M15.207,10.207L13.414,12 15.207,13.793A1,1,0,1,1,13.793,15.207L12,13.414 10.207,15.207A1,1,0,0,1,8.793,13.793L10.586,12 8.793,10.207A1,1,0,0,1,10.207,8.793L12,10.586 13.793,8.793A1,1,0,0,1,15.207,10.207z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="EditDeployProfileDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V36 H36 V0 H0 Z">
+                <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M36,36z M0,0z M33,2L22.1,2A1,1,0,0,0,22.1,4L30.63,4 21.81,13A1,1,0,1,0,23.24,14.4L32,5.46 32,13.9A1,1,0,0,0,34,13.9L34,3A1,1,0,0,0,33,2z" />
+                <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M36,36z M0,0z M11.54,10.73L2.54,15.9A1,1,0,0,0,2.04,16.77L2.04,27.77A1,1,0,0,0,2.54,28.64L11.54,33.79A1,1,0,0,0,12.54,33.79L21.54,28.64A1,1,0,0,0,22.04,27.77L22.04,16.77A1,1,0,0,0,21.54,15.9L12.54,10.73A1,1,0,0,0,11.54,10.73z M11,31.08L4,27.08 4,18.44 11,22.44z M12,21L4.81,16.87 12,12.78 19.21,16.9z M20,27.09L13,31.09 13,22.44 20,18.44z" />
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
@@ -301,7 +311,7 @@
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource AccountDrawingImage}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=Kind}" Value="DeployProfile">
-                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource DeployProfileDrawingImage}" />
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource DeployDrawingImage}" />
             </DataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
@@ -396,6 +406,27 @@
         <MenuItem Header="Delete" Command="{x:Static stratisui:BlockchainExplorerTree.DeleteEndpointCmd}">
             <MenuItem.Icon>
                 <Image Source="{StaticResource DeleteFileDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+
+    <ContextMenu x:Key="DeployProfilesFolderContextMenu" Style="{DynamicResource ContextMenuStyle}">
+        <MenuItem Header="Add Deploy Profile..." Command="{x:Static stratisui:BlockchainExplorerTree.NewDeployProfileCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource AddDeployProfileDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+
+    <ContextMenu x:Key="DeployProfileContextMenu" Style="{DynamicResource ContextMenuStyle}">
+        <MenuItem Header="Edit..." Command="{x:Static stratisui:BlockchainExplorerTree.EditDeployProfileCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource EditDeployProfileDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Delete" Command="{x:Static stratisui:BlockchainExplorerTree.DeleteDeployProfileCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource DeleteDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
