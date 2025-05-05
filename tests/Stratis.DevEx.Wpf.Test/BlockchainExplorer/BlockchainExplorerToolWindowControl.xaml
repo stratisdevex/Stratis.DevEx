@@ -53,6 +53,8 @@
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewDeployProfileCmd}" Executed="NewDeployProfileCmd_Executed" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteDeployProfileCmd}" Executed="DeleteDeployProfileCmd_Executed" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.EditDeployProfileCmd}" Executed="EditDeployProfileCmd_Executed" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.NewAccountCmd}" Executed="NewAccountCmd_Executed" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteAccountCmd}" Executed="DeleteAccountCmd_Executed" />
     </UserControl.CommandBindings>
 
 </UserControl>

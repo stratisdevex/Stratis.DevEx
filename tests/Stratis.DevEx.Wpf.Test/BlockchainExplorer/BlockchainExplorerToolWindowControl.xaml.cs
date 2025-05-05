@@ -282,7 +282,7 @@ namespace Stratis.VS.StratisEVM.UI
         private void DeleteEndpointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             var item = GetSelectedItem(sender);
-            var endpoints = item.GetNetworkEndPoints();
+            var endpoints = item.Parent.Parent.GetNetworkEndPoints();
             if (endpoints.Count() == 1)
             {
                 e.CanExecute = false;
@@ -424,7 +424,6 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
-
         private async void EditAccountCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
@@ -486,8 +485,6 @@ namespace Stratis.VS.StratisEVM.UI
 
         private async void NewDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            
-
             try
             {
                 var window = (BlockchainExplorerToolWindowControl)sender;
@@ -692,6 +689,104 @@ namespace Stratis.VS.StratisEVM.UI
 #endif
             }
         }
+
+        private void DeleteDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+            }
+            tree.Refresh();
+        }
+
+        private async void NewAccountCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender).GetChild("Accounts", BlockchainInfoKind.Folder);
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Add Account",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("AddAccountDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+                var sp = (StackPanel)dw.Content;
+                var acctpubkey = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var acctlabel = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[3];
+                var errors = (Wpc.TextBlock)((StackPanel)sp.Children[1]).Children[0];
+                var validForClose = false;
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    if (!string.IsNullOrEmpty(acctpubkey.Text))
+                    {
+                        validForClose = true;
+                    }
+                    else
+                    {
+                        ShowValidationErrors(errors, "Enter a valid account public key.");
+                    }
+                };
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    return;
+                }
+                item.AddAccount(acctpubkey.Text, acctlabel.Text);   
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if IS_VSIX
+                    VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                }
+                else
+                {
+                    tree.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
+            }
+        }
+
+        private void DeleteAccountCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+            }
+            tree.Refresh();
+        }
         #endregion
 
         #region Methods
@@ -724,24 +819,10 @@ namespace Stratis.VS.StratisEVM.UI
         #region Fields
         internal BlockchainExplorerToolWindow window;
 
-        #endregion
 
-        private void DeleteDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            var window = (BlockchainExplorerToolWindowControl)sender;
-            var tree = window.BlockchainExplorerTree;
-            var item = GetSelectedItem(sender);
-            item.Parent.DeleteChild(item);
-            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
-            {
-#if IS_VSIX
-                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
-#else
-                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
-#endif
-            }
-            tree.Refresh(); 
-        }
+
+
+        #endregion
 
         
     }

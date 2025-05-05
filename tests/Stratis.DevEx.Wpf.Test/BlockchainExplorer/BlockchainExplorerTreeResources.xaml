@@ -259,6 +259,30 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="EditAccountDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <GeometryDrawing Geometry="F1 M24,24z M0,0z M4,21C4,17.134 7.13401,14 11,14 11.3395,14 11.6734,14.0242 12,14.0709 M15,7C15,9.20914 13.2091,11 11,11 8.79086,11 7,9.20914 7,7 7,4.79086 8.79086,3 11,3 13.2091,3 15,4.79086 15,7z M12.5898,21L14.6148,20.595C14.7914,20.5597 14.8797,20.542 14.962,20.5097 15.0351,20.4811 15.1045,20.4439 15.1689,20.399 15.2414,20.3484 15.3051,20.2848 15.4324,20.1574L19.5898,16C20.1421,15.4477 20.1421,14.5523 19.5898,14 19.0376,13.4477 18.1421,13.4477 17.5898,14L13.4324,18.1574C13.3051,18.2848 13.2414,18.3484 13.1908,18.421 13.1459,18.4853 13.1088,18.5548 13.0801,18.6279 13.0478,18.7102 13.0302,18.7985 12.9948,18.975L12.5898,21z">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="AddAccountDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <GeometryDrawing Geometry="F1 M24,24z M0,0z M20,18L14,18 M17,15L17,21 M4,21C4,17.134 7.13401,14 11,14 11.695,14 12.3663,14.1013 13,14.2899 M15,7C15,9.20914 13.2091,11 11,11 8.79086,11 7,9.20914 7,7 7,4.79086 8.79086,3 11,3 13.2091,3 15,4.79086 15,7z">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Thickness="2" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
     <!-- TreeView items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
@@ -382,6 +406,11 @@
                 <Image Source="{StaticResource GlobeDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
+        <MenuItem Header="Add Account..." Command="{x:Static stratisui:BlockchainExplorerTree.NewAccountCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource AddAccountDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
         <MenuItem Header="Add Deploy Profile..." Command="{x:Static stratisui:BlockchainExplorerTree.NewDeployProfileCmd}">
             <MenuItem.Icon>
                 <Image Source="{StaticResource AddDeployProfileDrawingImage}" />
@@ -425,6 +454,19 @@
             </MenuItem.Icon>
         </MenuItem>
         <MenuItem Header="Delete" Command="{x:Static stratisui:BlockchainExplorerTree.DeleteDeployProfileCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource DeleteDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+
+    <ContextMenu x:Key="AccountContextMenu" Style="{DynamicResource ContextMenuStyle}">
+        <MenuItem Header="Edit..." Command="{x:Static stratisui:BlockchainExplorerTree.EditAccountCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource EditAccountDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Delete" Command="{x:Static stratisui:BlockchainExplorerTree.DeleteAccountCmd}">
             <MenuItem.Icon>
                 <Image Source="{StaticResource DeleteDrawingImage}" />
             </MenuItem.Icon>
@@ -537,9 +579,21 @@
     <StackPanel x:Key="EditAccountDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
         <StackPanel Orientation="Vertical" >
             <ui:TextBlock Text="Account Public Key:" VerticalAlignment="Center" Margin="1,0,0,2" />
-            <ui:TextBlock x:Name="AccountPublicKeyTextBox" TextWrapping="Wrap" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True"  Width="160" Height="75" VerticalAlignment="Center" Margin="1,0,0,2"   />
+            <ui:TextBlock x:Name="EditAccountPublicKeyTextBox" TextWrapping="Wrap" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True"  Width="160" Height="75" VerticalAlignment="Center" Margin="1,0,0,2"   />
             <ui:TextBlock Text="Account Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
-            <ui:TextBox x:Name="AccountLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+            <ui:TextBox x:Name="EditAccountLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+        </StackPanel>
+    </StackPanel>
+
+    <StackPanel x:Key="AddAccountDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
+        <StackPanel Orientation="Vertical" >
+            <ui:TextBlock Text="Account Public Key:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="AddAccountPublicKeyTextBox" TextWrapping="Wrap" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True"  Width="160" Height="75" VerticalAlignment="Center" Margin="1,0,0,2"   />
+            <ui:TextBlock Text="Account Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="AddAccountLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical">
+            <ui:TextBlock Name = "AddAccountDialogValidationErrors" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" />
         </StackPanel>
     </StackPanel>
 
