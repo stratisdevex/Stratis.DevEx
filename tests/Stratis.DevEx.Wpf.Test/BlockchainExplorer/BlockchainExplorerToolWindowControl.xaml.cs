@@ -113,7 +113,7 @@ namespace Stratis.VS.StratisEVM.UI
                             ShowProgressRing(progressring);
                             var text = rpcurl.Text;
 #if IS_VSIX
-                            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetChainandNetworkIdAsync(text)));
+                            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync(text)));
 #else
                             var result = Task.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync(text))).Result;
 #endif

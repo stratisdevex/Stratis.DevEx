@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
+using System.Text;
+using System.Security.Cryptography;
 using System.Linq;
 using System.Numerics;
 using System.Net.Http;
@@ -23,7 +25,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         Network,
         Endpoint,
         Account,
-        Contract
+        Contract,
+        DeployProfile
     }
     
     public class BlockchainInfo
@@ -62,11 +65,32 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 {
                     case BlockchainInfoKind.Network:
                         return string.Format("Chain id: {0}", Data["ChainId"]);
+                    case BlockchainInfoKind.Account:
+                        return Name;
                     default:
                         return "";
                 }
             }
         }
+
+        [JsonIgnore]
+        public string DisplayName
+        {
+            get
+            {
+                switch (Kind)
+                {
+                    case BlockchainInfoKind.Account:
+                        return (Data.ContainsKey("Label") && !string.IsNullOrEmpty((string) Data["Label"]))? (string)Data["Label"] :
+                        Name.Substring(0, 6) + "..." + new string(Name.Reverse().Take(6).Reverse().ToArray());
+                    default:
+                        return Name;
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public string NetworkChainId => Kind == BlockchainInfoKind.Network && Data.ContainsKey("ChainId") ? Data["ChainId"].ToString() : "";
         #endregion
 
         #region Methods
@@ -88,6 +112,29 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return AddChild(BlockchainInfoKind.Network, name, data);    
         }
 
+        public BlockchainInfo AddAccount(string pubkey, string label = null)
+        {
+            var data = new Dictionary<string, object>()
+            {
+                {"Label",  label}
+            };
+            return AddChild(BlockchainInfoKind.Account, pubkey, data);  
+        }
+
+        public BlockchainInfo AddDeployProfile(string name, string endpoint, string account, string pkey = null)
+        {
+            var data = new Dictionary<string, object>()
+            {
+                {"Endpoint",  endpoint},
+                {"Account",  account},
+            };
+            if (!string.IsNullOrEmpty(pkey))
+            {
+                data["PrivateKey"] = SetDeployProfilePrivateKey(pkey);
+            }
+            return AddChild(BlockchainInfoKind.DeployProfile, name, data);
+        }
+
         public override int GetHashCode() => Key.GetHashCode();
 
         public override bool Equals(object obj) => obj is BlockchainInfo bi ? Key == bi.Key : false; 
@@ -102,7 +149,11 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<BlockchainInfo> GetChildren(BlockchainInfoKind kind) => Children.Where(c => c.Kind == kind);
 
-        public IEnumerable<BlockchainInfo> GetEndPoints() => GetChildren(BlockchainInfoKind.Endpoint);
+        public IEnumerable<string> GetNetworkEndPoints() => GetChild("Endpoints", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.Endpoint).Select(bi => bi.Name);
+
+        public IEnumerable<string> GetNetworkAccounts() => GetChild("Accounts", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.Account).Select(bi => bi.Name);
+
+        public IEnumerable<string> GetNetworkDeployProfiles() => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).Select(bi => bi.Name);
 
         public bool Save(string path, out Exception e)
         {
@@ -179,6 +230,38 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 e = ex;
                 return null;   
             }
+        }
+
+        public string GetDeployProfilePrivateKey()
+        {
+            var data = (byte[])Data["PrivateKey"];
+            var length = BitConverter.ToInt32(data, 0);
+            var kdata = data.Skip(4).ToArray();
+            ProtectedMemory.Unprotect(kdata, MemoryProtectionScope.SameLogon);
+            return Encoding.UTF8.GetString(kdata.Take(length).ToArray());  
+        }
+
+        public byte[] SetDeployProfilePrivateKey(string pkey)
+        {
+            int roundUp(int numToRound, int multiple)
+            {
+                if (multiple == 0)
+                    return numToRound;
+
+                int remainder = numToRound % multiple;
+                if (remainder == 0)
+                    return numToRound;
+
+                return numToRound + multiple - remainder;
+            }
+
+            byte[] pkeydata = UnicodeEncoding.UTF8.GetBytes(pkey);
+            var len = pkeydata.Length;
+            var lb = BitConverter.GetBytes(len);
+            var round = roundUp(pkeydata.Length, 16);
+            Array.Resize(ref pkeydata, round);
+            ProtectedMemory.Protect(pkeydata, MemoryProtectionScope.SameLogon);
+            return lb.Concat(pkeydata).ToArray();
         }
         #endregion
     }

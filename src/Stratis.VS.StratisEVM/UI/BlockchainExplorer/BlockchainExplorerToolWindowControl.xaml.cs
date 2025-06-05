@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Security.Cryptography;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -19,6 +21,8 @@ using Stratis.DevEx.Ethereum;
 using static Stratis.DevEx.Result;
 using System.IO;
 using Stratis.DevEx;
+using System.Diagnostics.Eventing.Reader;
+using System.Text;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -35,13 +39,21 @@ namespace Stratis.VS.StratisEVM.UI
             var _ = new Wpf.Ui.Controls.Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
             InitializeComponent();
             this.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
+#if IS_VSIX
             VSTheme.WatchThemeChanges();
+#endif
         }
 
         #region Event handlers
         private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-
+            if (sender is BlockchainExplorerTree tree && tree.SelectedItem != null)
+            {
+                if (tree.SelectedItem.Kind == BlockchainInfoKind.Account)
+                {
+                    BlockchainExplorerTree.EditAccountCmd.Execute(tree, null);
+                }
+            }
         }
 
         private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<BlockchainInfo> e)
@@ -77,6 +89,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var rpcurl = (Wpc.TextBox)((StackPanel)sp.Children[1]).Children[1];
                 var chainid = (Wpc.NumberBox)((StackPanel)sp.Children[2]).Children[1];
                 var nid = "";
+                string[] accts = Array.Empty<string>();
                 var errors = (Wpc.TextBlock)((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[0];
                 var progressring = (Wpc.ProgressRing)((Grid)((StackPanel)sp.Children[3]).Children[0]).Children[1];
                 var validForClose = false;
@@ -100,9 +113,9 @@ namespace Stratis.VS.StratisEVM.UI
                             ShowProgressRing(progressring);
                             var text = rpcurl.Text;
 #if IS_VSIX
-                            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetChainandNetworkIdAsync(text)));
+                            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync(text)));
 #else
-                            var result = Task.Run(() => ExecuteAsync(Network.GetChainandNetworkIdAsync(text))).Result;
+                            var result = Task.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync(text))).Result;
 #endif
                             HideProgressRing(progressring);
                             if (Succedeed(result, out var cnid))
@@ -110,12 +123,14 @@ namespace Stratis.VS.StratisEVM.UI
                                 if (!string.IsNullOrEmpty(chainid.Text) && cnid.Value.Item1 == BigInteger.Parse(chainid.Text))
                                 {
                                     nid = cnid.Value.Item2;
+                                    accts = cnid.Value.Item3;
                                     validForClose = true;
                                 }
                                 else if (string.IsNullOrEmpty(chainid.Text))
                                 {
                                     chainid.Text = cnid.Value.Item1.ToString();
                                     nid = cnid.Value.Item2;
+                                    accts = cnid.Value.Item3;
                                     validForClose = true;
                                 }
                                 else
@@ -149,11 +164,18 @@ namespace Stratis.VS.StratisEVM.UI
                     rpcurl.Text = "";
                     chainid.Text = "";
                     nid = "";
+                    accts = Array.Empty<string>();  
                     return;
                 }
                 var t = item.AddNetwork(name.Text, rpcurl.Text, BigInteger.Parse(chainid.Text), nid);
                 var endpoints = t.AddChild(BlockchainInfoKind.Folder, "Endpoints");
                 endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
+                var accounts = t.AddChild(BlockchainInfoKind.Folder, "Accounts");
+                foreach (var acct in accts)
+                {
+                    accounts.AddAccount(acct);   
+                }
+                t.AddChild(BlockchainInfoKind.Folder, "Deploy Profiles");
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
                 {
 #if IS_VSIX
@@ -162,6 +184,7 @@ namespace Stratis.VS.StratisEVM.UI
                     System.Windows.MessageBox.Show("Error saving tree data: " +  ex?.Message);
 #endif
                 }
+                tree.Refresh(); 
             }
             catch (Exception ex)
             {
@@ -260,7 +283,7 @@ namespace Stratis.VS.StratisEVM.UI
         private void DeleteEndpointCmd_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             var item = GetSelectedItem(sender);
-            var endpoints = item.GetEndPoints();
+            var endpoints = item.Parent.Parent.GetNetworkEndPoints();
             if (endpoints.Count() == 1)
             {
                 e.CanExecute = false;
@@ -401,6 +424,370 @@ namespace Stratis.VS.StratisEVM.UI
                 e.CanExecute = true;
             }
         }
+
+        private async void EditAccountCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender);
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Edit Account",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("EditAccountDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+                var sp = (StackPanel)dw.Content;
+                var acctpubkey = (Wpc.TextBlock)((StackPanel)sp.Children[0]).Children[1];
+                acctpubkey.Text = item.Name;
+                var acctlabel = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[3];
+                acctlabel.Text = (string)item.Data["Label"];
+                var validForClose = false;
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    validForClose = true;
+                };
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    acctlabel.Text = (string)item.Data["Label"];
+                    return;
+                }
+                item.Data["Label"] = acctlabel.Text;
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if IS_VSIX
+                    VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                }
+                else
+                {
+                    tree.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
+            }
+        }
+
+        private async void NewDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender);
+                if (item.Kind == BlockchainInfoKind.Folder && item.Name == "Deploy Profiles")
+                {
+                    item = item.Parent;
+                }
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Add Deploy Profile",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("AddDeployProfileDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+                var sp = (StackPanel)dw.Content;
+                var name = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var endpoint = (ComboBox)((StackPanel)sp.Children[1]).Children[1];
+                var accounts = (ComboBox)((StackPanel)sp.Children[2]).Children[1];
+                var pkey = (Wpc.TextBox)((StackPanel)sp.Children[3]).Children[1];
+                var errors = (Wpc.TextBlock)((StackPanel)sp.Children[4]).Children[0];
+                endpoint.ItemsSource = item.GetNetworkEndPoints();
+                endpoint.SelectedIndex = 0;
+                accounts.ItemsSource = item.GetNetworkAccounts();
+                var validForClose = false;
+
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    validForClose = false;
+                    errors.Visibility = Visibility.Hidden;
+
+                    if (args.Button == ContentDialogButton.Primary)
+                    {
+                        if (!string.IsNullOrEmpty(name.Text) && accounts.SelectedValue != null && endpoint.SelectedValue != null)
+                        {
+                            var dp = item.GetNetworkDeployProfiles();
+                            if (dp.Contains(name.Text))
+                            {
+                                ShowValidationErrors(errors, "The " + name.Text + " deploy profile already exists.");
+                            }
+                            else
+                            {
+                                validForClose = true;
+                            }
+                        }
+                        else
+                        {
+                            ShowValidationErrors(errors, "Enter a deploy profile name and select a valid endpoint and account");
+                        }
+                    }
+                    else
+                    {
+                        validForClose = true;
+                    }
+                };
+
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    name.Text = "";
+                    endpoint.ItemsSource = null;
+                    accounts.ItemsSource = null;
+                    return;
+                }
+                else 
+                {
+                    item.GetChild("Deploy Profiles", BlockchainInfoKind.Folder).AddDeployProfile(name.Text, (string)endpoint.SelectedValue, (string)accounts.SelectedValue, pkey.Text);
+                }
+              
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                }
+                else
+                {
+                    tree.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
+            }
+        }
+
+        private async void EditDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender);
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Edit Deploy Profile",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("AddDeployProfileDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+                var sp = (StackPanel)dw.Content;
+                var name = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var endpoint = (ComboBox)((StackPanel)sp.Children[1]).Children[1];
+                var accounts = (ComboBox)((StackPanel)sp.Children[2]).Children[1];
+                var pkey = (Wpc.TextBox)((StackPanel)sp.Children[3]).Children[1];
+                var errors = (Wpc.TextBlock)((StackPanel)sp.Children[4]).Children[0];
+                name.Text = item.Name;
+                endpoint.ItemsSource = item.Parent.Parent.GetNetworkEndPoints();
+                endpoint.SelectedValue = item.Data["Endpoint"];
+                accounts.ItemsSource = item.Parent.Parent.GetNetworkAccounts();
+                accounts.SelectedValue = item.Data["Account"];
+                if (item.Data.ContainsKey("PrivateKey"))
+                {
+                    pkey.Text = item.GetDeployProfilePrivateKey();  
+                }
+                var validForClose = false;
+
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    validForClose = false;
+                    errors.Visibility = Visibility.Hidden;
+
+                    if (args.Button == ContentDialogButton.Primary)
+                    {
+                        if (!string.IsNullOrEmpty(name.Text) && accounts.SelectedValue != null && endpoint.SelectedValue != null)
+                        {
+                            var dp = item.Parent.Parent.GetNetworkDeployProfiles();
+                            if (dp.Contains(name.Text))
+                            {
+                                ShowValidationErrors(errors, "The " + name.Text + " deploy profile already exists.");
+                            }
+                            else
+                            {
+                                validForClose = true;
+                            }
+                        }
+                        else
+                        {
+                            ShowValidationErrors(errors, "Enter a deploy profile name and select a valid endpoint and account");
+                        }
+                    }
+                    else
+                    {
+                        validForClose = true;
+                    }
+                };
+
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    name.Text = "";
+                    endpoint.ItemsSource = null;
+                    accounts.ItemsSource = null;
+                    return;
+                }
+                               
+                item.Name = name.Text;
+                item.Data["Account"] = accounts.SelectedValue;
+                item.Data["Endpoint"] = endpoint.SelectedValue;
+                if (!string.IsNullOrEmpty(pkey.Text))
+                {
+                    item.Data["PrivateKey"] = item.SetDeployProfilePrivateKey(pkey.Text);
+                }
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                }
+                else
+                {
+                    tree.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
+            }
+        }
+
+        private void DeleteDeployProfileCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+            }
+            tree.Refresh();
+        }
+
+        private async void NewAccountCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender).GetChild("Accounts", BlockchainInfoKind.Folder);
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Add Account",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("AddAccountDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+                var sp = (StackPanel)dw.Content;
+                var acctpubkey = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[1];
+                var acctlabel = (Wpc.TextBox)((StackPanel)sp.Children[0]).Children[3];
+                var errors = (Wpc.TextBlock)((StackPanel)sp.Children[1]).Children[0];
+                var validForClose = false;
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    if (!string.IsNullOrEmpty(acctpubkey.Text))
+                    {
+                        validForClose = true;
+                    }
+                    else
+                    {
+                        ShowValidationErrors(errors, "Enter a valid account public key.");
+                    }
+                };
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    return;
+                }
+                item.AddAccount(acctpubkey.Text, acctlabel.Text);   
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if IS_VSIX
+                    VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                }
+                else
+                {
+                    tree.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message);
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
+            }
+        }
+
+        private void DeleteAccountCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+            }
+            tree.Refresh();
+        }
         #endregion
 
         #region Methods
@@ -433,6 +820,11 @@ namespace Stratis.VS.StratisEVM.UI
         #region Fields
         internal BlockchainExplorerToolWindow window;
 
+
+
+
         #endregion
+
+        
     }
 }
