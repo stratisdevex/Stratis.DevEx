@@ -88,6 +88,9 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 }
             }
         }
+
+        [JsonIgnore]
+        public string NetworkChainId => Kind == BlockchainInfoKind.Network && Data.ContainsKey("ChainId") ? Data["ChainId"].ToString() : "";
         #endregion
 
         #region Methods

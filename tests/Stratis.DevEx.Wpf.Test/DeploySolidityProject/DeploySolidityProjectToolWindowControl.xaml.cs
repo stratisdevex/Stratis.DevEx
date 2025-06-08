@@ -15,9 +15,13 @@ namespace Stratis.VS.StratisEVM.UI
         public DeploySolidityProjectToolWindowControl()
         {
             this.InitializeComponent();
+            
             VSTheme.WatchThemeChanges();
+            this.DeployProfileComboBox.ItemsSource = GetDeployProfiles();
+            this.DeployProfileComboBox.SelectedIndex = 0;
         }
 
+        //public Dep
         /// <summary>
         /// Handles click on the button by displaying a message box.
         /// </summary>
@@ -30,6 +34,15 @@ namespace Stratis.VS.StratisEVM.UI
             MessageBox.Show(
                 string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
                 "DeploySolidityProjectToolWindow");
+        }
+
+        private string[] GetDeployProfiles()
+        {
+#if IS_VSIX
+            return new string[] {};
+#else
+            return new[] { "Deploy 1", "Deploy 2", "Deploy 3" };
+#endif
         }
     }
 }

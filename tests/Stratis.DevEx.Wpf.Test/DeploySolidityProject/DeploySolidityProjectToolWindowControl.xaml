@@ -24,8 +24,24 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" Grid.Row="0">
-            
+            <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <StackPanel Orientation="Vertical">
+                    <ui:TextBlock Text="Select the contract to deploy:"  Margin="4,0,0,2" />
+                    <ComboBox x:Name="DeployContractComboBox"  Margin="0,2,10,4" Width="150" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <ui:TextBlock Text="Select the deploy profile:"  Margin="4,0,0,2" />
+                    <ComboBox x:Name="DeployProfileComboBox"  Margin="0,2,10,4" Width="150" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Grid>
+                        <ui:TextBlock Name = "AddNetworkDialogValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                        <ui:ProgressRing Name="AddNetworkDialogProgressRing" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" Visibility="Hidden" />
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
-        <ContentPresenter x:Name="RootContentDialog" Grid.Row="0"/>
+        
     </Grid>
 </UserControl>

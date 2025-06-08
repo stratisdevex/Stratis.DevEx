@@ -355,7 +355,7 @@
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding Path=Kind}" Value="Network" />
-                    <Condition Binding="{Binding Path=Data[ChainId]}" Value="1337" />
+                    <Condition Binding="{Binding Path=NetworkChainId}" Value="1337"  />
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource GanacheDrawingImage}" />
             </MultiDataTrigger>
@@ -411,7 +411,7 @@
     <ContextMenu x:Key="NetworkContextMenu" Style="{DynamicResource ContextMenuStyle}">
         <MenuItem Header="Add Endpoint..." Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
             <MenuItem.Icon>
-                <Image Source="{StaticResource GlobeDrawingImage}" />
+                <Image Source="{StaticResource GlobeDrawingImage}"   />
             </MenuItem.Icon>
         </MenuItem>
         <MenuItem Header="Add Account..." Command="{x:Static stratisui:BlockchainExplorerTree.NewAccountCmd}">

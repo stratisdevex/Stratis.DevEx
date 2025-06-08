@@ -23,7 +23,7 @@ namespace Stratis.VS.StratisEVM.UI
         public MainWindow()
         {
             InitializeComponent();
-            this.toolWindowControl.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
+            //this.toolWindowControl.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
         }
 
         private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)

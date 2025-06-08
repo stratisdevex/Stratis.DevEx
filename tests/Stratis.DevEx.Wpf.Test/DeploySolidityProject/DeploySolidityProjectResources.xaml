@@ -1,0 +1,21 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                    xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
+                    xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase">
+    
+    <!-- Dialogs -->
+    <!-- Dialog style -->
+    <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
+        <Style.Resources>
+            <Style TargetType="{x:Type ui:NumberBox}">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="HorizontalContentAlignment" Value="Right" />
+            </Style>
+        </Style.Resources>
+    </Style>
+    
+    
+</ResourceDictionary>

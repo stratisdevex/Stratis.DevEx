@@ -16,13 +16,9 @@ using Hardcodet.Wpf.GenericTreeView;
 using Wpf.Ui.Controls;
 using Wpc = Wpf.Ui.Controls;
 
-using Stratis.VS.StratisEVM.UI.ViewModel;
-using Stratis.DevEx.Ethereum;
 using static Stratis.DevEx.Result;
-using System.IO;
-using Stratis.DevEx;
-using System.Diagnostics.Eventing.Reader;
-using System.Text;
+using Stratis.DevEx.Ethereum;
+using Stratis.VS.StratisEVM.UI.ViewModel;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -184,6 +180,7 @@ namespace Stratis.VS.StratisEVM.UI
                     System.Windows.MessageBox.Show("Error saving tree data: " +  ex?.Message);
 #endif
                 }
+                tree.Refresh(); 
             }
             catch (Exception ex)
             {
