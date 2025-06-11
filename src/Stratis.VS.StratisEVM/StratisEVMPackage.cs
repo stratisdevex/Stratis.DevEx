@@ -52,6 +52,8 @@ namespace Stratis.VS.StratisEVM
     [ProvideToolWindowVisibility(typeof(UI.BlockchainExplorerToolWindow), EmptySolution_string)]
     [ProvideToolWindow(typeof(UI.StratisEVMBlockchainDashboardToolWindow), Style = VsDockStyle.MDI)]
     [ProvideToolWindow(typeof(UI.DeploySolidityProjectToolWindow), Style = VsDockStyle.Tabbed)]
+    [ProvideToolWindowVisibility(typeof(UI.DeploySolidityProjectToolWindow), SolutionHasSingleProject_string)]
+    [ProvideToolWindowVisibility(typeof(UI.DeploySolidityProjectToolWindow), SolutionHasMultipleProjects_string)]
     public sealed partial class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7, IVsSolutionEvents
     {
         #region Constructors

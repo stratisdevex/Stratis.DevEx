@@ -88,7 +88,8 @@ namespace Stratis.VS.StratisEVM.UI
         {
             this.package.JoinableTaskFactory.RunAsync(async delegate
             {
-                ToolWindowPane window = await this.package.ShowToolWindowAsync(typeof(DeploySolidityProjectToolWindow), 0, true, this.package.DisposalToken);
+                var window = (DeploySolidityProjectToolWindow) await this.package.ShowToolWindowAsync(typeof(DeploySolidityProjectToolWindow), 0, true, this.package.DisposalToken);
+                window.control.InitSelectedProject();
                 if ((null == window) || (null == window.Frame))
                 {
                     throw new NotSupportedException("Cannot create tool window");

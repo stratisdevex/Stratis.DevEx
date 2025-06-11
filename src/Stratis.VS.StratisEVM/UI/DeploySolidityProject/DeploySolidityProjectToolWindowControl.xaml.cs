@@ -1,6 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
+
+using Microsoft.VisualStudio.Shell;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -17,10 +20,28 @@ namespace Stratis.VS.StratisEVM.UI
             this.InitializeComponent();
             
             VSTheme.WatchThemeChanges();
+            
+        }
+
+        public void InitSelectedProject()
+        {
+            if (!VSUtil.IsProjectLoaded())
+            {
+                return;
+            }
+            var project = VSUtil.GetSelectedProject();
+            if (project == null)
+            {
+                MessageBox.Show("No project selected. Please select a Solidity project to deploy.", "Deploy Solidity Project", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            var contracts = VSUtil.GetSolidityProjectContracts(project);
+            this.DeployContractComboBox.ItemsSource = contracts;
             this.DeployProfileComboBox.ItemsSource = GetDeployProfiles();
             this.DeployProfileComboBox.SelectedIndex = 0;
         }
 
+        
         //public Dep
         /// <summary>
         /// Handles click on the button by displaying a message box.
@@ -39,7 +60,10 @@ namespace Stratis.VS.StratisEVM.UI
         private string[] GetDeployProfiles()
         {
 #if IS_VSIX
-            return new string[] {};
+            //var contracs = project.ProjectItems.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFolder
+            //    ? project.ProjectItems.Cast<EnvDTE.ProjectItem>().Where(pi => pi.Name.EndsWith(".sol")).ToList()
+            //    : project.ProjectItems.Cast<EnvDTE.ProjectItem>().Where(pi => pi.Name.EndsWith(".sol")).ToList();
+            return Array.Empty<string>();
 #else
             return new[] { "Deploy 1", "Deploy 2", "Deploy 3" };
 #endif

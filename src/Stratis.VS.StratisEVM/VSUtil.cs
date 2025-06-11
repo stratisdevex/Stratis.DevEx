@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;  
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio;
@@ -14,6 +15,7 @@ using Stratis.DevEx;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.VisualStudio.ComponentModelHost;
+using EnvDTE;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -254,8 +256,52 @@ namespace Stratis.VS.StratisEVM
                 ShowModalErrorDialogBox("Could not get DTE service.");
                 return false;
             }
+            if (dte.Solution == null || dte.Solution.Projects == null || dte.Solution.Projects.Count == 0)
+            {
+                return false;
+            }
+            else
+            {
+                Array a = (Array)dte.ActiveSolutionProjects;
+                return a != null && a.Length > 0;
+            }
+        }
+
+        public static Project GetSelectedProject()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var dte = StratisEVMPackage.Instance.GetService<EnvDTE.DTE, EnvDTE80.DTE2>();
+            if (dte == null)
+            {
+                ShowModalErrorDialogBox("Could not get DTE service.");
+                return null;
+            }
+            
             Array a = (Array)dte.ActiveSolutionProjects;
-            return a == null || a.Length == 0;
+            var si = dte.SelectedItems;
+            if (si == null || si.Count == 0 || si.Item(1).Project == null)
+            {
+                ShowModalErrorDialogBox("No project is selected.");
+                return null;
+            }
+            else
+            {
+                return si.Item(1).Project;
+            }
+        }
+
+        public static List<string> GetSolidityProjectContracts(Project project)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();    
+            List<string> contracts = new List<string>();
+            foreach (EnvDTE.ProjectItem item in project.ProjectItems)
+            {
+                if (item.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFile && item.Name.EndsWith(".sol", StringComparison.OrdinalIgnoreCase))
+                {
+                    contracts.Add(item.Name);
+                }
+            }
+            return contracts;
         }
 
         public IProjectLockService GetProjectLockService()
