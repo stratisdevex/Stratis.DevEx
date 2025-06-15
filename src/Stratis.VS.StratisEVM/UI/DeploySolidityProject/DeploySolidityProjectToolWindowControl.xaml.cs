@@ -3,28 +3,22 @@ using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 
-using Microsoft.VisualStudio.Shell;
-
 namespace Stratis.VS.StratisEVM.UI
 {
-    /// <summary>
-    /// Interaction logic for DeploySolidityProjectToolWindowControl.
-    /// </summary>
     public partial class DeploySolidityProjectToolWindowControl : UserControl
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeploySolidityProjectToolWindowControl"/> class.
-        /// </summary>
         public DeploySolidityProjectToolWindowControl()
         {
             this.InitializeComponent();
-            
-            VSTheme.WatchThemeChanges();
-            
+#if !IS_VSIX
+            InitSelectedProject();
+#endif
+            VSTheme.WatchThemeChanges(); 
         }
 
         public void InitSelectedProject()
         {
+#if IS_VSIX
             if (!VSUtil.IsProjectLoaded())
             {
                 return;
@@ -36,25 +30,15 @@ namespace Stratis.VS.StratisEVM.UI
                 return;
             }
             var contracts = VSUtil.GetSolidityProjectContracts(project);
+            var profiles = GetDeployProfiles();
+#else
+            var contracts = new[] { "Contract1.sol", "Contract2.sol", "Contract3.sol" };    
+            var profiles = new[] { "Deploy profie 1", "Deploy 2", "Deploy 3" };    
+#endif
             this.DeployContractComboBox.ItemsSource = contracts;
-            this.DeployProfileComboBox.ItemsSource = GetDeployProfiles();
+            this.DeployContractComboBox.SelectedIndex = 0;  
+            this.DeployProfileComboBox.ItemsSource = profiles;
             this.DeployProfileComboBox.SelectedIndex = 0;
-        }
-
-        
-        //public Dep
-        /// <summary>
-        /// Handles click on the button by displaying a message box.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event args.</param>
-        [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show(
-                string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
-                "DeploySolidityProjectToolWindow");
         }
 
         private string[] GetDeployProfiles()
@@ -68,5 +52,25 @@ namespace Stratis.VS.StratisEVM.UI
             return new[] { "Deploy 1", "Deploy 2", "Deploy 3" };
 #endif
         }
+
+        #region Event Handlers
+
+        private void EstimatedGasFeeRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (CustomGasFeeNumberBox != null)
+            {
+                CustomGasFeeNumberBox.IsEnabled = false;
+            }
+        }
+
+        private void CustomGasFeeRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (CustomGasFeeNumberBox != null)
+            {
+                CustomGasFeeNumberBox.IsEnabled = true;
+            }   
+            
+        }
+        #endregion
     }
 }

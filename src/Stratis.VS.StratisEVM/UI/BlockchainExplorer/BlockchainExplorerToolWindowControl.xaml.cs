@@ -19,6 +19,7 @@ using Wpc = Wpf.Ui.Controls;
 using static Stratis.DevEx.Result;
 using Stratis.DevEx.Ethereum;
 using Stratis.VS.StratisEVM.UI.ViewModel;
+using System.Diagnostics;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -32,8 +33,15 @@ namespace Stratis.VS.StratisEVM.UI
         /// </summary>
         public BlockchainExplorerToolWindowControl() : base()
         {
-            var _ = new Wpf.Ui.Controls.Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
+            var _ = new Wpf.Ui.Controls.Card();
+            var __ = new BlockchainExplorerTree();
+         
+            var ___ = BlockscoutSampleData.Blocks;
+            var ____ = new Wpf.Ui.ThemeService();
+
+            // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
             InitializeComponent();
+                
             this.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
 #if IS_VSIX
             VSTheme.WatchThemeChanges();
