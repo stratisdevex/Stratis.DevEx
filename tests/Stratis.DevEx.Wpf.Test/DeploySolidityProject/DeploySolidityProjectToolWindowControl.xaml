@@ -16,7 +16,18 @@
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
+            <!-- Dialog style -->
+            <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type RadioButton}">
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
+                        
+                    </Style>
+                </Style.Resources>
+            </Style>
         </ResourceDictionary>
+        
+        
     </UserControl.Resources>
 
     <Grid>
@@ -39,11 +50,16 @@
 
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                     <ui:TextBlock Text="Gas Limit:"  Margin="4,0,0,2" />
-                    <RadioButton Content="Estimated Gas" Name="EstimatedGasFeeRadioButton" GroupName="SmartContractGasGroup" Checked="EstimatedGasFeeRadioButton_Checked" IsChecked="True" />
+                    <RadioButton Content="Estimated Gas" Name="EstimatedGasFeeRadioButton" GroupName="SmartContractGasGroup" Checked="EstimatedGasFeeRadioButton_Checked" IsChecked="True" Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
                     <StackPanel Orientation="Horizontal">
-                        <RadioButton Content="Custom"  Name="CustomGasFeeRadioButton" GroupName="SmartContractGasGroup" Checked="CustomGasFeeRadioButton_Checked" />
+                        <RadioButton Content="Custom"  Name="CustomGasFeeRadioButton" GroupName="SmartContractGasGroup" Checked="CustomGasFeeRadioButton_Checked" Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"/>
                         <ui:NumberBox SpinButtonPlacementMode="Inline"  Name="CustomGasFeeNumberBox" Value="3000000" IsEnabled="False" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
                     </StackPanel>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <ui:TextBlock Text="Value:"  Margin="4,0,0,2" />
+                    <ui:NumberBox SpinButtonPlacementMode="Inline"  Name="ValueNumberBox" Value="0" Width="150" Margin="0,2,0,4" VerticalAlignment="Center"/>
                 </StackPanel>
 
             </StackPanel>

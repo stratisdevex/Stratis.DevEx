@@ -59,7 +59,7 @@ namespace Stratis.VS.StratisEVM.UI
             else
             {
                 var p = b.GetAllDeployProfiles();
-                return p.ToArray();
+                return p.Select(d => d.Item1 + $"({d.Item2})" + " - " + d.Item3).ToArray();
             }
 #else
             return new[] { "Deploy Profile 1", "Deploy Profile 2", "Deploy Profile 3" };

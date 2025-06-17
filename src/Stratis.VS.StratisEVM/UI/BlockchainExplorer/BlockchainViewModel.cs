@@ -155,18 +155,21 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<string> GetNetworkDeployProfiles() => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).Select(bi => bi.Name);
 
-        public IEnumerable<string> GetAllDeployProfiles()
+        public IEnumerable<(string,long, string)> GetAllDeployProfiles()
         {
             return
             GetChildren(BlockchainInfoKind.Network)
-            .SelectMany(bi => bi.GetNetworkDeployProfiles()) 
+            .SelectMany(bi => bi.GetNetworkDeployProfiles().Select(b => (bi.Name, (long) bi.Data["ChainId"], b )))
             .Concat(
                 GetChildren(BlockchainInfoKind.UserFolder)
-                .SelectMany(c => c.GetChildren(BlockchainInfoKind.Network))
-                .SelectMany(ni => ni.GetNetworkDeployProfiles())
+                .SelectMany(f => f.GetChildren(BlockchainInfoKind.Network))
+                .SelectMany(ni => ni.GetNetworkDeployProfiles().Select(b => (ni.Parent.Name + "\\" + ni.Name, (long)ni.Data["ChainId"], b)))
             );
         }
 
+        public BlockchainInfo GetNetworkDeployProfile(string name) => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).SingleOrDefault(bi => bi.Name == name);
+            
+        
         public bool Save(string path, out Exception e)
         {
             try
