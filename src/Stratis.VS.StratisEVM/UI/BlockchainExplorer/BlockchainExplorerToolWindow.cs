@@ -36,6 +36,10 @@ namespace Stratis.VS.StratisEVM.UI
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             var _ = new Card(); // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
+            var __ = new BlockchainExplorerTree();
+
+            //var ___ = BlockscoutSampleData.Blocks;
+            var ____ = new Wpf.Ui.ThemeService();
             var control = new BlockchainExplorerToolWindowControl();
             control.window = this;
             this.Content = control;

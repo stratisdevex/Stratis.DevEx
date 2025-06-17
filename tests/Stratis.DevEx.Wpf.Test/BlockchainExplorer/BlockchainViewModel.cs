@@ -155,6 +155,18 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<string> GetNetworkDeployProfiles() => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).Select(bi => bi.Name);
 
+        public IEnumerable<string> GetAllDeployProfiles()
+        {
+            return
+            GetChildren(BlockchainInfoKind.Network)
+            .SelectMany(bi => bi.GetNetworkDeployProfiles()) 
+            .Concat(
+                GetChildren(BlockchainInfoKind.UserFolder)
+                .SelectMany(c => c.GetChildren(BlockchainInfoKind.Network))
+                .SelectMany(ni => ni.GetNetworkDeployProfiles())
+            );
+        }
+
         public bool Save(string path, out Exception e)
         {
             try

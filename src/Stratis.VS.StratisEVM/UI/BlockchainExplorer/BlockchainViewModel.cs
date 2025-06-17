@@ -155,6 +155,18 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<string> GetNetworkDeployProfiles() => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).Select(bi => bi.Name);
 
+        public IEnumerable<string> GetAllDeployProfiles()
+        {
+            return
+            GetChildren(BlockchainInfoKind.Network)
+            .SelectMany(bi => bi.GetNetworkDeployProfiles()) 
+            .Concat(
+                GetChildren(BlockchainInfoKind.UserFolder)
+                .SelectMany(c => c.GetChildren(BlockchainInfoKind.Network))
+                .SelectMany(ni => ni.GetNetworkDeployProfiles())
+            );
+        }
+
         public bool Save(string path, out Exception e)
         {
             try
@@ -348,6 +360,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             var data = new ObservableCollection<BlockchainInfo>();
             var root = new BlockchainInfo(BlockchainInfoKind.Folder, "EVM Networks");
             var mainnet = root.AddNetwork("Stratis Mainnet", "https://rpc.stratisevm.com", 10505, "10505");
+            mainnet.AddChild(BlockchainInfoKind.Folder, "Accounts");
+            mainnet.AddChild(BlockchainInfoKind.Folder, "Deploy Profiles");
             var endpoints = mainnet.AddChild(BlockchainInfoKind.Folder, "Endpoints");
             endpoints.AddChild(BlockchainInfoKind.Endpoint, "https://rpc.stratisevm.com:8545");
             data.Add(root); 

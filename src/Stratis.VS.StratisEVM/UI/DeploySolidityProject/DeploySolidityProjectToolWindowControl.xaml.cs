@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Stratis.VS.StratisEVM.UI.ViewModel;
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -44,12 +46,23 @@ namespace Stratis.VS.StratisEVM.UI
         private string[] GetDeployProfiles()
         {
 #if IS_VSIX
-            //var contracs = project.ProjectItems.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFolder
-            //    ? project.ProjectItems.Cast<EnvDTE.ProjectItem>().Where(pi => pi.Name.EndsWith(".sol")).ToList()
-            //    : project.ProjectItems.Cast<EnvDTE.ProjectItem>().Where(pi => pi.Name.EndsWith(".sol")).ToList();
-            return Array.Empty<string>();
+            var b = BlockchainInfo.Load("BlockchainExplorerTree", out var e);
+            if (e != null)
+            {
+                MessageBox.Show($"Error loading blockchain info: {e?.Message ?? "(null)"}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return Array.Empty<string>();
+            }
+            else if (b == null)
+            {
+                return Array.Empty<string>();
+            }
+            else
+            {
+                var p = b.GetAllDeployProfiles();
+                return p.ToArray();
+            }
 #else
-            return new[] { "Deploy 1", "Deploy 2", "Deploy 3" };
+            return new[] { "Deploy Profile 1", "Deploy Profile 2", "Deploy Profile 3" };
 #endif
         }
 
@@ -71,6 +84,9 @@ namespace Stratis.VS.StratisEVM.UI
             }   
             
         }
+        #endregion
+
+        #region Fields
         #endregion
     }
 }
