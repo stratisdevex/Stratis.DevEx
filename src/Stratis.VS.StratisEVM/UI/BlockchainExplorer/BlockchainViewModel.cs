@@ -155,6 +155,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<string> GetNetworkDeployProfiles() => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).Select(bi => bi.Name);
 
+        /*
         public IEnumerable<(string,long, string)> GetAllDeployProfiles()
         {
             return
@@ -165,6 +166,20 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 .SelectMany(f => f.GetChildren(BlockchainInfoKind.Network))
                 .SelectMany(ni => ni.GetNetworkDeployProfiles().Select(b => (ni.Parent.Name + "\\" + ni.Name, (long)ni.Data["ChainId"], b)))
             );
+        }
+        */
+        public Dictionary<string, BlockchainInfo> GetAllDeployProfiles()
+        {
+            return GetChildren(BlockchainInfoKind.UserFolder)
+                .SelectMany(f => f.GetChildren(BlockchainInfoKind.Network))
+                .SelectMany(ni => ni.GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile)
+                .Select(b => (ni.Parent.Name + "\\" + ni.Name + "(" + (long)ni.Data["ChainId"] + ")", b)))
+                .Concat(
+                    GetChildren(BlockchainInfoKind.Network)
+                    .SelectMany(bi => bi.GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile))
+                    .Select(bi => (bi.Name + "(" + (long)bi.Parent.Parent.Data["ChainId"] + ")", bi))
+                ).ToDictionary(b => b.Item1, b => b.Item2);
+            
         }
 
         public BlockchainInfo GetNetworkDeployProfile(string name) => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).SingleOrDefault(bi => bi.Name == name);

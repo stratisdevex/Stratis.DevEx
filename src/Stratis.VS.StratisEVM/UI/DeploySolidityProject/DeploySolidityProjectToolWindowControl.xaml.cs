@@ -1,5 +1,6 @@
 ﻿using Stratis.VS.StratisEVM.UI.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
@@ -58,8 +59,8 @@ namespace Stratis.VS.StratisEVM.UI
             }
             else
             {
-                var p = b.GetAllDeployProfiles();
-                return p.Select(d => d.Item1 + $"({d.Item2})" + " - " + d.Item3).ToArray();
+                deployProfiles = b.GetAllDeployProfiles();
+                return deployProfiles.Keys.ToArray();
             }
 #else
             return new[] { "Deploy Profile 1", "Deploy Profile 2", "Deploy Profile 3" };
@@ -87,6 +88,12 @@ namespace Stratis.VS.StratisEVM.UI
         #endregion
 
         #region Fields
+        protected Dictionary<string, BlockchainInfo> deployProfiles = new Dictionary<string, BlockchainInfo>();
         #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

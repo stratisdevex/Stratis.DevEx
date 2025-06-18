@@ -9,7 +9,9 @@
              d:DesignHeight="300" d:DesignWidth="300"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"
-             Background="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}">
+             Background="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"
+             FontFamily="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowFontFamilyKey}}"
+             FontSize="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowFontSizeKey}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

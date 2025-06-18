@@ -35,6 +35,10 @@ namespace Stratis.VS.StratisEVM.UI
         
         public static object ToolWindowBackgroundKey => VsBrushes.WindowKey;
 
+        public static object ToolWindowFontSizeKey => VsFonts.Environment66PercentFontSizeKey;
+
+        public static object ToolWindowFontFamilyKey => VsFonts.EnvironmentFontFamilyKey;
+
         public static void WatchThemeChanges()
         {
             VSColorTheme.ThemeChanged += _ => ApplicationThemeManager.Apply(ApplicationThemeGuess, Wpf.Ui.Controls.WindowBackdropType.Mica, true); ;
