@@ -8,7 +8,9 @@
              d:DesignHeight="300" d:DesignWidth="300"
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly=" 
              Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"
-             Background="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}">
+             Background="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"
+             FontFamily="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowFontFamilyKey}}"
+             FontSize="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowFontSizeKey}}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -21,7 +23,7 @@
                 <Style.Resources>
                     <Style TargetType="{x:Type RadioButton}">
                         <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
-                        
+
                     </Style>
                 </Style.Resources>
             </Style>
@@ -61,16 +63,25 @@
                     <ui:TextBlock Text="Value:"  Margin="4,0,0,2" />
                     <ui:NumberBox SpinButtonPlacementMode="Inline"  Name="ValueNumberBox" Value="0" Width="150" Margin="0,2,0,4" VerticalAlignment="Center"/>
                 </StackPanel>
-
             </StackPanel>
-            <StackPanel Orientation="Vertical">
-                <Grid>
-                    <ui:TextBlock Name = "DeploySolidityProjectDialogValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
-                     ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
-                    <ui:ProgressRing Name="AddNetworkDialogProgressRing" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" Visibility="Hidden" />
-                </Grid>
+
+            <Grid>
+
+                <StackPanel Name="DeployStatusStackPanel" Grid.Row="0" Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Center"  Visibility="Hidden">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:ProgressRing Name="DeployProgressRing" IsIndeterminate="True" IsEnabled="True" Width="12" Height="12" Margin="0,0,4,4" VerticalAlignment="Bottom"/>
+                        <ui:TextBlock Name = "DeploySolidityProjectStatusTextBlock" TextWrapping="WrapWithOverflow" VerticalAlignment="Bottom" />
+                    </StackPanel>
+                </StackPanel>
+
+                <ui:TextBlock Name = "DeployErrorsTextBlock" Grid.Row="0"  Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+
+            </Grid>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <ui:Button Name="DeployButton" Appearance="Primary" Content="Deploy" Margin="0,10,0,0" Width="100" Height="36" Click="DeployButton_Click" />
+                <ui:Button Name="CancelButton" Appearance="Secondary" Content="Cancel" Margin="0,10,0,0" Width="100" Height="36" Click="CancelButton_Click" />
             </StackPanel>
         </StackPanel>
-
     </Grid>
 </UserControl>

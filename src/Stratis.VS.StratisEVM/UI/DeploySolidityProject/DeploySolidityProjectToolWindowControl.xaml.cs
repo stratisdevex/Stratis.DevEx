@@ -85,15 +85,45 @@ namespace Stratis.VS.StratisEVM.UI
             }   
             
         }
+
+        private void DeployButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DeployContractComboBox.SelectedItem == null || DeployProfileComboBox.SelectedItem == null)
+            {
+                ShowDeployError("Select a Solidity smart contract to deploy from the project and a deploy profile to use.");
+                return;
+            }
+            ShowDeployInfoStatus("Deploying contract...");        
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowDeployError("Cancelled.");
+        }
+        #endregion
+
+        #region Methods
+        public void ShowDeployInfoStatus(string text)
+        {
+            DeployErrorsTextBlock.Visibility = Visibility.Hidden;
+            DeployStatusStackPanel.Visibility = Visibility.Visible; 
+            DeployProgressRing.IsEnabled = true;
+            DeploySolidityProjectStatusTextBlock.Text = text;
+        }
+
+        public void ShowDeployError(string text)
+        {
+            DeployStatusStackPanel.Visibility = Visibility.Hidden;
+            DeployProgressRing.IsEnabled = false;
+            DeployErrorsTextBlock.Visibility = Visibility.Visible;
+            DeployErrorsTextBlock.Text = text;  
+        }
         #endregion
 
         #region Fields
         protected Dictionary<string, BlockchainInfo> deployProfiles = new Dictionary<string, BlockchainInfo>();
         #endregion
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        
     }
 }

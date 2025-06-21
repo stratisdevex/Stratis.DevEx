@@ -57,6 +57,25 @@
       <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
     </StringProperty.DataSource>
   </StringProperty>
+
+  <StringProperty Name="DeployURL" DisplayName="Deploy URL">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <StringProperty Name="DeployAccount" DisplayName="Deploy Account">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
+  <StringProperty Name="DeployAccountPassword" DisplayName="Deploy Account Password">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+  </StringProperty>
+  
   
     <StringProperty Name="ProjectGuid" Visible="False">
         <StringProperty.DataSource>

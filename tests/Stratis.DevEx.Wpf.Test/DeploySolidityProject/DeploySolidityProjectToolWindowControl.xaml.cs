@@ -1,5 +1,6 @@
 ﻿using Stratis.VS.StratisEVM.UI.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
@@ -58,8 +59,8 @@ namespace Stratis.VS.StratisEVM.UI
             }
             else
             {
-                var p = b.GetAllDeployProfiles();
-                return p.ToArray();
+                deployProfiles = b.GetAllDeployProfiles();
+                return deployProfiles.Keys.ToArray();
             }
 #else
             return new[] { "Deploy Profile 1", "Deploy Profile 2", "Deploy Profile 3" };
@@ -84,9 +85,45 @@ namespace Stratis.VS.StratisEVM.UI
             }   
             
         }
+
+        private void DeployButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DeployContractComboBox.SelectedItem == null || DeployProfileComboBox.SelectedItem == null)
+            {
+                ShowDeployError("Select a Solidity smart contract to deploy from the project and a deploy profile to use.");
+                return;
+            }
+            ShowDeployInfoStatus("Deploying contract...");        
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowDeployError("Cancelled.");
+        }
+        #endregion
+
+        #region Methods
+        public void ShowDeployInfoStatus(string text)
+        {
+            DeployErrorsTextBlock.Visibility = Visibility.Hidden;
+            DeployStatusStackPanel.Visibility = Visibility.Visible; 
+            DeployProgressRing.IsEnabled = true;
+            DeploySolidityProjectStatusTextBlock.Text = text;
+        }
+
+        public void ShowDeployError(string text)
+        {
+            DeployStatusStackPanel.Visibility = Visibility.Hidden;
+            DeployProgressRing.IsEnabled = false;
+            DeployErrorsTextBlock.Visibility = Visibility.Visible;
+            DeployErrorsTextBlock.Text = text;  
+        }
         #endregion
 
         #region Fields
+        protected Dictionary<string, BlockchainInfo> deployProfiles = new Dictionary<string, BlockchainInfo>();
         #endregion
+
+        
     }
 }
