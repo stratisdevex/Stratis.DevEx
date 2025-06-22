@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;  
-using System.Threading;
-using System.Threading.Tasks;
+
+using EnvDTE;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.ProjectSystem.Properties;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Threading;
-
-using Stratis.DevEx;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
-using Microsoft.VisualStudio.ComponentModelHost;
-using EnvDTE;
+
+using Stratis.DevEx;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -270,18 +268,17 @@ namespace Stratis.VS.StratisEVM
         public static Project GetSelectedProject()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var dte = StratisEVMPackage.Instance.GetService<EnvDTE.DTE, EnvDTE80.DTE2>();
+            var dte = StratisEVMPackage.Instance.GetService<DTE, EnvDTE80.DTE2>();
             if (dte == null)
             {
                 ShowModalErrorDialogBox("Could not get DTE service.");
                 return null;
-            }
-            
+            }          
             Array a = (Array)dte.ActiveSolutionProjects;
             var si = dte.SelectedItems;
             if (si == null || si.Count == 0 || si.Item(1).Project == null)
             {
-                ShowModalErrorDialogBox("No project is selected.");
+                ShowModalErrorDialogBox("No project is selected or could not get selected project.");
                 return null;
             }
             else
@@ -313,6 +310,71 @@ namespace Stratis.VS.StratisEVM
             IProjectServiceAccessor projectServiceAccessor = componentModel.GetService<IProjectServiceAccessor>();
             var projectService = projectServiceAccessor.GetProjectService();
             return projectService.Services.ProjectLockService;
+        }
+
+        public static IVsHierarchy GetProjectVsHierarchy(Project project)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var solutionService = StratisEVMPackage.Instance.GetService<SVsSolution, IVsSolution>();
+            ErrorHandler.ThrowOnFailure(solutionService.GetProjectOfUniqueName(project.UniqueName, out var projectHierarchy));
+            return projectHierarchy;    
+        }
+
+        public static Dictionary<string, object> GetSolidityProjectProperties(Project project)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var hier = GetProjectVsHierarchy(project) as IVsBuildPropertyStorage;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            ErrorHandler.ThrowOnFailure(hier.GetPropertyValue("DeployURL", project.ConfigurationManager.ActiveConfiguration.ConfigurationName, (int) _PersistStorageType.PST_PROJECT_FILE, out string deployUrl));
+            if (!string.IsNullOrEmpty(deployUrl))
+            {
+                props["DeployURL"] = deployUrl;
+            }
+            return props;
+        }
+
+        public static bool SetProjectProperty(Project project, string name, string value)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var hier = GetProjectVsHierarchy(project) as IVsBuildPropertyStorage;
+            return ErrorHandler.Succeeded(hier.SetPropertyValue(name, project.ConfigurationManager.ActiveConfiguration.ConfigurationName, (uint)_PersistStorageType.PST_PROJECT_FILE, value));
+        }
+
+        public static bool BuildProject(Project project)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var dte = StratisEVMPackage.Instance.GetService<DTE, EnvDTE80.DTE2>();
+            var solution = dte.Solution;
+            solution.SolutionBuild.BuildProject(solution.SolutionBuild.ActiveConfiguration.Name, project.UniqueName, true);
+            return solution.SolutionBuild.LastBuildInfo == 0;   
+        }
+
+        public static string[] GetSmartContractProjectOutput(Project project, string contractFileName)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var outputDir = Path.Combine(Path.GetDirectoryName(project.FileName), project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
+            List<string> outputFiles = new List<string>();
+            var abi = Path.Combine(outputDir, Path.ChangeExtension(contractFileName, "abi"));
+            if (File.Exists(abi))
+            {
+                outputFiles.Add(abi);
+            }
+            var bin = Path.Combine(outputDir, Path.ChangeExtension(contractFileName, "bin"));
+            if (File.Exists(bin))
+            {
+                outputFiles.Add(bin);
+            }
+            var gj = Path.Combine(outputDir, Path.ChangeExtension(contractFileName, "gas.json"));
+            if (File.Exists(gj))
+            {
+                outputFiles.Add(gj);
+            }
+            var oct = Path.Combine(outputDir, Path.ChangeExtension(contractFileName, "opcodes.txt"));
+            if (File.Exists(oct))
+            {
+                outputFiles.Add(oct);
+            }
+            return outputFiles.ToArray();   
         }
 
         public static bool VSServicesInitialized = false;

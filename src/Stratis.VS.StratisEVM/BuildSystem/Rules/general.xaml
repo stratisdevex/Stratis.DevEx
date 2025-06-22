@@ -13,6 +13,12 @@
         <DataSource Persistence="ProjectFile" Label="Configuration" />
     </Rule.DataSource>
 
+  <StringProperty Name="BindingsNS" DisplayName=".NET Bindings Namespace">
+    <StringProperty.DataSource>
+      <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
+    </StringProperty.DataSource>
+  </StringProperty>
+
 	<EnumProperty Name="ConfigurationFile" DisplayName="Solidity Configuration File">
 		<EnumProperty.DataSource>
 			<DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
@@ -52,13 +58,15 @@
     <EnumValue Name="constantinople" />
   </EnumProperty>
   
-  <StringProperty Name="BindingsNS" DisplayName=".NET Bindings Namespace">
+ 
+
+  <StringProperty Name="DeployContract" DisplayName="Deploy Project Contract">
     <StringProperty.DataSource>
       <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
     </StringProperty.DataSource>
   </StringProperty>
 
-  <StringProperty Name="DeployURL" DisplayName="Deploy URL">
+  <StringProperty Name="DeployURL" DisplayName="Deploy JSON-RPC URL">
     <StringProperty.DataSource>
       <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
     </StringProperty.DataSource>
@@ -75,7 +83,6 @@
       <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
     </StringProperty.DataSource>
   </StringProperty>
-  
   
     <StringProperty Name="ProjectGuid" Visible="False">
         <StringProperty.DataSource>

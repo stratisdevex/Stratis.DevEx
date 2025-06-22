@@ -88,12 +88,24 @@ namespace Stratis.VS.StratisEVM.UI
 
         private void DeployButton_Click(object sender, RoutedEventArgs e)
         {
+            /*
             if (DeployContractComboBox.SelectedItem == null || DeployProfileComboBox.SelectedItem == null)
             {
                 ShowDeployError("Select a Solidity smart contract to deploy from the project and a deploy profile to use.");
                 return;
             }
-            ShowDeployInfoStatus("Deploying contract...");        
+            */
+            var project = VSUtil.GetSelectedProject();
+            var contractFileName = DeployContractComboBox.SelectedItem.ToString();
+            //var deployProfileName = DeployProfileComboBox.SelectedItem.ToString();
+            if (!VSUtil.BuildProject(project))
+            {
+                ShowDeployError("Build failed. Please check the build output for errors.");
+                return;
+            }
+
+            var bo = VSUtil.GetSmartContractProjectOutput(project, contractFileName);
+
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -121,6 +133,7 @@ namespace Stratis.VS.StratisEVM.UI
         #endregion
 
         #region Fields
+        protected bool projectInitialized = false;
         protected Dictionary<string, BlockchainInfo> deployProfiles = new Dictionary<string, BlockchainInfo>();
         #endregion
 
