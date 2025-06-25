@@ -1,7 +1,10 @@
-﻿using Stratis.VS.StratisEVM.UI.ViewModel;
+﻿using Microsoft.VisualStudio.Shell;
+using Nethereum.Hex.HexTypes;
+using Stratis.DevEx.Ethereum;
+using Stratis.VS.StratisEVM.UI.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -88,16 +91,16 @@ namespace Stratis.VS.StratisEVM.UI
 
         private void DeployButton_Click(object sender, RoutedEventArgs e)
         {
-            /*
             if (DeployContractComboBox.SelectedItem == null || DeployProfileComboBox.SelectedItem == null)
             {
                 ShowDeployError("Select a Solidity smart contract to deploy from the project and a deploy profile to use.");
                 return;
             }
-            */
+            
             var project = VSUtil.GetSelectedProject();
             var contractFileName = DeployContractComboBox.SelectedItem.ToString();
-            //var deployProfileName = DeployProfileComboBox.SelectedItem.ToString();
+            var deployProfileName = DeployProfileComboBox.SelectedItem.ToString();
+            ShowDeployInfoStatus($"Building {project.Name} project...");
             if (!VSUtil.BuildProject(project))
             {
                 ShowDeployError("Build failed. Please check the build output for errors.");
@@ -105,7 +108,36 @@ namespace Stratis.VS.StratisEVM.UI
             }
 
             var bo = VSUtil.GetSmartContractProjectOutput(project, contractFileName);
+            if (!bo.ContainsKey("bin"))
+            {
+                ShowDeployError($"No bin file found for {contractFileName}. Please check the build output.");
+                return;
+            }
+            if (!bo.ContainsKey("abi"))
+            {
+                ShowDeployError($"No bin file found for {contractFileName}. Please check the build output.");
+                return;
+            }
 
+            var b = BlockchainInfo.Load("BlockchainExplorerTree", out var bex);
+            if (bex != null || b == null)
+            {
+                MessageBox.Show($"Error loading blockchain info: {bex?.Message ?? "(null)"}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            var deployProfile = b.GetDeployProfile(deployProfileName);  
+            if (deployProfile == null)
+            {
+                ShowDeployError($"Could not retrieve deploy profile {deployProfileName}. Please check the deploy profile name.");
+                InitSelectedProject();
+                return;
+            }
+
+            var bin = File.ReadAllText(bo["bin"].FullName);
+            var abi = File.ReadAllText(bo["abi"].FullName);
+            HexBigInteger gasDeploy = EstimatedGasFeeRadioButton.IsChecked == true ? default : new HexBigInteger((long)CustomGasFeeNumberBox.Value);
+            var result = ThreadHelper.JoinableTaskFactory.Run(() => Network.DeployContract(deployProfile.DeployProfileEndpoint, bin, deployProfile.DeployProfileAccount, null, abi, gasDeploy));
+          
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

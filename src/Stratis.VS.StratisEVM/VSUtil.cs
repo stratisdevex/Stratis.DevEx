@@ -349,32 +349,32 @@ namespace Stratis.VS.StratisEVM
             return solution.SolutionBuild.LastBuildInfo == 0;   
         }
 
-        public static string[] GetSmartContractProjectOutput(Project project, string contractFileName)
+        public static Dictionary<string, FileInfo> GetSmartContractProjectOutput(Project project, string contractFileName)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var outputDir = Path.Combine(Path.GetDirectoryName(project.FileName), project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
-            List<string> outputFiles = new List<string>();
+            Dictionary<string, FileInfo> outputFiles = new Dictionary<string, FileInfo>();
             var abi = Path.Combine(outputDir, Path.ChangeExtension(contractFileName, "abi"));
             if (File.Exists(abi))
             {
-                outputFiles.Add(abi);
+                outputFiles.Add("abi", new FileInfo(abi));
             }
             var bin = Path.Combine(outputDir, Path.ChangeExtension(contractFileName, "bin"));
             if (File.Exists(bin))
             {
-                outputFiles.Add(bin);
+                outputFiles.Add("bin", new FileInfo(bin));
             }
             var gj = Path.Combine(outputDir, Path.ChangeExtension(contractFileName, "gas.json"));
             if (File.Exists(gj))
             {
-                outputFiles.Add(gj);
+                outputFiles.Add("gas", new FileInfo(gj));
             }
             var oct = Path.Combine(outputDir, Path.ChangeExtension(contractFileName, "opcodes.txt"));
             if (File.Exists(oct))
             {
-                outputFiles.Add(oct);
+                outputFiles.Add("opcodes", new FileInfo(oct));
             }
-            return outputFiles.ToArray();   
+            return outputFiles;   
         }
 
         public static bool VSServicesInitialized = false;

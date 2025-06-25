@@ -819,10 +819,6 @@ namespace Stratis.VS.StratisEVM.UI
 
         #region Fields
         internal BlockchainExplorerToolWindow window;
-
-
-
-
         #endregion
 
         

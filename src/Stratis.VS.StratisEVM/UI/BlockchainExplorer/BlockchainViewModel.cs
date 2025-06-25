@@ -93,6 +93,12 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         public string NetworkChainId => Kind == BlockchainInfoKind.Network && Data.ContainsKey("ChainId") ? Data["ChainId"].ToString() : "";
         #endregion
 
+        [JsonIgnore]
+        public string DeployProfileEndpoint => Kind == BlockchainInfoKind.DeployProfile && Data.ContainsKey("Endpoint") ? (string) Data["Endpoint"] : "";
+
+        [JsonIgnore]
+        public string DeployProfileAccount => Kind == BlockchainInfoKind.DeployProfile && Data.ContainsKey("Account") ? (string)Data["Account"] : "";
+
         #region Methods
         public BlockchainInfo AddChild(BlockchainInfoKind kind, string name, Dictionary<string, object> data = null)
         {
@@ -155,6 +161,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         public IEnumerable<string> GetNetworkDeployProfiles() => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).Select(bi => bi.Name);
 
+       
         /*
         public IEnumerable<(string,long, string)> GetAllDeployProfiles()
         {
@@ -180,6 +187,12 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                     .Select(bi => (bi.Name + "(" + (long)bi.Parent.Parent.Data["ChainId"] + ")", bi))
                 ).ToDictionary(b => b.Item1, b => b.Item2);
             
+        }
+
+        public BlockchainInfo GetDeployProfile(string name)
+        {
+            var d = GetAllDeployProfiles();
+            return d.ContainsKey(name) ? d[name] : null;
         }
 
         public BlockchainInfo GetNetworkDeployProfile(string name) => GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile).SingleOrDefault(bi => bi.Name == name);

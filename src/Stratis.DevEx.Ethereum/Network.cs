@@ -29,14 +29,16 @@ namespace Stratis.DevEx.Ethereum
 
         public async Task<BigInteger> GetBalanceAsync(string acct) => await web3.Eth.GetBalance.SendRequestAsync(acct);
 
-        public async Task<TransactionReceipt> DeployContract(string bytecode, string account, string password = null, string abi = null, HexBigInteger gasDeploy = default)
+        public static async Task<TransactionReceipt> DeployContract(string rpcurl, string bytecode, string account, string password = null, string abi = null, HexBigInteger gasDeploy = default)
         {
+            var web3 = new Web3(rpcurl);
+
             if (gasDeploy == null)
             {
                 gasDeploy = await web3.Eth.DeployContract.EstimateGasAsync(abi, bytecode, account);
             }
          
-            if (!await web3.Personal.UnlockAccount.SendRequestAsync(account, password, new HexBigInteger(30)))
+            if (!await web3.Personal.UnlockAccount.SendRequestAsync(account, "", new HexBigInteger(30)))
             {
                 throw new Exception("Could not unlock account using provided password.");
             }
