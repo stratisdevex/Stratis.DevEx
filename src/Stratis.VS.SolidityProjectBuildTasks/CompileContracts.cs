@@ -68,7 +68,7 @@ namespace Stratis.VS
 
             var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"" + " --include-path=\"" + Path.Combine(ProjectDir, "node_modules") + "\"";
             var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
-            Log.LogMessage(MessageImportance.High, "Compiling {0} file(s) in directory {1}...", Contracts.Count(), ProjectDir);
+            Log.LogMessage(MessageImportance.High, "Compiling {0} file(s) in directory {1} using solc compiler targeting EVM version {2}...", Contracts.Count(), ProjectDir, EVMVersion);
             Log.LogCommandLine(MessageImportance.High, cmdline);
             var psi = new ProcessStartInfo("cmd.exe", "/c " + cmdline)
             {

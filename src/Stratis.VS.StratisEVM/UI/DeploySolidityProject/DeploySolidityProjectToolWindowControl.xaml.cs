@@ -1,13 +1,17 @@
-﻿using Microsoft.VisualStudio.Shell;
-using Nethereum.Hex.HexTypes;
-using Stratis.DevEx.Ethereum;
-using Stratis.VS.StratisEVM.UI.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+
+using Microsoft.VisualStudio.Shell;
+using Nethereum.Hex.HexTypes;
+
+
+using static Stratis.DevEx.Result;
+using Stratis.DevEx.Ethereum;
+using Stratis.VS.StratisEVM.UI.ViewModel;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -133,11 +137,19 @@ namespace Stratis.VS.StratisEVM.UI
                 return;
             }
 
-            var bin = File.ReadAllText(bo["bin"].FullName);
+            var bin = "0x" + File.ReadAllText(bo["bin"].FullName);
             var abi = File.ReadAllText(bo["abi"].FullName);
             HexBigInteger gasDeploy = EstimatedGasFeeRadioButton.IsChecked == true ? default : new HexBigInteger((long)CustomGasFeeNumberBox.Value);
-            var result = ThreadHelper.JoinableTaskFactory.Run(() => Network.DeployContract(deployProfile.DeployProfileEndpoint, bin, deployProfile.DeployProfileAccount, null, abi, gasDeploy));
-          
+            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.DeployContract(deployProfile.DeployProfileEndpoint, bin, deployProfile.DeployProfileAccount, null, null, gasDeploy)));
+            if (result.IsSuccess)
+            {
+                ShowDeploySuccessStatus(result.Value.ContractAddress, result.Value.TransactionHash);
+            }
+            else
+            {
+                ShowDeployError($"Error deploying contract: {result.Exception.Message}");
+            }
+
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -152,8 +164,18 @@ namespace Stratis.VS.StratisEVM.UI
             DeployErrorsTextBlock.Visibility = Visibility.Hidden;
             DeployStatusStackPanel.Visibility = Visibility.Visible; 
             DeployProgressRing.IsEnabled = true;
+
             DeploySolidityProjectStatusTextBlock.Text = text;
         }
+
+        public void ShowDeploySuccessStatus(string addess, string transactionHash)
+        {
+            DeployErrorsTextBlock.Visibility = Visibility.Hidden;
+            DeployStatusStackPanel.Visibility = Visibility.Visible;
+            DeployProgressRing.IsEnabled = false;
+            DeployProgressRing.Foreground = System.Windows.Media.Brushes.Green;
+            DeploySolidityProjectStatusTextBlock.Text = $"Contract deployed successfully.\nAddress: {addess}\nTransaction Hash: {transactionHash}";
+        }   
 
         public void ShowDeployError(string text)
         {
