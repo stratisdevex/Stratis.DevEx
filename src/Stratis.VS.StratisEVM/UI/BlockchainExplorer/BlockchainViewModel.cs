@@ -1,20 +1,22 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Stratis.DevEx;
+using Stratis.DevEx.Ethereum;
+using Stratis.DevEx.Ethereum.Explorers;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
-using System.Text;
-using System.Security.Cryptography;
 using System.Linq;
-using System.Numerics;
 using System.Net.Http;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-
-using Stratis.DevEx;
-using Stratis.DevEx.Ethereum.Explorers;
+using System.Numerics;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using static Stratis.DevEx.Result;
 
 namespace Stratis.VS.StratisEVM.UI.ViewModel
 {
@@ -397,11 +399,32 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             var mainnet = root.AddNetwork("Stratis Mainnet", "https://rpc.stratisevm.com", 10505, "10505");
             var endpoints = mainnet.GetChild("Endpoints", BlockchainInfoKind.Folder);
             endpoints.AddChild("https://rpc.stratisevm.com:8545", BlockchainInfoKind.Endpoint);
-            var local1 = root.AddNetwork("Local 1", "http://localhost:7545", 1337, "1337");
+          
+#if IS_VSIX
+            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync("http://127.0.0.1:7545")));
+#else
+            var result = Task.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync("http://127.0.0.1:7545"))).Result;
+#endif
+            if (result.Succeeded(out var r))
+            {
+                var local1 = root.AddNetwork("Local 1", "http://localhost:7545", 1337, "5777");
+                endpoints = local1.GetChild("Endpoints", BlockchainInfoKind.Folder);
+                endpoints.AddChild("http://127.0.0.1:7545", BlockchainInfoKind.Endpoint);
+                var accounts = local1.GetChild("Accounts", BlockchainInfoKind.Folder);
+                foreach (var a in r.Value.Item3)
+                {
+                    accounts.AddAccount(a);
+                }
+               
+                var dp = local1.GetChild("Deploy Profiles", BlockchainInfoKind.Folder);
+                dp.AddDeployProfile("deploy 1", "http://127.0.0.1:7545", r.Value.Item3[0]);
+                data.Add(local1);
+            }
+             
             //var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Testnet");
             //mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
             data.Add(mainnet);
-            data.Add(local1);
+            
             return data;
         }
 
