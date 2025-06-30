@@ -42,18 +42,9 @@ namespace Stratis.VS.StratisEVM.UI
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             var control = new BlockchainExplorerToolWindowControl();
-            control.window = this;
+            
             this.Content = control;
-        }
-
-        protected override void OnClose()
-        {
-            base.OnClose();
-        }
-
-        protected override void OnInfoBarClosed(IVsInfoBarUIElement infoBarUI, IVsInfoBar infoBar)
-        {
-            base.OnInfoBarClosed(infoBarUI, infoBar);
+            control.window = this;
         }
     }
 }

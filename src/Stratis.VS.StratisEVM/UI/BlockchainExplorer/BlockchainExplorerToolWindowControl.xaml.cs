@@ -168,14 +168,13 @@ namespace Stratis.VS.StratisEVM.UI
                     return;
                 }
                 var t = item.AddNetwork(name.Text, rpcurl.Text, BigInteger.Parse(chainid.Text), nid);
-                var endpoints = t.AddChild(BlockchainInfoKind.Folder, "Endpoints");
-                endpoints.AddChild(BlockchainInfoKind.Endpoint, rpcurl.Text);
-                var accounts = t.AddChild(BlockchainInfoKind.Folder, "Accounts");
+                var endpoints = t.GetChild("Endpoints", BlockchainInfoKind.Folder);
+                endpoints.AddChild(rpcurl.Text, BlockchainInfoKind.Endpoint);
+                var accounts = t.GetChild("Accounts", BlockchainInfoKind.Folder);
                 foreach (var acct in accts)
                 {
                     accounts.AddAccount(acct);   
-                }
-                t.AddChild(BlockchainInfoKind.Folder, "Deploy Profiles");
+                };
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
                 {
 #if IS_VSIX
@@ -257,7 +256,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var uri = new Uri(rpcurl.Text);
 
                 var endpoints = tree.SelectedItem.Kind == BlockchainInfoKind.Network ? tree.SelectedItem.GetChild("Endpoints", BlockchainInfoKind.Folder) : tree.SelectedItem;
-                endpoints.AddChild(BlockchainInfoKind.Endpoint, uri.ToString());
+                endpoints.AddChild(rpcurl.Text, BlockchainInfoKind.Endpoint);
                 if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
                 {
                     System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
@@ -360,7 +359,7 @@ namespace Stratis.VS.StratisEVM.UI
                     foldername.Text = "";
                     return;
                 }
-                var f = item.AddChild(BlockchainInfoKind.UserFolder, foldername.Text);
+                var f = item.AddChild(foldername.Text, BlockchainInfoKind.UserFolder);
                 if (!item.Save("BlockchainExplorerTree", out var ex))
                 {
 #if IS_VSIX

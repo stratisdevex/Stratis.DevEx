@@ -41,10 +41,15 @@ namespace Stratis.VS.StratisEVM.UI
             }
             var contracts = VSUtil.GetSolidityProjectContracts(project);
             var profiles = GetDeployProfiles();
+            string evmversion = VSUtil.GetProjectProperty(project, "EVMVersion");
 #else
             var contracts = new[] { "Contract1.sol", "Contract2.sol", "Contract3.sol" };    
-            var profiles = new[] { "Deploy profie 1", "Deploy 2", "Deploy 3" };    
+            var profiles = new[] { "Deploy profie 1", "Deploy 2", "Deploy 3" }; 
+            string evmversion = "london"; 
 #endif
+
+            this.ProjectEVMVersionStackPanel.Visibility = Visibility.Visible;
+            this.ProjectEVMVersionTextBlock.Text = evmversion;
             this.DeployContractComboBox.ItemsSource = contracts;
             this.DeployContractComboBox.SelectedIndex = 0;  
             this.DeployProfileComboBox.ItemsSource = profiles;

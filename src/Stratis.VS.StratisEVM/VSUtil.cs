@@ -320,6 +320,21 @@ namespace Stratis.VS.StratisEVM
             return projectHierarchy;    
         }
 
+        public static string GetProjectProperty(Project project, string name)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var hier = GetProjectVsHierarchy(project) as IVsBuildPropertyStorage;
+            ErrorHandler.ThrowOnFailure(hier.GetPropertyValue(name, project.ConfigurationManager.ActiveConfiguration.ConfigurationName, (uint)_PersistStorageType.PST_PROJECT_FILE, out var value));
+            return value;
+        }
+
+        public static bool SetProjectProperty(Project project, string name, string value)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var hier = GetProjectVsHierarchy(project) as IVsBuildPropertyStorage;
+            return ErrorHandler.Succeeded(hier.SetPropertyValue(name, project.ConfigurationManager.ActiveConfiguration.ConfigurationName, (uint)_PersistStorageType.PST_PROJECT_FILE, value));
+        }
+
         public static Dictionary<string, object> GetSolidityProjectProperties(Project project)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -333,12 +348,7 @@ namespace Stratis.VS.StratisEVM
             return props;
         }
 
-        public static bool SetProjectProperty(Project project, string name, string value)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            var hier = GetProjectVsHierarchy(project) as IVsBuildPropertyStorage;
-            return ErrorHandler.Succeeded(hier.SetPropertyValue(name, project.ConfigurationManager.ActiveConfiguration.ConfigurationName, (uint)_PersistStorageType.PST_PROJECT_FILE, value));
-        }
+      
 
         public static bool BuildProject(Project project)
         {

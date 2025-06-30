@@ -100,7 +100,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         public string DeployProfileAccount => Kind == BlockchainInfoKind.DeployProfile && Data.ContainsKey("Account") ? (string)Data["Account"] : "";
 
         #region Methods
-        public BlockchainInfo AddChild(BlockchainInfoKind kind, string name, Dictionary<string, object> data = null)
+        public BlockchainInfo AddChild(string name, BlockchainInfoKind kind, Dictionary<string, object> data = null)
         {
             var info = new BlockchainInfo(kind, name, this, data);
             Children.Add(info);
@@ -115,7 +115,11 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 {"ChainId", chainid},
                 {"NetworkId", nid }
             };
-            return AddChild(BlockchainInfoKind.Network, name, data);    
+            var network =  AddChild(name, BlockchainInfoKind.Network, data);
+            network.AddChild("Endpoints", BlockchainInfoKind.Folder);
+            network.AddChild("Accounts", BlockchainInfoKind.Folder);
+            network.AddChild("Deploy Profiles", BlockchainInfoKind.Folder);
+            return network;
         }
 
         public BlockchainInfo AddAccount(string pubkey, string label = null)
@@ -124,7 +128,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             {
                 {"Label",  label}
             };
-            return AddChild(BlockchainInfoKind.Account, pubkey, data);  
+            return AddChild(pubkey, BlockchainInfoKind.Account,  data);  
         }
 
         public BlockchainInfo AddDeployProfile(string name, string endpoint, string account, string pkey = null)
@@ -138,7 +142,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             {
                 data["PrivateKey"] = SetDeployProfilePrivateKey(pkey);
             }
-            return AddChild(BlockchainInfoKind.DeployProfile, name, data);
+            return AddChild(name, BlockchainInfoKind.DeployProfile, data);
         }
 
         public override int GetHashCode() => Key.GetHashCode();
@@ -391,15 +395,13 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             var data = new ObservableCollection<BlockchainInfo>();
             var root = new BlockchainInfo(BlockchainInfoKind.Folder, "EVM Networks");
             var mainnet = root.AddNetwork("Stratis Mainnet", "https://rpc.stratisevm.com", 10505, "10505");
-            mainnet.AddChild(BlockchainInfoKind.Folder, "Accounts");
-            mainnet.AddChild(BlockchainInfoKind.Folder, "Deploy Profiles");
-            var endpoints = mainnet.AddChild(BlockchainInfoKind.Folder, "Endpoints");
-            endpoints.AddChild(BlockchainInfoKind.Endpoint, "https://rpc.stratisevm.com:8545");
-            data.Add(root); 
+            var endpoints = mainnet.GetChild("Endpoints", BlockchainInfoKind.Folder);
+            endpoints.AddChild("https://rpc.stratisevm.com:8545", BlockchainInfoKind.Endpoint);
+            var local1 = root.AddNetwork("Local 1", "http://localhost:7545", 1337, "1337");
             //var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Testnet");
             //mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
-            //data.Add(mainnet);
-            //data.Add(testnet);
+            data.Add(mainnet);
+            data.Add(local1);
             return data;
         }
 

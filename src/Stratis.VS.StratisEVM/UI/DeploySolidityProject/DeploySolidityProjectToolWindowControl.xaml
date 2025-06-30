@@ -39,7 +39,12 @@
 
         <StackPanel Orientation="Vertical" Grid.Row="0">
             <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
-
+                <StackPanel Orientation="Vertical" Name="ProjectEVMVersionStackPanel" Visibility="Hidden">
+                    <ui:TextBlock Text="Project EVM version is:" Margin="4,0,0,2"/>
+                    <ui:TextBlock Name="ProjectEVMVersionTextBlock" Margin="4,0,0,4" Text="london" FontWeight="Bold" />
+                    <ui:SymbolIcon Symbol="Info12" VerticalAlignment="Top" FontSize="14" ToolTip="Make sure the network you are deploying to supports this EVM version or deployment will fail."/>
+                </StackPanel>
+               
                 <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <ui:TextBlock Text="Select the contract to deploy:"  Margin="4,0,0,2" />
                     <ComboBox x:Name="DeployContractComboBox"  Margin="0,2,0,4" Width="200" FontSize="12" Height="36" />
