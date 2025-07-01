@@ -20,6 +20,11 @@ namespace Stratis.VS.StratisEVM.UI
         public DeploySolidityProjectToolWindowControl()
         {
             this.InitializeComponent();
+            var b = BlockchainInfo.Load("BlockchainExplorerTree", out var e);
+            if (b == null)
+            {
+                BlockchainViewModel.CreateInitialTreeData();
+            }
 #if !IS_VSIX
             InitSelectedProject();
 #endif
@@ -55,6 +60,9 @@ namespace Stratis.VS.StratisEVM.UI
             this.DeployProfileComboBox.ItemsSource = profiles;
             this.DeployProfileComboBox.SelectedIndex = 0;
             this.DeploySolidityProjectDialogStackPanel.Visibility = Visibility.Visible;
+            this.DeployStatusStackPanel.Visibility = Visibility.Hidden;
+            this.DeploySuccessStackPanel.Visibility = Visibility.Hidden; 
+            this.DeployErrorsStackPanel.Visibility = Visibility.Hidden; 
         }
 
         private string[] GetDeployProfiles()
@@ -110,7 +118,7 @@ namespace Stratis.VS.StratisEVM.UI
             var project = VSUtil.GetSelectedProject();
             var contractFileName = DeployContractComboBox.SelectedItem.ToString();
             var deployProfileName = DeployProfileComboBox.SelectedItem.ToString();
-            ShowDeployInfoStatus($"Building {project.Name} project...");
+            ShowDeployProgress($"Building {project.Name} project...");
             if (!VSUtil.BuildProject(project))
             {
                 ShowDeployError("Build failed. Please check the build output for errors.");
@@ -149,8 +157,8 @@ namespace Stratis.VS.StratisEVM.UI
             var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.DeployContract(deployProfile.DeployProfileEndpoint, bin, deployProfile.DeployProfileAccount, null, null, gasDeploy)));
             if (result.IsSuccess)
             {
-                ShowDeploySuccessStatus();
-                VSUtil.LogToBuildWindow($"========== {contractFileName} contract deployed successfully. ==========\nTransaction Hash: {result.Value.TransactionHash}\nContract Address: {result.Value.ContractAddress}");  
+                ShowDeploySuccess();
+                VSUtil.LogToBuildWindow($"\n========== {contractFileName} contract deployed successfully. ==========\nTransaction Hash: {result.Value.TransactionHash}\nContract Address: {result.Value.ContractAddress}");  
 
             }
             else
@@ -167,30 +175,29 @@ namespace Stratis.VS.StratisEVM.UI
         #endregion
 
         #region Methods
-        public void ShowDeployInfoStatus(string text)
+        public void ShowDeployProgress(string text)
         {
-            DeployErrorsTextBlock.Visibility = Visibility.Hidden;
+            this.DeployErrorsStackPanel.Visibility = Visibility.Hidden;
+            this.DeploySuccessStackPanel.Visibility = Visibility.Hidden;
             DeployStatusStackPanel.Visibility = Visibility.Visible; 
             DeployProgressRing.IsEnabled = true;
-
             DeploySolidityProjectStatusTextBlock.Text = text;
         }
 
-        public void ShowDeploySuccessStatus()
+        public void ShowDeploySuccess()
         {
-            DeployErrorsTextBlock.Visibility = Visibility.Hidden;
-            DeployStatusStackPanel.Visibility = Visibility.Visible;
-            DeployProgressRing.IsEnabled = false;
-            DeployProgressRing.Foreground = System.Windows.Media.Brushes.Green;
-            DeploySolidityProjectStatusTextBlock.Text = $"Contract deployed successfully.";
+            this.DeployErrorsStackPanel.Visibility = Visibility.Hidden;
+            this.DeployStatusStackPanel.Visibility = Visibility.Hidden;
+            this.DeploySuccessStackPanel.Visibility = Visibility.Visible;
+            this.DeploySuccessTextBlock.Text = $"Contract deployed successfully.";
         }   
 
         public void ShowDeployError(string text)
         {
-            DeployStatusStackPanel.Visibility = Visibility.Hidden;
-            DeployProgressRing.IsEnabled = false;
-            DeployErrorsTextBlock.Visibility = Visibility.Visible;
-            DeployErrorsTextBlock.Text = text;  
+            this.DeploySuccessStackPanel.Visibility = Visibility.Hidden;
+            this.DeployStatusStackPanel.Visibility = Visibility.Hidden;
+            this.DeployErrorsStackPanel.Visibility = Visibility.Visible;
+            this.DeployErrorsTextBlock.Text = text;  
         }
         #endregion
 

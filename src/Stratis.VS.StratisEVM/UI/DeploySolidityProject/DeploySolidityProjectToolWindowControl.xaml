@@ -81,10 +81,19 @@
                     </StackPanel>
                 </StackPanel>
 
-                <ui:TextBlock Name = "DeployErrorsTextBlock" Grid.Row="0"  Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
-                 ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                <StackPanel Name="DeploySuccessStackPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden">
+                    <ui:SymbolIcon Symbol="CheckmarkCircle24" VerticalAlignment="Bottom" Foreground="LightGreen" />
+                    <ui:TextBlock Name="DeploySuccessTextBlock" Margin="4,0,0,0" VerticalAlignment="Bottom" />
+                </StackPanel>
 
+                <StackPanel Name="DeployErrorsStackPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden">
+                    <ui:SymbolIcon Symbol="ErrorCircle24" VerticalAlignment="Bottom" />
+                    <ui:TextBlock Name = "DeployErrorsTextBlock" Grid.Row="0"  Foreground="Red" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                </StackPanel>
+            
             </Grid>
+            
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <ui:Button Name="DeployButton" Appearance="Primary" Content="Deploy" Margin="0,10,0,0" Width="100" Height="36" Click="DeployButton_Click" />
                 <ui:Button Name="CancelButton" Appearance="Secondary" Content="Cancel" Margin="0,10,0,0" Width="100" Height="36" Click="CancelButton_Click" />
