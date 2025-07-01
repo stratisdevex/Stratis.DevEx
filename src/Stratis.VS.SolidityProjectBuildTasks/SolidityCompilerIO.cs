@@ -135,40 +135,39 @@
         public int start { get; set; }
     }
 
-}
+    public class GasEstimates
+    {
+        public Creation creation { get; set; }
+        public External external { get; set; }
+    }
 
-public class GasEstimates
-{
-    public Creation creation { get; set; }
-    public External external { get; set; }
-}
+    public class Creation
+    {
+        public string codeDepositCost { get; set; }
+        public string executionCost { get; set; }
+        public string totalCost { get; set; }
+    }
 
-public class Creation
-{
-    public string codeDepositCost { get; set; }
-    public string executionCost { get; set; }
-    public string totalCost { get; set; }
-}
+    public class External
+    {
+        public string basicFunctionuint256 { get; set; }
+    }
 
-public class External
-{
-    public string basicFunctionuint256 { get; set; }
-}
+    public class Abi
+    {
+        public bool anonymous { get; set; }
+        public Input[] inputs { get; set; }
+        public string name { get; set; }
+        public string type { get; set; }
+        public object[] outputs { get; set; }
+        public string stateMutability { get; set; }
+    }
 
-public class Abi
-{
-    public bool anonymous { get; set; }
-    public Input[] inputs { get; set; }
-    public string name { get; set; }
-    public string type { get; set; }
-    public object[] outputs { get; set; }
-    public string stateMutability { get; set; }
-}
-
-public class Input
-{
-    public bool indexed { get; set; }
-    public string internalType { get; set; }
-    public string name { get; set; }
-    public string type { get; set; }
+    public class Input
+    {
+        public bool indexed { get; set; }
+        public string internalType { get; set; }
+        public string name { get; set; }
+        public string type { get; set; }
+    }
 }

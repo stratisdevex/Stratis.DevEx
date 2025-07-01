@@ -54,6 +54,7 @@ namespace Stratis.VS.StratisEVM.UI
             this.DeployContractComboBox.SelectedIndex = 0;  
             this.DeployProfileComboBox.ItemsSource = profiles;
             this.DeployProfileComboBox.SelectedIndex = 0;
+            this.DeploySolidityProjectDialogStackPanel.Visibility = Visibility.Visible;
         }
 
         private string[] GetDeployProfiles()

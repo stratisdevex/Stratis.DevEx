@@ -37,11 +37,11 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Vertical" Grid.Row="0">
+        <StackPanel Orientation="Vertical" Grid.Row="0" Name="DeploySolidityProjectDialogStackPanel" Visibility="Hidden">
             <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Vertical" Name="ProjectEVMVersionStackPanel" Visibility="Hidden">
-                    <ui:TextBlock Text="Project EVM version is:" Margin="4,0,0,2"/>
                     <StackPanel Orientation="Horizontal">
+                        <ui:TextBlock Text="Project EVM version is:" Margin="4,0,0,2"/>
                         <ui:TextBlock Name="ProjectEVMVersionTextBlock" Margin="4,0,0,4" Text="london" FontWeight="Bold" />
                         <ui:SymbolIcon Symbol="Info12" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" ToolTip="Make sure the network you are deploying to supports this EVM version or deployment will fail."/>
                     </StackPanel>

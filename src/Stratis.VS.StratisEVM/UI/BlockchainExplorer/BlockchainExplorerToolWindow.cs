@@ -30,7 +30,7 @@ namespace Stratis.VS.StratisEVM.UI
         public BlockchainExplorerToolWindow() : base(StratisEVMPackage.Instance)
         {
             this.Caption = "Blockchain Explorer";
-            this.BitmapImageMoniker = KnownMonikers.CloudServer;
+            this.BitmapImageMoniker = KnownMonikers.NeuralNetwork;
             this.ToolBar = new CommandID(StratisEVMPackageIds.BlockchainExplorerGuid, StratisEVMPackageIds.BlockchainExplorerTWindowId);
             
             // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
