@@ -399,7 +399,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             var mainnet = root.AddNetwork("Stratis Mainnet", "https://rpc.stratisevm.com", 10505, "10505");
             var endpoints = mainnet.GetChild("Endpoints", BlockchainInfoKind.Folder);
             endpoints.AddChild("https://rpc.stratisevm.com:8545", BlockchainInfoKind.Endpoint);
-          
+            data.Add(mainnet);
+
 #if IS_VSIX
             var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync("http://127.0.0.1:7545")));
 #else
@@ -407,7 +408,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 #endif
             if (result.Succeeded(out var r))
             {
-                var local1 = root.AddNetwork("Local 1", "http://localhost:7545", 1337, "5777");
+                var local1 = root.AddNetwork("Ganache", "http://localhost:7545", 1337, "5777");
                 endpoints = local1.GetChild("Endpoints", BlockchainInfoKind.Folder);
                 endpoints.AddChild("http://127.0.0.1:7545", BlockchainInfoKind.Endpoint);
                 var accounts = local1.GetChild("Accounts", BlockchainInfoKind.Folder);
@@ -417,14 +418,14 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 }
                
                 var dp = local1.GetChild("Deploy Profiles", BlockchainInfoKind.Folder);
-                dp.AddDeployProfile("deploy 1", "http://127.0.0.1:7545", r.Value.Item3[0]);
+                dp.AddDeployProfile("Deploy locally", "http://127.0.0.1:7545", r.Value.Item3[0]);
                 data.Add(local1);
             }
              
             //var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Testnet");
             //mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
-            data.Add(mainnet);
-            
+          
+            root.Save("BlockchainExplorerTree", out var _);
             return data;
         }
 

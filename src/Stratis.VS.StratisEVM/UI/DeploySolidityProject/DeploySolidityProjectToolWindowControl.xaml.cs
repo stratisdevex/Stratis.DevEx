@@ -148,7 +148,9 @@ namespace Stratis.VS.StratisEVM.UI
             var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.DeployContract(deployProfile.DeployProfileEndpoint, bin, deployProfile.DeployProfileAccount, null, null, gasDeploy)));
             if (result.IsSuccess)
             {
-                ShowDeploySuccessStatus(result.Value.ContractAddress, result.Value.TransactionHash);
+                ShowDeploySuccessStatus();
+                VSUtil.LogToBuildWindow($"========== {contractFileName} contract deployed successfully. ==========\nTransaction Hash: {result.Value.TransactionHash}\nContract Address: {result.Value.ContractAddress}");  
+
             }
             else
             {
@@ -173,13 +175,13 @@ namespace Stratis.VS.StratisEVM.UI
             DeploySolidityProjectStatusTextBlock.Text = text;
         }
 
-        public void ShowDeploySuccessStatus(string addess, string transactionHash)
+        public void ShowDeploySuccessStatus()
         {
             DeployErrorsTextBlock.Visibility = Visibility.Hidden;
             DeployStatusStackPanel.Visibility = Visibility.Visible;
             DeployProgressRing.IsEnabled = false;
             DeployProgressRing.Foreground = System.Windows.Media.Brushes.Green;
-            DeploySolidityProjectStatusTextBlock.Text = $"Contract deployed successfully.\nAddress: {addess}\nTransaction Hash: {transactionHash}";
+            DeploySolidityProjectStatusTextBlock.Text = $"Contract deployed successfully.";
         }   
 
         public void ShowDeployError(string text)

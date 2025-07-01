@@ -26,7 +26,18 @@ namespace Stratis.VS.StratisEVM
         protected static IVsOutputWindow outputWindow;
 
         protected static string[] LogWindowNames = new string[] { "Stratis EVM", "Solidity Compiler" };
-        protected static IVsOutputWindowPane GetLogOutputPane(string name)
+        
+        public static void LogToBuildWindow(string text)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();    
+            var guid = VSConstants.GUID_BuildOutputWindowPane;
+            IVsOutputWindowPane buildOutputWindowPane;
+            outputWindow.GetPane(ref guid, out buildOutputWindowPane);
+            buildOutputWindowPane.OutputStringThreadSafe(text);
+            buildOutputWindowPane.Activate(); 
+        }
+
+        protected static IVsOutputWindowPane GetCustomLogOutputPane(string name)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             IVsOutputWindowPane outputPane = null;
@@ -46,7 +57,7 @@ namespace Stratis.VS.StratisEVM
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             Info("(" + logname + ") " + text);
-            IVsOutputWindowPane outputPane = GetLogOutputPane(logname);
+            IVsOutputWindowPane outputPane = GetCustomLogOutputPane(logname);
             if (outputPane is null)
             {
                 Error("Could not get output window pane {l}.", logname);
@@ -65,7 +76,7 @@ namespace Stratis.VS.StratisEVM
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             Error("(" + logname + ") " + text);
-            IVsOutputWindowPane outputPane = GetLogOutputPane(logname);
+            IVsOutputWindowPane outputPane = GetCustomLogOutputPane(logname);
             if (outputPane is null)
             {
                 Error("Could not get output window pane {l}.", logname);
@@ -141,7 +152,7 @@ namespace Stratis.VS.StratisEVM
                 uint flags = (uint)__VSFINDTOOLWIN.FTW_fForceCreate;
                 uiShell.FindToolWindow(flags, VSConstants.StandardToolWindows.Output, out windowFrame);
                 windowFrame.Show();
-                var p = GetLogOutputPane(pane);
+                var p = GetCustomLogOutputPane(pane);
                 if (p != null)
                 {
                     p.Activate();
