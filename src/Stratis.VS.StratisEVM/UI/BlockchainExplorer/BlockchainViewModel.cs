@@ -396,10 +396,14 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         {
             var data = new ObservableCollection<BlockchainInfo>();
             var root = new BlockchainInfo(BlockchainInfoKind.Folder, "EVM Networks");
-            var mainnet = root.AddNetwork("Stratis Mainnet", "https://rpc.stratisevm.com", 10505, "10505");
+            var mainnet = root.AddNetwork("Stratis Mainnet", "https://rpc.stratisevm.com", 105105, "105105");
             var endpoints = mainnet.GetChild("Endpoints", BlockchainInfoKind.Folder);
             endpoints.AddChild("https://rpc.stratisevm.com:8545", BlockchainInfoKind.Endpoint);
             data.Add(mainnet);
+            var testnet = root.AddNetwork("Stratis Testnet", "https://auroria.rpc.stratisevm.com:8545", 205205, "205205");
+            endpoints = testnet.GetChild("Endpoints", BlockchainInfoKind.Folder);
+            endpoints.AddChild("https://auroria.rpc.stratisevm.com:8545", BlockchainInfoKind.Endpoint);
+            data.Add(testnet);
 
 #if IS_VSIX
             var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync("http://127.0.0.1:7545")));

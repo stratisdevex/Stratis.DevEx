@@ -20,6 +20,21 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="StratisCyanIconDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V64 H64 V0 H0 Z">
+                <DrawingGroup.Transform>
+                    <TranslateTransform X="0" Y="1" />
+                </DrawingGroup.Transform>
+                <DrawingGroup Opacity="1" Transform="0.1,0,0,-0.1,0,64">
+                    <GeometryDrawing Brush="Cyan" Geometry="F1 M64,64z M0,0z M153,537L0,436 0,374 0,313 153,211C237,156 309,110 313,110 317,110 381,151 455,200 529,250 592,290 595,290 598,290 600,274 600,255 600,221 596,217 456,124L313,29 168,124C34,213 -7,234 2,211 4,206 74,156 159,100L312,-1 466,101 620,203 620,268C620,320 617,331 605,327 597,324 530,280 455,230 380,180 312,141 305,144 297,147 230,190 155,240 24,328 20,331 20,366 20,411 17,412 170,310 236,265 297,227 305,224 319,218 620,414 620,429 620,437 319,641 310,639 307,639 236,593 153,537z M447,523C520,474 580,432 580,429 580,417 318,249 306,253 286,261 45,421 43,428 41,434 296,607 310,609 312,610 374,571 447,523z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+
+
     <DrawingImage x:Key="BlockchainNetworkDrawingImage">
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V64 H64 V0 H0 Z">
@@ -348,9 +363,16 @@
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding Path=Kind}" Value="Network" />
-                    <Condition Binding="{Binding Path=Data[ChainId]}" Value="105105" />
+                    <Condition Binding="{Binding Path=NetworkChainId}" Value="105105" />
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource StratisIconDrawingImage}" />
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Kind}" Value="Network" />
+                    <Condition Binding="{Binding Path=NetworkChainId}" Value="205205" />
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource StratisCyanIconDrawingImage}" />
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
