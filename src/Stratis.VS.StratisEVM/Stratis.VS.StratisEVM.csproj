@@ -54,6 +54,11 @@
     <Compile Include="UI\DeploySolidityProject\DeploySolidityProjectToolWindowControl.xaml.cs">
       <DependentUpon>DeploySolidityProjectToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\RunSmartContractToolWindow\RunSmartContractToolWindow.cs" />
+    <Compile Include="UI\RunSmartContractToolWindow\RunSmartContractToolWindowCommand.cs" />
+    <Compile Include="UI\RunSmartContractToolWindow\RunSmartContractToolWindowControl.xaml.cs">
+      <DependentUpon>RunSmartContractToolWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindow.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowCommand.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml.cs">
@@ -103,6 +108,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\DeploySolidityProjectToolWindowCommand.png" />
+    <Content Include="Resources\RunSmartContractToolWindowCommand.png" />
     <Resource Include="Images\SolidityProjectProjectIcon.png" />
     <Resource Include="Images\SoliditySourceFileIcon.png" />
     <Content Include="BuildSystem\version.txt">
@@ -278,6 +284,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Page Include="UI\DeploySolidityProject\DeploySolidityProjectToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\RunSmartContractToolWindow\RunSmartContractToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
