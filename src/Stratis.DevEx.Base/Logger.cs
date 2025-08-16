@@ -141,10 +141,10 @@ namespace Stratis.DevEx
             config.AddRule(new LoggingRule("*", LogLevel.Warn, logfile));
             config.AddRule(new LoggingRule("*", LogLevel.Error, logfile));
             config.AddRule(new LoggingRule("*", LogLevel.Fatal, logfile));
-            config.AddRule(new LoggingRule("*", LogLevel.Debug, logfile));
             if (debug)
             {
                 config.Variables["logLevel"] = "Debug";
+                config.AddRule(new LoggingRule("*", LogLevel.Debug, logfile));
             }
            
             if (logToConsole || (Runtime.EntryAssembly?.FullName.StartsWith("OmniSharp") ?? false))
@@ -159,7 +159,10 @@ namespace Stratis.DevEx
                 config.AddRule(new LoggingRule("*", LogLevel.Warn, logconsole));
                 config.AddRule(new LoggingRule("*", LogLevel.Error, logconsole));
                 config.AddRule(new LoggingRule("*", LogLevel.Fatal, logconsole));
-                config.AddRule(new LoggingRule("*", LogLevel.Debug, logconsole));
+                if (debug)
+                {
+                    config.AddRule(new LoggingRule("*", LogLevel.Debug, logconsole));
+                }
             }
             
             /*

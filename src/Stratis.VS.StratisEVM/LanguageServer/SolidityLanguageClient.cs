@@ -125,12 +125,12 @@ namespace Stratis.VS
 
         public static Dictionary<string, object> InstallVSCodeSolidityLanguageServer()
         {
-            return RunCmd("cmd.exe", "/c npm install solidity-0.0.165.tgz --force --quiet --no-progress", AssemblyLocation);
+            return RunCmd("cmd.exe", "/c npm install solidity-0.0.185.tgz --force --quiet --no-progress", AssemblyLocation);
         }
 
         public static async Task<Dictionary<string, object>> InstallVSCodeSolidityLanguageServerAsync()
         {
-            return await RunCmdAsync("cmd.exe", "/c npm install solidity-0.0.165.tgz --force --quiet --no-progress", AssemblyLocation);
+            return await RunCmdAsync("cmd.exe", "/c npm install solidity-0.0.185.tgz --force --quiet --no-progress", AssemblyLocation);
         }
 
         #region ILanguageClient, ILanguageClientCustomMessage2 implementation
@@ -251,13 +251,13 @@ namespace Stratis.VS
                     {
                         text = methodParam.Root["contentChanges"][0]["text"].Value<string>(),
                     } });
-                    Info("didchange Notification {req} {param}.", methodName, methodParam.ToString());
+                    Debug("didchange Notification {req} {param}.", methodName, methodParam.ToString());
                     await sendNotification(methodParam);
 
                 }
                 else
                 {
-                    Info("Notification {req} {param}.", methodName, methodParam.ToString());
+                    Debug("Notification {req} {param}.", methodName, methodParam.ToString());
                     await sendNotification(methodParam);
                 }
 
@@ -268,14 +268,14 @@ namespace Stratis.VS
                 try //Handle exceptions raised by Solidity server like https://github.com/juanfranblanco/Solidity/issues/446
                 {
                     var resp = await sendRequest(methodParam);
-                    Info("Request {req} {param}: {resp}", methodName, methodParam?.ToString() ?? "", resp?.ToString() ?? "(null)");
+                    Debug("Request {req} {param}: {resp}", methodName, methodParam?.ToString() ?? "", resp?.ToString() ?? "(null)");
                     if (resp != null)
                     {
                         if (methodName == "textDocument/hover")
                         {
                             if (resp.Root != null && resp.Root["contents"] != null && resp.Root["contents"]["kind"] != null && resp.Root["contents"]["kind"].Value<string>() == "markdown")
                             {
-                                Info("Replace hover markup contents with plaintext.");
+                                Debug("Replace hover markup contents with plaintext.");
                                 resp.Root["contents"]["kind"] = JValue.CreateString("plaintext");
                                 if (resp.Root["contents"]["value"] != null)
                                 {
@@ -295,7 +295,7 @@ namespace Stratis.VS
                                 {
                                     if (f != null && f["documentation"] != null && f["documentation"]["kind"] != null && f["documentation"]["value"] != null && f["documentation"]["kind"].Value<string>() == "markdown")
                                     {
-                                        Info("Replace completion markup contents with plaintext.");
+                                        Debug("Replace completion markup contents with plaintext.");
                                         f["documentation"]["kind"] = JValue.CreateString("plaintext");
                                         f["documentation"]["value"] = JValue.CreateString(f["documentation"]["value"].Value<string>().Replace("### ", "").Replace("#", ""));
                                     }
@@ -307,7 +307,7 @@ namespace Stratis.VS
                     }
                     else
                     {
-                        Info("resp is null");
+                        Debug("resp is null");
                         return resp;
                     }
                 }

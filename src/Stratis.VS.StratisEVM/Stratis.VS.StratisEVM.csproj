@@ -145,9 +145,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\StratisEVMBlockchainDashboardToolWindowCommand.png" />
-    <Content Include="solidity-0.0.165.tgz">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="package.json">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -160,6 +157,9 @@
     </Content>
     <None Include="README.md" />
     <Content Include="SolidityProject.imagemanifest">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="solidity-0.0.185.tgz">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">
