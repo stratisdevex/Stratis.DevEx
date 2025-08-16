@@ -137,7 +137,7 @@ namespace Stratis.VS.StratisEVM
             {
                 if (VSUtil.InitializeVSServices(ServiceProvider.GlobalProvider))
                 {
-                    VSUtil.LogInfo("Stratis EVM", $"Extension assembly directory is {Runtime.AssemblyLocation}. StratisEVM package services initialized.");
+                    VSUtil.LogInfo("StratisEVM", $"Extension assembly directory is {Runtime.AssemblyLocation}. StratisEVM package services initialized.");
                 }
                 else
                 {
@@ -202,7 +202,7 @@ namespace Stratis.VS.StratisEVM
             {
                 
                 //await this.JoinableTaskFactory.SwitchToMainThreadAsync();
-                //VSUtil.LogInfo("Stratis EVM", "update");
+                //VSUtil.LogInfo("StratisEVM", "update");
             });
             subscriptionService.JointRuleSource.SourceBlock.LinkTo(receivingBlock, new JointRuleDataflowLinkOptions() { PropagateCompletion = true}); 
         }

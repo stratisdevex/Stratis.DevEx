@@ -141,7 +141,7 @@ namespace Stratis.VS
             {
                 if (VSUtil.InitializeVSServices(ServiceProvider.GlobalProvider))
                 {
-                    VSUtil.LogInfo("Stratis EVM", "StratisEVM package services initialized.");
+                    VSUtil.LogInfo("StratisEVM", "StratisEVM package services initialized.");
                 }
                 else
                 {
@@ -151,22 +151,22 @@ namespace Stratis.VS
             }
             if (Directory.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules")) && File.Exists(Path.Combine(Runtime.AssemblyLocation, "node_modules", "solidity", "dist", "cli", "server.js")))
             {
-               VSUtil.LogInfo("Stratis EVM", "Solidity language server present.");
+               VSUtil.LogInfo("StratisEVM", "Solidity language server present.");
             }
             else
             {
-                VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "Stratis EVM");
-                VSUtil.LogInfo("Stratis EVM", "Installing Solidity language server...");
+                VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "StratisEVM");
+                VSUtil.LogInfo("StratisEVM", "Installing Solidity language server...");
                 await TaskScheduler.Default;
                 var output = await InstallVSCodeSolidityLanguageServerAsync();
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 if (CheckRunCmdOutput(output, "Run `npm audit` for details."))
                 {
-                    VSUtil.LogInfo("Stratis EVM", "Solidity language server installed.");
+                    VSUtil.LogInfo("StratisEVM", "Solidity language server installed.");
                 }
                 else
                 {
-                    VSUtil.LogError("Stratis EVM", "Could not install Solidity language server.");
+                    VSUtil.LogError("StratisEVM", "Could not install Solidity language server.");
                     return null;
                 }
             }

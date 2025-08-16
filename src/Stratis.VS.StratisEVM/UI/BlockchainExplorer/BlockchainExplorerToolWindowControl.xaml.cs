@@ -822,11 +822,10 @@ namespace Stratis.VS.StratisEVM.UI
         #region Properties
         public static bool ControlIsLoaded => instance != null;
         #endregion
+
         #region Fields
         internal BlockchainExplorerToolWindow window;
         internal static BlockchainExplorerToolWindowControl instance;
         #endregion
-
-        
     }
 }
