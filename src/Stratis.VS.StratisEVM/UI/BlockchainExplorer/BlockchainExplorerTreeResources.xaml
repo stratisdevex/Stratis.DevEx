@@ -306,6 +306,26 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="SmartContractsFolderDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V32 H32 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M32,32z M0,0z M27,31.36L8,31.36C7.801,31.36,7.64,31.199,7.64,31L7.64,29.36 6,29.36C5.801,29.36,5.64,29.199,5.64,29L5.64,27.36 5,27.36C4.801,27.36,4.64,27.199,4.64,27L4.64,3C4.64,2.801,4.801,2.64,5,2.64L9.64,2.64 9.64,2C9.64,1.801,9.801,1.64,10,1.64L11.64,1.64 11.64,1C11.64,0.801,11.801,0.64,12,0.64L16,0.64C16.199,0.64,16.36,0.801,16.36,1L16.36,1.64 18,1.64C18.199,1.64,18.36,1.801,18.36,2L18.36,2.64 23,2.64C23.199,2.64,23.36,2.801,23.36,3L23.36,4.64 25,4.64C25.199,4.64,25.36,4.801,25.36,5L25.36,6.64 27,6.64C27.199,6.64,27.36,6.801,27.36,7L27.36,31C27.36,31.199,27.199,31.36,27,31.36z M8.36,30.64L26.64,30.64 26.64,7.36 25.36,7.36 25.36,29C25.36,29.199,25.199,29.36,25,29.36L8.36,29.36 8.36,30.64z M6.36,28.64L24.64,28.64 24.64,5.36 23.36,5.36 23.36,27C23.36,27.199,23.199,27.36,23,27.36L6.36,27.36 6.36,28.64z M5.36,26.64L22.64,26.64 22.64,3.36 18.36,3.36 18.36,4C18.36,4.199,18.199,4.36,18,4.36L10,4.36C9.801,4.36,9.64,4.199,9.64,4L9.64,3.36 5.36,3.36 5.36,26.64z M10.36,3.64L17.64,3.64 17.64,2.36 16,2.36C15.801,2.36,15.64,2.199,15.64,2L15.64,1.36 12.36,1.36 12.36,2C12.36,2.199,12.199,2.36,12,2.36L10.36,2.36C10.36,2.36,10.36,3.64,10.36,3.64z M20.5,21.36L7.5,21.36 7.5,20.64 20.5,20.64 20.5,21.36z M20.5,17.36L7.5,17.36 7.5,16.64 20.5,16.64 20.5,17.36z M20.5,13.36L7.5,13.36 7.5,12.64 20.5,12.64 20.5,13.36z M20.5,9.36L7.5,9.36 7.5,8.64 20.5,8.64 20.5,9.36z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="SmartContractDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M182.52,146.2L767.66,146.2 767.66,548.48 840.81,548.48 840.81,73.06 109.38,73.06 109.38,950.77 511.66,950.77 511.66,877.63 182.52,877.63z" />
+                <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M255.67,219.34L694.53,219.34 694.53,292.48 255.67,292.48z M255.67,365.63L621.38,365.63 621.38,438.77 255.67,438.77z M255.67,511.91L475.1,511.91 475.1,585.05 255.67,585.05z M731.02,585.06C630.03,585.06 548.16,666.93 548.16,767.92 548.16,868.91 630.03,950.78 731.02,950.78 832.01,950.78 913.88,868.91 913.88,767.92 913.88,666.93 832.01,585.06 731.02,585.06z M731.02,877.63C670.52,877.63 621.31,828.41 621.31,767.92 621.31,707.42 670.53,658.21 731.02,658.21 791.52,658.21 840.73,707.43 840.73,767.92 840.73,828.41 791.51,877.63 731.02,877.63z" />
+                <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M717.88,777.65L675.33,739.52 638.72,780.38 722.74,855.65 825.72,737.18 784.33,701.18z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
     <!-- TreeView items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
@@ -341,6 +361,13 @@
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource DeployProfileDrawingImage}" />
             </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Kind}" Value="Folder" />
+                    <Condition Binding="{Binding Path=Name}" Value="Contracts" />
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource SmartContractsFolderDrawingImage}" />
+            </MultiDataTrigger>
             <DataTrigger Binding="{Binding Path=Kind}" Value="Network">
                 <Setter TargetName="NodeText" Property="ToolTipService.InitialShowDelay" Value="100" />
                 <Setter TargetName="NodeText" Property="ToolTipService.Placement" Value="MousePoint" />
@@ -359,6 +386,9 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=Kind}" Value="DeployProfile">
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource DeployDrawingImage}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=Kind}" Value="Contract">
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource SmartContractDrawingImage}" />
             </DataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>

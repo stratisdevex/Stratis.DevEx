@@ -120,6 +120,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             var network =  AddChild(name, BlockchainInfoKind.Network, data);
             network.AddChild("Endpoints", BlockchainInfoKind.Folder);
             network.AddChild("Accounts", BlockchainInfoKind.Folder);
+            network.AddChild("Contracts", BlockchainInfoKind.Folder);
             network.AddChild("Deploy Profiles", BlockchainInfoKind.Folder);
             return network;
         }
@@ -145,6 +146,21 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 data["PrivateKey"] = SetDeployProfilePrivateKey(pkey);
             }
             return AddChild(name, BlockchainInfoKind.DeployProfile, data);
+        }
+
+        public BlockchainInfo AddContract(string address, string deployProfile, string project, string solidityFile, string label = null)
+        {
+            var data = new Dictionary<string, object>()
+            {
+                {"DeployProfile",  deployProfile},
+                {"Project",  project},
+                {"SolidityFile",  solidityFile},
+            };
+            if (!string.IsNullOrEmpty(label))
+            {
+                data["Label"] = label;
+            }
+            return AddChild(address, BlockchainInfoKind.Contract, data);
         }
 
         public override int GetHashCode() => Key.GetHashCode();
@@ -190,9 +206,22 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 .Concat(
                     GetChildren(BlockchainInfoKind.Network)
                     .SelectMany(bi => bi.GetChild("Deploy Profiles", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.DeployProfile))
-                    .Select(bi => (bi.Name + "(" + (long)bi.Parent.Parent.Data["ChainId"] + ")", bi))
+                    .Select(bi => (bi.Name + "(" + (bi.Parent.Parent.Data["ChainId"].ToString()) + ")", bi))
                 ).ToDictionary(b => b.Item1, b => b.Item2);
             
+        }
+
+        public Dictionary<string, BlockchainInfo> GetAllContracts()
+        {
+            return GetChildren(BlockchainInfoKind.UserFolder)
+                .SelectMany(f => f.GetChildren(BlockchainInfoKind.Network))
+                .SelectMany(ni => ni.GetChild("Contracts", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.Contract)
+                .Select(b => (ni.Parent.Name + "\\" + ni.Name + "(" + (long)ni.Data["ChainId"] + ")", b)))
+                .Concat(
+                    GetChildren(BlockchainInfoKind.Network)
+                    .SelectMany(bi => bi.GetChild("Contracts", BlockchainInfoKind.Folder).GetChildren(BlockchainInfoKind.Contract))
+                    .Select(bi => (bi.Name + "(" + (long)bi.Parent.Parent.Data["ChainId"] + ")", bi))
+                ).ToDictionary(b => b.Item1, b => b.Item2);
         }
 
         public BlockchainInfo GetDeployProfile(string name)
@@ -399,11 +428,11 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             var mainnet = root.AddNetwork("Stratis Mainnet", "https://rpc.stratisevm.com", 105105, "105105");
             var endpoints = mainnet.GetChild("Endpoints", BlockchainInfoKind.Folder);
             endpoints.AddChild("https://rpc.stratisevm.com:8545", BlockchainInfoKind.Endpoint);
-            data.Add(mainnet);
+            //data.Add(mainnet);
             var testnet = root.AddNetwork("Stratis Testnet", "https://auroria.rpc.stratisevm.com:8545", 205205, "205205");
             endpoints = testnet.GetChild("Endpoints", BlockchainInfoKind.Folder);
             endpoints.AddChild("https://auroria.rpc.stratisevm.com:8545", BlockchainInfoKind.Endpoint);
-            data.Add(testnet);
+            //data.Add(testnet);
 
 #if IS_VSIX
             var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.GetNetworkDetailsAsync("http://127.0.0.1:7545")));
@@ -423,12 +452,12 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                
                 var dp = local1.GetChild("Deploy Profiles", BlockchainInfoKind.Folder);
                 dp.AddDeployProfile("Deploy locally", "http://127.0.0.1:7545", r.Value.Item3[0]);
-                data.Add(local1);
+                //data.Add(local1);
             }
-             
+             data.Add(root);
             //var testnet = new BlockchainInfo(BlockchainInfoKind.Network, "Stratis Testnet");
             //mainnet.AddChild(BlockchainInfoKind.Endpoint, "auroria.stratisevm.com", new Uri("https://auroria.rpc.stratisevm.com"));
-          
+
             root.Save("BlockchainExplorerTree", out var _);
             return data;
         }

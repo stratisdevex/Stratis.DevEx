@@ -109,12 +109,12 @@ namespace Stratis.VS.StratisEVM.UI
 
         private void DeployButton_Click(object sender, RoutedEventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (DeployContractComboBox.SelectedItem == null || DeployProfileComboBox.SelectedItem == null)
             {
                 ShowDeployError("Select a Solidity smart contract to deploy from the project and a deploy profile to use.");
                 return;
             }
-            
             var project = VSUtil.GetSelectedProject();
             var contractFileName = DeployContractComboBox.SelectedItem.ToString();
             var deployProfileName = DeployProfileComboBox.SelectedItem.ToString();
@@ -150,22 +150,41 @@ namespace Stratis.VS.StratisEVM.UI
                 InitSelectedProject();
                 return;
             }
-
+            var network = deployProfile.Parent.Parent;
             var bin = "0x" + File.ReadAllText(bo["bin"].FullName);
             var abi = File.ReadAllText(bo["abi"].FullName);
             HexBigInteger gasDeploy = EstimatedGasFeeRadioButton.IsChecked == true ? default : new HexBigInteger((long)CustomGasFeeNumberBox.Value);
             var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.DeployContract(deployProfile.DeployProfileEndpoint, bin, deployProfile.DeployProfileAccount, null, null, gasDeploy)));
             if (result.IsSuccess)
             {
-                ShowDeploySuccess();
+                if (BlockchainExplorerToolWindowControl.ControlIsLoaded)
+                {
+                    var tree = BlockchainExplorerToolWindowControl.instance.BlockchainExplorerTree.RootItem;
+                    var n = tree.GetDeployProfile(deployProfileName).Parent.Parent;
+                    n.GetChild("Contracts", BlockchainInfoKind.Folder).AddContract(result.Value.ContractAddress, deployProfile.Name, project.Name, contractFileName);
+                    BlockchainExplorerToolWindowControl.instance.BlockchainExplorerTree.Refresh();
+                    ShowDeploySuccess();
+                }
+                else
+                {
+                    b.Save("BlockchainExplorerTree", out Exception se);
+                    BlockchainExplorerToolWindowControl.instance?.BlockchainExplorerTree.Refresh();
+                    if (se != null)
+                    {
+                        ShowDeployError($"Error saving contract to blockchain tree: {se.Message}");
+                    }
+                    else
+                    {
+                        ShowDeploySuccess();
+                    }
+                }
+                    
                 VSUtil.LogToBuildWindow($"\n========== {contractFileName} contract deployed successfully. ==========\nTransaction Hash: {result.Value.TransactionHash}\nContract Address: {result.Value.ContractAddress}");  
-
             }
             else
             {
                 ShowDeployError($"Error deploying contract: {result.Exception.Message}");
             }
-
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

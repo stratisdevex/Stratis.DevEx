@@ -28,6 +28,7 @@ namespace Stratis.VS.StratisEVM.UI
     /// </summary>
     public partial class BlockchainExplorerToolWindowControl : UserControl
     {
+        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockchainExplorerToolWindowControl"/> class.
         /// </summary>
@@ -41,8 +42,10 @@ namespace Stratis.VS.StratisEVM.UI
             this.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
 #if IS_VSIX
             VSTheme.WatchThemeChanges();
+            instance = this;
 #endif
         }
+        #endregion
 
         #region Event handlers
         private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -816,8 +819,12 @@ namespace Stratis.VS.StratisEVM.UI
 
         #endregion
 
+        #region Properties
+        public static bool ControlIsLoaded => instance != null;
+        #endregion
         #region Fields
         internal BlockchainExplorerToolWindow window;
+        internal static BlockchainExplorerToolWindowControl instance;
         #endregion
 
         
