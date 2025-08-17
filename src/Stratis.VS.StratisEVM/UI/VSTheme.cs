@@ -39,6 +39,8 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static object ToolWindowFontFamilyKey => VsFonts.EnvironmentFontFamilyKey;
 
+        //public static float SystemDialogFontSize => System.Drawing.SystemFonts.DialogFont.Size;
+
         public static void WatchThemeChanges()
         {
             VSColorTheme.ThemeChanged += _ => ApplicationThemeManager.Apply(ApplicationThemeGuess, Wpf.Ui.Controls.WindowBackdropType.Mica, true); ;

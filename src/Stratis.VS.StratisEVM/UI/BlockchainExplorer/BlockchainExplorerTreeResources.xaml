@@ -306,7 +306,7 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
-    <DrawingImage x:Key="SmartContractsFolderDrawingImage">
+    <DrawingImage x:Key="ContractsFolderDrawingImage">
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V32 H32 V0 H0 Z">
                 <DrawingGroup Opacity="1">
@@ -316,12 +316,62 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
-    <DrawingImage x:Key="SmartContractDrawingImage">
+    <DrawingImage x:Key="ContractDrawingImage">
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
                 <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M182.52,146.2L767.66,146.2 767.66,548.48 840.81,548.48 840.81,73.06 109.38,73.06 109.38,950.77 511.66,950.77 511.66,877.63 182.52,877.63z" />
                 <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M255.67,219.34L694.53,219.34 694.53,292.48 255.67,292.48z M255.67,365.63L621.38,365.63 621.38,438.77 255.67,438.77z M255.67,511.91L475.1,511.91 475.1,585.05 255.67,585.05z M731.02,585.06C630.03,585.06 548.16,666.93 548.16,767.92 548.16,868.91 630.03,950.78 731.02,950.78 832.01,950.78 913.88,868.91 913.88,767.92 913.88,666.93 832.01,585.06 731.02,585.06z M731.02,877.63C670.52,877.63 621.31,828.41 621.31,767.92 621.31,707.42 670.53,658.21 731.02,658.21 791.52,658.21 840.73,707.43 840.73,767.92 840.73,828.41 791.51,877.63 731.02,877.63z" />
                 <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M717.88,777.65L675.33,739.52 638.72,780.38 722.74,855.65 825.72,737.18 784.33,701.18z" />
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="AddContractDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <DrawingGroup Opacity="1">
+                        <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M512,512z M0,0z M198.765,0L53.398,145.383 53.398,512 458.602,512 458.602,0 198.765,0z M196.634,49.667L196.634,143.243 103.058,143.243 196.634,49.667z M424.995,478.393L87.005,478.393 87.005,172.897 226.295,172.897 226.295,33.614 424.995,33.614 424.995,478.393z" />
+                        <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry RadiusX="0" RadiusY="0" Rect="157.393,237.971,197.206,25.896" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry RadiusX="0" RadiusY="0" Rect="157.393,308.686,197.206,25.896" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                        <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}">
+                            <GeometryDrawing.Geometry>
+                                <RectangleGeometry RadiusX="0" RadiusY="0" Rect="157.393,379.401,197.206,25.896" />
+                            </GeometryDrawing.Geometry>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <DrawingImage x:Key="EditContractDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M182.52,146.2L767.66,146.2 767.66,402.2 840.81,402.2 840.81,73.06 109.38,73.06 109.38,950.77 365.38,950.77 365.38,877.63 182.52,877.63z" />
+                    <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M255.67,219.34L694.53,219.34 694.53,292.48 255.67,292.48z M255.67,365.63L621.38,365.63 621.38,438.77 255.67,438.77z M255.67,511.91L475.1,511.91 475.1,585.05 255.67,585.05z M775.22,458.24L439.04,794.42 438.52,949.06 594.2,949.58 930.38,613.4 775.22,458.24z M826.94,613.4L801.51,638.83 749.78,587.11 775.22,561.67 826.94,613.4z M749.8,690.55L620.58,819.77 568.86,768.05 698.08,638.83 749.8,690.55z M511.91,876.16L512.08,824.82 517.14,819.76 568.86,871.48 564.01,876.33 511.91,876.16z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
+    <DrawingImage x:Key="DeleteContractDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V1024 H1024 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M182.52,146.2L767.66,146.2 767.66,548.48 840.81,548.48 840.81,73.06 109.38,73.06 109.38,950.77 511.74,950.77 511.74,877.63 182.52,877.63z" />
+                    <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M255.67,219.34L694.53,219.34 694.53,292.48 255.67,292.48z M255.67,365.63L621.38,365.63 621.38,438.77 255.67,438.77z M255.67,511.91L475.1,511.91 475.1,585.05 255.67,585.05z M731.17,584.97C630.18,584.97 548.31,666.84 548.31,767.83 548.31,868.82 630.18,950.69 731.17,950.69 832.16,950.69 914.03,868.82 914.03,767.83 914.03,666.84 832.16,584.97 731.17,584.97z M731.17,877.54C670.67,877.54 621.46,828.32 621.46,767.83 621.46,707.33 670.68,658.12 731.17,658.12 791.67,658.12 840.88,707.34 840.88,767.83 840.89,828.32 791.67,877.54 731.17,877.54z" />
+                    <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M1024,1024z M0,0z M777.43,686.4L731.17,732.65 684.91,686.4 646.13,725.18 692.39,771.44 646.13,817.7 684.91,856.48 731.17,810.23 777.43,856.48 816.22,817.7 769.96,771.44 816.22,725.18z" />
+                </DrawingGroup>
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
@@ -366,7 +416,7 @@
                     <Condition Binding="{Binding Path=Kind}" Value="Folder" />
                     <Condition Binding="{Binding Path=Name}" Value="Contracts" />
                 </MultiDataTrigger.Conditions>
-                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource SmartContractsFolderDrawingImage}" />
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource ContractsFolderDrawingImage}" />
             </MultiDataTrigger>
             <DataTrigger Binding="{Binding Path=Kind}" Value="Network">
                 <Setter TargetName="NodeText" Property="ToolTipService.InitialShowDelay" Value="100" />
@@ -388,7 +438,7 @@
                 <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource DeployDrawingImage}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=Kind}" Value="Contract">
-                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource SmartContractDrawingImage}" />
+                <Setter TargetName="NodeImage" Property="Source" Value="{StaticResource ContractDrawingImage}" />
             </DataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
@@ -529,6 +579,27 @@
         <MenuItem Header="Delete" Command="{x:Static stratisui:BlockchainExplorerTree.DeleteAccountCmd}">
             <MenuItem.Icon>
                 <Image Source="{StaticResource DeleteAccountDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+
+    <ContextMenu x:Key="ContractsFolderContextMenu" Style="{DynamicResource ContextMenuStyle}">
+        <MenuItem Header="Add Contract..." Command="{x:Static stratisui:BlockchainExplorerTree.NewContractCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource AddContractDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+
+    <ContextMenu x:Key="ContractContextMenu" Style="{DynamicResource ContextMenuStyle}">
+        <MenuItem Header="Edit..." Command="{x:Static stratisui:BlockchainExplorerTree.EditContractCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource EditContractDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="Delete" Command="{x:Static stratisui:BlockchainExplorerTree.DeleteContractCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource DeleteDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
     </ContextMenu>
@@ -677,7 +748,6 @@
         <StackPanel Orientation="Vertical">
             <ui:TextBlock Name = "AddDeployProfileDialogValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
- 
         </StackPanel>
     </StackPanel>
 </ResourceDictionary>
