@@ -148,13 +148,17 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return AddChild(name, BlockchainInfoKind.DeployProfile, data);
         }
 
-        public BlockchainInfo AddContract(string address, string deployProfile, string project, string solidityFile, string label = null)
+        public BlockchainInfo AddContract(string address, BlockchainInfo deployProfile, string project, string solidityFile, string abi, string transactionHash, DateTime deployedOn, string label = null)
         {
             var data = new Dictionary<string, object>()
             {
-                {"DeployProfile",  deployProfile},
+                {"DeployProfile",  deployProfile.Name},
+                {"Creator",  deployProfile.Data["Account"]},
                 {"Project",  project},
                 {"SolidityFile",  solidityFile},
+                {"Abi",  abi},
+                {"TransactionHash",  transactionHash},
+                {"DeployedOn",  deployedOn.ToString("g")},
             };
             if (!string.IsNullOrEmpty(label))
             {

@@ -98,7 +98,7 @@ namespace Stratis.VS.StratisEVM.UI
             }
             else if (data.Kind == BlockchainInfoKind.Folder && data.Name == "Contracts")
             {
-                item.ContextMenu = (ContextMenu)TryFindResource("ContractsFolderContextMenu"); ;
+                item.ContextMenu = (ContextMenu)TryFindResource("ContractsFolderContextMenu");
             }
             return item;
         }
