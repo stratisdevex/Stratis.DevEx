@@ -1,75 +1,37 @@
-name: Publish packages to dev feed
+name: Build StratisEVM extension
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ main ]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        configuration: [Debug]
-        dotnet-version: [ '3.1.x']
-
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
-    env:
-      Solution_Name: src\Stratis.DevEx.sln
-      CodeAnalysis_Cs_Project_Path: "src\\Stratis.CodeAnalysis.Cs\\Stratis.CodeAnalysis.Cs\\Stratis.CodeAnalysis.Cs.csproj"
-      CodeAnalysis_Cs_Test_Project_Path: "tests\\Stratis.CodeAnalysis.Cs.Test\\Stratis.CodeAnalysis.Cs.Test.csproj"
-      CodeAnalysis_Cs_Package_Project_Path: "src\\Stratis.CodeAnalysis.Cs\\Stratis.CodeAnalysis.Cs.Package\\Stratis.CodeAnalysis.Cs.Package.csproj"
-      VSTEST_CONNECTION_TIMEOUT: 180
-      
+    runs-on: windows-latest
     steps:
-
-    - name: Install .NET Core 3.1
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 3.1.x
-       
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        submodules: recursive
-
-    - name: Restore the Stratis.DevEx solution
-      run: dotnet restore "${{ env.Solution_Name }}"  /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-        
-    - name: Build the Stratis.CodeAnalysis.Cs package project
-      run: dotnet build "${{ env.CodeAnalysis_Cs_Package_Project_Path }}" /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-    
-    - name: Execute Stratis.CodeAnalysis.Cs unit tests
-      run: dotnet test "${{ env.CodeAnalysis_Cs_Test_Project_Path }}" -l "console;verbosity=detailed"
-    
-    - name: Get Stratis.CodeAnalysis.Cs base project version
-      id: project_version
-      uses: kzrnm/get-net-sdk-project-versions-action@v1.3.0
-      with:
-        proj-path: ${{ env.CodeAnalysis_Cs_Project_Path }}
-    
-    - name: Get git commit SHA
-      id: git_sha
-      run: echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-      shell: bash
-      
-    - name: Set Stratis.CodeAnalysis.Cs CI package version
-      id: ci_version
-      run: echo "CI_VERSION=${{ steps.project_version.outputs.assembly-version }}-ci$(printf "%07d" ${{ github.run_number }})git${{ env.GIT_SHA }}" >> $GITHUB_ENV
-      shell: bash
-    
-    - name: Pack Stratis.CodeAnalysis.Cs package
-      run: dotnet pack ${{ env.CodeAnalysis_Cs_Package_Project_Path }} --configuration Debug -p:Version=${{ env.CI_VERSION }} --no-build --output .
-
-    - name: Push Stratis.CodeAnalysis.Cs package to GitHub dev feed
-      run: dotnet nuget push .\Stratis.CodeAnalysis.${{ env.CI_VERSION }}.nupkg --source https://nuget.pkg.github.com/stratisdevex/index.json --api-key ${{ secrets.NUGET_TOKEN }}
-
-    - name: Push Stratis.CodeAnalysis.Cs package to MyGet dev feed
-      run: dotnet nuget push .\Stratis.CodeAnalysis.${{ env.CI_VERSION }}.nupkg --source https://www.myget.org/F/stratisdevex/api/v2/package --api-key ${{ secrets.MYGET_TOKEN }}
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Add nuget to PATH
+        uses: nuget/setup-nuget@v1
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: Update version
+        run: |
+          (Get-Content -Path .\src\Stratis.VS.StratisEVM\source.extension.vsixmanifest) |
+            ForEach-Object {$_ -Replace '0.1.5.0', '0.1.5.${{ github.run_number }}'} |
+              Set-Content -Path .\src\Stratis.VS.StratisEVM\source.extension.vsixmanifest
+          (Get-Content -Path .\src\Stratis.VS.StratisEVM\Properties\AssemblyInfo.cs) |
+            ForEach-Object {$_ -Replace '0.1.5.0', '0.1.5.${{ github.run_number }}'} |
+              Set-Content -Path .\src\Stratis.VS.StratisEVM\Properties\AssemblyInfo.cs
+          (Get-Content -Path .\src\Stratis.VS.StratisEVM\StratisEVMPackage.cs) |
+            ForEach-Object {$_ -Replace '0.1.5.0', '0.1.5.${{ github.run_number }}'} |
+              Set-Content -Path .\src\Stratis.VS.StratisEVM\StratisEVMPackage.cs
+      - name: Restore
+        run: nuget restore
+      - name: Build
+        run: msbuild /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Stratis.VS.StratisEVM.vsix
+          path: .\src\Stratis.VS.StratisEVM\bin\Release\Stratis.VS.StratisEVM.vsix

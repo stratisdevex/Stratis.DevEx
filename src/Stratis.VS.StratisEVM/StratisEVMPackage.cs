@@ -22,7 +22,7 @@ using Task = System.Threading.Tasks.Task;
 namespace Stratis.VS.StratisEVM
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [InstalledProductRegistration("#110", "#112", "0.1", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "0.1.5.0", IconResourceID = 400)]
     [Guid(PackageGuidString)]
     //[ProvideAutoLoad("4646B819-1AE0-4E79-97F4-8A8176FDD664", PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideAutoLoad(UIContextGuids.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
