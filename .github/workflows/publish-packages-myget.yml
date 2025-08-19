@@ -2,21 +2,21 @@ name: Build StratisEVM extension
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Checkout the code
+      - name: Checkout
         uses: actions/checkout@v2
       - name: Add nuget to PATH
         uses: nuget/setup-nuget@v1
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.0.2
-      - name: Update version
+      - name: Update extension version
         run: |
           (Get-Content -Path .\src\Stratis.VS.StratisEVM\source.extension.vsixmanifest) |
             ForEach-Object {$_ -Replace '0.1.5.0', '0.1.5.${{ github.run_number }}'} |
@@ -27,7 +27,7 @@ jobs:
           (Get-Content -Path .\src\Stratis.VS.StratisEVM\StratisEVMPackage.cs) |
             ForEach-Object {$_ -Replace '0.1.5.0', '0.1.5.${{ github.run_number }}'} |
               Set-Content -Path .\src\Stratis.VS.StratisEVM\StratisEVMPackage.cs
-      - name: Restore
+      - name: Package restore
         run: nuget restore
       - name: Build
         run: msbuild /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal
@@ -35,3 +35,5 @@ jobs:
         with:
           name: Stratis.VS.StratisEVM.vsix
           path: .\src\Stratis.VS.StratisEVM\bin\Release\Stratis.VS.StratisEVM.vsix
+      - name: Push Stratis.VS.StratisEVM VSIX to MyGet dev feed
+        run: 'curl -X POST --verbose --data-binary ".\src\Stratis.VS.StratisEVM\bin\Release\Stratis.VS.StratisEVM.vsix" -H "X-NuGet-ApiKey: ${{ secrets.MYGET_TOKEN }}" https://www.myget.org/F/stratisdevex/vsix/upload'
