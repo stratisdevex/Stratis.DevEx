@@ -657,6 +657,7 @@
     <!-- Dialog style -->
     <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
         <Style.Resources>
+            
             <Style TargetType="{x:Type ui:NumberBox}">
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="HorizontalContentAlignment" Value="Right" />
@@ -748,6 +749,23 @@
         <StackPanel Orientation="Vertical">
             <ui:TextBlock Name = "AddDeployProfileDialogValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+        </StackPanel>
+    </StackPanel>
+
+    <StackPanel x:Key="EditContractDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
+        <StackPanel Orientation="Vertical" >
+            <ui:TextBlock Text="Address:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractAddressTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+            <ui:TextBlock Text="Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
+            <ui:TextBlock Text="Creator:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractCreatorTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+            <ui:TextBlock Text="Transaction Hash:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractTransactionHashTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+            <ui:TextBlock Text="Deployed On:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractDeployedOnTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+            <ui:TextBlock Text="ABI:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractAbiTextBox"  Width="150" Height="75" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="WrapWithOverflow" />
         </StackPanel>
     </StackPanel>
 </ResourceDictionary>

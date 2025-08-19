@@ -1,25 +1,23 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
-using Task = System.Threading.Tasks.Task;
-
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-
-using Microsoft.IO;
-using Microsoft.VisualStudio.Threading;
+﻿using Microsoft.IO;
 using Microsoft.VisualStudio;
-using static Microsoft.VisualStudio.VSConstants.UICONTEXT;
-
-using Stratis.DevEx;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.ProjectSystem;
+using Microsoft.VisualStudio.ProjectSystem.Properties;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
+using Stratis.DevEx;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using Microsoft.VisualStudio.ProjectSystem.Properties;
+using Wpf.Ui.Appearance;
+using static Microsoft.VisualStudio.VSConstants.UICONTEXT;
+using Task = System.Threading.Tasks.Task;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -147,16 +145,18 @@ namespace Stratis.VS.StratisEVM
             }
             IVsSolution solution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
             solution.AdviseSolutionEvents(this, out var c);
-            
+          
             await TaskScheduler.Default;
             await InstallBuildSystemAsync();
-
+            
             await JoinableTaskFactory.SwitchToMainThreadAsync();
+            ApplicationThemeManager.Apply(UI.VSTheme.ApplicationThemeGuess);
             await SolidityProjectMenuCommands.InitializeAsync(this);
             await UI.BlockchainExplorerToolWindowCommand.InitializeAsync(this);
             await UI.StratisEVMBlockchainDashboardToolWindowCommand.InitializeAsync(this);
             await UI.DeploySolidityProjectToolWindowCommand.InitializeAsync(this); 
-            await Stratis.VS.StratisEVM.UI.RunSmartContractToolWindowCommand.InitializeAsync(this);
+            await UI.RunSmartContractToolWindowCommand.InitializeAsync(this);
+            
         }
         #endregion
 

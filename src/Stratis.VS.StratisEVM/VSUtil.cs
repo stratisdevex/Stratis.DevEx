@@ -250,7 +250,7 @@ namespace Stratis.VS.StratisEVM
         public static void ShowModalErrorDialogBox(string text, string title = null)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            VsShellUtilities.ShowMessageBox(StratisEVMPackage.Instance, text, title ?? "StratisEVM error",
+            VsShellUtilities.ShowMessageBox(StratisEVMPackage.Instance, text, title ?? "StratisEVM error:",
             OLEMSGICON.OLEMSGICON_CRITICAL,
             OLEMSGBUTTON.OLEMSGBUTTON_OK,
             OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);

@@ -39,7 +39,6 @@ namespace Stratis.VS.StratisEVM.UI
             var __ = new BlockchainExplorerTree();
             var ____ = new Wpf.Ui.ThemeService();
             InitializeComponent();       
-            this.BlockchainExplorerTree.MouseDoubleClick += BlockchainExplorerTree_MouseDoubleClick;
 #if IS_VSIX
             VSTheme.WatchThemeChanges();
             instance = this;
@@ -48,13 +47,17 @@ namespace Stratis.VS.StratisEVM.UI
         #endregion
 
         #region Event handlers
-        private void BlockchainExplorerTree_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (sender is BlockchainExplorerTree tree && tree.SelectedItem != null)
             {
                 if (tree.SelectedItem.Kind == BlockchainInfoKind.Account)
                 {
-                    BlockchainExplorerTree.EditAccountCmd.Execute(tree, null);
+                    BlockchainExplorerTree.EditAccountCmd.Execute(null, tree);
+                }
+                else if (tree.SelectedItem.Kind == BlockchainInfoKind.Contract)
+                {
+                    BlockchainExplorerTree.EditContractCmd.Execute(null, tree);
                 }
             }
         }
@@ -827,5 +830,124 @@ namespace Stratis.VS.StratisEVM.UI
         internal BlockchainExplorerToolWindow window;
         internal static BlockchainExplorerToolWindowControl instance;
         #endregion
+
+        private async void EditContractCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender);
+                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                {
+                    Title = "Edit Contract",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    Content = (StackPanel)TryFindResource("EditContractDialog"),
+                    PrimaryButtonText = "Save",
+                    CloseButtonText = "Cancel",
+                };
+               
+                
+                var sp = (StackPanel) ((StackPanel) dw.Content).Children[0];
+                var address = (Wpc.TextBox)(sp.Children[1]);
+                var label = (Wpc.TextBox)(sp.Children[3]);
+                var creator = (Wpc.TextBox)(sp.Children[5]);
+                var transactionHash = (Wpc.TextBox)(sp.Children[7]);
+                var deployedOn = (Wpc.TextBox)(sp.Children[9]);
+                var abi = (Wpc.TextBox)(sp.Children[11]);
+                //var errors = (Wpc.TextBlock)((StackPanel)sp.Children[4]).Children[0];
+                address.Text = item.Name;
+                label.Text = item.Data.ContainsKey("Label") ? (string) item.Data["Label"] : "";
+                creator.Text = (string)item.Data["Creator"];
+                transactionHash.Text = (string)item.Data["TransactionHash"];
+                deployedOn.Text = (string)item.Data["DeployedOn"];
+                abi.Text = (string)item.Data["Abi"];
+                var r = await dw.ShowAsync();
+                //endpoint.ItemsSource = item.Parent.Parent.GetNetworkEndPoints();
+                //endpoint.SelectedValue = item.Data["Endpoint"];
+                //accounts.ItemsSource = item.Parent.Parent.GetNetworkAccounts();
+                //accounts.SelectedValue = item.Data["Account"];
+                /*
+                if (item.Data.ContainsKey("PrivateKey"))
+                {
+                    pkey.Text = item.GetDeployProfilePrivateKey();
+                }
+                var validForClose = false;
+
+                dw.ButtonClicked += (cd, args) =>
+                {
+                    validForClose = false;
+                    errors.Visibility = Visibility.Hidden;
+
+                    if (args.Button == ContentDialogButton.Primary)
+                    {
+                        if (!string.IsNullOrEmpty(name.Text) && accounts.SelectedValue != null && endpoint.SelectedValue != null)
+                        {
+                            var dp = item.Parent.Parent.GetNetworkDeployProfiles();
+                            if (dp.Contains(name.Text))
+                            {
+                                ShowValidationErrors(errors, "The " + name.Text + " deploy profile already exists.");
+                            }
+                            else
+                            {
+                                validForClose = true;
+                            }
+                        }
+                        else
+                        {
+                            ShowValidationErrors(errors, "Enter a deploy profile name and select a valid endpoint and account");
+                        }
+                    }
+                    else
+                    {
+                        validForClose = true;
+                    }
+                };
+
+                dw.Closing += (d, args) =>
+                {
+                    args.Cancel = !validForClose;
+                };
+
+                var r = await dw.ShowAsync();
+                if (r != ContentDialogResult.Primary)
+                {
+                    name.Text = "";
+                    endpoint.ItemsSource = null;
+                    accounts.ItemsSource = null;
+                    return;
+                }
+
+                item.Name = name.Text;
+                item.Data["Account"] = accounts.SelectedValue;
+                item.Data["Endpoint"] = endpoint.SelectedValue;
+                if (!string.IsNullOrEmpty(pkey.Text))
+                {
+                    item.Data["PrivateKey"] = item.SetDeployProfilePrivateKey(pkey.Text);
+                }
+                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+                {
+#if IS_VSIX
+                    VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                }
+                else
+                {
+                    tree.Refresh();
+                }
+                */
+            }
+
+            catch (Exception ex)
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message, "Edit Contract error");
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
+            }
+        }
     }
 }

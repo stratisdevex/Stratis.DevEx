@@ -83,6 +83,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 switch (Kind)
                 {
                     case BlockchainInfoKind.Account:
+                    case BlockchainInfoKind.Contract:
                         return (Data.ContainsKey("Label") && !string.IsNullOrEmpty((string) Data["Label"]))? (string)Data["Label"] :
                         Name.Substring(0, 6) + "..." + new string(Name.Reverse().Take(6).Reverse().ToArray());
                     default:
