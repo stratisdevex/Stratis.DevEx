@@ -846,8 +846,6 @@ namespace Stratis.VS.StratisEVM.UI
                     PrimaryButtonText = "Save",
                     CloseButtonText = "Cancel",
                 };
-               
-                
                 var sp = (StackPanel) ((StackPanel) dw.Content).Children[0];
                 var address = (Wpc.TextBox)(sp.Children[1]);
                 var label = (Wpc.TextBox)(sp.Children[3]);
@@ -855,91 +853,26 @@ namespace Stratis.VS.StratisEVM.UI
                 var transactionHash = (Wpc.TextBox)(sp.Children[7]);
                 var deployedOn = (Wpc.TextBox)(sp.Children[9]);
                 var abi = (Wpc.TextBox)(sp.Children[11]);
-                //var errors = (Wpc.TextBlock)((StackPanel)sp.Children[4]).Children[0];
+                var sp1 = (StackPanel)((StackPanel)dw.Content).Children[1];
+                var errors = (Wpc.TextBlock) sp1.Children[0];
                 address.Text = item.Name;
                 label.Text = item.Data.ContainsKey("Label") ? (string) item.Data["Label"] : "";
                 creator.Text = (string)item.Data["Creator"];
                 transactionHash.Text = (string)item.Data["TransactionHash"];
                 deployedOn.Text = (string)item.Data["DeployedOn"];
                 abi.Text = (string)item.Data["Abi"];
-                var r = await dw.ShowAsync();
-                //endpoint.ItemsSource = item.Parent.Parent.GetNetworkEndPoints();
-                //endpoint.SelectedValue = item.Data["Endpoint"];
-                //accounts.ItemsSource = item.Parent.Parent.GetNetworkAccounts();
-                //accounts.SelectedValue = item.Data["Account"];
-                /*
-                if (item.Data.ContainsKey("PrivateKey"))
-                {
-                    pkey.Text = item.GetDeployProfilePrivateKey();
-                }
-                var validForClose = false;
-
-                dw.ButtonClicked += (cd, args) =>
-                {
-                    validForClose = false;
-                    errors.Visibility = Visibility.Hidden;
-
-                    if (args.Button == ContentDialogButton.Primary)
-                    {
-                        if (!string.IsNullOrEmpty(name.Text) && accounts.SelectedValue != null && endpoint.SelectedValue != null)
-                        {
-                            var dp = item.Parent.Parent.GetNetworkDeployProfiles();
-                            if (dp.Contains(name.Text))
-                            {
-                                ShowValidationErrors(errors, "The " + name.Text + " deploy profile already exists.");
-                            }
-                            else
-                            {
-                                validForClose = true;
-                            }
-                        }
-                        else
-                        {
-                            ShowValidationErrors(errors, "Enter a deploy profile name and select a valid endpoint and account");
-                        }
-                    }
-                    else
-                    {
-                        validForClose = true;
-                    }
-                };
-
-                dw.Closing += (d, args) =>
-                {
-                    args.Cancel = !validForClose;
-                };
+                dw.ButtonClicked += (cd, args) => { };
+                dw.Closing += (d, args) => {};
 
                 var r = await dw.ShowAsync();
                 if (r != ContentDialogResult.Primary)
                 {
-                    name.Text = "";
-                    endpoint.ItemsSource = null;
-                    accounts.ItemsSource = null;
                     return;
                 }
-
-                item.Name = name.Text;
-                item.Data["Account"] = accounts.SelectedValue;
-                item.Data["Endpoint"] = endpoint.SelectedValue;
-                if (!string.IsNullOrEmpty(pkey.Text))
-                {
-                    item.Data["PrivateKey"] = item.SetDeployProfilePrivateKey(pkey.Text);
-                }
-                if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
-                {
-#if IS_VSIX
-                    VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
-#else
-                    System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
-#endif
-                }
-                else
-                {
-                    tree.Refresh();
-                }
-                */
+                item.Data["Label"] = label.Text;
+                item.Data["Abi"] = abi.Text;
+                tree.Save();                
             }
-
             catch (Exception ex)
             {
 #if IS_VSIX

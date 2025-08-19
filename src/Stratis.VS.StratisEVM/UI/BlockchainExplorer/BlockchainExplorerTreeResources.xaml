@@ -757,7 +757,7 @@
             <ui:TextBlock Text="Address:" VerticalAlignment="Center" Margin="1,0,0,2" />
             <ui:TextBox x:Name="EditContractAddressTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
             <ui:TextBlock Text="Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
-            <ui:TextBox x:Name="EditContractLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
+            <ui:TextBox x:Name="EditContractLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
             <ui:TextBlock Text="Creator:" VerticalAlignment="Center" Margin="1,0,0,2" />
             <ui:TextBox x:Name="EditContractCreatorTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
             <ui:TextBlock Text="Transaction Hash:" VerticalAlignment="Center" Margin="1,0,0,2" />
@@ -765,7 +765,11 @@
             <ui:TextBlock Text="Deployed On:" VerticalAlignment="Center" Margin="1,0,0,2" />
             <ui:TextBox x:Name="EditContractDeployedOnTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
             <ui:TextBlock Text="ABI:" VerticalAlignment="Center" Margin="1,0,0,2" />
-            <ui:TextBox x:Name="EditContractAbiTextBox"  Width="150" Height="75" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="WrapWithOverflow" />
+            <ui:TextBox x:Name="EditContractAbiTextBox"  Width="150" Height="100" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="WrapWithOverflow" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical">
+            <ui:TextBlock Name = "EditContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
         </StackPanel>
     </StackPanel>
 </ResourceDictionary>

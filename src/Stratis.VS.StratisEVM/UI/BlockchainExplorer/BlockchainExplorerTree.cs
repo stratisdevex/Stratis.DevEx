@@ -103,5 +103,25 @@ namespace Stratis.VS.StratisEVM.UI
             return item;
         }
         #endregion
+
+        #region Methods
+        public bool Save()
+        {
+            if (!this.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                System.Windows.MessageBox.Show("Error saving tree data: " + ex?.Message);
+#endif
+                return false;
+            }
+            else
+            {
+                this.Refresh();
+                return true;
+            }
+        }
+        #endregion
     }
 }
