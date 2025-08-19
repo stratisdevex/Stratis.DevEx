@@ -44,4 +44,4 @@ jobs:
           name: Stratis.VS.StratisEVM.vsix
           path: .\src\Stratis.VS.StratisEVM\bin\Release\Stratis.VS.StratisEVM.vsix
       - name: Push Stratis.VS.StratisEVM VSIX to MyGet dev feed
-        run: 'curl -X POST --verbose --data-binary @".\src\Stratis.VS.StratisEVM\bin\Release\Stratis.VS.StratisEVM.vsix" -H "X-NuGet-ApiKey: ${{ secrets.MYGET_TOKEN }}" https://www.myget.org/F/stratisdevex/vsix/upload'
+        run: 'curl -X POST --verbose --data-binary @.\src\Stratis.VS.StratisEVM\bin\Release\Stratis.VS.StratisEVM.vsix -H "X-NuGet-ApiKey: ${{ secrets.MYGET_TOKEN }}" https://www.myget.org/F/stratisdevex/vsix/upload'
