@@ -9,6 +9,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      Solution_Name: src\Stratis.DevEx.sln
+      VSTEST_CONNECTION_TIMEOUT: 180
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -28,9 +31,9 @@ jobs:
             ForEach-Object {$_ -Replace '0.1.5.0', '0.1.5.${{ github.run_number }}'} |
               Set-Content -Path .\src\Stratis.VS.StratisEVM\StratisEVMPackage.cs
       - name: Package restore
-        run: nuget restore
+        run: nuget restore "${{ env.Solution_Name }}"
       - name: Build
-        run: msbuild /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal
+        run: msbuild ".\src\Stratis.VS.StratisEVM\Stratis.VS.StratisEVM.csproj" /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal
       - uses: actions/upload-artifact@v4
         with:
           name: Stratis.VS.StratisEVM.vsix
