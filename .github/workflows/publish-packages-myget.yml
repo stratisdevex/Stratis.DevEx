@@ -11,11 +11,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
       - name: Add nuget to PATH
-        uses: nuget/setup-nuget@v1
+        uses: nuget/setup-nuget@v2
       - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.2
+        uses: microsoft/setup-msbuild@v2
       - name: Update extension version
         run: |
           (Get-Content -Path .\src\Stratis.VS.StratisEVM\source.extension.vsixmanifest) |
@@ -31,7 +31,7 @@ jobs:
         run: nuget restore
       - name: Build
         run: msbuild /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: Stratis.VS.StratisEVM.vsix
           path: .\src\Stratis.VS.StratisEVM\bin\Release\Stratis.VS.StratisEVM.vsix
