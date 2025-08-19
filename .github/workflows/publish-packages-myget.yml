@@ -35,7 +35,9 @@ jobs:
               Set-Content -Path .\src\Stratis.VS.StratisEVM\StratisEVMPackage.cs
       - name: Package restore
         run: nuget restore "${{ env.Solution_Name }}"
-      - name: Build
+      - name: CompactJson package restore
+        run: nuget restore ".\ext\CompactJson\src\CompactJson\CompactJson.csproj"
+      - name: Build extension
         run: msbuild ".\src\Stratis.VS.StratisEVM\Stratis.VS.StratisEVM.csproj" /p:configuration=Release /p:DeployExtension=false /p:ZipPackageCompressionLevel=normal
       - uses: actions/upload-artifact@v4
         with:
