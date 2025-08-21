@@ -47,6 +47,8 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static RoutedCommand DeleteContractCmd { get; } = new RoutedCommand();
 
+     
+
         public BlockchainInfo RootItem => Items?.First();
         #endregion
 

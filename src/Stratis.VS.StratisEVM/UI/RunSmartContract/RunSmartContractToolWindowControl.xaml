@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="Stratis.VS.StratisEVM.UI.RunSmartContractToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
+             xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly=" 
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="100"
+             Name="RunSmartContract">
+    
+    <Grid>
+        <ContentPresenter x:Name="RootContentDialog" Grid.Row="0"/>
+    </Grid>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemesDictionary Theme="{x:Static stratisui:VSTheme.ApplicationThemeGuess}" />
+                <ui:ControlsDictionary />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Dialog style -->
+            <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
+                <Style.Resources>
+
+                    <Style TargetType="{x:Type ui:NumberBox}">
+                        <Setter Property="FontSize" Value="12" />
+                        <Setter Property="HorizontalContentAlignment" Value="Right" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+            
+            <!-- Dialogs -->
+            <StackPanel x:Key="RunContractDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
+                <StackPanel Orientation="Vertical" >
+                    <ui:TextBlock Text="Address:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                    <ui:TextBox x:Name="EditContractAddressTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                    <ui:TextBlock Text="Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                    <ui:TextBox x:Name="EditContractLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+                    <ui:TextBlock Text="Creator:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                    <ui:TextBox x:Name="EditContractCreatorTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                    <ui:TextBlock Text="Transaction Hash:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                    <ui:TextBox x:Name="EditContractTransactionHashTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                    <ui:TextBlock Text="Deployed On:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                    <ui:TextBox x:Name="EditContractDeployedOnTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                    <ui:TextBlock Text="ABI:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                    <ui:TextBox x:Name="EditContractAbiTextBox"  Width="150" Height="100" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="WrapWithOverflow" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <ui:TextBlock Name = "EditContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+            ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                </StackPanel>
+            </StackPanel>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <!-- bindings for context menu commands -->
+        <CommandBinding Command="{x:Static stratisui:RunSmartContractToolWindowControl.RunContractCmd}" PreviewExecuted="CommandBinding_PreviewExecuted" />
+    </UserControl.CommandBindings>
+</UserControl>

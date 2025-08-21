@@ -54,9 +54,9 @@
     <Compile Include="UI\DeploySolidityProject\DeploySolidityProjectToolWindowControl.xaml.cs">
       <DependentUpon>DeploySolidityProjectToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\RunSmartContractToolWindow\RunSmartContractToolWindow.cs" />
-    <Compile Include="UI\RunSmartContractToolWindow\RunSmartContractToolWindowCommand.cs" />
-    <Compile Include="UI\RunSmartContractToolWindow\RunSmartContractToolWindowControl.xaml.cs">
+    <Compile Include="UI\RunSmartContract\RunSmartContractToolWindow.cs" />
+    <Compile Include="UI\RunSmartContract\RunSmartContractToolWindowCommand.cs" />
+    <Compile Include="UI\RunSmartContract\RunSmartContractToolWindowControl.xaml.cs">
       <DependentUpon>RunSmartContractToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindow.cs" />
@@ -64,8 +64,8 @@
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowControl.xaml.cs">
       <DependentUpon>StratisEVMBlockchainDashboardToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\BlockchainExplorer\BlockchainExplorerDialog.xaml.cs">
-      <DependentUpon>BlockchainExplorerDialog.xaml</DependentUpon>
+    <Compile Include="UI\ToolWindowDialog.xaml.cs">
+      <DependentUpon>ToolWindowDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindow.cs" />
     <Compile Include="UI\BlockchainExplorer\BlockchainExplorerToolWindowCommand.cs" />
@@ -287,7 +287,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\RunSmartContractToolWindow\RunSmartContractToolWindowControl.xaml">
+    <Page Include="UI\RunSmartContract\RunSmartContractToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -311,7 +311,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\BlockchainExplorer\BlockchainExplorerDialog.xaml">
+    <Page Include="UI\ToolWindowDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

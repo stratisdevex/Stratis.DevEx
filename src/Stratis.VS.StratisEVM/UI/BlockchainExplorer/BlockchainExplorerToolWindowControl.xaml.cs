@@ -82,7 +82,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
-                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Add EVM Network",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
@@ -207,7 +207,7 @@ namespace Stratis.VS.StratisEVM.UI
             {
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
-                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Add EVM network endpoint",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
@@ -299,7 +299,7 @@ namespace Stratis.VS.StratisEVM.UI
         private void PropertiesCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var item = GetSelectedItem(sender);
-            var dw = new BlockchainExplorerDialog(RootContentDialog)
+            var dw = new ToolWindowDialog(RootContentDialog)
             {
                 Title = item.Name + " properties",
                 PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
@@ -314,7 +314,7 @@ namespace Stratis.VS.StratisEVM.UI
             try
             {
                 var item = GetSelectedItem(sender);
-                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Add Folder",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
@@ -437,7 +437,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
-                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Edit Account",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
@@ -500,7 +500,7 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     item = item.Parent;
                 }
-                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Add Deploy Profile",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
@@ -597,7 +597,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
-                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Edit Deploy Profile",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
@@ -720,7 +720,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender).GetChild("Accounts", BlockchainInfoKind.Folder);
-                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Add Account",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
@@ -838,12 +838,14 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
-                var dw = new BlockchainExplorerDialog(RootContentDialog)
+                var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Edit Contract",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
                     Content = (StackPanel)TryFindResource("EditContractDialog"),
                     PrimaryButtonText = "Save",
+                    SecondaryButtonText = "Run",
+                    SecondaryButtonIcon = new SymbolIcon(SymbolRegular.Run24), 
                     CloseButtonText = "Cancel",
                 };
                 var sp = (StackPanel) ((StackPanel) dw.Content).Children[0];
@@ -865,13 +867,33 @@ namespace Stratis.VS.StratisEVM.UI
                 dw.Closing += (d, args) => {};
 
                 var r = await dw.ShowAsync();
-                if (r != ContentDialogResult.Primary)
+                if (r == ContentDialogResult.None)
                 {
                     return;
                 }
-                item.Data["Label"] = label.Text;
-                item.Data["Abi"] = abi.Text;
-                tree.Save();                
+                else if (r == ContentDialogResult.Secondary)
+                {
+#pragma warning disable CS4014
+                    ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
+                    {
+                        var w = await StratisEVMPackage.Instance.ShowToolWindowAsync(typeof(RunSmartContractToolWindow), 0, true, StratisEVMPackage.Instance.DisposalToken);
+                        if (w != null && w.Frame != null)
+                        {
+                            RunSmartContractToolWindowControl.instance.RunContract(item);
+                        }
+                        else
+                        {
+                            VSUtil.ShowModalErrorDialogBox("Could not launch Run Smart Contract tool window.", "Edit Contract error");
+                        }
+                    });
+                    return;
+
+#pragma warning restore CS4014
+                  
+                }
+                //item.Data["Label"] = label.Text;
+                //item.Data["Abi"] = abi.Text;
+                //tree.Save();                
             }
             catch (Exception ex)
             {
