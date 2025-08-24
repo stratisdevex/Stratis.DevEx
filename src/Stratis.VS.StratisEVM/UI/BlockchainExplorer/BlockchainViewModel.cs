@@ -153,7 +153,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         {
             var data = new Dictionary<string, object>()
             {
-                {"DeployProfile",  deployProfile.Name},
+                {"DeployProfile", deployProfile.Name},
+                {"Endpoint", deployProfile.Data["Endpoint"] },
                 {"Creator",  deployProfile.Data["Account"]},
                 {"Project",  project},
                 {"SolidityFile",  solidityFile},

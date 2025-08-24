@@ -1,9 +1,13 @@
-﻿using Stratis.VS.StratisEVM.UI.ViewModel;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+
 using Wpf.Ui.Controls;
+using Wpc = Wpf.Ui.Controls;
+using Stratis.DevEx.Ethereum;
+
+using Stratis.VS.StratisEVM.UI.ViewModel;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -57,20 +61,34 @@ namespace Stratis.VS.StratisEVM.UI
 
         internal async void RunContract(BlockchainInfo contract)
         {
+            var dw = new ToolWindowDialog(RootContentDialog)
+            {
+                Title = "Run Contract",
+                PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Run20),
+                Content = (StackPanel)TryFindResource("RunContractDialog"),
+                PrimaryButtonText = "Run",
+                CloseButtonText = "Cancel",
+            };
+            var sp = (StackPanel)dw.Content;
+            var spcontrols = (StackPanel)sp.Children[0];
+            var errors = (Wpc.TextBlock)((StackPanel)sp.Children[1]).Children[0];
+           
             //var window = (RunSmartContractToolWindowControl)sender;
             //var tree = window.BlockchainExplorerTree;
             //var item = GetSelectedItem(sender);
-            var dw = new ToolWindowDialog(RootContentDialog)
-            {
-                Title = "Edit Contract",
-                PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
-                Content = (StackPanel)TryFindResource("RunContractDialog"),
-                PrimaryButtonText = "Save",
-                SecondaryButtonText = "Run",
-                SecondaryButtonIcon = new SymbolIcon(SymbolRegular.Run24),
-                CloseButtonText = "Cancel",
-            };
+            var endpoint = contract.Data["Endpoint"];
+            var abi = Contract.DeserializeABI((string)contract.Data["Abi"]);
+            
+           
+
             var r = await dw.ShowAsync();
         }
+
+        private void ShowValidationErrors(Wpc.TextBlock textBlock, string message)
+        {
+            textBlock.Visibility = Visibility.Visible;
+            textBlock.Text = message;
+        }
+
     }
 }

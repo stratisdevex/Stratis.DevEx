@@ -29,9 +29,9 @@ namespace Stratis.DevEx.Ethereum
 
         public async Task<BigInteger> GetBalanceAsync(string acct) => await web3.Eth.GetBalance.SendRequestAsync(acct);
 
-        public Contract GetContract(string contractAddress, string abi = null) => web3.Eth.GetContract(abi ?? "", contractAddress);
+        public Nethereum.Contracts.Contract GetContract(string contractAddress, string abi = null) => web3.Eth.GetContract(abi ?? "", contractAddress);
 
-        public static Contract GetContract(string rpcurl, string contractAddress, string abi = null) => new Web3(rpcurl).Eth.GetContract(abi ?? "", contractAddress);
+        public static Nethereum.Contracts.Contract GetContract(string rpcurl, string contractAddress, string abi = null) => new Web3(rpcurl).Eth.GetContract(abi ?? "", contractAddress);
 
         public static async Task<TransactionReceipt> DeployContract(string rpcurl, string bytecode, string account, string password = null, string abi = null, HexBigInteger gasDeploy = default)
         {

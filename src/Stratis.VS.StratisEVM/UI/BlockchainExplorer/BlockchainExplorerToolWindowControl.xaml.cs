@@ -838,25 +838,28 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
+                var tc = (TabControl)TryFindResource("EditRunContractTabControl");
                 var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Edit Contract",
-                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
-                    Content = (StackPanel)TryFindResource("EditContractDialog"),
+                    Content = tc,
                     PrimaryButtonText = "Save",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
                     SecondaryButtonText = "Run",
                     SecondaryButtonIcon = new SymbolIcon(SymbolRegular.Run24), 
                     CloseButtonText = "Cancel",
                 };
-                var sp = (StackPanel) ((StackPanel) dw.Content).Children[0];
+               
+                var _sp = (StackPanel)(tc.Items[0] as TabItem).Content;
+                var sp = (StackPanel) (_sp).Children[0];
                 var address = (Wpc.TextBox)(sp.Children[1]);
                 var label = (Wpc.TextBox)(sp.Children[3]);
                 var creator = (Wpc.TextBox)(sp.Children[5]);
                 var transactionHash = (Wpc.TextBox)(sp.Children[7]);
                 var deployedOn = (Wpc.TextBox)(sp.Children[9]);
                 var abi = (Wpc.TextBox)(sp.Children[11]);
-                var sp1 = (StackPanel)((StackPanel)dw.Content).Children[1];
-                var errors = (Wpc.TextBlock) sp1.Children[0];
+                //var sp1 = (StackPanel)((StackPanel)dw.Content).Children[1];
+                //var errors = (Wpc.TextBlock) sp1.Children[0];
                 address.Text = item.Name;
                 label.Text = item.Data.ContainsKey("Label") ? (string) item.Data["Label"] : "";
                 creator.Text = (string)item.Data["Creator"];
