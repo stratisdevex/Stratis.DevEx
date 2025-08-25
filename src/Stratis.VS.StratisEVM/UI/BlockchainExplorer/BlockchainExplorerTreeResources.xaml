@@ -379,9 +379,9 @@
     
     <!-- TreeView items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
-        <StackPanel x:Name="GroupPanel" Orientation="Horizontal" Margin="0,2,0,2">
+        <StackPanel x:Name="GroupPanel" Orientation="Horizontal">
             <ui:Image x:Name="NodeImage" Width="16" Height="16" Source="{StaticResource StratisIconDrawingImage}"/>
-            <ui:TextBlock x:Name="NodeText" Text="{Binding Path=DisplayName}" Margin="8,0,0,0" TextWrapping="Wrap" />
+            <Label x:Name="NodeText" Content="{Binding Path=DisplayName}" Style="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogLabelStyleKey}}" />
         </StackPanel>
         <DataTemplate.Triggers>
             <MultiDataTrigger>
@@ -480,7 +480,7 @@
     </DataTemplate>
 
     <!-- Tree style -->
-    <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTreeViewItemStyleKey}}">
+    <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
         <Setter Property="HeaderTemplate" Value="{StaticResource BlockchainInfoTemplate}" />
     </Style>
     <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTreeViewStyleKey}}" />
@@ -496,12 +496,7 @@
                 <Setter Property="Width" Value="16" />
                 <Setter Property="Margin" Value="-8,2,8,0" />
             </Style>
-
-            <Style TargetType="{x:Type MenuItem}">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"/>
-                <Setter Property="Background" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"/>
-                <Setter Property="TextElement.Background" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"/>
-            </Style>
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogLabelStyleKey}}" />
         </Style.Resources>
     </Style>
 
@@ -653,11 +648,8 @@
     <!-- Dialog style -->
     <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
         <Style.Resources>
-            
-            <Style TargetType="{x:Type ui:NumberBox}">
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="HorizontalContentAlignment" Value="Right" />
-            </Style>
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogLabelStyleKey}}" />
+            <Style TargetType="{x:Type ui:TextBox}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTextBoxStyleKey}}" />
         </Style.Resources>
     </Style>
 
@@ -748,29 +740,45 @@
         </StackPanel>
     </StackPanel>
 
-    <StackPanel x:Key="EditContractStackPanel" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
-        <StackPanel Orientation="Vertical" >
-            <StackPanel Orientation="Vertical" VerticalAlignment="Top">
-                <ui:TextBlock Text="Address:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                <ui:TextBox x:Name="EditContractAddressTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                <ui:TextBlock Text="Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                <ui:TextBox x:Name="EditContractLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
-                <ui:TextBlock Text="Creator:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                <ui:TextBox x:Name="EditContractCreatorTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                <ui:TextBlock Text="Transaction Hash:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                <ui:TextBox x:Name="EditContractTransactionHashTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                <ui:TextBlock Text="Deployed On:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                <ui:TextBox x:Name="EditContractDeployedOnTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                <ui:TextBlock Text="ABI:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                <ui:TextBox x:Name="EditContractAbiTextBox"  Width="150" Height="100" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="WrapWithOverflow" />
-            </StackPanel>
-            <StackPanel Orientation="Vertical">
-                <ui:TextBlock Name = "EditRunContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" 
-                              VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
-                              ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                              ScrollViewer.CanContentScroll="True"/>
-            </StackPanel>
-        </StackPanel>
+    <StackPanel x:Key="EditContractStackPanel" Orientation="Vertical">
+        <TabControl>
+            <TabItem Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabItemNavigationStyleKey}}" Width="75">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Margin="0,0,3,0" Symbol="Edit16" />
+                        <TextBlock Text="Edit" />
+                    </StackPanel>
+                </TabItem.Header>
+                <StackPanel Name="RunContractDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
+                    <StackPanel Orientation="Vertical" >
+                        <ui:TextBlock Text="Address:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                        <ui:TextBox x:Name="RunContractAddressTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                        <ui:TextBlock Text="Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                        <ui:TextBox x:Name="EditContractLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+                        <ui:TextBlock Text="Creator:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                        <ui:TextBox x:Name="EditContractCreatorTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                        <ui:TextBlock Text="Transaction Hash:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                        <ui:TextBox x:Name="EditContractTransactionHashTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                        <ui:TextBlock Text="Deployed On:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                        <ui:TextBox x:Name="EditContractDeployedOnTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                        <ui:TextBlock Text="ABI:" VerticalAlignment="Center" Margin="1,0,0,2" />
+                        <ui:TextBox x:Name="EditContractAbiTextBox"  Width="150" Height="100" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="WrapWithOverflow" />
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical">
+                        <ui:TextBlock Name = "RunContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabItemNavigationStyleKey}}" Width="75">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon Margin="0,0,3,0" Symbol="Run16" />
+                        <TextBlock Text="Run" />
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+        </TabControl>
     </StackPanel>
 
 </ResourceDictionary>
