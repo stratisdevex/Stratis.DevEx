@@ -61,17 +61,7 @@ namespace Stratis.VS.StratisEVM.UI
 
         internal async void RunContract(BlockchainInfo contract)
         {
-            var dw = new ToolWindowDialog(RootContentDialog)
-            {
-                Title = "Run Contract",
-                PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Run20),
-                Content = (StackPanel)TryFindResource("RunContractDialog"),
-                PrimaryButtonText = "Run",
-                CloseButtonText = "Cancel",
-            };
-            var sp = (StackPanel)dw.Content;
-            var spcontrols = (StackPanel)sp.Children[0];
-            var errors = (Wpc.TextBlock)((StackPanel)sp.Children[1]).Children[0];
+            
            
             //var window = (RunSmartContractToolWindowControl)sender;
             //var tree = window.BlockchainExplorerTree;
@@ -81,7 +71,7 @@ namespace Stratis.VS.StratisEVM.UI
             
            
 
-            var r = await dw.ShowAsync();
+           
         }
 
         private void ShowValidationErrors(Wpc.TextBlock textBlock, string message)

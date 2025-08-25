@@ -838,11 +838,11 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
-                var tc = (TabControl)TryFindResource("EditRunContractTabControl");
+                //var tc = (TabControl) ((StackPanel)TryFindResource("EditContractStackPanel")).Children[0];
                 var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Edit Contract",
-                    Content = tc,
+                    Content = (StackPanel)TryFindResource("EditContractStackPanel"),
                     PrimaryButtonText = "Save",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
                     SecondaryButtonText = "Run",
@@ -850,7 +850,7 @@ namespace Stratis.VS.StratisEVM.UI
                     CloseButtonText = "Cancel",
                 };
                
-                var _sp = (StackPanel)(tc.Items[0] as TabItem).Content;
+                var _sp = (StackPanel)((StackPanel)TryFindResource("EditContractStackPanel")).Children[0];
                 var sp = (StackPanel) (_sp).Children[0];
                 var address = (Wpc.TextBox)(sp.Children[1]);
                 var label = (Wpc.TextBox)(sp.Children[3]);
