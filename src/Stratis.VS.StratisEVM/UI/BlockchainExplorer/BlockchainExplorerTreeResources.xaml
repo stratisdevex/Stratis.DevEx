@@ -4,7 +4,8 @@
                     xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                     xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly="
-                    xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase">
+                    xmlns:cm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+                    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0" >
 
     <!--- Icons -->
     <DrawingImage x:Key="StratisIconDrawingImage">
@@ -478,19 +479,14 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
-    <!-- Tree items style -->
-    <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}">
+    <!-- Tree style -->
+    <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTreeViewItemStyleKey}}">
         <Setter Property="HeaderTemplate" Value="{StaticResource BlockchainInfoTemplate}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"/>
     </Style>
-
-    <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}">
-        <Setter Property="Margin" Value="0,20,0,0" />
-    </Style>
+    <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTreeViewStyleKey}}" />
 
     <!-- Context menu style -->
-    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
+    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}" >
         <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"/>
         <Setter Property="Background" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"/>
         <Setter Property="Panel.Background" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"/>
@@ -513,7 +509,7 @@
     <ContextMenu x:Key="NetworkContextMenu" Style="{DynamicResource ContextMenuStyle}">
         <MenuItem Header="Add Endpoint..." Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
             <MenuItem.Icon>
-                <Image Source="{StaticResource GlobeDrawingImage}"   />
+                <Image Source="{StaticResource GlobeDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
         <MenuItem Header="Add Account..." Command="{x:Static stratisui:BlockchainExplorerTree.NewAccountCmd}">
