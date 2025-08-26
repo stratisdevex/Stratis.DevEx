@@ -25,11 +25,19 @@
                     <Style TargetType="{x:Type ui:TextBox}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTextBoxStyleKey}}" />
                 </Style.Resources>
             </Style>
+
+            <!-- Dialog style -->
+            <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}"  BasedOn="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabItemNavigationStyleKey}}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogLabelStyleKey}}" />
+                    <Style TargetType="{x:Type ui:TextBox}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTextBoxStyleKey}}" />
+                </Style.Resources>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <TabControl>
-        <TabItem Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabItemNavigationStyleKey}}" Width="75">
+        <TabItem Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabItemNavigationStyleKey}}" Width="75" Height="10">
             <TabItem.Header>
                 <StackPanel Orientation="Horizontal">
                     <ui:SymbolIcon Margin="0,0,3,0" Symbol="Edit16" />

@@ -423,6 +423,7 @@
                 <Setter TargetName="NodeText" Property="ToolTipService.InitialShowDelay" Value="100" />
                 <Setter TargetName="NodeText" Property="ToolTipService.Placement" Value="MousePoint" />
                 <Setter TargetName="NodeText" Property="ToolTipService.ToolTip" Value="{Binding Path=ToolTip}" />
+                <Setter TargetName="NodeText" Property="FontWeight" Value="DemiBold" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=Kind}" Value="Account">
                 <Setter TargetName="NodeText" Property="ToolTipService.InitialShowDelay" Value="100" />
@@ -486,10 +487,7 @@
     <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTreeViewStyleKey}}" />
 
     <!-- Context menu style -->
-    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}" >
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"/>
-        <Setter Property="Panel.Background" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"/>
+    <Style x:Key="ContextMenuStyle" TargetType="{x:Type ContextMenu}">
         <Style.Resources>
             <Style TargetType="{x:Type Image}">
                 <Setter Property="Height" Value="16" />
@@ -498,18 +496,51 @@
             </Style>
             <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogLabelStyleKey}}" />
         </Style.Resources>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.MenuTextKey}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.MenuKey}}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border" Background="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}" BorderThickness="1">
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{DynamicResource {x:Static vsshell:VsColors.DropDownPopupBorderKey}}" />
+                        </Border.BorderBrush>
+                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasDropShadow" Value="true">
+                            <Setter TargetName="Border" Property="Padding" Value="0,3,0,3" />
+                            <Setter TargetName="Border" Property="CornerRadius" Value="4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- Context Menus -->
+    
     <ContextMenu x:Key="NetworkContextMenu" Style="{DynamicResource ContextMenuStyle}">
-        <MenuItem Header="Add Endpoint..." Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
-            <MenuItem.Icon>
-                <Image Source="{StaticResource GlobeDrawingImage}" />
-            </MenuItem.Icon>
+        
+        <MenuItem Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
+            
+            <MenuItem.Header>
+                
+                    <StackPanel Orientation="Horizontal">
+                    <Image Source="{StaticResource GlobeDrawingImage}" />
+                    <TextBlock>Bring to Front</TextBlock>
+                    </StackPanel>
+                
+                
+            </MenuItem.Header>
         </MenuItem>
-        <MenuItem Header="Add Account..." Command="{x:Static stratisui:BlockchainExplorerTree.NewAccountCmd}">
+        <MenuItem Header="Add Account..." Command="{x:Static stratisui:BlockchainExplorerTree.NewAccountCmd}" Background="{x:Null}">
             <MenuItem.Icon>
-                <Image Source="{StaticResource AddAccountDrawingImage}" />
+                <Image Source="{StaticResource AddAccountDrawingImage}"  />
             </MenuItem.Icon>
         </MenuItem>
         <MenuItem Header="Add Deploy Profile..." Command="{x:Static stratisui:BlockchainExplorerTree.NewDeployProfileCmd}">
