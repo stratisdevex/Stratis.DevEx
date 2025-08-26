@@ -523,22 +523,9 @@
     </Style>
 
     <!-- Context Menus -->
-    
+
     <ContextMenu x:Key="NetworkContextMenu" Style="{DynamicResource ContextMenuStyle}">
-        
-        <MenuItem Command="{x:Static stratisui:BlockchainExplorerTree.NewEndpointCmd}">
-            
-            <MenuItem.Header>
-                
-                    <StackPanel Orientation="Horizontal">
-                    <Image Source="{StaticResource GlobeDrawingImage}" />
-                    <TextBlock>Bring to Front</TextBlock>
-                    </StackPanel>
-                
-                
-            </MenuItem.Header>
-        </MenuItem>
-        <MenuItem Header="Add Account..." Command="{x:Static stratisui:BlockchainExplorerTree.NewAccountCmd}" Background="{x:Null}">
+        <MenuItem Header="Add Account..." Command="{x:Static stratisui:BlockchainExplorerTree.NewAccountCmd}">
             <MenuItem.Icon>
                 <Image Source="{StaticResource AddAccountDrawingImage}"  />
             </MenuItem.Icon>

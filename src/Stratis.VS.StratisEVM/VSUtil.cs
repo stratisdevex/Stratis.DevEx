@@ -95,6 +95,7 @@ namespace Stratis.VS.StratisEVM
         {
             LogError(logname, "(" + logname + ") (exception) " + ex.Message);
         }
+
         public static bool InitializeVSServices(IServiceProvider provider)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
