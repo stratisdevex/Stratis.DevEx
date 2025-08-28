@@ -37,7 +37,7 @@
     </UserControl.Resources>
 
     <TabControl>
-        <TabItem Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabItemNavigationStyleKey}}" Width="75" Height="10">
+        <TabItem Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabItemNavigationStyleKey}}" Width="75" Height="30">
             <TabItem.Header>
                 <StackPanel Orientation="Horizontal">
                     <ui:SymbolIcon Margin="0,0,3,0" Symbol="Edit16" />

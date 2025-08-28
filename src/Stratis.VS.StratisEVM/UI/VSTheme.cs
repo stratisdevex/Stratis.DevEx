@@ -39,6 +39,8 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static object ToolWindowFontFamilyKey => VsFonts.EnvironmentFontFamilyKey;
 
+        public static object ContextMenuStyleKey => VsResourceKeys.ContextMenuStyleKey;
+
         //public static float SystemDialogFontSize => System.Drawing.SystemFonts.DialogFont.Size;
 
         public static void WatchThemeChanges()

@@ -20,6 +20,7 @@ using static Stratis.DevEx.Result;
 using Stratis.DevEx.Ethereum;
 using Stratis.VS.StratisEVM.UI.ViewModel;
 using System.Diagnostics;
+using Nethereum.ABI.Model;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -838,11 +839,11 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
-                var tc = (TabControl) ((StackPanel)TryFindResource("EditContractStackPanel")).Children[0];
+                var tc = (TabControl) TryFindResource("EditRunContractTabControl");
                 var dw = new ToolWindowDialog(RootContentDialog)
                 {
                     Title = "Edit Contract",
-                    Content = (StackPanel)TryFindResource("EditContractStackPanel"),
+                    Content = tc,
                     PrimaryButtonText = "Save",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
                     SecondaryButtonText = "Run",
@@ -866,6 +867,12 @@ namespace Stratis.VS.StratisEVM.UI
                 transactionHash.Text = (string)item.Data["TransactionHash"];
                 deployedOn.Text = (string)item.Data["DeployedOn"];
                 abi.Text = (string)item.Data["Abi"];
+
+                _sp = (StackPanel)((TabItem)(tc.Items[1])).Content;
+                sp = (StackPanel)(_sp).Children[0];
+
+                var rabi = Contract.DeserializeABI((string)item.Data["Abi"]);
+                CreateContractInputElements(sp, rabi);  
                 dw.ButtonClicked += (cd, args) => { };
                 dw.Closing += (d, args) => {};
 
@@ -905,6 +912,58 @@ namespace Stratis.VS.StratisEVM.UI
 #else
                 System.Windows.MessageBox.Show(ex?.Message);
 #endif
+            }
+        }
+
+        private void CreateContractInputElements(StackPanel sp, ContractABI abi)
+        {
+            if (sp == null || abi == null || abi.Functions == null)
+                return;
+
+            foreach (var function in abi.Functions)
+            {
+                // Add a label for the function name
+                var functionLabel = new Label
+                {
+                    Content = $"Function: {function.Name}",
+                    FontWeight = FontWeights.Bold,
+                    Margin = new Thickness(0, 10, 0, 2)
+                };
+                sp.Children.Add(functionLabel);
+
+                if (function.InputParameters != null && function.InputParameters.Count() > 0)
+                {
+                    foreach (var param in function.InputParameters)
+                    {
+                        // Label for parameter
+                        var paramLabel = new Label
+                        {
+                            Content = $"{param.Type} {param.Name}:",
+                            Margin = new Thickness(10, 2, 0, 0)
+                        };
+                        sp.Children.Add(paramLabel);
+
+                        // TextBox for parameter input
+                        var paramTextBox = new Wpc.TextBox
+                        {
+                            Name = $"txt_{function.Name}_{param.Name}",
+                            Margin = new Thickness(10, 0, 0, 5),
+                            MinWidth = 120
+                        };
+                        sp.Children.Add(paramTextBox);
+                    }
+                }
+                else
+                {
+                    // If no parameters, indicate as such
+                    var noParamsLabel = new Label
+                    {
+                        Content = "No parameters",
+                        Margin = new Thickness(10, 2, 0, 5),
+                        FontStyle = FontStyles.Italic
+                    };
+                    sp.Children.Add(noParamsLabel);
+                }
             }
         }
     }
