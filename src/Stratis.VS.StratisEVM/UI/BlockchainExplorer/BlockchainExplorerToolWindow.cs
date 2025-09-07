@@ -27,7 +27,7 @@ namespace Stratis.VS.StratisEVM.UI
         /// <summary>
         /// Initializes a new instance of the <see cref="BlockchainExplorerToolWindow"/> class.
         /// </summary>
-        public BlockchainExplorerToolWindow() : base(StratisEVMPackage.Instance)
+        public BlockchainExplorerToolWindow() : base(null)
         {
             this.Caption = "Blockchain Explorer";
             this.BitmapImageMoniker = KnownMonikers.NeuralNetwork;

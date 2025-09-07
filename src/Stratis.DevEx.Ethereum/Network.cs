@@ -69,6 +69,9 @@ namespace Stratis.DevEx.Ethereum
             var web3 = new Web3(rpcurl);
             return (await web3.Eth.ChainId.SendRequestAsync(), await web3.Net.Version.SendRequestAsync(), await web3.Eth.Accounts.SendRequestAsync());
         }
+
+        public static Task<HexBigInteger> GetBalance(string rpcurl, string address) => new Web3(rpcurl).Eth.GetBalance.SendRequestAsync(address);
+
         #endregion
 
         #region Fields

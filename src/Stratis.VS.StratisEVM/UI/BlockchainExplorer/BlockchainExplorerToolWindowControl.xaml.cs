@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Linq;
@@ -21,6 +22,7 @@ using Stratis.DevEx.Ethereum;
 using Stratis.VS.StratisEVM.UI.ViewModel;
 using System.Diagnostics;
 using Nethereum.ABI.Model;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -35,10 +37,23 @@ namespace Stratis.VS.StratisEVM.UI
         /// </summary>
         public BlockchainExplorerToolWindowControl() : base()
         {
+            instance = this;
             // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
             var _ = new Card();
             var __ = new BlockchainExplorerTree();
+            
+            var _x = __.Style;
+            var _y = __.Items;
+            var _z = __.TreeStyle;
+            var __xz = __.TreeNodeStyle;
             var ____ = new Wpf.Ui.ThemeService();
+            /*
+            System.Uri resourceLocater = new System.Uri("/Stratis.VS.StratisEVM;component/ui/blockchainexplorer/blockchainexplorertoolwind" +
+        "owcontrol.xaml", System.UriKind.Relative);
+
+#line 1 "..\..\..\..\UI\BlockchainExplorer\BlockchainExplorerToolWindowControl.xaml"
+            System.Windows.Application.LoadComponent(this, resourceLocater);
+            */
             InitializeComponent();       
 #if IS_VSIX
             VSTheme.WatchThemeChanges();
@@ -794,43 +809,6 @@ namespace Stratis.VS.StratisEVM.UI
             }
             tree.Refresh();
         }
-        #endregion
-
-        #region Methods
-        private BlockchainInfo GetSelectedItem(object sender)
-        {
-            var window = (BlockchainExplorerToolWindowControl)sender;
-            var tree = window.BlockchainExplorerTree;
-            return tree.SelectedItem;
-        }
-        private void ShowValidationErrors(Wpc.TextBlock textBlock, string message)
-        {
-            textBlock.Visibility = Visibility.Visible;
-            textBlock.Text = message;
-        }
-
-        private void ShowProgressRing(ProgressRing progressRing)
-        {
-            progressRing.IsEnabled = true;
-            progressRing.Visibility = Visibility.Visible;
-        }
-
-        private void HideProgressRing(ProgressRing progressRing)
-        {
-            progressRing.IsEnabled = false;
-            progressRing.Visibility = Visibility.Hidden;
-        }
-
-        #endregion
-
-        #region Properties
-        public static bool ControlIsLoaded => instance != null;
-        #endregion
-
-        #region Fields
-        internal BlockchainExplorerToolWindow window;
-        internal static BlockchainExplorerToolWindowControl instance;
-        #endregion
 
         private async void EditContractCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -839,20 +817,20 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
-                var tc = (TabControl) TryFindResource("EditRunContractTabControl");
+                var tc = (TabControl)TryFindResource("EditRunContractTabControl");
                 var dw = new ToolWindowDialog(RootContentDialog)
                 {
-                    Title = "Edit Contract",
+                    Title = "Edit/Run contract " + item.DisplayName,
                     Content = tc,
                     PrimaryButtonText = "Save",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
                     SecondaryButtonText = "Run",
-                    SecondaryButtonIcon = new SymbolIcon(SymbolRegular.Run24), 
+                    SecondaryButtonIcon = new SymbolIcon(SymbolRegular.Run24),
                     CloseButtonText = "Cancel",
                 };
-               
-                var _sp = (StackPanel) ((TabItem)(tc.Items[0])).Content;
-                var sp = (StackPanel) (_sp).Children[0];
+
+                var _sp = (StackPanel)((TabItem)(tc.Items[0])).Content;
+                var sp = (StackPanel)(_sp).Children[0];
                 var address = (Wpc.TextBox)(sp.Children[1]);
                 var label = (Wpc.TextBox)(sp.Children[3]);
                 var creator = (Wpc.TextBox)(sp.Children[5]);
@@ -862,7 +840,7 @@ namespace Stratis.VS.StratisEVM.UI
                 //var sp1 = (StackPanel)((StackPanel)dw.Content).Children[1];
                 //var errors = (Wpc.TextBlock) sp1.Children[0];
                 address.Text = item.Name;
-                label.Text = item.Data.ContainsKey("Label") ? (string) item.Data["Label"] : "";
+                label.Text = item.Data.ContainsKey("Label") ? (string)item.Data["Label"] : "";
                 creator.Text = (string)item.Data["Creator"];
                 transactionHash.Text = (string)item.Data["TransactionHash"];
                 deployedOn.Text = (string)item.Data["DeployedOn"];
@@ -870,11 +848,11 @@ namespace Stratis.VS.StratisEVM.UI
 
                 _sp = (StackPanel)((TabItem)(tc.Items[1])).Content;
                 sp = (StackPanel)(_sp).Children[0];
-
+                var errors = (Wpc.TextBlock) ((StackPanel)(_sp).Children[1]).Children[0];
                 var rabi = Contract.DeserializeABI((string)item.Data["Abi"]);
-                CreateContractInputElements(sp, rabi);  
+                await CreateContractInputElements(sp, errors, rabi, item.Data);
                 dw.ButtonClicked += (cd, args) => { };
-                dw.Closing += (d, args) => {};
+                dw.Closing += (d, args) => { };
 
                 var r = await dw.ShowAsync();
                 if (r == ContentDialogResult.None)
@@ -899,7 +877,7 @@ namespace Stratis.VS.StratisEVM.UI
                     return;
 
 #pragma warning restore CS4014
-                  
+
                 }
                 //item.Data["Label"] = label.Text;
                 //item.Data["Abi"] = abi.Text;
@@ -915,21 +893,92 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
-        private void CreateContractInputElements(StackPanel sp, ContractABI abi)
+        private void DeleteContractCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (sp == null || abi == null || abi.Functions == null)
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            var item = GetSelectedItem(sender);
+            item.Parent.DeleteChild(item);
+            SaveBlockchainTree(tree);
+        }
+        #endregion
+
+        #region Methods
+        private BlockchainInfo GetSelectedItem(object sender)
+        {
+            var window = (BlockchainExplorerToolWindowControl)sender;
+            var tree = window.BlockchainExplorerTree;
+            return tree.SelectedItem;
+        }
+
+        private void SaveBlockchainTree(BlockchainExplorerTree tree)
+        {
+            if (!tree.RootItem.Save("BlockchainExplorerTree", out var ex))
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox("Error saving tree data: " + ex?.Message);
+#else
+                System.Windows.MessageBox.Show("Error saving tree data: " +  ex?.Message);
+#endif
+            }
+        }
+
+        private void ShowValidationErrors(Wpc.TextBlock textBlock, string message)
+        {
+            textBlock.Visibility = Visibility.Visible;
+            textBlock.Text = message;
+        }
+
+        private void ShowProgressRing(ProgressRing progressRing)
+        {
+            progressRing.IsEnabled = true;
+            progressRing.Visibility = Visibility.Visible;
+        }
+
+        private void HideProgressRing(ProgressRing progressRing)
+        {
+            progressRing.IsEnabled = false;
+            progressRing.Visibility = Visibility.Hidden;
+        }
+
+        private async Task CreateContractInputElements(StackPanel form, Wpc.TextBlock errors, ContractABI abi, Dictionary<string, object> contractData)
+        {
+            var address = (string)contractData["Address"];
+            var rpcurl = (string)contractData["Endpoint"];
+            var balr = await ThreadHelper.JoinableTaskFactory.RunAsync(() => ExecuteAsync(Network.GetBalance(rpcurl, address)));
+            if (balr.IsSuccess)
+            {
+                form.Children.Add(new Label()
+                {
+                    Content = $"Balance: {balr.Value}",
+                    FontWeight = FontWeights.Bold,
+                });
+            }
+            else
+            {
+                ShowValidationErrors(errors, $"Could not retrieve balance for contract: {balr.Message}");
                 return;
+            }
+            var bal = balr.IsSuccess ? balr.Value.ToString() : "";
 
             foreach (var function in abi.Functions)
             {
+               
+                var vsp = new StackPanel()
+                {
+                    Orientation = Orientation.Horizontal,
+                };
                 // Add a label for the function name
                 var functionLabel = new Label
                 {
                     Content = $"Function: {function.Name}",
                     FontWeight = FontWeights.Bold,
-                    Margin = new Thickness(0, 10, 0, 2)
+                    Margin = new Thickness(0, 10, 0, 2),
+                    Background = System.Windows.Media.Brushes.Orange,
+                    Foreground = System.Windows.Media.Brushes.White,
+
                 };
-                sp.Children.Add(functionLabel);
+                form.Children.Add(functionLabel);
 
                 if (function.InputParameters != null && function.InputParameters.Count() > 0)
                 {
@@ -941,7 +990,7 @@ namespace Stratis.VS.StratisEVM.UI
                             Content = $"{param.Type} {param.Name}:",
                             Margin = new Thickness(10, 2, 0, 0)
                         };
-                        sp.Children.Add(paramLabel);
+                        form.Children.Add(paramLabel);
 
                         // TextBox for parameter input
                         var paramTextBox = new Wpc.TextBox
@@ -950,7 +999,7 @@ namespace Stratis.VS.StratisEVM.UI
                             Margin = new Thickness(10, 0, 0, 5),
                             MinWidth = 120
                         };
-                        sp.Children.Add(paramTextBox);
+                        form.Children.Add(paramTextBox);
                     }
                 }
                 else
@@ -962,9 +1011,21 @@ namespace Stratis.VS.StratisEVM.UI
                         Margin = new Thickness(10, 2, 0, 5),
                         FontStyle = FontStyles.Italic
                     };
-                    sp.Children.Add(noParamsLabel);
+                    form.Children.Add(noParamsLabel);
                 }
             }
         }
+        #endregion
+
+        #region Properties
+        public static bool ControlIsLoaded => instance != null;
+        #endregion
+
+        #region Fields
+        internal BlockchainExplorerToolWindow window;
+        internal static BlockchainExplorerToolWindowControl instance;
+        #endregion
+
+       
     }
 }
