@@ -951,6 +951,8 @@ namespace Stratis.VS.StratisEVM.UI
                 form.Children.Add(new Label()
                 {
                     Content = $"Balance: {balr.Value}",
+                    Foreground = (System.Windows.Media.Brush) TryFindResource(VSTheme.ToolWindowTextKey),
+                    Background = (System.Windows.Media.Brush)TryFindResource(VSTheme.ToolWindowBackgroundKey),
                     FontWeight = FontWeights.Bold,
                 });
             }

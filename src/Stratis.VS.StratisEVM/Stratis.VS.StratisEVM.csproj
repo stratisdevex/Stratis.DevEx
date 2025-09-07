@@ -99,6 +99,12 @@
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainHomeUserControl.xaml.cs">
       <DependentUpon>StratisEVMBlockchainHomeUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\TreeView\ItemMonitor.cs" />
+    <Compile Include="UI\TreeView\RoutedTreeItemEventArgs.cs" />
+    <Compile Include="UI\TreeView\TreeLayout.cs" />
+    <Compile Include="UI\TreeView\TreeUtil.cs" />
+    <Compile Include="UI\TreeView\TreeViewBase.cs" />
+    <Compile Include="UI\TreeView\TreeViewBase.Declarations.cs" />
     <Compile Include="UI\VSTheme.cs" />
     <Compile Include="VSUtil.cs" />
   </ItemGroup>
@@ -109,6 +115,7 @@
     </Content>
     <Content Include="Resources\DeploySolidityProjectToolWindowCommand.png" />
     <Content Include="Resources\RunSmartContractToolWindowCommand.png" />
+    <None Include="UI\TreeView\Classes.cd" />
     <Resource Include="Images\SolidityProjectProjectIcon.png" />
     <Resource Include="Images\SoliditySourceFileIcon.png" />
     <Content Include="BuildSystem\version.txt">
@@ -180,11 +187,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Community.VisualStudio.VSCT">
-      <Version>16.0.29.6</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Client">
       <Version>17.14.60</Version>
     </PackageReference>
@@ -239,10 +241,6 @@
     <ProjectReference Include="..\..\ext\NLog\src\NLog\NLog.csproj">
       <Project>{a0bff0db-ed9a-4639-ae86-8e709a1efc66}</Project>
       <Name>NLog</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ext\WPF TreeView\WPF TreeView.csproj">
-      <Project>{012c8923-ba09-4cde-9b19-110316c81178}</Project>
-      <Name>WPF TreeView</Name>
     </ProjectReference>
     <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj">
       <Project>{f54aa3e2-f4bf-4c94-8ac9-a476265a70bf}</Project>

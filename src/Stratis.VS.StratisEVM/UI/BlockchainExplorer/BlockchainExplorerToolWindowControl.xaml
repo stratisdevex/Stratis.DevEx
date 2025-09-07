@@ -12,6 +12,7 @@
              Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"
              Background="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"
              FontFamily="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowFontFamilyKey}}"
+             Name="BlockchainExplorerToolWindow"
 >
     <UserControl.Resources>
         <ResourceDictionary>

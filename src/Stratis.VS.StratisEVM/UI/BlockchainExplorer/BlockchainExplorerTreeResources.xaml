@@ -802,9 +802,8 @@
                     </StackPanel>
                 </TabItem.Header>
                 <StackPanel Name="RunContractDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
-                    <StackPanel Orientation="Vertical" >
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical" Style="{DynamicResource DialogStyle}">
+                <StackPanel Orientation="Vertical" Style="{DynamicResource DialogStyle}"/>
+                <StackPanel Orientation="Vertical" Style="{DynamicResource DialogStyle}">
                         <ui:TextBlock Name = "RunContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
                             ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
                     </StackPanel>
