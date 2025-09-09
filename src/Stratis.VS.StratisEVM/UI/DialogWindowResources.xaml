@@ -13,20 +13,13 @@
     <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
         <Style.Resources>
             <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
             </Style>
             <Style TargetType="{x:Type ui:TextBlock}">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
             </Style>
             <Style TargetType="{x:Type ui:TextBox}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTextBoxStyleKey}}">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-            </Style>
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="Width" Value="70" />
-                <Setter Property="Height" Value="25" />
-                <Setter Property="Margin" Value="5,0,0,0" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonTextBrushKey}}" />
-                <Setter Property="Background" Value="{DynamicResource {x:Static vs:ThemedDialogColors.ActionButtonBackgroundBrushKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
             </Style>
         </Style.Resources>
     </Style>

@@ -194,6 +194,7 @@ namespace Stratis.VS.StratisEVM.UI
             else
             {
                 ShowDeployError($"Error deploying contract: {result.Exception.Message}");
+                VSUtil.LogToBuildWindow($"\n========== Error deploying {contractFileName} contract. ==========\n{result.Exception.Message}");
             }
         }
 
@@ -226,7 +227,7 @@ namespace Stratis.VS.StratisEVM.UI
             this.DeploySuccessStackPanel.Visibility = Visibility.Hidden;
             this.DeployStatusStackPanel.Visibility = Visibility.Hidden;
             this.DeployErrorsStackPanel.Visibility = Visibility.Visible;
-            this.DeployErrorsTextBlock.Text = text;  
+            this.DeployErrorsTextBlock.Text = text; 
         }
         #endregion
 
