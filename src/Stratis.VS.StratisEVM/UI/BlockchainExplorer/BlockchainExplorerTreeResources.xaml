@@ -665,7 +665,12 @@
     <!-- Dialog style -->
     <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
         <Style.Resources>
-           
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
+            </Style>
+            <Style TargetType="{x:Type ui:TextBox}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTextBoxStyleKey}}">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
+            </Style>
         </Style.Resources>
     </Style>
 

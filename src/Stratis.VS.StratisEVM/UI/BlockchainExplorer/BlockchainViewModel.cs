@@ -153,15 +153,15 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         {
             var data = new Dictionary<string, object>()
             {
-                {"DeployProfile", deployProfile.Name},
                 {"Address", address},
                 {"Endpoint", deployProfile.Data["Endpoint"] },
                 {"Creator",  deployProfile.Data["Account"]},
+                {"TransactionHash",  transactionHash},
+                {"DeployedOn",  deployedOn.ToString("g")},
+                {"DeployProfile", deployProfile.Name},
                 {"Project",  project},
                 {"SolidityFile",  solidityFile},
                 {"Abi",  abi},
-                {"TransactionHash",  transactionHash},
-                {"DeployedOn",  deployedOn.ToString("g")},
             };
             if (!string.IsNullOrEmpty(label))
             {

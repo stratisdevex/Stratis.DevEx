@@ -6,30 +6,16 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly=" 
-             Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"
-             Background="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"
-             FontFamily="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowFontFamilyKey}}"
-             FontSize="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowFontSizeKey}}">
+             xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly=">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemesDictionary Theme="Light" />
+                <ui:ThemesDictionary Theme="{x:Static stratisui:VSTheme.ApplicationThemeGuess}" />
                 <ui:ControlsDictionary />
+                <ResourceDictionary Source="/Stratis.VS.StratisEVM;component/UI/DialogWindowResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <!-- Dialog style -->
-            <Style x:Key="DialogStyle" TargetType="{x:Type StackPanel}">
-                <Style.Resources>
-                    <Style TargetType="{x:Type RadioButton}">
-                        <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
-
-                    </Style>
-                </Style.Resources>
-            </Style>
         </ResourceDictionary>
-        
-        
     </UserControl.Resources>
 
     <Grid>
@@ -37,7 +23,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Vertical" Grid.Row="0" Name="DeploySolidityProjectDialogStackPanel" Visibility="Hidden">
+        <StackPanel Orientation="Vertical" Grid.Row="0" Name="DeploySolidityProjectDialogStackPanel" Style="{DynamicResource DialogStyle}" Visibility="Hidden">
             <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Vertical" Name="ProjectEVMVersionStackPanel" Visibility="Hidden">
                     <StackPanel Orientation="Horizontal">
@@ -49,7 +35,7 @@
                
                 <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <ui:TextBlock Text="Select the contract to deploy:"  Margin="4,0,0,2" />
-                    <ComboBox x:Name="DeployContractComboBox"  Margin="0,2,0,4" Width="200" FontSize="12" Height="36" />
+                    <ComboBox x:Name="DeployContractComboBox"  Margin="0,2,0,4" Width="200" />
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical"  VerticalAlignment="Top" HorizontalAlignment="Left">

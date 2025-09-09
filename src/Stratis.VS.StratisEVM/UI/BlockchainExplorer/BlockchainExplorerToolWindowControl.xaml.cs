@@ -23,6 +23,7 @@ using Stratis.VS.StratisEVM.UI.ViewModel;
 using System.Diagnostics;
 using Nethereum.ABI.Model;
 using static System.Net.Mime.MediaTypeNames;
+using Stratis.DevEx;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -948,73 +949,125 @@ namespace Stratis.VS.StratisEVM.UI
             var balr = await ThreadHelper.JoinableTaskFactory.RunAsync(() => ExecuteAsync(Network.GetBalance(rpcurl, address)));
             if (balr.IsSuccess)
             {
-                form.Children.Add(new Label()
+                var hsp = new StackPanel()
                 {
-                    Content = $"Balance: {balr.Value}",
+                    Orientation = Orientation.Horizontal,
+                };
+                hsp.Children.Add(new Label()
+                {
+                    Content = "Balance: ",
                     FontWeight = FontWeights.Bold,
+                    VerticalAlignment = VerticalAlignment.Center,
                 });
+                hsp.Children.Add(new Wpc.TextBlock()
+                {
+                    Text = $"{balr.Value}",
+                    VerticalAlignment = VerticalAlignment.Center,
+                });
+                form.Children.Add(hsp); 
             }
             else
             {
                 ShowValidationErrors(errors, $"Could not retrieve balance for contract: {balr.Message}");
                 return;
             }
-            var bal = balr.IsSuccess ? balr.Value.ToString() : "";
-
+            
             foreach (var function in abi.Functions)
-            {
-               
-                var vsp = new StackPanel()
+            {              
+                var hsp = new StackPanel()
                 {
                     Orientation = Orientation.Horizontal,
                 };
-                // Add a label for the function name
-                var functionLabel = new Label
+                var button = new Wpc.Button()
                 {
-                    Content = $"Function: {function.Name}",
-                    FontWeight = FontWeights.Bold,
-                    Margin = new Thickness(0, 10, 0, 2),
-                    Background = System.Windows.Media.Brushes.Orange,
+                    Name = function.Name + "_Button",
+                    Content = function.Name,
+                    Margin = new Thickness(10, 5, 5, 10),
                     Foreground = System.Windows.Media.Brushes.White,
-
+                    VerticalAlignment = VerticalAlignment.Center,
                 };
-                form.Children.Add(functionLabel);
-
+                hsp.Children.Add(button);
                 if (function.InputParameters != null && function.InputParameters.Count() > 0)
                 {
-                    foreach (var param in function.InputParameters)
+                    button.Background = System.Windows.Media.Brushes.Orange;
+                    var paramsText = function.InputParameters.Select(p => p.Type + " " + p.Name).JoinWith(";");                                        
+                    var paramsTextBox = new Wpc.TextBox()
                     {
-                        // Label for parameter
-                        var paramLabel = new Label
+                        Name = function.Name + "_Params",
+                        ToolTip = "Parameters: " + paramsText,
+                        Margin = new Thickness(10, 5, 5, 10),
+                        Width = 100,
+                        VerticalAlignment = VerticalAlignment.Center,   
+                    };
+                    hsp.Children.Add(paramsTextBox);
+                    button.Click += (s, e) =>
+                    {
+                        var paramVals = paramsTextBox.Text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
+                        if (paramVals.Length != function.InputParameters.Count())
                         {
-                            Content = $"{param.Type} {param.Name}:",
-                            Margin = new Thickness(10, 2, 0, 0)
-                        };
-                        form.Children.Add(paramLabel);
-
-                        // TextBox for parameter input
-                        var paramTextBox = new Wpc.TextBox
+                            ShowValidationErrors(errors, $"The {function.Name} function requires {function.InputParameters.Count()} parameters.");
+                            return;
+                        }   
+                        /*
+                        ShowProgressRing((ProgressRing)TryFindResource("ContractFunctionProgressRing"));
+                        var r = await ThreadHelper.JoinableTaskFactory.RunAsync(() => ExecuteAsync(Network.CallContract(rpcurl, address, function.Name, new object[] { })));
+                        HideProgressRing((ProgressRing)TryFindResource("ContractFunctionProgressRing"));
+                        if (r.IsSuccess)
                         {
-                            Name = $"txt_{function.Name}_{param.Name}",
-                            Margin = new Thickness(10, 0, 0, 5),
-                            MinWidth = 120
-                        };
-                        form.Children.Add(paramTextBox);
-                    }
+                            if (function.OutputParameters != null && function.OutputParameters.Count() > 0)
+                            {
+                                var output = r.Value as object[];
+                                var outputStr = function.OutputParameters.Select((p, i) => p.Type + " " + p.Name + " = " + (output != null && output.Length > i ? output[i]?.ToString() : "null")).JoinWith("; ");
+                                System.Windows.MessageBox.Show("Function executed successfully. Output: " + outputStr, "Function executed", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                System.Windows.MessageBox.Show("Function executed successfully.", "Function executed", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                        }
+                        else
+                        {
+                            ShowValidationErrors(errors, $"Error calling contract function: {r.Message}");
+                        }
+                        */
+                    };
                 }
                 else
                 {
-                    // If no parameters, indicate as such
-                    var noParamsLabel = new Label
+                    button.Click += (s, e) =>
                     {
-                        Content = "No parameters",
-                        Margin = new Thickness(10, 2, 0, 5),
-                        FontStyle = FontStyles.Italic
+                        /*
+                        ShowProgressRing((ProgressRing)TryFindResource("ContractFunctionProgressRing"));
+                        var r = await ThreadHelper.JoinableTaskFactory.RunAsync(() => ExecuteAsync(Network.CallContract(rpcurl, address, function.Name, new object[] { })));
+                        HideProgressRing((ProgressRing)TryFindResource("ContractFunctionProgressRing"));
+                        if (r.IsSuccess)
+                        {
+                            if (function.OutputParameters != null && function.OutputParameters.Count() > 0)
+                            {
+                                var output = r.Value as object[];
+                                var outputStr = function.OutputParameters.Select((p, i) => p.Type + " " + p.Name + " = " + (output != null && output.Length > i ? output[i]?.ToString() : "null")).JoinWith("; ");
+                                System.Windows.MessageBox.Show("Function executed successfully. Output: " + outputStr, "Function executed", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                System.Windows.MessageBox.Show("Function executed successfully.", "Function executed", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                        }
+                        else
+                        {
+                            ShowValidationErrors(errors, $"Error calling contract function: {r.Message}");
+                        }
+                        */
                     };
-                    form.Children.Add(noParamsLabel);
+
                 }
+                form.Children.Add(hsp);
+
+
             }
         }
+
+       
         #endregion
 
         #region Properties
