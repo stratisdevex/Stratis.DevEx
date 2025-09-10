@@ -848,10 +848,11 @@ namespace Stratis.VS.StratisEVM.UI
                 abi.Text = (string)item.Data["Abi"];
 
                 _sp = (StackPanel)((TabItem)(tc.Items[1])).Content;
-                sp = (StackPanel)(_sp).Children[0];
-                var errors = (Wpc.TextBlock) ((StackPanel)(_sp).Children[1]).Children[0];
+                var formPanel = (StackPanel)(_sp).Children[0];
+                var statusPanel = ((StackPanel)(_sp).Children[1]);
+                //var errors = (Wpc.TextBlock) ((StackPanel)(_sp).Children[1]).Children[0];
                 var rabi = Contract.DeserializeABI((string)item.Data["Abi"]);
-                await CreateContractInputElements(sp, errors, rabi, item.Data);
+                await CreateContractInputElements(formPanel, statusPanel, rabi, item.Data);
                 dw.ButtonClicked += (cd, args) => { };
                 dw.Closing += (d, args) => { };
 
@@ -942,8 +943,10 @@ namespace Stratis.VS.StratisEVM.UI
             progressRing.Visibility = Visibility.Hidden;
         }
 
-        private async Task CreateContractInputElements(StackPanel form, Wpc.TextBlock errors, ContractABI abi, Dictionary<string, object> contractData)
+        private async Task CreateContractInputElements(StackPanel form, StackPanel statusPanel, ContractABI abi, Dictionary<string, object> contractData)
         {
+            var errors = (Wpc.TextBlock)((Grid)statusPanel.Children[0]).Children[0];
+            var progressring = (ProgressRing)((Grid)statusPanel.Children[0]).Children[1];
             var address = (string)contractData["Address"];
             var rpcurl = (string)contractData["Endpoint"];
             var balr = await ThreadHelper.JoinableTaskFactory.RunAsync(() => ExecuteAsync(Network.GetBalance(rpcurl, address)));
@@ -982,21 +985,21 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     Name = function.Name + "_Button",
                     Content = function.Name,
-                    Margin = new Thickness(10, 5, 5, 10),
+                    Width=75.0,
                     Foreground = System.Windows.Media.Brushes.White,
+                    Background = System.Windows.Media.Brushes.DodgerBlue,
                     VerticalAlignment = VerticalAlignment.Center,
                 };
                 hsp.Children.Add(button);
                 if (function.InputParameters != null && function.InputParameters.Count() > 0)
                 {
-                    button.Background = System.Windows.Media.Brushes.Orange;
-                    var paramsText = function.InputParameters.Select(p => p.Type + " " + p.Name).JoinWith(";");                                        
+                    var paramsText = function.InputParameters.Select(p => p.Type + " " + p.Name).JoinWith(Environment.NewLine);                                        
                     var paramsTextBox = new Wpc.TextBox()
                     {
                         Name = function.Name + "_Params",
-                        ToolTip = "Parameters: " + paramsText,
+                        ToolTip = "Parameters required: " + paramsText,
                         Margin = new Thickness(10, 5, 5, 10),
-                        Width = 100,
+                        Width = 125,
                         VerticalAlignment = VerticalAlignment.Center,   
                     };
                     hsp.Children.Add(paramsTextBox);
@@ -1062,12 +1065,8 @@ namespace Stratis.VS.StratisEVM.UI
 
                 }
                 form.Children.Add(hsp);
-
-
             }
         }
-
-       
         #endregion
 
         #region Properties
@@ -1077,8 +1076,6 @@ namespace Stratis.VS.StratisEVM.UI
         #region Fields
         internal BlockchainExplorerToolWindow window;
         internal static BlockchainExplorerToolWindowControl instance;
-        #endregion
-
-       
+        #endregion       
     }
 }

@@ -787,6 +787,7 @@
                 <StackPanel Orientation="Vertical" Style="{DynamicResource DialogStyle}">
                     <ui:TextBlock Name = "EditContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                    <ui:ProgressRing Name="EditContractDialogProgressRing" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" Visibility="Hidden" />
                 </StackPanel>
             </StackPanel>
         </TabItem>
@@ -799,9 +800,12 @@
             </TabItem.Header>
             <StackPanel Name="RunContractDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
             <StackPanel Orientation="Vertical" />
-            <StackPanel Orientation="Vertical" Style="{DynamicResource DialogStyle}">
+            <StackPanel Orientation="Vertical">
+                <Grid>
                     <ui:TextBlock Name = "RunContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                    <ui:ProgressRing Name="RunContractDialogProgressRing" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" Visibility="Hidden" />
+                </Grid>
                 </StackPanel>
             </StackPanel>
         </TabItem>
