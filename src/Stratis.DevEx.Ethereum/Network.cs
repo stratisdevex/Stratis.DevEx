@@ -58,8 +58,11 @@ namespace Stratis.DevEx.Ethereum
             }
         }
 
-        public static async Task<object> CallContractAsync(string rpcurl, string contractAddress, string abi, string functionName, string fromAddress = null, HexBigInteger gas = null, HexBigInteger value = null, params object[] functionInput) 
-            => await new Web3(rpcurl).Eth.GetContract(abi, contractAddress).GetFunction(functionName).CallAsync<object>(fromAddress, gas, value, functionInput);
+        public static async Task<string> CallContractAsync(string rpcurl, string contractAddress, string abi, string functionName, string fromAddress = null, HexBigInteger gas = null, HexBigInteger value = null, params object[] functionInput)
+        {
+            var func = new Web3(rpcurl).Eth.GetContract(abi, contractAddress).GetFunction(functionName);
+            return await func.CallAsync(func.CreateCallInput(functionInput));
+        }
         
         public static async Task<string> GetProtocolVersion(string rpcurl) => await new Web3(rpcurl).Eth.ProtocolVersion.SendRequestAsync();
         

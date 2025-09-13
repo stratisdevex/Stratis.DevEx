@@ -30,6 +30,27 @@ namespace Stratis.DevEx
             return IsSuccess;
         }
 
+        public string FailureMessage
+        {
+            get
+            {
+                if (IsSuccess || (string.IsNullOrEmpty(Message) && Exception == null))
+                    throw new InvalidOperationException("The operation succeded.");
+                else if (this.Exception != null && !string.IsNullOrEmpty(Message))
+                {
+                    return $"{this.Message}: {this.Exception.Message}.";
+                }
+                else if (this.Exception != null)
+                {
+                    return this.Exception.Message;
+                }
+                else
+                {
+                    return this.Message!;
+
+                }
+            }
+        }
         public static Result<T> Success(T value) => new Result<T>(ResultType.Success, value);
 
         public static Result<T> Failure(string? message, Exception? exception) => new Result<T>(ResultType.Failure, message:message, exception: exception);

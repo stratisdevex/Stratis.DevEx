@@ -852,7 +852,7 @@ namespace Stratis.VS.StratisEVM.UI
                 var statusPanel = ((StackPanel)(_sp).Children[1]);
                 //var errors = (Wpc.TextBlock) ((StackPanel)(_sp).Children[1]).Children[0];
                 var rabi = Contract.DeserializeABI((string)item.Data["Abi"]);
-                await CreateContractInputElements(formPanel, statusPanel, rabi, item.Data);
+                await CreateContractInputElementsAsync(formPanel, statusPanel, item.Data);
                 dw.ButtonClicked += (cd, args) => { };
                 dw.Closing += (d, args) => { };
 
@@ -931,6 +931,8 @@ namespace Stratis.VS.StratisEVM.UI
             textBlock.Text = message;
         }
 
+        private void HideValidationErrors(Wpc.TextBlock textBlock) => textBlock.Visibility = Visibility.Hidden; 
+
         private void ShowProgressRing(ProgressRing progressRing)
         {
             progressRing.IsEnabled = true;
@@ -943,15 +945,30 @@ namespace Stratis.VS.StratisEVM.UI
             progressRing.Visibility = Visibility.Hidden;
         }
 
-        private async Task CreateContractInputElements(StackPanel form, StackPanel statusPanel, ContractABI abi, Dictionary<string, object> contractData)
+        private void ShowValidationSuccess(StackPanel successPanel, Wpc.TextBlock successTextBlock, string message)
+        {
+            successPanel.Visibility = Visibility.Visible;
+            successTextBlock.Text = message;
+        }   
+
+        private void HideValidationSuccess(StackPanel successPanel) => successPanel.Visibility = Visibility.Hidden;
+
+        private async Task CreateContractInputElementsAsync(StackPanel form, StackPanel statusPanel, Dictionary<string, object> contractData)
         {
             var errors = (Wpc.TextBlock)((Grid)statusPanel.Children[0]).Children[0];
             var progressring = (ProgressRing)((Grid)statusPanel.Children[0]).Children[1];
+            var successPanel = ((StackPanel)((Grid)statusPanel.Children[0]).Children[2]);
+            var successTextBlock = (Wpc.TextBlock) successPanel.Children[1];
             var address = (string)contractData["Address"];
             var rpcurl = (string)contractData["Endpoint"];
+            var abi = (string)contractData["Abi"];
+            var _abi = Contract.DeserializeABI(abi);
+            ShowProgressRing(progressring);
             var balr = await ThreadHelper.JoinableTaskFactory.RunAsync(() => ExecuteAsync(Network.GetBalance(rpcurl, address)));
+            HideProgressRing(progressring);
             if (balr.IsSuccess)
             {
+                HideValidationErrors(errors);
                 var hsp = new StackPanel()
                 {
                     Orientation = Orientation.Horizontal,
@@ -971,11 +988,11 @@ namespace Stratis.VS.StratisEVM.UI
             }
             else
             {
-                ShowValidationErrors(errors, $"Could not retrieve balance for contract: {balr.Message}");
+                ShowValidationErrors(errors, $"Could not retrieve balance for contract. {balr.FailureMessage}");
                 return;
             }
             
-            foreach (var function in abi.Functions)
+            foreach (var function in _abi.Functions)
             {              
                 var hsp = new StackPanel()
                 {
@@ -1038,29 +1055,22 @@ namespace Stratis.VS.StratisEVM.UI
                 else
                 {
                     button.Click += (s, e) =>
-                    {
-                        /*
-                        ShowProgressRing((ProgressRing)TryFindResource("ContractFunctionProgressRing"));
-                        var r = await ThreadHelper.JoinableTaskFactory.RunAsync(() => ExecuteAsync(Network.CallContract(rpcurl, address, function.Name, new object[] { })));
-                        HideProgressRing((ProgressRing)TryFindResource("ContractFunctionProgressRing"));
+                    {                        
+                        
+                        ShowProgressRing(progressring);
+                        var r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.CallContractAsync(rpcurl, address, abi, function.Name)));
+                        HideProgressRing(progressring);
                         if (r.IsSuccess)
                         {
-                            if (function.OutputParameters != null && function.OutputParameters.Count() > 0)
-                            {
-                                var output = r.Value as object[];
-                                var outputStr = function.OutputParameters.Select((p, i) => p.Type + " " + p.Name + " = " + (output != null && output.Length > i ? output[i]?.ToString() : "null")).JoinWith("; ");
-                                System.Windows.MessageBox.Show("Function executed successfully. Output: " + outputStr, "Function executed", MessageBoxButton.OK, MessageBoxImage.Information);
-                            }
-                            else
-                            {
-                                System.Windows.MessageBox.Show("Function executed successfully.", "Function executed", MessageBoxButton.OK, MessageBoxImage.Information);
-                            }
+                            HideValidationErrors(errors);
+                            ShowValidationSuccess(successPanel, successTextBlock, $"Function {function.Name} result: {r.Value}");
                         }
                         else
                         {
-                            ShowValidationErrors(errors, $"Error calling contract function: {r.Message}");
+                            HideValidationSuccess(successPanel);
+                            ShowValidationErrors(errors, $"Error calling contract function: {r.FailureMessage}");
                         }
-                        */
+                        
                     };
 
                 }
