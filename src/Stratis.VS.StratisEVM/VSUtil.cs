@@ -53,6 +53,25 @@ namespace Stratis.VS.StratisEVM
             }
             return outputPane;
         }
+
+        public static void ActivateLogOutputPane(string logname)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            IVsOutputWindowPane outputPane = GetCustomLogOutputPane(logname);
+            if (outputPane is null)
+            {
+                Error("Could not get output window pane {l}.", logname);
+                return;
+            }
+            else
+            {
+                if (ErrorHandler.Failed(outputPane.Activate()))
+                {
+                    Error("Could not activate output window pane {l}.", logname);
+                }
+            }
+        }
+
         public static void LogInfo(string logname, string text)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -94,6 +113,12 @@ namespace Stratis.VS.StratisEVM
         public static void LogError(string logname, Exception ex)
         {
             LogError(logname, "(" + logname + ") (exception) " + ex.Message);
+        }
+
+        public static void LogToStratisEVMWindow(string text)
+        {
+            LogInfo("StratisEVM", text);    
+            ActivateLogOutputPane("StratisEVM");
         }
 
         public static bool InitializeVSServices(IServiceProvider provider)
@@ -361,7 +386,6 @@ namespace Stratis.VS.StratisEVM
         }
 
       
-
         public static bool BuildProject(Project project)
         {
             ThreadHelper.ThrowIfNotOnUIThread();

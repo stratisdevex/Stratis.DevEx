@@ -963,6 +963,7 @@ namespace Stratis.VS.StratisEVM.UI
             var rpcurl = (string)contractData["Endpoint"];
             var abi = (string)contractData["Abi"];
             var _abi = Contract.DeserializeABI(abi);
+            
             ShowProgressRing(progressring);
             var balr = await ThreadHelper.JoinableTaskFactory.RunAsync(() => ExecuteAsync(Network.GetBalance(rpcurl, address)));
             HideProgressRing(progressring);
@@ -1063,7 +1064,9 @@ namespace Stratis.VS.StratisEVM.UI
                         if (r.IsSuccess)
                         {
                             HideValidationErrors(errors);
+                            
                             ShowValidationSuccess(successPanel, successTextBlock, $"Function {function.Name} result: {r.Value}");
+                            VSUtil.LogToStratisEVMWindow($"[call] {function.Name}: {r.Value}");
                         }
                         else
                         {

@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 
+using Newtonsoft.Json;
 using Stratis.DevEx;
-using static Microsoft.VisualStudio.ProjectSystem.VS.HResult.Ole;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -102,5 +102,8 @@ namespace Stratis.VS.StratisEVM
             }
             VSUtil.LogInfo("StratisEVM", ((string)output["stdout"]).Trim());
         }
+
+        public static SolidityCompilerIO2.SolidityCompilerOutput ParseOutputFile(string file) => 
+            JsonConvert.DeserializeObject<SolidityCompilerIO2.SolidityCompilerOutput>(File.ReadAllText(file));        
     }
 }

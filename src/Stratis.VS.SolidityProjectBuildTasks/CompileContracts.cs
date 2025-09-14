@@ -190,31 +190,36 @@ namespace Stratis.VS
             {
                 Directory.CreateDirectory(outputdir);
             }
-            
-            foreach(var c in output.contracts)
+
+            File.WriteAllText(Path.Combine(outputdir, "compileroutput.json"), Serialize(output));
+            foreach (var c in output.contracts)
             {
-                var cs = c.Value.Values.First();
-                if (Sources.ContainsKey(c.Key))
+                //File.WriteAllText(Path.Combine(outputdir, c.Key + "compileroutput.json"), Serialize(c.Value)); 
+                foreach (var cs in c.Value)
                 {
-                    if (cs.evm.bytecode._object != null)
+                    //var cs = c.Value.Values.First();
+                    if (Sources.ContainsKey(c.Key))
                     {
-                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".bin"), c.Value.Values.First().evm.bytecode._object);
-                    }
-                    if (!string.IsNullOrEmpty(cs.evm.bytecode.opcodes))
-                    {
-                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".opcodes.txt"), cs.evm.bytecode.opcodes);
-                    }
-                    if (cs.evm.gasEstimates != null)
-                    {
-                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".gas.json"), Serialize(cs.evm.gasEstimates));
-                    }
-                    if (cs.abi != null)
-                    {
-                        File.WriteAllText(Path.Combine(outputdir, c.Key + ".abi"), Serialize(cs.abi));
+                        if (cs.Value.evm.bytecode._object != null)
+                        {
+                            File.WriteAllText(Path.Combine(outputdir, c.Key + "." + cs.Key + ".bin"), cs.Value.evm.bytecode._object);
+                        }
+                        if (!string.IsNullOrEmpty(cs.Value.evm.bytecode.opcodes))
+                        {
+                            File.WriteAllText(Path.Combine(outputdir, c.Key + "." + cs.Key + ".opcodes.txt"), cs.Value.evm.bytecode.opcodes);
+                        }
+                        if (cs.Value.evm.gasEstimates != null)
+                        {
+                            File.WriteAllText(Path.Combine(outputdir, c.Key + "." + cs.Key + ".gas.json"), Serialize(cs.Value.evm.gasEstimates));
+                        }
+                        if (cs.Value.abi != null)
+                        {
+                            File.WriteAllText(Path.Combine(outputdir, c.Key + "." + cs.Key + ".abi"), Serialize(cs.Value.abi));
+                        }
                     }
                 }
             }
-
+            
             if (!InstallNethereumGeneratorToolIfNotPresent())
             {
                 Log.LogError("Cannot generate .NET bindings for Solidity project.");
@@ -227,18 +232,20 @@ namespace Stratis.VS
 
             foreach (var c in output.contracts)
             {
-                var cs = c.Value.Values.First();
-                if (Sources.ContainsKey(c.Key))
+                foreach (var cs in c.Value)
                 {
-                    if (cs.evm.bytecode._object != null && cs.abi != null)
+                    if (Sources.ContainsKey(c.Key))
                     {
-                        if (CheckRunCmdOutput(RunCmd("cmd.exe", $"/c  dotnet Nethereum.Generator.Console generate from-abi -abi {Path.Combine(outputdir, c.Key + ".abi")} -bin {Path.Combine(outputdir, c.Key + ".bin")} -o bindings -ns {BindingsNS}", ProjectDir), ""))
+                        if (cs.Value.evm.bytecode._object != null && cs.Value.abi != null)
                         {
-                            Log.LogMessage(MessageImportance.High, $"Created .NET bindings for {c.Key} contract at {Path.Combine(ProjectDir, "bindings", c.Key)}.");
-                        }
-                        else
-                        {
-                            Log.LogError($"Could not create .NET bindings for {c.Key} contract.");
+                            if (CheckRunCmdOutput(RunCmd("cmd.exe", $"/c  dotnet Nethereum.Generator.Console generate from-abi -abi {Path.Combine(outputdir, c.Key + "." + cs.Key + ".abi")} -bin {Path.Combine(outputdir, c.Key + "." + cs.Key + ".bin")} -o bindings -ns {BindingsNS}", ProjectDir), ""))
+                            {
+                                Log.LogMessage(MessageImportance.High, $"Created .NET bindings for {c.Key + "." + cs.Key} contract at {Path.Combine(ProjectDir, "bindings", c.Key + "." + cs.Key)}.");
+                            }
+                            else
+                            {
+                                Log.LogError($"Could not create .NET bindings for {c.Key + "." + cs.Key} contract.");
+                            }
                         }
                     }
                 }
