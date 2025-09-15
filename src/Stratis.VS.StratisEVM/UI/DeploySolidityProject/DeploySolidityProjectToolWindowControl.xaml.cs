@@ -125,7 +125,7 @@ namespace Stratis.VS.StratisEVM.UI
                 ShowDeployError("Build failed. Please check the build output for errors.");
                 return;
             }
-
+            
             var bo = VSUtil.GetSmartContractProjectOutput(project, contractFileName);
             if (!bo.ContainsKey("bin"))
             {
@@ -152,11 +152,11 @@ namespace Stratis.VS.StratisEVM.UI
                 return;
             }
             var network = deployProfile.Parent.Parent;
+            ShowDeployProgress($"Deploying {contract[0]} contract to {network}...");
             var bin = "0x" + File.ReadAllText(bo["bin"].FullName);
             var abi = File.ReadAllText(bo["abi"].FullName);
-            HexBigInteger gasDeploy = EstimatedGasFeeRadioButton.IsChecked == true ? default : new HexBigInteger((long)CustomGasFeeNumberBox.Value);
-            
-            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.DeployContract(deployProfile.DeployProfileEndpoint, bin, deployProfile.DeployProfileAccount, null, null, gasDeploy)));
+            HexBigInteger gasDeploy = EstimatedGasFeeRadioButton.IsChecked == true ? default : new HexBigInteger((long)CustomGasFeeNumberBox.Value);            
+            var result = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.DeployContract(deployProfile.DeployProfileEndpoint, bin, deployProfile.DeployProfileAccount, null, abi, gasDeploy)));
             if (result.IsSuccess)
             {
                 var deployedOn = DateTime.Now;
@@ -190,12 +190,12 @@ namespace Stratis.VS.StratisEVM.UI
                         ShowDeploySuccess();
                     }
                 }
-                VSUtil.LogToBuildWindow($"\n========== {contractFileName} contract deployed successfully. ==========\nTransaction Hash: {result.Value.TransactionHash}\nContract Address: {result.Value.ContractAddress}");  
+                VSUtil.LogToStratisEVMWindow($"\n========== {contract[0]} contract deployed successfully to {network.Name}. ==========\nTransaction Hash: {result.Value.TransactionHash}\nContract Address: {result.Value.ContractAddress}");  
             }
             else
             {
-                ShowDeployError($"Error deploying contract: {result.Exception.Message}");
-                VSUtil.LogToBuildWindow($"\n========== Error deploying {contractFileName} contract. ==========\n{result.Exception.Message}");
+                ShowDeployError($"Error deploying contract: {result.FailureMessage}");
+                VSUtil.LogToStratisEVMWindow($"\n========== Error deploying {contract[0]} contract to {network.Name}. ==========\n{result.FailureMessage}");
             }
         }
 

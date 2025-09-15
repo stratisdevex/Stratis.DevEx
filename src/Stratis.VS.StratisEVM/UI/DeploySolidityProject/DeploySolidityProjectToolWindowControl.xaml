@@ -75,8 +75,8 @@
                 </StackPanel>
 
                 <StackPanel Name="DeployErrorsStackPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden">
-                    <ui:SymbolIcon Symbol="ErrorCircle24" VerticalAlignment="Bottom" />
-                    <ui:TextBlock Name = "DeployErrorsTextBlock" Grid.Row="0"  Foreground="Red" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+                    <ui:SymbolIcon Symbol="ErrorCircle24" VerticalAlignment="Bottom" Foreground="Red" />
+                    <ui:TextBlock Name = "DeployErrorsTextBlock" Grid.Row="0" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
                 </StackPanel>
             
