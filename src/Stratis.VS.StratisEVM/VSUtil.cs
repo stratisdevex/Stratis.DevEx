@@ -324,7 +324,7 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public static List<string> GetSolidityProjectContracts(Project project)
+        public static List<string> GetSolidityProjectContractSources(Project project)
         {
             ThreadHelper.ThrowIfNotOnUIThread();    
             List<string> contracts = new List<string>();

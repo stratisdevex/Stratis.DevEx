@@ -44,7 +44,7 @@ namespace Stratis.VS.StratisEVM.UI
                 MessageBox.Show("No project selected. Please select a Solidity project to deploy.", "Deploy Solidity Project", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            var contracts = VSUtil.GetSolidityProjectContracts(project);
+            var contracts = VSUtil.GetSolidityProjectContractSources(project);
             var profiles = GetDeployProfiles();
             string evmversion = VSUtil.GetProjectProperty(project, "EVMVersion");
 #else
