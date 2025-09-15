@@ -44,7 +44,7 @@ namespace Stratis.VS.StratisEVM.UI
                 MessageBox.Show("No project selected. Please select a Solidity project to deploy.", "Deploy Solidity Project", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            var contracts = VSUtil.GetSolidityProjectContractSources(project);
+            var contracts = VSUtil.GetSolidityProjectContracts(project);
             var profiles = GetDeployProfiles();
             string evmversion = VSUtil.GetProjectProperty(project, "EVMVersion");
 #else
@@ -116,7 +116,8 @@ namespace Stratis.VS.StratisEVM.UI
                 return;
             }
             var project = VSUtil.GetSelectedProject();
-            var contractFileName = DeployContractComboBox.SelectedItem.ToString();
+            var contract = DeployContractComboBox.SelectedItem.ToString().Split(new string[] { " - " }, StringSplitOptions.None);
+            var contractFileName = contract[0] + "." + contract[1];
             var deployProfileName = DeployProfileComboBox.SelectedItem.ToString();
             ShowDeployProgress($"Building {project.Name} project...");
             if (!VSUtil.BuildProject(project))

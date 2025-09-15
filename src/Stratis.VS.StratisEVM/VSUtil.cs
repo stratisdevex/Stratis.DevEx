@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
 
 using Stratis.DevEx;
+using Stratis.DevEx.Ethereum;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -324,15 +325,19 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public static List<string> GetSolidityProjectContractSources(Project project)
+        public static List<string> GetSolidityProjectContracts(Project project)
         {
             ThreadHelper.ThrowIfNotOnUIThread();    
             List<string> contracts = new List<string>();
-            foreach (EnvDTE.ProjectItem item in project.ProjectItems)
+            foreach (ProjectItem item in project.ProjectItems)
             {
                 if (item.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFile && item.Name.EndsWith(".sol", StringComparison.OrdinalIgnoreCase))
                 {
-                    contracts.Add(item.Name);
+                    var parser = new SolidityFileParser(item.FileNames[1]);
+                    foreach(var contract in parser.contractNames)
+                    {
+                        contracts.Add(contract + " - " + item.Name);
+                    }   
                 }
             }
             return contracts;

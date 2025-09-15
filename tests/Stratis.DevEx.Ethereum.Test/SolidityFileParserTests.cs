@@ -9,8 +9,7 @@ namespace Stratis.DevEx.Ethereum.Test
         [Fact]
         public void CanParseContractNames()
         {
-            var parser = new SolidityFileParser(file1);
-            
+            var parser = new SolidityFileParser(file1, false);            
             Assert.NotNull(parser);
             parser.Parse();
             Assert.NotEmpty(parser.contractNames);
