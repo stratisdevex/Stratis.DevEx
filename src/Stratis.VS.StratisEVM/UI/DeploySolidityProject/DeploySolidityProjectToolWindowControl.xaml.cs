@@ -107,6 +107,44 @@ namespace Stratis.VS.StratisEVM.UI
             
         }
 
+        private void DeployContractComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CreateDeployContractParamsInputElements();
+        }
+
+        private void CreateDeployContractParamsInputElements()
+        {
+            // Clear existing parameters
+            ContractDeployParamsStackPanel.Children.Clear();
+            if (DeployContractComboBox.SelectedItem == null) return;
+            var project = VSUtil.GetSelectedProject();
+            var contract = DeployContractComboBox.SelectedItem.ToString().Split(new string[] { " - " }, StringSplitOptions.None);
+            var path = VSUtil.GetProjectItemFilePath(project, contract[1]);
+            var deployParams = SolidityFileParser.GetConstructorParameters(path)[contract[0]];
+            if (deployParams.Count == 0)
+            {
+                ContractDeployParamsStackPanel.Visibility = Visibility.Collapsed;
+                return;
+            }
+            ContractDeployParamsStackPanel.Children.Add(new TextBlock() { Text = "Constructor Parameters:", Margin = new Thickness(4, 4, 0, 4) });
+            foreach (var p in deployParams)
+            {
+                var sp = new StackPanel()
+                {
+                    Orientation = Orientation.Horizontal,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Margin = new Thickness(4, 0, 0, 2)
+                };
+                var lbl = new TextBlock() { Text = $"{p.Key}({p.Value}): ", Width = 150, VerticalAlignment = VerticalAlignment.Center, FontSize=11.0 };
+                var tb = new TextBox() { Name = $"Param{p.Key}TextBox", Width = 150, VerticalAlignment = VerticalAlignment.Center, FontSize = 11.0 };
+                sp.Children.Add(lbl);
+                sp.Children.Add(tb);
+                ContractDeployParamsStackPanel.Children.Add(sp);
+                ContractDeployParamsStackPanel.Visibility = Visibility.Visible;
+            }
+        }
+
         private void DeployButton_Click(object sender, RoutedEventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -235,8 +273,9 @@ namespace Stratis.VS.StratisEVM.UI
         #region Fields
         protected bool projectInitialized = false;
         protected Dictionary<string, BlockchainInfo> deployProfiles = new Dictionary<string, BlockchainInfo>();
+
         #endregion
 
-        
+       
     }
 }

@@ -37,7 +37,12 @@
                
                 <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <ui:TextBlock Text="Select the contract to deploy:"  Margin="4,0,0,2" />
-                    <ComboBox x:Name="DeployContractComboBox"  Margin="0,2,0,4" Width="200" />
+                    <ComboBox x:Name="DeployContractComboBox"  Margin="0,2,0,4" Width="200" SelectionChanged="DeployContractComboBox_SelectionChanged" />
+                </StackPanel>
+
+                
+                <StackPanel x:Name="ContractDeployParamsStackPanel" Orientation="Vertical"  VerticalAlignment="Top" HorizontalAlignment="Left">
+              
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical"  VerticalAlignment="Top" HorizontalAlignment="Left">

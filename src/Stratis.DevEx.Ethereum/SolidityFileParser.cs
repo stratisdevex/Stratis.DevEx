@@ -11,6 +11,7 @@ namespace Stratis.DevEx.Ethereum
 {
     public class SolidityFileParser : SolidityBaseListener
     {
+        #region Constructor
         public SolidityFileParser(string filepath, bool parse = true)
         {
             AntlrInputStream inputStream = new AntlrInputStream(File.ReadAllText(filepath));
@@ -19,9 +20,17 @@ namespace Stratis.DevEx.Ethereum
             parser = new SolidityParser(commonTokenStream);
             if (parse) Parse();
         }
+        #endregion
 
+        #region Methods
         public void Parse() => Antlr4.Runtime.Tree.ParseTreeWalker.Default.Walk(this, parser.sourceUnit());
 
+        public static List<string> GetContractNames(string filepath) => new SolidityFileParser(filepath).contractNames;
+
+        public static Dictionary<string, Dictionary<string, string>> GetConstructorParameters(string filepath) => new SolidityFileParser(filepath).constructorParameters;       
+        #endregion
+
+        #region Overrides
         public override void EnterContractDefinition([NotNull] SolidityParser.ContractDefinitionContext context)
         { 
             var contractName = context.identifier().GetText();
@@ -59,8 +68,9 @@ namespace Stratis.DevEx.Ethereum
 
             base.EnterFunctionDefinition(context);
         }
+        #endregion
 
-       
+        #region Fields
         public List<string> contractNames = new List<string>();
         public List<RecognitionException> exceptions = new List<RecognitionException>();
         protected SolidityParser parser;
@@ -70,5 +80,6 @@ namespace Stratis.DevEx.Ethereum
 
         // Track the current contract being parsed
         private string currentContract = null;
+        #endregion
     }
 }

@@ -334,6 +334,7 @@ namespace Stratis.VS.StratisEVM
                 if (item.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFile && item.Name.EndsWith(".sol", StringComparison.OrdinalIgnoreCase))
                 {
                     var parser = new SolidityFileParser(item.FileNames[1]);
+                    
                     foreach(var contract in parser.contractNames)
                     {
                         contracts.Add(contract + " - " + item.Name);
@@ -343,6 +344,19 @@ namespace Stratis.VS.StratisEVM
             return contracts;
         }
 
+        public static string GetProjectItemFilePath(Project project, string fileName)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            foreach (ProjectItem item in project.ProjectItems)
+            {
+                if (item.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFile && item.Name == fileName)
+                {
+                    return item.FileNames[1];
+                }
+            }
+            return null;
+
+        }
         public IProjectLockService GetProjectLockService()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
