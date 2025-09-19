@@ -6,6 +6,7 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
              Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"
              Background="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}">
@@ -29,38 +30,38 @@
             <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <StackPanel Orientation="Vertical" Name="ProjectEVMVersionStackPanel" Visibility="Hidden">
                     <StackPanel Orientation="Horizontal">
-                        <ui:TextBlock Text="Project EVM version is:" Margin="4,0,0,2"/>
-                        <ui:TextBlock Name="ProjectEVMVersionTextBlock" Margin="4,0,0,4" Text="london" FontWeight="Bold" />
+                        <Label Content="Project EVM version is:" Margin="4,0,0,2"/>
+                        <Label Name="ProjectEVMVersionLabel" Margin="1,0,0,0" Content="london" FontWeight="Bold" />
                         <ui:SymbolIcon Symbol="Info12" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" ToolTip="Make sure the network you are deploying to supports this EVM version or deployment will fail."/>
                     </StackPanel>
                 </StackPanel>
-               
                 <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
-                    <ui:TextBlock Text="Select the contract to deploy:"  Margin="4,0,0,2" />
-                    <ComboBox x:Name="DeployContractComboBox"  Margin="0,2,0,4" Width="200" SelectionChanged="DeployContractComboBox_SelectionChanged" />
+                    <Label Content="Select the contract to deploy:"  Margin="4,0,0,2" />
+                    <ComboBox x:Name="DeployContractComboBox"  Margin="4,0,0,2" Width="250" FontSize="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" SelectionChanged="DeployContractComboBox_SelectionChanged" />
                 </StackPanel>
 
-                
                 <StackPanel x:Name="ContractDeployParamsStackPanel" Orientation="Vertical"  VerticalAlignment="Top" HorizontalAlignment="Left">
-              
                 </StackPanel>
+                <Separator />
 
                 <StackPanel Orientation="Vertical"  VerticalAlignment="Top" HorizontalAlignment="Left">
-                    <ui:TextBlock Text="Select the deploy profile:"  Margin="4,0,0,2" />
-                    <ComboBox x:Name="DeployProfileComboBox"  Margin="0,2,0,4" Width="200" FontSize="12" Height="36" />
+                    <Label Content="Select the deploy profile:"  Margin="4,0,0,2" />
+                    <ComboBox x:Name="DeployProfileComboBox" GotFocus="DeployProfileComboBox_GotFocus" Margin="4,0,0,2" Width="200" FontSize="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" Height="36" />
                 </StackPanel>
 
+                <Separator />
+
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
-                    <ui:TextBlock Text="Gas Limit:"  Margin="4,0,0,2" />
-                    <RadioButton Content="Estimated Gas" Name="EstimatedGasFeeRadioButton" GroupName="SmartContractGasGroup" Checked="EstimatedGasFeeRadioButton_Checked" IsChecked="True" Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
+                    <Label Content="Gas Limit:"  Margin="4,0,0,2" />
+                    <RadioButton Content="Estimated Gas" Name="EstimatedGasFeeRadioButton" GroupName="SmartContractGasGroup" Checked="EstimatedGasFeeRadioButton_Checked" IsChecked="True" FontSize="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
                     <StackPanel Orientation="Horizontal">
-                        <RadioButton Content="Custom"  Name="CustomGasFeeRadioButton" GroupName="SmartContractGasGroup" Checked="CustomGasFeeRadioButton_Checked" Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"/>
+                        <RadioButton Content="Custom"  Name="CustomGasFeeRadioButton" GroupName="SmartContractGasGroup" Checked="CustomGasFeeRadioButton_Checked" FontSize="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"/>
                         <ui:NumberBox SpinButtonPlacementMode="Inline"  Name="CustomGasFeeNumberBox" Value="3000000" IsEnabled="False" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top">
-                    <ui:TextBlock Text="Value:"  Margin="4,0,0,2" />
+                    <Label Content="Value:"  Margin="4,0,0,2" />
                     <ui:NumberBox SpinButtonPlacementMode="Inline"  Name="ValueNumberBox" Value="0" Width="150" Margin="0,2,0,4" VerticalAlignment="Center"/>
                 </StackPanel>
             </StackPanel>

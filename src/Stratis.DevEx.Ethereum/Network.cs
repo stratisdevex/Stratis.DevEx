@@ -33,29 +33,20 @@ namespace Stratis.DevEx.Ethereum
 
         public static Nethereum.Contracts.Contract GetContract(string rpcurl, string contractAddress, string abi = null) => new Web3(rpcurl).Eth.GetContract(abi ?? "", contractAddress);
 
-        public static async Task<TransactionReceipt> DeployContract(string rpcurl, string bytecode, string account, string password = null, string abi = null, HexBigInteger gasDeploy = default)
+        public static async Task<TransactionReceipt> DeployContract(string rpcurl, string bytecode, string account, string password = null, string abi = null, HexBigInteger gasDeploy = default, object[] values = null)
         {
             var web3 = new Web3(rpcurl);
 
             if (gasDeploy == null)
             {
-                gasDeploy = await web3.Eth.DeployContract.EstimateGasAsync(abi, bytecode, account);
+                gasDeploy = await web3.Eth.DeployContract.EstimateGasAsync(abi, bytecode, account, values);
             }
          
             if (!await web3.Personal.UnlockAccount.SendRequestAsync(account, "", new HexBigInteger(30)))
             {
                 throw new Exception("Could not unlock account using provided password.");
-            }
-          
-            if (abi == null)
-            {
-                return await web3.Eth.DeployContract.SendRequestAndWaitForReceiptAsync(bytecode, account, gasDeploy);
-            }
-            else
-            {
-               
-                return await web3.Eth.DeployContract.SendRequestAndWaitForReceiptAsync(abi, bytecode, account, gasDeploy);
-            }
+            }                                    
+            return await web3.Eth.DeployContract.SendRequestAndWaitForReceiptAsync(abi, bytecode, account, gasDeploy, values: values);            
         }
 
         public static async Task<string> CallContractAsync(string rpcurl, string contractAddress, string abi, string functionName, string fromAddress = null, HexBigInteger gas = null, HexBigInteger value = null, params object[] functionInput)

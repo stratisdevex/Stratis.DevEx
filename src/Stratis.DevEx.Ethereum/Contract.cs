@@ -51,6 +51,75 @@ namespace Stratis.DevEx.Ethereum
             }   
             return output;
         }
-        
+
+        public static object[] ParseFunctionParameterValues(Dictionary<string, (string, string)> p) => p.Values.Select(tv => ConvertToType(tv.Item1, tv.Item2)).ToArray();
+
+        // Helper method to convert string to the appropriate .NET type based on Solidity type
+        private static object ConvertToType(string solidityType, string value)
+        {
+            switch (solidityType)
+            {
+                case "address":
+                case "string":
+                    return value;
+                case "bool":
+                    if (bool.TryParse(value, out var b)) return b;
+                    if (value == "1") return true;
+                    if (value == "0") return false;
+                    throw new FormatException($"Cannot convert '{value}' to bool.");
+                case "uint":
+                case "uint256":
+                    if (ulong.TryParse(value, out var ul)) return ul;
+                    throw new FormatException($"Cannot convert '{value}' to uint256.");
+                case "int":
+                case "int256":
+                    if (long.TryParse(value, out var l)) return l;
+                    throw new FormatException($"Cannot convert '{value}' to int256.");
+                case "bytes32":
+                    // Accept hex string or convert string to bytes32 (padded/truncated)
+                    if (value.StartsWith("0x") && value.Length == 66)
+                        return value;
+                    // Otherwise, pad/truncate to 32 bytes
+                    var bytes = Encoding.UTF8.GetBytes(value);
+                    Array.Resize(ref bytes, 32);
+                    return bytes;
+                case var arr when arr.EndsWith("[]"):
+                    // Handle array types
+                    var elementType = arr.Substring(0, arr.Length - 2);
+                    return value.TrimStart('[').TrimEnd(']').Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                     .Select(s => s.Trim())
+                                     .Select(s => ConvertToType(elementType, s))
+                                     .ToArray();
+                default:
+
+                    throw new NotSupportedException($"Solidity type '{solidityType}' is not supported.");
+            }
+        }
+
+        private static object[] ParseCommaDelimitedArray(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return Array.Empty<object>();
+
+            var items = input.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                             .Select(s => s.Trim())
+                             .Select(s =>
+                             {
+                                 // Try to parse as int
+                                 if (int.TryParse(s, out int i))
+                                     return (object)i;
+                                 // Try to parse as double
+                                 if (double.TryParse(s, out double d))
+                                     return (object)d;
+                                 // Try to parse as bool
+                                 if (bool.TryParse(s, out bool b))
+                                     return (object)b;
+                                 // Otherwise, treat as string
+                                 return (object)s;
+                             })
+                             .ToArray();
+            return items;
+        }
+
     }
 }
