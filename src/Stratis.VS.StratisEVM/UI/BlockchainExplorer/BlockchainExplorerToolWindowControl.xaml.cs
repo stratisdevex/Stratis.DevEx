@@ -818,19 +818,17 @@ namespace Stratis.VS.StratisEVM.UI
                 var window = (BlockchainExplorerToolWindowControl)sender;
                 var tree = window.BlockchainExplorerTree;
                 var item = GetSelectedItem(sender);
-                var tc = (TabControl)TryFindResource("EditRunContractTabControl");
+                var _sp = (StackPanel)TryFindResource("EditContractDialog");
                 var dw = new ToolWindowDialog(RootContentDialog)
                 {
-                    Title = "Edit/Run contract " + item.DisplayName,
-                    Content = tc,
+                    Title = "Edit contract " + item.DisplayName,
+                    Content = _sp,
                     PrimaryButtonText = "Save",
                     PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
                     SecondaryButtonText = "Run",
                     SecondaryButtonIcon = new SymbolIcon(SymbolRegular.Run24),
                     CloseButtonText = "Cancel",
                 };
-
-                var _sp = (StackPanel)((TabItem)(tc.Items[0])).Content;
                 var sp = (StackPanel)(_sp).Children[0];
                 var address = (Wpc.TextBox)(sp.Children[1]);
                 var label = (Wpc.TextBox)(sp.Children[3]);
@@ -847,14 +845,7 @@ namespace Stratis.VS.StratisEVM.UI
                 deployedOn.Text = (string)item.Data["DeployedOn"];
                 abi.Text = (string)item.Data["Abi"];
 
-                _sp = (StackPanel)((TabItem)(tc.Items[1])).Content;
-                var formPanel = (StackPanel)(_sp).Children[0];
-                var statusPanel = ((StackPanel)(_sp).Children[1]);
-                //var errors = (Wpc.TextBlock) ((StackPanel)(_sp).Children[1]).Children[0];
-                var rabi = Contract.DeserializeABI((string)item.Data["Abi"]);
-                await CreateContractInputElementsAsync(formPanel, statusPanel, item.Data);
-                dw.ButtonClicked += (cd, args) => { };
-                dw.Closing += (d, args) => { };
+                
 
                 var r = await dw.ShowAsync();
                 if (r == ContentDialogResult.None)
@@ -902,6 +893,69 @@ namespace Stratis.VS.StratisEVM.UI
             var item = GetSelectedItem(sender);
             item.Parent.DeleteChild(item);
             SaveBlockchainTree(tree);
+        }
+
+        private async void RunContractCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var window = (BlockchainExplorerToolWindowControl)sender;
+                var tree = window.BlockchainExplorerTree;
+                var item = GetSelectedItem(sender);
+                var _sp = (StackPanel)TryFindResource("RunContractDialog");
+                var dw = new ToolWindowDialog(RootContentDialog)
+                {
+                    Title = "Run contract " + item.DisplayName,
+                    Content = _sp,
+                    PrimaryButtonText = "Run",
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Run24),
+                    CloseButtonText = "Cancel",
+                };
+                var formPanel = (StackPanel)(_sp).Children[0];
+                var statusPanel = ((StackPanel)(_sp).Children[1]);
+                //var errors = (Wpc.TextBlock) ((StackPanel)(_sp).Children[1]).Children[0];
+                var rabi = Contract.DeserializeABI((string)item.Data["Abi"]);
+                await CreateContractInputElementsAsync(formPanel, statusPanel, item.Data);
+                dw.ButtonClicked += (cd, args) => { };
+                dw.Closing += (d, args) => { };
+
+                var r = await dw.ShowAsync();
+                if (r == ContentDialogResult.None)
+                {
+                    return;
+                }
+                else if (r == ContentDialogResult.Secondary)
+                {
+#pragma warning disable CS4014
+                    ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
+                    {
+                        var w = await StratisEVMPackage.Instance.ShowToolWindowAsync(typeof(RunSmartContractToolWindow), 0, true, StratisEVMPackage.Instance.DisposalToken);
+                        if (w != null && w.Frame != null)
+                        {
+                            RunSmartContractToolWindowControl.instance.RunContract(item);
+                        }
+                        else
+                        {
+                            VSUtil.ShowModalErrorDialogBox("Could not launch Run Smart Contract tool window.", "Edit Contract error");
+                        }
+                    });
+                    return;
+
+#pragma warning restore CS4014
+
+                }
+                //item.Data["Label"] = label.Text;
+                //item.Data["Abi"] = abi.Text;
+                //tree.Save();                
+            }
+            catch (Exception ex)
+            {
+#if IS_VSIX
+                VSUtil.ShowModalErrorDialogBox(ex?.Message, "Edit Contract error");
+#else
+                System.Windows.MessageBox.Show(ex?.Message);
+#endif
+            }
         }
         #endregion
 
@@ -1089,6 +1143,8 @@ namespace Stratis.VS.StratisEVM.UI
         #region Fields
         internal BlockchainExplorerToolWindow window;
         internal static BlockchainExplorerToolWindowControl instance;
-        #endregion       
+        #endregion
+
+       
     }
 }

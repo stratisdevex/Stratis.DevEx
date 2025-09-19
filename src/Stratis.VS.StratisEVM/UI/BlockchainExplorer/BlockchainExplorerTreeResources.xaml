@@ -616,6 +616,11 @@
                 <Image Source="{StaticResource EditContractDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
+        <MenuItem Header="Run..." Command="{x:Static stratisui:BlockchainExplorerTree.RunContractCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource EditContractDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
         <MenuItem Header="Delete" Command="{x:Static stratisui:BlockchainExplorerTree.DeleteContractCmd}">
             <MenuItem.Icon>
                 <Image Source="{StaticResource DeleteDrawingImage}" />
@@ -760,62 +765,45 @@
                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
         </StackPanel>
     </StackPanel>
-
-    <TabControl x:Key="EditRunContractTabControl">
-        <TabItem Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabItemNavigationStyleKey}}" Width="75">
-            <TabItem.Header>
-                <StackPanel Orientation="Horizontal">
-                    <ui:SymbolIcon Margin="0,0,3,0" Symbol="Edit16" />
-                    <Label Content="Edit" />
-                </StackPanel>
-            </TabItem.Header>
-            <StackPanel Name="EditContractDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
-                <StackPanel Orientation="Vertical" >
-                    <Label Content="Address:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                    <ui:TextBox x:Name="EditContractAddressTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                    <Label Content="Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                    <ui:TextBox x:Name="EditContractLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
-                    <Label Content="Creator:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                    <ui:TextBox x:Name="EditContractCreatorTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                    <Label Content="Transaction Hash:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                    <ui:TextBox x:Name="EditContractTransactionHashTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                    <Label Content="Deployed On:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                    <ui:TextBox x:Name="EditContractDeployedOnTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                    <Label Content="ABI:" VerticalAlignment="Center" Margin="1,0,0,2" />
-                    <ui:TextBox x:Name="EditContractAbiTextBox"  Width="150" Height="100" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="WrapWithOverflow" />
-                </StackPanel>
-                <StackPanel Orientation="Vertical" Style="{DynamicResource DialogStyle}">
-                    <ui:TextBlock Name = "EditContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
-                        ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
-                    <ui:ProgressRing Name="EditContractDialogProgressRing" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" Visibility="Hidden" />
+    
+    <StackPanel x:Key="EditContractDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
+        <StackPanel Orientation="Vertical" >
+            <Label Content="Address:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractAddressTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+            <Label Content="Label:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractLabelTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" />
+            <Label Content="Creator:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractCreatorTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+            <Label Content="Transaction Hash:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractTransactionHashTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+            <Label Content="Deployed On:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractDeployedOnTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+            <Label Content="ABI:" VerticalAlignment="Center" Margin="1,0,0,2" />
+            <ui:TextBox x:Name="EditContractAbiTextBox"  Width="150" Height="100" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="WrapWithOverflow" />
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Style="{DynamicResource DialogStyle}">
+            <ui:TextBlock Name = "EditContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+            <ui:ProgressRing Name="EditContractDialogProgressRing" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" Visibility="Hidden" />
                     
-                </StackPanel>
-            </StackPanel>
-        </TabItem>
-        <TabItem Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ThemedDialogTabItemNavigationStyleKey}}" Width="75">
-            <TabItem.Header>
-                <StackPanel Orientation="Horizontal">
-                    <ui:SymbolIcon Margin="0,0,3,0" Symbol="Run16" />
-                    <Label Content="Run" />
-                </StackPanel>
-            </TabItem.Header>
-            <StackPanel Name="RunContractDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
-            <StackPanel Orientation="Vertical" />
-            <StackPanel Orientation="Vertical">
-                <Grid>
-                    <ui:TextBlock Name = "RunContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
-                        ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
-                    <ui:ProgressRing Name="RunContractDialogProgressRing" Grid.Row="0" Visibility="Hidden" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" />                   
-                    <StackPanel Name="RunContractSuccessStackPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden">
-                        <ui:SymbolIcon Symbol="CheckmarkCircle24" VerticalAlignment="Bottom" Foreground="LightGreen" />
-                        <ui:TextBlock Name="RunContractSuccessTextBlock" Margin="4,0,0,0" VerticalAlignment="Bottom" />
-                    </StackPanel>
+        </StackPanel>
+    </StackPanel>
 
-                    </Grid>
-            </StackPanel>
-            </StackPanel>
-        </TabItem>
-    </TabControl>
+    <StackPanel x:Key="RunContractDialog" Orientation="Vertical" VerticalAlignment="Top" Style="{DynamicResource DialogStyle}">
+        <StackPanel Orientation="Vertical" />
+        <StackPanel Orientation="Vertical">
+            <Grid>
+                <ui:TextBlock Name = "RunContractValidationErrors" Grid.Row="0" Foreground="Red" Visibility="Hidden" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" 
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                <ui:ProgressRing Name="RunContractDialogProgressRing" Grid.Row="0" Visibility="Hidden" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" />
+                <StackPanel Name="RunContractSuccessStackPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden">
+                    <ui:SymbolIcon Symbol="CheckmarkCircle24" VerticalAlignment="Bottom" Foreground="LightGreen" />
+                    <ui:TextBlock Name="RunContractSuccessTextBlock" Margin="4,0,0,0" VerticalAlignment="Bottom" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </StackPanel>
+
 
 
 </ResourceDictionary>

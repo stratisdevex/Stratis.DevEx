@@ -59,6 +59,7 @@
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteAccountCmd}" Executed="DeleteAccountCmd_Executed" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.EditContractCmd}" Executed="EditContractCmd_Executed" />
         <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.DeleteContractCmd}" Executed="DeleteContractCmd_Executed" />
+        <CommandBinding Command="{x:Static stratisui:BlockchainExplorerTree.RunContractCmd}" Executed="RunContractCmd_Executed" />
     </UserControl.CommandBindings>
 
 </UserControl>

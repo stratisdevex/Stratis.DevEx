@@ -14,12 +14,15 @@
         <Style.Resources>
             <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" />
             </Style>
             <Style TargetType="{x:Type ui:TextBlock}">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" />
             </Style>
             <Style TargetType="{x:Type ui:TextBox}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTextBoxStyleKey}}">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" />
             </Style>
         </Style.Resources>
     </Style>
