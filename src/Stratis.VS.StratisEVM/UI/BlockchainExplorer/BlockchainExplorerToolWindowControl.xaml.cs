@@ -16,14 +16,13 @@ using Microsoft.VisualStudio.Shell;
 using Hardcodet.Wpf.GenericTreeView;
 using Wpf.Ui.Controls;
 using Wpc = Wpf.Ui.Controls;
+using Nethereum.Util;
 
 using static Stratis.DevEx.Result;
 using Stratis.DevEx.Ethereum;
 using Stratis.VS.StratisEVM.UI.ViewModel;
-using System.Diagnostics;
-using Nethereum.ABI.Model;
-using static System.Net.Mime.MediaTypeNames;
 using Stratis.DevEx;
+using System.Windows.Documents;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -1030,13 +1029,13 @@ namespace Stratis.VS.StratisEVM.UI
                 };
                 hsp.Children.Add(new Label()
                 {
-                    Content = "Balance: ",
+                    Content = "Contract Balance: ",
                     FontWeight = FontWeights.Bold,
                     VerticalAlignment = VerticalAlignment.Center,
                 });
                 hsp.Children.Add(new Wpc.TextBlock()
                 {
-                    Text = $"{balr.Value}",
+                    Text = $"{UnitConversion.Convert.FromWei(balr.Value, UnitConversion.EthUnit.Ether)} ETH",
                     VerticalAlignment = VerticalAlignment.Center,
                 });
                 form.Children.Add(hsp); 
@@ -1048,11 +1047,12 @@ namespace Stratis.VS.StratisEVM.UI
             }
             
             foreach (var function in _abi.Functions)
-            {              
-                var hsp = new StackPanel()
+            {
+                var vsp = new StackPanel()
                 {
-                    Orientation = Orientation.Horizontal,
+                    Orientation = Orientation.Vertical,
                 };
+                
                 var button = new Wpc.Button()
                 {
                     Name = function.Name + "_Button",
@@ -1061,52 +1061,57 @@ namespace Stratis.VS.StratisEVM.UI
                     Foreground = System.Windows.Media.Brushes.White,
                     Background = System.Windows.Media.Brushes.DodgerBlue,
                     VerticalAlignment = VerticalAlignment.Center,
-                };
-                hsp.Children.Add(button);
+                };                
                 if (function.InputParameters != null && function.InputParameters.Count() > 0)
                 {
-                    var paramsText = function.InputParameters.Select(p => p.Type + " " + p.Name).JoinWith(Environment.NewLine);                                        
-                    var paramsTextBox = new Wpc.TextBox()
+                    foreach (var p in function.InputParameters)
                     {
-                        Name = function.Name + "_Params",
-                        ToolTip = "Parameters required: " + paramsText,
-                        Margin = new Thickness(10, 5, 5, 10),
-                        Width = 125,
-                        VerticalAlignment = VerticalAlignment.Center,   
-                    };
-                    hsp.Children.Add(paramsTextBox);
+                        var hsp = new StackPanel()
+                        {
+                            Orientation = Orientation.Horizontal,
+                        };
+
+                        hsp.Children.Add(new Label()
+                        {
+                            Content = $"{p.Name}({p.Type}): ",
+                            FontSize = 11,
+                            VerticalAlignment = VerticalAlignment.Bottom,
+                        });
+                        hsp.Children.Add(new Wpc.TextBox()
+                        {
+
+                            FontSize = 11,
+                            Width = 125,
+                            VerticalAlignment = VerticalAlignment.Bottom,
+                        });
+                        vsp.Children.Add(hsp);
+                    }
+                    
                     button.Click += (s, e) =>
                     {
-                        var paramVals = paramsTextBox.Text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
+                        var paramVals = GetContractFunctionParams(vsp, function.InputParameters.ToDictionary(ip => ip.Name, ip => ip.Type));
                         if (paramVals.Length != function.InputParameters.Count())
                         {
                             ShowValidationErrors(errors, $"The {function.Name} function requires {function.InputParameters.Count()} parameters.");
                             return;
                         }   
-                        /*
-                        ShowProgressRing((ProgressRing)TryFindResource("ContractFunctionProgressRing"));
-                        var r = await ThreadHelper.JoinableTaskFactory.RunAsync(() => ExecuteAsync(Network.CallContract(rpcurl, address, function.Name, new object[] { })));
-                        HideProgressRing((ProgressRing)TryFindResource("ContractFunctionProgressRing"));
+                        ShowProgressRing(progressring);
+                        var r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.CallContractAsync(rpcurl, address, abi, function.Name, functionInput: paramVals)));
+                        HideProgressRing(progressring);
                         if (r.IsSuccess)
                         {
-                            if (function.OutputParameters != null && function.OutputParameters.Count() > 0)
-                            {
-                                var output = r.Value as object[];
-                                var outputStr = function.OutputParameters.Select((p, i) => p.Type + " " + p.Name + " = " + (output != null && output.Length > i ? output[i]?.ToString() : "null")).JoinWith("; ");
-                                System.Windows.MessageBox.Show("Function executed successfully. Output: " + outputStr, "Function executed", MessageBoxButton.OK, MessageBoxImage.Information);
-                            }
-                            else
-                            {
-                                System.Windows.MessageBox.Show("Function executed successfully.", "Function executed", MessageBoxButton.OK, MessageBoxImage.Information);
-                            }
+                            HideValidationErrors(errors);
+
+                            ShowValidationSuccess(successPanel, successTextBlock, $"Function {function.Name} result: {r.Value}");
+                            VSUtil.LogToStratisEVMWindow($"[call] {function.Name}: {r.Value}");
                         }
                         else
                         {
-                            ShowValidationErrors(errors, $"Error calling contract function: {r.Message}");
+                            HideValidationSuccess(successPanel);
+                            ShowValidationErrors(errors, $"Error calling contract function: {r.FailureMessage}");
                         }
-                        */
                     };
-                }
+                }                
                 else
                 {
                     button.Click += (s, e) =>
@@ -1129,10 +1134,34 @@ namespace Stratis.VS.StratisEVM.UI
                         }
                         
                     };
-
                 }
-                form.Children.Add(hsp);
+                vsp.Children.Add(button);
+                form.Children.Add(vsp);
+                form.Children.Add(new Separator()
+                {
+                    Margin = new Thickness(0, 5, 0, 5),
+                });
             }
+        }
+
+        private object[] GetContractFunctionParams(StackPanel form, Dictionary<string, string> paramTypes)
+        {
+            Dictionary<string, (string, string)> paramValues = new Dictionary<string, (string, string)>();
+            //List<object> paramValues = new List<object>();
+            foreach (var child in form.Children)
+            {
+                if (child is StackPanel sp && sp.Children.Count == 2 && sp.Children[0] is Wpc.TextBlock lbl && sp.Children[1] is Wpc.TextBox tb)
+                {
+                    var paramName = (Run)lbl.Inlines.FirstInline;
+                    if (paramTypes.ContainsKey(paramName.Text))
+                    {
+                        paramValues[paramName.Text] = (paramTypes[paramName.Text], tb.Text);
+                        //paramValues.Add(tb.Text);   
+                    }
+                }
+            }
+            return Contract.ParseFunctionParameterValues(paramValues);
+            //return paramValues.ToArray();
         }
         #endregion
 

@@ -36,8 +36,6 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
-
-
     <DrawingImage x:Key="BlockchainNetworkDrawingImage">
         <DrawingImage.Drawing>
             <DrawingGroup ClipGeometry="M0,0 V64 H64 V0 H0 Z">
@@ -378,6 +376,16 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
+
+    <DrawingImage x:Key="RunContractDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V16 H16 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <GeometryDrawing Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Geometry="F1 M16,16z M0,0z M1.77,1.01L1,1.42 1,13.42 1.78,13.84 10.78,7.84 10.78,7.01 1.77,1.01z M2,12.49L2,2.36 9.6,7.43 2,12.49z M12.15,8L12.86,8 15.36,10.5 14.65,11.21 13,9.56 13,15 12,15 12,9.55 10.35,11.2 9.65,10.5 12.15,8z" />
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
     
     <!-- TreeView items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
@@ -618,7 +626,7 @@
         </MenuItem>
         <MenuItem Header="Run..." Command="{x:Static stratisui:BlockchainExplorerTree.RunContractCmd}">
             <MenuItem.Icon>
-                <Image Source="{StaticResource EditContractDrawingImage}" />
+                <Image Source="{StaticResource RunContractDrawingImage}" />
             </MenuItem.Icon>
         </MenuItem>
         <MenuItem Header="Delete" Command="{x:Static stratisui:BlockchainExplorerTree.DeleteContractCmd}">
