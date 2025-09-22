@@ -906,51 +906,31 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     Title = "Run contract " + item.DisplayName,
                     Content = _sp,
-                    PrimaryButtonText = "Run",
-                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Run24),
-                    CloseButtonText = "Cancel",
+                    CloseButtonText = "Close",
                 };
-                var formPanel = (StackPanel)(_sp).Children[0];
-                var statusPanel = ((StackPanel)(_sp).Children[1]);
-                //var errors = (Wpc.TextBlock) ((StackPanel)(_sp).Children[1]).Children[0];
-                var rabi = Contract.DeserializeABI((string)item.Data["Abi"]);
-                await CreateContractInputElementsAsync(formPanel, statusPanel, item.Data);
+           
+                var transactCheckBox = (CheckBox)((_sp).Children[0]);
+                var transactPanel = (StackPanel)((_sp).Children[1]);    
+                var runAddressTextBox = (Wpc.TextBox)((StackPanel)(transactPanel).Children[0]).Children[1];   
+                transactCheckBox.Checked += (s, ev) =>
+                {
+                    transactPanel.IsEnabled = true;
+                };
+                transactCheckBox.Unchecked += (s, ev) =>
+                {
+                    transactPanel.IsEnabled = false;
+                };
+                var formPanel = (StackPanel)(_sp).Children[2];
+                var statusPanel = ((StackPanel)(_sp).Children[3]);
+                await CreateRunContractFormAsync(formPanel, statusPanel, item.Data);
                 dw.ButtonClicked += (cd, args) => { };
                 dw.Closing += (d, args) => { };
-
-                var r = await dw.ShowAsync();
-                if (r == ContentDialogResult.None)
-                {
-                    return;
-                }
-                else if (r == ContentDialogResult.Secondary)
-                {
-#pragma warning disable CS4014
-                    ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
-                    {
-                        var w = await StratisEVMPackage.Instance.ShowToolWindowAsync(typeof(RunSmartContractToolWindow), 0, true, StratisEVMPackage.Instance.DisposalToken);
-                        if (w != null && w.Frame != null)
-                        {
-                            RunSmartContractToolWindowControl.instance.RunContract(item);
-                        }
-                        else
-                        {
-                            VSUtil.ShowModalErrorDialogBox("Could not launch Run Smart Contract tool window.", "Edit Contract error");
-                        }
-                    });
-                    return;
-
-#pragma warning restore CS4014
-
-                }
-                //item.Data["Label"] = label.Text;
-                //item.Data["Abi"] = abi.Text;
-                //tree.Save();                
+                await dw.ShowAsync();                             
             }
             catch (Exception ex)
             {
 #if IS_VSIX
-                VSUtil.ShowModalErrorDialogBox(ex?.Message, "Edit Contract error");
+                VSUtil.ShowModalErrorDialogBox(ex?.Message, "Run Contract Error");
 #else
                 System.Windows.MessageBox.Show(ex?.Message);
 #endif
@@ -1006,8 +986,9 @@ namespace Stratis.VS.StratisEVM.UI
 
         private void HideValidationSuccess(StackPanel successPanel) => successPanel.Visibility = Visibility.Hidden;
 
-        private async Task CreateContractInputElementsAsync(StackPanel form, StackPanel statusPanel, Dictionary<string, object> contractData)
+        private async Task CreateRunContractFormAsync(StackPanel form, StackPanel statusPanel, Dictionary<string, object> contractData)
         {
+            form.Children.Clear();  
             var errors = (Wpc.TextBlock)((Grid)statusPanel.Children[0]).Children[0];
             var progressring = (ProgressRing)((Grid)statusPanel.Children[0]).Children[1];
             var successPanel = ((StackPanel)((Grid)statusPanel.Children[0]).Children[2]);
@@ -1030,12 +1011,12 @@ namespace Stratis.VS.StratisEVM.UI
                 hsp.Children.Add(new Label()
                 {
                     Content = "Contract Balance: ",
-                    FontWeight = FontWeights.Bold,
                     VerticalAlignment = VerticalAlignment.Center,
                 });
                 hsp.Children.Add(new Wpc.TextBlock()
                 {
                     Text = $"{UnitConversion.Convert.FromWei(balr.Value, UnitConversion.EthUnit.Ether)} ETH",
+                    FontWeight= FontWeights.Bold,
                     VerticalAlignment = VerticalAlignment.Center,
                 });
                 form.Children.Add(hsp); 
@@ -1052,7 +1033,13 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     Orientation = Orientation.Vertical,
                 };
-                
+                vsp.Children.Add(new Separator()
+                {
+                    Margin = new Thickness(0, 8, 0, 8),
+                    Background = System.Windows.Media.Brushes.LightGray,
+                    Height = 1
+                });
+
                 var button = new Wpc.Button()
                 {
                     Name = function.Name + "_Button",
@@ -1060,31 +1047,30 @@ namespace Stratis.VS.StratisEVM.UI
                     Width=75.0,
                     Foreground = System.Windows.Media.Brushes.White,
                     Background = System.Windows.Media.Brushes.DodgerBlue,
+                    Icon = new SymbolIcon(SymbolRegular.Play12),
                     VerticalAlignment = VerticalAlignment.Center,
-                };                
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    FontSize =9.0
+                };
+
                 if (function.InputParameters != null && function.InputParameters.Count() > 0)
                 {
                     foreach (var p in function.InputParameters)
                     {
-                        var hsp = new StackPanel()
+                        var sp = new StackPanel()
                         {
                             Orientation = Orientation.Horizontal,
+                            VerticalAlignment = VerticalAlignment.Top,
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            Margin = new Thickness(4, 0, 0, 2)
                         };
-
-                        hsp.Children.Add(new Label()
-                        {
-                            Content = $"{p.Name}({p.Type}): ",
-                            FontSize = 11,
-                            VerticalAlignment = VerticalAlignment.Bottom,
-                        });
-                        hsp.Children.Add(new Wpc.TextBox()
-                        {
-
-                            FontSize = 11,
-                            Width = 125,
-                            VerticalAlignment = VerticalAlignment.Bottom,
-                        });
-                        vsp.Children.Add(hsp);
+                        var lbl = new Wpc.TextBlock { Width = 100, VerticalAlignment = VerticalAlignment.Bottom};
+                        lbl.Inlines.Add(new Run() { Text = p.Name, FontSize=11.0 });
+                        lbl.Inlines.Add(new Run() { Text = $" ({p.Type}): ", FontSize=11.0, FontStyle = FontStyles.Italic});
+                        var tb = new Wpc.TextBox() { Name = $"Param{p.Name}TextBox", Width = 150, VerticalAlignment = VerticalAlignment.Bottom};
+                        sp.Children.Add(lbl);
+                        sp.Children.Add(tb);
+                        vsp.Children.Add(sp);
                     }
                     
                     button.Click += (s, e) =>
@@ -1101,14 +1087,13 @@ namespace Stratis.VS.StratisEVM.UI
                         if (r.IsSuccess)
                         {
                             HideValidationErrors(errors);
-
-                            ShowValidationSuccess(successPanel, successTextBlock, $"Function {function.Name} result: {r.Value}");
-                            VSUtil.LogToStratisEVMWindow($"[call] {function.Name}: {r.Value}");
+                            ShowValidationSuccess(successPanel, successTextBlock, $"Call function {function.Name}({paramVals.Cast<string>().JoinWith(",")}) returned: {r.Value}");
+                            VSUtil.LogToStratisEVMWindow($"[call] {address +":" + function.Name}({function.InputParameters.Select((p,i) =>p.Type + " " + p.Name + ":" +paramVals.ElementAt(i)).JoinWith(", ")}): {r.Value}");
                         }
                         else
                         {
                             HideValidationSuccess(successPanel);
-                            ShowValidationErrors(errors, $"Error calling contract function: {r.FailureMessage}");
+                            ShowValidationErrors(errors, $"Error calling function {function.Name}({paramVals.Cast<string>().JoinWith(",")}): {r.FailureMessage}");
                         }
                     };
                 }                
@@ -1136,11 +1121,7 @@ namespace Stratis.VS.StratisEVM.UI
                     };
                 }
                 vsp.Children.Add(button);
-                form.Children.Add(vsp);
-                form.Children.Add(new Separator()
-                {
-                    Margin = new Thickness(0, 5, 0, 5),
-                });
+                form.Children.Add(vsp);               
             }
         }
 
@@ -1153,15 +1134,13 @@ namespace Stratis.VS.StratisEVM.UI
                 if (child is StackPanel sp && sp.Children.Count == 2 && sp.Children[0] is Wpc.TextBlock lbl && sp.Children[1] is Wpc.TextBox tb)
                 {
                     var paramName = (Run)lbl.Inlines.FirstInline;
-                    if (paramTypes.ContainsKey(paramName.Text))
+                    if (paramTypes.ContainsKey(paramName.Text) && !string.IsNullOrEmpty(tb.Text))
                     {
                         paramValues[paramName.Text] = (paramTypes[paramName.Text], tb.Text);
-                        //paramValues.Add(tb.Text);   
                     }
                 }
             }
             return Contract.ParseFunctionParameterValues(paramValues);
-            //return paramValues.ToArray();
         }
         #endregion
 
@@ -1172,8 +1151,6 @@ namespace Stratis.VS.StratisEVM.UI
         #region Fields
         internal BlockchainExplorerToolWindow window;
         internal static BlockchainExplorerToolWindowControl instance;
-        #endregion
-
-       
+        #endregion       
     }
 }
