@@ -1,13 +1,13 @@
-﻿using System;
-using System.Numerics;
-using System.Threading.Tasks;
-using Nethereum.Contracts;
+﻿using Nethereum.Contracts;
 using Nethereum.Hex.HexTypes;   
 using Nethereum.JsonRpc.Client;
 using Nethereum.RPC.Eth.DTOs;   
 using Nethereum.Web3;
-
+using Newtonsoft.Json.Linq;
 using Stratis.DevEx.Ethereum.Explorers;
+using System;
+using System.Numerics;
+using System.Threading.Tasks;
 
 namespace Stratis.DevEx.Ethereum
 {
@@ -57,8 +57,18 @@ namespace Stratis.DevEx.Ethereum
 
         public static async Task<string> SendContractTransactionAsync(string rpcurl, string contractAddress, string abi, string functionName, string fromAddress = null, HexBigInteger gas = null, HexBigInteger value = null, params object[] functionInput)
         {
-            var func = new Web3(rpcurl).Eth.GetContract(abi, contractAddress).GetFunction(functionName);
-            return await func.SendTransactionAsync(func.CreateTransactionInput(fromAddress, functionInput));
+            var web3 = new Web3(rpcurl);
+            var func = web3.Eth.GetContract(abi, contractAddress).GetFunction(functionName);
+
+            if (!await web3.Personal.UnlockAccount.SendRequestAsync(fromAddress, "", new HexBigInteger(30)))
+            {
+                throw new Exception("Could not unlock account using provided password.");
+            }
+            if (gas == null)
+            {
+                gas = await func.EstimateGasAsync(functionInput);
+            }
+            return await func.SendTransactionAsync(func.CreateTransactionInput(from:fromAddress, functionInput:functionInput, gas:gas, value:value));
         }
 
         public static async Task<string> GetProtocolVersion(string rpcurl) => await new Web3(rpcurl).Eth.ProtocolVersion.SendRequestAsync();

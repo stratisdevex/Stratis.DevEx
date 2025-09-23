@@ -832,7 +832,7 @@
         <StackPanel IsEnabled="False" >
             <StackPanel Orientation="Vertical">
                 <Label Content="Account:" VerticalAlignment="Center"  Margin="1,0,0,2" />
-                <ui:TextBox x:Name="RunContractAccountTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                <ui:TextBox x:Name="RunContractAccountTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnlyCaretVisible="True" />
                 <Label Content="Private Key (optional):" VerticalAlignment="Center" Margin="1,0,0,2" />
                 <ui:PasswordBox Name="RunContractAccountPrivateKeyPasswordBox" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
             </StackPanel>

@@ -912,7 +912,7 @@ namespace Stratis.VS.StratisEVM.UI
                 };
                 var formPanel = (StackPanel)(_sp).Children[2];
                 var statusPanel = ((StackPanel)(_sp).Children[3]);
-                await CreateRunContractFormAsync(formPanel, statusPanel, item.Data, transactCheckBox, fromAddressTextBox.Text);
+                await CreateRunContractFormAsync(formPanel, statusPanel, item.Data, transactCheckBox, fromAddressTextBox);
                 dw.ButtonClicked += (cd, args) => { };
                 dw.Closing += (d, args) => { };
                 await dw.ShowAsync();                             
@@ -976,7 +976,7 @@ namespace Stratis.VS.StratisEVM.UI
 
         private void HideValidationSuccess(StackPanel successPanel) => successPanel.Visibility = Visibility.Hidden;
 
-        private async Task CreateRunContractFormAsync(StackPanel form, StackPanel statusPanel, Dictionary<string, object> contractData, CheckBox transactCheckBox, string fromAddress)
+        private async Task CreateRunContractFormAsync(StackPanel form, StackPanel statusPanel, Dictionary<string, object> contractData, CheckBox transactCheckBox, Wpc.TextBox fromAddress)
         {
             form.Children.Clear();  
             var errors = (Wpc.TextBlock)((Grid)statusPanel.Children[0]).Children[0];
@@ -1081,13 +1081,13 @@ namespace Stratis.VS.StratisEVM.UI
                         if (transactCheckBox.IsChecked ?? false)
                         {
                             
-                            if (string.IsNullOrEmpty(fromAddress))
+                            if (string.IsNullOrEmpty(fromAddress.Text))
                             {
                                 HideProgressRing(progressring);
                                 ShowValidationErrors(errors, "Enter a valid from address to send the transaction from.");
                                 return;
                             }
-                            r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.SendContractTransactionAsync(rpcurl, address, abi, function.Name, fromAddress, functionInput: paramVals)));
+                            r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.SendContractTransactionAsync(rpcurl, address, abi, function.Name, fromAddress.Text, functionInput: paramVals)));
                         }
                         else
                         {
@@ -1117,13 +1117,13 @@ namespace Stratis.VS.StratisEVM.UI
                         Result<string> r;
                         if (transactCheckBox.IsChecked ?? false)
                         {
-                            if (string.IsNullOrEmpty(fromAddress))
+                            if (string.IsNullOrEmpty(fromAddress.Text))
                             {
                                 HideProgressRing(progressring);
                                 ShowValidationErrors(errors, "Enter a valid from address to send the transaction from.");
                                 return;
                             }
-                            r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.SendContractTransactionAsync(rpcurl, address, abi, function.Name, fromAddress)));
+                            r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.SendContractTransactionAsync(rpcurl, address, abi, function.Name, fromAddress.Text)));
                         }
                         else
                         {
