@@ -41,6 +41,8 @@ namespace Stratis.VS.StratisEVM.UI
 
         public static RoutedCommand DeleteAccountCmd { get; } = new RoutedCommand();
 
+        public static RoutedCommand CopyAccountAddressCmd { get; } = new RoutedCommand();
+
         public static RoutedCommand EditContractCmd { get; } = new RoutedCommand();
 
         public static RoutedCommand NewContractCmd { get; } = new RoutedCommand();

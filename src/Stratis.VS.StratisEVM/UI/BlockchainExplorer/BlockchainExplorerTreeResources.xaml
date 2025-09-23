@@ -386,7 +386,30 @@
             </DrawingGroup>
         </DrawingImage.Drawing>
     </DrawingImage>
-    
+
+    <DrawingImage x:Key="CopyDrawingImage">
+        <DrawingImage.Drawing>
+            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                <DrawingGroup Opacity="1">
+                    <DrawingGroup Opacity="1">
+                        <DrawingGroup.ClipGeometry>
+                            <RectangleGeometry RadiusX="0" RadiusY="0" Rect="0,0,24,24" />
+                        </DrawingGroup.ClipGeometry>
+                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M16,3L4,3 4,16">
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Thickness="2.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
+                        <GeometryDrawing Geometry="F1 M24,24z M0,0z M8,7L20,7 20,19C20,20.1046,19.1046,21,18,21L10,21C8.89543,21,8,20.1046,8,19L8,7z">
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" Thickness="2.5" StartLineCap="Round" EndLineCap="Round" LineJoin="Round" MiterLimit="1" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
+                    </DrawingGroup>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
     <!-- TreeView items data template-->
     <DataTemplate x:Key="BlockchainInfoTemplate" DataType="{x:Type vm:BlockchainInfo}">
         <StackPanel x:Name="GroupPanel" Orientation="Horizontal">
@@ -598,6 +621,11 @@
     </ContextMenu>
 
     <ContextMenu x:Key="AccountContextMenu" Style="{DynamicResource ContextMenuStyle}">
+        <MenuItem Header="Copy Address" Command="{x:Static stratisui:BlockchainExplorerTree.CopyAccountAddressCmd}">
+            <MenuItem.Icon>
+                <Image Source="{StaticResource CopyDrawingImage}" />
+            </MenuItem.Icon>
+        </MenuItem>
         <MenuItem Header="Edit..." Command="{x:Static stratisui:BlockchainExplorerTree.EditAccountCmd}">
             <MenuItem.Icon>
                 <Image Source="{StaticResource EditAccountDrawingImage}" />
@@ -680,9 +708,11 @@
         <Style.Resources>
             <Style TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogLabelStyleKey}}">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" />
             </Style>
             <Style TargetType="{x:Type ui:TextBox}" BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ThemedDialogTextBoxStyleKey}}">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
+                <Setter Property="FontSize" Value="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" />
             </Style>
         </Style.Resources>
     </Style>
@@ -816,7 +846,8 @@
                 <ui:ProgressRing Name="RunContractDialogProgressRing" Grid.Row="0" Visibility="Hidden" IsIndeterminate="True" IsEnabled="True" Width="20" Height="20" />
                 <StackPanel Name="RunContractSuccessStackPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden">
                     <ui:SymbolIcon Symbol="CheckmarkCircle24" VerticalAlignment="Bottom" Foreground="LightGreen" />
-                    <ui:TextBlock Name="RunContractSuccessTextBlock" Margin="4,0,0,0" VerticalAlignment="Bottom" />
+                    <ui:TextBlock Name="RunContractSuccessTextBlock" Margin="4,0,0,0" VerticalAlignment="Bottom" TextWrapping="WrapWithOverflow" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
                 </StackPanel>
             </Grid>
         </StackPanel>

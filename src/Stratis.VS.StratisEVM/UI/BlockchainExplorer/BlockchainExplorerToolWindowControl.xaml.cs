@@ -810,6 +810,13 @@ namespace Stratis.VS.StratisEVM.UI
             tree.Refresh();
         }
 
+        private void CopyAccountAddressCmd_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var item = GetSelectedItem(sender);
+            var address = item.Name;
+            Clipboard.SetText(address);
+        }
+
         private async void EditContractCmd_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
@@ -823,9 +830,9 @@ namespace Stratis.VS.StratisEVM.UI
                     Title = "Edit contract " + item.DisplayName,
                     Content = _sp,
                     PrimaryButtonText = "Save",
-                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save20),
+                    PrimaryButtonIcon = new SymbolIcon(SymbolRegular.Save16),
                     SecondaryButtonText = "Run",
-                    SecondaryButtonIcon = new SymbolIcon(SymbolRegular.Run24),
+                    SecondaryButtonIcon = new SymbolIcon(SymbolRegular.Run16),
                     CloseButtonText = "Cancel",
                 };
                 var sp = (StackPanel)(_sp).Children[0];
@@ -842,10 +849,7 @@ namespace Stratis.VS.StratisEVM.UI
                 creator.Text = (string)item.Data["Creator"];
                 transactionHash.Text = (string)item.Data["TransactionHash"];
                 deployedOn.Text = (string)item.Data["DeployedOn"];
-                abi.Text = (string)item.Data["Abi"];
-
-                
-
+                abi.Text = (string)item.Data["Abi"];               
                 var r = await dw.ShowAsync();
                 if (r == ContentDialogResult.None)
                 {
@@ -853,23 +857,8 @@ namespace Stratis.VS.StratisEVM.UI
                 }
                 else if (r == ContentDialogResult.Secondary)
                 {
-#pragma warning disable CS4014
-                    ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
-                    {
-                        var w = await StratisEVMPackage.Instance.ShowToolWindowAsync(typeof(RunSmartContractToolWindow), 0, true, StratisEVMPackage.Instance.DisposalToken);
-                        if (w != null && w.Frame != null)
-                        {
-                            RunSmartContractToolWindowControl.instance.RunContract(item);
-                        }
-                        else
-                        {
-                            VSUtil.ShowModalErrorDialogBox("Could not launch Run Smart Contract tool window.", "Edit Contract error");
-                        }
-                    });
+                    BlockchainExplorerTree.RunContractCmd.Execute(null, tree);
                     return;
-
-#pragma warning restore CS4014
-
                 }
                 //item.Data["Label"] = label.Text;
                 //item.Data["Abi"] = abi.Text;
@@ -911,7 +900,8 @@ namespace Stratis.VS.StratisEVM.UI
            
                 var transactCheckBox = (CheckBox)((_sp).Children[0]);
                 var transactPanel = (StackPanel)((_sp).Children[1]);    
-                var runAddressTextBox = (Wpc.TextBox)((StackPanel)(transactPanel).Children[0]).Children[1];   
+                var fromAddressTextBox = (Wpc.TextBox)((StackPanel)(transactPanel).Children[0]).Children[1];
+                fromAddressTextBox.Text = (string)item.Data["Address"];
                 transactCheckBox.Checked += (s, ev) =>
                 {
                     transactPanel.IsEnabled = true;
@@ -922,7 +912,7 @@ namespace Stratis.VS.StratisEVM.UI
                 };
                 var formPanel = (StackPanel)(_sp).Children[2];
                 var statusPanel = ((StackPanel)(_sp).Children[3]);
-                await CreateRunContractFormAsync(formPanel, statusPanel, item.Data);
+                await CreateRunContractFormAsync(formPanel, statusPanel, item.Data, transactCheckBox, fromAddressTextBox.Text);
                 dw.ButtonClicked += (cd, args) => { };
                 dw.Closing += (d, args) => { };
                 await dw.ShowAsync();                             
@@ -986,7 +976,7 @@ namespace Stratis.VS.StratisEVM.UI
 
         private void HideValidationSuccess(StackPanel successPanel) => successPanel.Visibility = Visibility.Hidden;
 
-        private async Task CreateRunContractFormAsync(StackPanel form, StackPanel statusPanel, Dictionary<string, object> contractData)
+        private async Task CreateRunContractFormAsync(StackPanel form, StackPanel statusPanel, Dictionary<string, object> contractData, CheckBox transactCheckBox, string fromAddress)
         {
             form.Children.Clear();  
             var errors = (Wpc.TextBlock)((Grid)statusPanel.Children[0]).Children[0];
@@ -1026,6 +1016,8 @@ namespace Stratis.VS.StratisEVM.UI
                 ShowValidationErrors(errors, $"Could not retrieve balance for contract. {balr.FailureMessage}");
                 return;
             }
+
+           
             
             foreach (var function in _abi.Functions)
             {
@@ -1036,7 +1028,6 @@ namespace Stratis.VS.StratisEVM.UI
                 vsp.Children.Add(new Separator()
                 {
                     Margin = new Thickness(0, 8, 0, 8),
-                    Background = System.Windows.Media.Brushes.LightGray,
                     Height = 1
                 });
 
@@ -1044,13 +1035,14 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     Name = function.Name + "_Button",
                     Content = function.Name,
-                    Width=75.0,
+                    Width=125.0,
                     Foreground = System.Windows.Media.Brushes.White,
                     Background = System.Windows.Media.Brushes.DodgerBlue,
                     Icon = new SymbolIcon(SymbolRegular.Play12),
                     VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    FontSize =9.0
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    FontSize =11.0,
+                    Margin = new Thickness(0,4,0,0)
                 };
 
                 if (function.InputParameters != null && function.InputParameters.Count() > 0)
@@ -1062,60 +1054,94 @@ namespace Stratis.VS.StratisEVM.UI
                             Orientation = Orientation.Horizontal,
                             VerticalAlignment = VerticalAlignment.Top,
                             HorizontalAlignment = HorizontalAlignment.Left,
-                            Margin = new Thickness(4, 0, 0, 2)
+                            Margin = new Thickness(4, 4, 0, 2)
                         };
                         var lbl = new Wpc.TextBlock { Width = 100, VerticalAlignment = VerticalAlignment.Bottom};
-                        lbl.Inlines.Add(new Run() { Text = p.Name, FontSize=11.0 });
-                        lbl.Inlines.Add(new Run() { Text = $" ({p.Type}): ", FontSize=11.0, FontStyle = FontStyles.Italic});
+                        lbl.Inlines.Add(new Run() { Text = p.Name });
+                        lbl.Inlines.Add(new Run() { Text = $" ({p.Type}): ", FontStyle = FontStyles.Italic, FontSize=9.0});
                         var tb = new Wpc.TextBox() { Name = $"Param{p.Name}TextBox", Width = 150, VerticalAlignment = VerticalAlignment.Bottom};
                         sp.Children.Add(lbl);
                         sp.Children.Add(tb);
                         vsp.Children.Add(sp);
                     }
-                    
+
                     button.Click += (s, e) =>
                     {
                         var paramVals = GetContractFunctionParams(vsp, function.InputParameters.ToDictionary(ip => ip.Name, ip => ip.Type));
                         if (paramVals.Length != function.InputParameters.Count())
                         {
                             ShowValidationErrors(errors, $"The {function.Name} function requires {function.InputParameters.Count()} parameters.");
+                            VSUtil.LogToStratisEVMWindow($"\n========== Call contract {address} at {rpcurl} failed.==========\nThe {function.Name} function requires {function.InputParameters.Count()} parameters.");
                             return;
                         }   
-                        ShowProgressRing(progressring);
-                        var r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.CallContractAsync(rpcurl, address, abi, function.Name, functionInput: paramVals)));
+
+                        ShowProgressRing(progressring);                        
+                        Result<string> r;
+                      
+                        if (transactCheckBox.IsChecked ?? false)
+                        {
+                            
+                            if (string.IsNullOrEmpty(fromAddress))
+                            {
+                                HideProgressRing(progressring);
+                                ShowValidationErrors(errors, "Enter a valid from address to send the transaction from.");
+                                return;
+                            }
+                            r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.SendContractTransactionAsync(rpcurl, address, abi, function.Name, fromAddress, functionInput: paramVals)));
+                        }
+                        else
+                        {
+                            r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.CallContractAsync(rpcurl, address, abi, function.Name, functionInput: paramVals)));
+                        }                        
                         HideProgressRing(progressring);
+                        string desc = (transactCheckBox.IsChecked == null || transactCheckBox.IsChecked == false) ? "call" : "transaction";
                         if (r.IsSuccess)
                         {
                             HideValidationErrors(errors);
-                            ShowValidationSuccess(successPanel, successTextBlock, $"Call function {function.Name}({paramVals.Cast<string>().JoinWith(",")}) returned: {r.Value}");
-                            VSUtil.LogToStratisEVMWindow($"[call] {address +":" + function.Name}({function.InputParameters.Select((p,i) =>p.Type + " " + p.Name + ":" +paramVals.ElementAt(i)).JoinWith(", ")}): {r.Value}");
+                            ShowValidationSuccess(successPanel, successTextBlock, $"Function {function.Name}({paramVals.Select(v => v.ToString()).JoinWith(",")}) returned: {r.Value}");
+                            VSUtil.LogToStratisEVMWindow($"\n========== Call contract {address} at {rpcurl} succeeded.==========\n[{desc}] {address +":" + function.Name}({function.InputParameters.Select((p,i) =>p.Type + " " + p.Name + ":" +paramVals.ElementAt(i)).JoinWith(", ")}): {r.Value}");
                         }
                         else
                         {
                             HideValidationSuccess(successPanel);
-                            ShowValidationErrors(errors, $"Error calling function {function.Name}({paramVals.Cast<string>().JoinWith(",")}): {r.FailureMessage}");
+                            ShowValidationErrors(errors, $"Error calling function {function.Name}({paramVals.Select(v => v.ToString()).JoinWith(",")}): {r.FailureMessage}");
+                            VSUtil.LogToStratisEVMWindow($"\n========== Call contract {address} at {rpcurl} failed.==========\n[{desc}] {address + ":" + function.Name}({function.InputParameters.Select((p, i) => p.Type + " " + p.Name + ":" + paramVals.ElementAt(i)).JoinWith(", ")}): {r.FailureMessage}");
                         }
                     };
                 }                
                 else
                 {
                     button.Click += (s, e) =>
-                    {                        
-                        
+                    {                                                
                         ShowProgressRing(progressring);
-                        var r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.CallContractAsync(rpcurl, address, abi, function.Name)));
+                        Result<string> r;
+                        if (transactCheckBox.IsChecked ?? false)
+                        {
+                            if (string.IsNullOrEmpty(fromAddress))
+                            {
+                                HideProgressRing(progressring);
+                                ShowValidationErrors(errors, "Enter a valid from address to send the transaction from.");
+                                return;
+                            }
+                            r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.SendContractTransactionAsync(rpcurl, address, abi, function.Name, fromAddress)));
+                        }
+                        else
+                        {
+                            r = ThreadHelper.JoinableTaskFactory.Run(() => ExecuteAsync(Network.CallContractAsync(rpcurl, address, abi, function.Name)));
+                        }                        
                         HideProgressRing(progressring);
+                        string desc = (transactCheckBox.IsChecked == null || transactCheckBox.IsChecked == false) ? "call" : "transaction";
                         if (r.IsSuccess)
                         {
-                            HideValidationErrors(errors);
-                            
-                            ShowValidationSuccess(successPanel, successTextBlock, $"Function {function.Name} result: {r.Value}");
-                            VSUtil.LogToStratisEVMWindow($"[call] {function.Name}: {r.Value}");
+                            HideValidationErrors(errors);                            
+                            ShowValidationSuccess(successPanel, successTextBlock, $"Function {function.Name} returned: {r.Value}");
+                            VSUtil.LogToStratisEVMWindow($"\n========== Call contract {address} at {rpcurl} succeeded.==========\n[{desc}] {address + ":" + function.Name}: {r.Value}");
                         }
                         else
                         {
                             HideValidationSuccess(successPanel);
-                            ShowValidationErrors(errors, $"Error calling contract function: {r.FailureMessage}");
+                            ShowValidationErrors(errors, $"Error calling function: {r.FailureMessage}");
+                            VSUtil.LogToStratisEVMWindow($"\n========== Call contract {address} at {rpcurl} failed.==========\n[{desc}] {address + ":" + function.Name}: {r.FailureMessage}");
                         }
                         
                     };
@@ -1128,7 +1154,6 @@ namespace Stratis.VS.StratisEVM.UI
         private object[] GetContractFunctionParams(StackPanel form, Dictionary<string, string> paramTypes)
         {
             Dictionary<string, (string, string)> paramValues = new Dictionary<string, (string, string)>();
-            //List<object> paramValues = new List<object>();
             foreach (var child in form.Children)
             {
                 if (child is StackPanel sp && sp.Children.Count == 2 && sp.Children[0] is Wpc.TextBlock lbl && sp.Children[1] is Wpc.TextBox tb)
@@ -1151,6 +1176,8 @@ namespace Stratis.VS.StratisEVM.UI
         #region Fields
         internal BlockchainExplorerToolWindow window;
         internal static BlockchainExplorerToolWindowControl instance;
-        #endregion       
+        #endregion
+
+        
     }
 }

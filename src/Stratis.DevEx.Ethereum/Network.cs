@@ -49,12 +49,18 @@ namespace Stratis.DevEx.Ethereum
             return await web3.Eth.DeployContract.SendRequestAndWaitForReceiptAsync(abi, bytecode, account, gasDeploy, values: values);            
         }
 
-        public static async Task<string> CallContractAsync(string rpcurl, string contractAddress, string abi, string functionName, string fromAddress = null, HexBigInteger gas = null, HexBigInteger value = null, params object[] functionInput)
+        public static async Task<string> CallContractAsync(string rpcurl, string contractAddress, string abi, string functionName, HexBigInteger gas = null, HexBigInteger value = null, params object[] functionInput)
         {
             var func = new Web3(rpcurl).Eth.GetContract(abi, contractAddress).GetFunction(functionName);
             return await func.CallAsync(func.CreateCallInput(functionInput));
         }
-        
+
+        public static async Task<string> SendContractTransactionAsync(string rpcurl, string contractAddress, string abi, string functionName, string fromAddress = null, HexBigInteger gas = null, HexBigInteger value = null, params object[] functionInput)
+        {
+            var func = new Web3(rpcurl).Eth.GetContract(abi, contractAddress).GetFunction(functionName);
+            return await func.SendTransactionAsync(func.CreateTransactionInput(fromAddress, functionInput));
+        }
+
         public static async Task<string> GetProtocolVersion(string rpcurl) => await new Web3(rpcurl).Eth.ProtocolVersion.SendRequestAsync();
         
         public static async Task<BigInteger> GetChainIdAsync(string rpcurl) => await new Web3(rpcurl).Eth.ChainId.SendRequestAsync();

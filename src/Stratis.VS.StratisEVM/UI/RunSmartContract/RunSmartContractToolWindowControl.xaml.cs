@@ -59,7 +59,7 @@ namespace Stratis.VS.StratisEVM.UI
             }
         }
 
-        internal async void RunContract(BlockchainInfo contract)
+        internal void RunContract(BlockchainInfo contract)
         {
             
            
