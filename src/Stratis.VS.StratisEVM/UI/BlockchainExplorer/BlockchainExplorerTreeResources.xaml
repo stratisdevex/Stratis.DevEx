@@ -835,6 +835,14 @@
                 <ui:TextBox x:Name="RunContractAccountTextBox"  Width="150" Margin="0,2,10,4" VerticalAlignment="Center" IsReadOnlyCaretVisible="True" />
                 <Label Content="Private Key (optional):" VerticalAlignment="Center" Margin="1,0,0,2" />
                 <ui:PasswordBox Name="RunContractAccountPrivateKeyPasswordBox" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                    <Label Content="Gas Limit:"  Margin="4,0,0,2" />
+                    <RadioButton Content="Estimated Gas" GroupName="SmartContractGasGroup" IsChecked="True" FontSize="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" />
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="Custom"  GroupName="SmartContractGasGroup" FontSize="{DynamicResource {x:Static vsshell:VsFonts.CaptionFontSizeKey}}" Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"/>
+                        <ui:NumberBox SpinButtonPlacementMode="Inline" Value="3000000" IsEnabled="False" Width="150" Margin="0,2,10,4" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
             <Separator />
         </StackPanel>

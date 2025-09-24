@@ -901,7 +901,10 @@ namespace Stratis.VS.StratisEVM.UI
                 var transactCheckBox = (CheckBox)((_sp).Children[0]);
                 var transactPanel = (StackPanel)((_sp).Children[1]);    
                 var fromAddressTextBox = (Wpc.TextBox)((StackPanel)(transactPanel).Children[0]).Children[1];
-                fromAddressTextBox.Text = (string)item.Data["Address"];
+                var estimateGasRadioButton = (RadioButton) ((StackPanel)(((StackPanel)transactPanel.Children[0]).Children[4])).Children[1];
+                var customGasRadioButton = (RadioButton) ((StackPanel) (((StackPanel)(((StackPanel)transactPanel.Children[0]).Children[4])).Children[2])).Children[0];
+                var customGasNumberBox = (Wpc.NumberBox)((StackPanel)(((StackPanel)(((StackPanel)transactPanel.Children[0]).Children[4])).Children[2])).Children[1];
+                fromAddressTextBox.Text = (string)item.Data["Address"];                                
                 transactCheckBox.Checked += (s, ev) =>
                 {
                     transactPanel.IsEnabled = true;
@@ -910,6 +913,14 @@ namespace Stratis.VS.StratisEVM.UI
                 {
                     transactPanel.IsEnabled = false;
                 };
+                estimateGasRadioButton.Checked += (s, ev) =>
+                {
+                    customGasNumberBox.IsEnabled = false;
+                };
+                customGasRadioButton.Checked += (s, ev) =>
+                {
+                    customGasNumberBox.IsEnabled = true;
+                };  
                 var formPanel = (StackPanel)(_sp).Children[2];
                 var statusPanel = ((StackPanel)(_sp).Children[3]);
                 await CreateRunContractFormAsync(formPanel, statusPanel, item.Data, transactCheckBox, fromAddressTextBox);
