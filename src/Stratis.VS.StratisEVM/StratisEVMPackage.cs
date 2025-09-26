@@ -148,7 +148,8 @@ namespace Stratis.VS.StratisEVM
           
             await TaskScheduler.Default;
             await InstallBuildSystemAsync();
-            
+            await InstallSlitherAnalyzerAsync();
+
             await JoinableTaskFactory.SwitchToMainThreadAsync();
             ApplicationThemeManager.Apply(UI.VSTheme.ApplicationThemeGuess);
             await SolidityProjectMenuCommands.InitializeAsync(this);
@@ -161,7 +162,7 @@ namespace Stratis.VS.StratisEVM
         #endregion
 
         #region Static Methods
-        public static async Task InstallBuildSystemAsync()
+        private static async Task InstallBuildSystemAsync()
         {
 #if DEBUG
             await Runtime.CopyDirectoryAsync(Runtime.AssemblyLocation.CombinePath("BuildSystem"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
@@ -194,6 +195,22 @@ namespace Stratis.VS.StratisEVM
             await File.WriteAllTextAsync(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "extdir.txt"), Runtime.AssemblyLocation);
         }
 
+        private static async Task InstallSlitherAnalyzerAsync()
+        {
+            if (!File.Exists(Runtime.AssemblyLocation.CombinePath(SlitherExe)))
+            {
+                if (!await Runtime.DownloadFileAsync("slither", new Uri("https://ajb.nyc3.cdn.digitaloceanspaces.com/stratisdevex/slither-0.10.3.exe"), Runtime.AssemblyLocation.CombinePath(SlitherExe)))
+                {
+                    Runtime.Error("Could not download Slither executable.");
+                    return;
+                }
+            }
+            if (!File.Exists(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", SlitherExe)))
+            {
+                await Runtime.CopyFileAsync(Runtime.AssemblyLocation.CombinePath(SlitherExe), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", SlitherExe));
+            }
+        }
+
         private void InstallSolidityProjectDataFlowSinks(UnconfiguredProject unconfiguredProject)
         {
             var subscriptionService = unconfiguredProject.Services.ActiveConfiguredProjectSubscription;
@@ -222,6 +239,8 @@ namespace Stratis.VS.StratisEVM
         public const string SolidityProjectFileUIContextRule = "9d4c64d4-52eb-4ebe-aa01-1d975eb3a9d7";
 
         public const string NPMFileUIContextRule = "9A7CA75A-FA6E-45B2-B6E9-4BFF0AB7BB88";
+
+        public const string SlitherExe = "slither-0.10.3.exe";
         #endregion
 
     }
