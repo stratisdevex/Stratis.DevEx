@@ -6,8 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Test.testproj" />
     <Compile Remove="**\bindings\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Test.testproj" />
   </ItemGroup>
 
   <ItemGroup>

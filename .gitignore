@@ -374,4 +374,5 @@ notebooks/**/*.cs
 notebooks/**/ssc/*.ssc
 /src/TestCase/TestChain
 /src/Stratis.DevEx.Gui/TestCase/TestChain
-/tests/Stratis.VS.Tests.SolidityProjectBuildTasks/bindings/SmartContract1/BasicContract
+/tests/Stratis.VS.Tests.SolidityProjectBuildTasks/bindings/**/*
+/tests/Stratis.VS.Tests.SolidityProjectBuildTasks/.config/**/*

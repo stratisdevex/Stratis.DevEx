@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Test.testproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\bindings\**" />
+    <Compile Remove="**\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Stratis.VS.SolidityProjectBuildTasks\Stratis.VS.SolidityProjectBuildTasks.csproj" />
   </ItemGroup>
 

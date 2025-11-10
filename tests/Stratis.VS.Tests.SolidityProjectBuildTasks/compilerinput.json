@@ -1,0 +1,23 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "SmartContract1": {
+      "urls": [
+        "SmartContract1.sol"
+      ]
+    }
+  },
+  "settings": {
+    "evmVersion": "london",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.gasEstimates",
+          "ast"
+        ]
+      }
+    }
+  }
+}

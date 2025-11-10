@@ -96,7 +96,7 @@
     public class Bytecode
     {
         public Functiondebugdata functionDebugData { get; set; }
-        public object[] generatedSources { get; set; }
+        public Generatedsource[] generatedSources { get; set; }
         public Linkreferences linkReferences { get; set; }
         [JsonProperty("object")]
         public string _object { get; set; }
@@ -170,4 +170,62 @@
         public string name { get; set; }
         public string type { get; set; }
     }
+
+    public class Generatedsource
+    {
+        public Ast ast { get; set; }
+        public string contents { get; set; }
+        public int id { get; set; }
+        public string language { get; set; }
+        public string name { get; set; }
+    }
+
+    public class Ast
+    {
+        public string nativeSrc { get; set; }
+        public string nodeType { get; set; }
+        public string src { get; set; }
+        public Statement[] statements { get; set; }
+    }
+
+    public class Statement
+    {
+        public Body body { get; set; }
+        public string name { get; set; }
+        public string nativeSrc { get; set; }
+        public string nodeType { get; set; }
+        public Returnvariable[] returnVariables { get; set; }
+        public string src { get; set; }
+        public Parameter[] parameters { get; set; }
+    }
+
+    public class Body
+    {
+        public string nativeSrc { get; set; }
+        public string nodeType { get; set; }
+        public string src { get; set; }
+        public object[] statements { get; set; }
+    }
+
+    public class Returnvariable
+    {
+        public string name { get; set; }
+        public string nativeSrc { get; set; }
+        public string nodeType { get; set; }
+        public string src { get; set; }
+        public string type { get; set; }
+    }
+
+    public class Parameter
+    {
+        public string name { get; set; }
+        public string nativeSrc { get; set; }
+        public string nodeType { get; set; }
+        public string src { get; set; }
+        public string type { get; set; }
+    }
+
 }
+
+
+

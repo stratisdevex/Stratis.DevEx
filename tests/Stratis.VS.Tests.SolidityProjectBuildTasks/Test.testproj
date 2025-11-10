@@ -6,6 +6,7 @@
   <PropertyGroup>
     <BindingsNS>TestNS</BindingsNS>
     <EVMVersion>london</EVMVersion>
+    <OutputDir>bin/solidity</OutputDir>
   </PropertyGroup>
 	<Target Name="Build">
 		<CompileContracts Contracts="@(Compile)" ExtDir="C:\Users\Allister\AppData\Local\Microsoft\VisualStudio\17.0_c69ae1a2Exp\Extensions\Stratis DevEx\StratisEVM\0.1.5.0" ProjectDir="$(MSBuildProjectDirectory)" OutputPath="bin\solidity" BindingsNS="$(BindingsNS)" EVMVersion="$(EVMVersion)"/>

@@ -67,7 +67,7 @@ namespace Stratis.VS
             }
 
             var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"" + " --include-path=\"" + Path.Combine(ProjectDir, "node_modules") + "\"";
-            var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
+            var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Content =   File.ReadAllText(Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec))  });
             Log.LogMessage(MessageImportance.High, "Compiling {0} file(s) in directory {1} using solc compiler targeting EVM version {2}...", Contracts.Count(), ProjectDir, EVMVersion);
             Log.LogCommandLine(MessageImportance.High, cmdline);
             var psi = new ProcessStartInfo("cmd.exe", "/c " + cmdline)
@@ -94,14 +94,16 @@ namespace Stratis.VS
                     {
                         {"*", new Dictionary<string, string[]>()
                             {
-                                {"*", new [] {"abi", "evm.bytecode", "evm.gasEstimates" } }
+                                {"*", new [] {"abi", "evm.bytecode", "evm.gasEstimates", "ast" } },
+                                
                             }  
-                        }
+                        },
+                        
                     }
                 },
                 Sources =  this.Sources        
             };
-
+            File.WriteAllText(Path.Combine(ProjectDir, "compilerinput.json"), Serialize(i));
             try
             {
                 if (!p.Start())
@@ -208,6 +210,10 @@ namespace Stratis.VS
                         {
                             File.WriteAllText(Path.Combine(outputdir, cs.Key + "." + c.Key + ".opcodes.txt"), cs.Value.evm.bytecode.opcodes);
                         }
+                        if (cs.Value.evm.bytecode.generatedSources != null && cs.Value.evm.bytecode.generatedSources.Length > 0 && cs.Value.evm.bytecode.generatedSources[0].ast != null)
+                        {
+                            File.WriteAllText(Path.Combine(outputdir, cs.Key + "." + c.Key + ".ast.json"), Serialize(cs.Value.evm.bytecode.generatedSources[0].ast));
+                        }
                         if (cs.Value.evm.gasEstimates != null)
                         {
                             File.WriteAllText(Path.Combine(outputdir, cs.Key + "." + c.Key + ".gas.json"), Serialize(cs.Value.evm.gasEstimates));
@@ -216,6 +222,7 @@ namespace Stratis.VS
                         {
                             File.WriteAllText(Path.Combine(outputdir, cs.Key + "." + c.Key + ".abi"), Serialize(cs.Value.abi));
                         }
+                        
                     }
                 }
             }
@@ -240,7 +247,7 @@ namespace Stratis.VS
                         {
                             if (CheckRunCmdOutput(RunCmd("cmd.exe", $"/c  dotnet Nethereum.Generator.Console generate from-abi -abi {Path.Combine(outputdir, cs.Key + "." + c.Key + ".abi")} -bin {Path.Combine(outputdir, cs.Key + "." + c.Key + ".bin")} -cn {cs.Key} -o {Path.Combine("bindings", c.Key)} -ns {BindingsNS}", ProjectDir), ""))
                             {
-                                Log.LogMessage(MessageImportance.High, $"Created .NET bindings for {cs.Key} contract at {Path.Combine(ProjectDir, "bindings", c.Key)}.");
+                                Log.LogMessage(MessageImportance.High, $"Created .NET bindings for {cs.Key} contract at {Path.Combine(ProjectDir, "bindings", c.Key, cs.Key)}.");
                             }
                             else
                             {
