@@ -4,13 +4,13 @@
 	<Import Project="$(LocalAppData)\CustomProjectSystems\Solidity\Solidity.targets" />
 	<PropertyGroup>
 		<CompilerVersion>$soliditycompilerversion$</CompilerVersion>
-		<ConfigurationFile>$solidityconfigfile$</ConfigurationFile>
+    <EVMVersion>$evmversion$</EVMVersion>
     <BindingsNS>Ethereum</BindingsNS>
 	</PropertyGroup>
 	<ItemGroup>
 		<Contract Include="SmartContract1.sol" />
-		<None Include="$solidityconfigfile$" />
 		<None Include="package.json" />
+    <None Include="remappings.txt" />
     <None Include="bindings\**" />
 	</ItemGroup>
 </Project>

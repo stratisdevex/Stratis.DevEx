@@ -65,6 +65,7 @@
   <ItemGroup>
     <Content Include="Ethereum_32x32.png" />
     <Content Include="Ethereum_32x32_black.png" />
+    <None Include="remappings.txt" />
     <None Include="truffle-config.js" />
     <None Include="hardhat.config.js" />
   </ItemGroup>

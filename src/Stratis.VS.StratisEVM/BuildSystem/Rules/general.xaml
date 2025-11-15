@@ -18,18 +18,6 @@
       <DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
     </StringProperty.DataSource>
   </StringProperty>
-
-	<EnumProperty Name="ConfigurationFile" DisplayName="Solidity Configuration File">
-		<EnumProperty.DataSource>
-			<DataSource Persistence="ProjectFile" HasConfigurationCondition="False" />
-		</EnumProperty.DataSource>
-		<EnumValue Name="remappings.txt" />
-		<EnumValue Name="foundry.toml" />
-		<EnumValue Name="brownie-config.yaml" />
-		<EnumValue Name="truffle-config.js" />
-		<EnumValue Name="hardhat.config.js" />
-		<EnumValue Name="hardhat.config.ts" />
-	</EnumProperty>
 	
 	<EnumProperty Name="CompilerVersion" DisplayName="Solidity Compiler Version">
 		<EnumProperty.DataSource>
@@ -58,7 +46,6 @@
     <EnumValue Name="constantinople" />
   </EnumProperty>
   
- 
 
   <StringProperty Name="DeployContract" DisplayName="Deploy Project Contract">
     <StringProperty.DataSource>

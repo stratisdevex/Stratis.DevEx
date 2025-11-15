@@ -28,7 +28,7 @@ namespace Stratis.VS.StratisEVM
             //InitializeComponent();
         }
 
-        public string SelectedConfigFile { get; set; } = "hardhat.config.js";
+        public string SelectedEVMVersion { get; set; } = "london";
 
         public string SelectedCompilerVersion { get; set; } =  "0.8.27";
 
@@ -43,7 +43,7 @@ namespace Stratis.VS.StratisEVM
             System.Windows.Controls.ComboBoxItem item = (System.Windows.Controls.ComboBoxItem)e.AddedItems[0];
             if (item != null && item.Content != null)
             {
-                SelectedConfigFile = (string)item.Content;
+                SelectedEVMVersion = (string)item.Content;
             }
         }
 

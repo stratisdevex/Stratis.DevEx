@@ -17,10 +17,8 @@
   </TemplateData>
   <TemplateContent>
     <Project File="ProjectType1.ProjectType.solproj" ReplaceParameters="true">
-      <ProjectItem ReplaceParameters="true" OpenInEditor="false">hardhat.config.js</ProjectItem>
-      <ProjectItem ReplaceParameters="true" OpenInEditor="false">truffle-config.js</ProjectItem>
-      <ProjectItem ReplaceParameters="true" OpenInEditor="false">foundry.toml</ProjectItem>
       <ProjectItem ReplaceParameters="true" OpenInEditor="false">package.json</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="false">remappings.txt</ProjectItem>
       <ProjectItem ReplaceParameters="true" OpenInEditor="true">SmartContract1.sol</ProjectItem>
       <Folder Name="bindings" TargetFolderName="bindings" />
     </Project>

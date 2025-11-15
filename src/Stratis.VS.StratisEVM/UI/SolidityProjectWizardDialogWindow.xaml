@@ -5,16 +5,13 @@
         xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
         Background="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowBackgroundKey}}"
         Foreground="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}"
-                         SnapsToDevicePixels="False"
-                   UseLayoutRounding="True"
-                   WindowStartupLocation="CenterOwner"
-                   WindowStyle="None"
-                   WindowState="Normal" 
-                   ResizeMode="CanResize"
-                   ShowInTaskbar="false"
-
-      
-        
+        SnapsToDevicePixels="False"
+        UseLayoutRounding="True"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        WindowState="Normal" 
+        ResizeMode="CanResize"
+        ShowInTaskbar="false"
         Width="452"                
         Height="184"
         MinWidth="462"
@@ -75,28 +72,15 @@
         </Grid.RowDefinitions>
 
         <Image Grid.Column="1" Grid.Row="0" Width="64" Height="64" HorizontalAlignment="Right" Source="https://pbs.twimg.com/profile_images/1755661469926989824/dlA_4aUJ_400x400.jpg" />
-
         <Label Grid.Column="0" Grid.Row="0" FontSize="21">Configure your Solidity Project</Label>
-        <Label Grid.Column="0" Grid.Row="1">Solidity project configuration file:</Label>
+        
+        <Label Grid.Column="0" Grid.Row="1">Solidity compiler version:</Label>
         <ComboBox 
             VerticalAlignment="Center" 
             Grid.Column="1" 
             Width="150"
             Grid.Row="1" 
-            SelectedValue="hardhat.config.js" SelectionChanged="ComboBox_SelectionChanged">
-            <ComboBoxItem IsSelected="true">hardhat.config.js</ComboBoxItem>
-            <ComboBoxItem>truffle-config.js</ComboBoxItem>
-            <ComboBoxItem>foundry.toml</ComboBoxItem>
-        </ComboBox>
-
-
-        <Label Grid.Column="0" Grid.Row="2">Solidity compiler version:</Label>
-        <ComboBox 
-    VerticalAlignment="Center" 
-    Grid.Column="1" 
-    Width="150"
-    Grid.Row="2" 
-    SelectedValue="0.8.27" SelectionChanged="ComboBox_SelectionChanged_1">
+            SelectedValue="0.8.27" SelectionChanged="ComboBox_SelectionChanged_1">
             <ComboBoxItem IsSelected="true">0.8.27</ComboBoxItem>
             <ComboBoxItem>0.8.26</ComboBoxItem>
             <ComboBoxItem>0.8.25</ComboBoxItem>
@@ -105,6 +89,21 @@
             <ComboBoxItem>0.8.22</ComboBoxItem>
             <ComboBoxItem>0.8.21</ComboBoxItem>
             <ComboBoxItem>0.8.20</ComboBoxItem>
+        </ComboBox>
+        <Label Grid.Column="0" Grid.Row="2">Smart contract EVM version:</Label>
+        <ComboBox 
+     VerticalAlignment="Center" 
+     Grid.Column="1" 
+     Width="150"
+     Grid.Row="2" 
+     SelectedValue="cancun" SelectionChanged="ComboBox_SelectionChanged">
+            <ComboBoxItem IsSelected="true">cancun</ComboBoxItem>
+            <ComboBoxItem>shanghai</ComboBoxItem>
+            <ComboBoxItem>paris</ComboBoxItem>
+            <ComboBoxItem>london</ComboBoxItem>
+            <ComboBoxItem>berlin</ComboBoxItem>
+            <ComboBoxItem>istanbul</ComboBoxItem>
+            <ComboBoxItem>constantinople</ComboBoxItem>
         </ComboBox>
 
         <!-- Top Margin -->

@@ -48,7 +48,7 @@ namespace Stratis.VS.StratisEVM
                 wizard = new Window1();
                 wizard.ShowDialog();
                 // Add custom parameters.
-                replacementsDictionary.Add("$solidityconfigfile$", wizard.SelectedConfigFile);
+                replacementsDictionary.Add("$evmversion$", wizard.SelectedEVMVersion);
                 replacementsDictionary.Add("$soliditycompilerversion$", wizard.SelectedCompilerVersion);
                 //    customMessage);
             }
@@ -62,11 +62,7 @@ namespace Stratis.VS.StratisEVM
         // not for project templates.
         public bool ShouldAddProjectItem(string filePath)
         {
-            if (filePath.EndsWith(".sol") || filePath.EndsWith("package.json"))
-            {
-                return true;
-            }
-            else if (filePath.EndsWith(wizard.SelectedConfigFile))
+            if (filePath.EndsWith(".sol") || filePath.EndsWith("package.json") || filePath.EndsWith("remappings.txt"))
             {
                 return true;
             }
