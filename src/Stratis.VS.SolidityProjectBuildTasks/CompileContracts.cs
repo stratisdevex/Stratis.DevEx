@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Reflection;
 using System.Text;
 
 using Microsoft.Build.Framework;
@@ -28,12 +28,19 @@ namespace Stratis.VS
         public string OutputPath { get; set; }
 
         [Required]
+        public string CompilerVersion { get; set; } 
+
+        [Required]
         public string EVMVersion { get; set; }
 
         public string BindingsNS { get; set; } = "Ethereum";
-
+        
         public Dictionary<string, Source> Sources => Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
 
+        public string SolcPath => Path.Combine(TaskToolsDir, ".solc-select", "artifacts", "solc-" + CompilerVersion, "solc-" + CompilerVersion);
+        
+        public static string TaskToolsDir { get; } =  Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CustomProjectSystems", "Solidity", "Tools");
+        
         public override bool Execute()
         {
             if (File.Exists(Path.Combine(ProjectDir, "package.json")) && !File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")))
@@ -51,22 +58,16 @@ namespace Stratis.VS
                     Log.LogError("Could not install NPM dependencies: " + GetRunCmdError(npmoutput));
                 }
             }
-            var solcpath = File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) ? Path.Combine(ProjectDir, "node_modules", "solc", "solc.js") :
-                Path.Combine(ExtDir, "node_modules", "solc", "solc.js");
-            if (!File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")))
-            {
-                Log.LogWarning("solc compiler not present in project node_modules directory. Falling back to embedded compiler.");
-            }
-            if (!File.Exists(Path.Combine(ProjectDir, "node_modules", "solc", "solc.js")) && !(Directory.Exists(Path.Combine(ExtDir, "node_modules")) && File.Exists(Path.Combine(ExtDir, "node_modules", "solidity", "dist", "cli", "server.js"))))
-            {
-                if (!InstallSolidityLanguageServer())
-                {
-                    Log.LogError("No solc compiler available. Stopping.");
-                    return false;
-                }
-            }
 
-            var cmdline = "node \"" + solcpath + "\" --standard-json --base-path=\"" + ProjectDir + "\"" + " --include-path=\"" + Path.Combine(ProjectDir, "node_modules") + "\"";
+           
+            if (!InstallSolcCompiler())
+            {
+                Log.LogError("No solc compiler available. Stopping.");
+                return false;
+            }
+            
+
+            var cmdline = SolcPath + " --standard-json --base-path=\"" + ProjectDir + "\"" + " --include-path=\"" + Path.Combine(ProjectDir, "node_modules") + "\"";
             var sources = Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Content =   File.ReadAllText(Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec))  });
             Log.LogMessage(MessageImportance.High, "Compiling {0} file(s) in directory {1} using solc compiler targeting EVM version {2}...", Contracts.Count(), ProjectDir, EVMVersion);
             Log.LogCommandLine(MessageImportance.High, cmdline);
@@ -339,6 +340,32 @@ namespace Stratis.VS
                 }
             }
             return true;
+        }
+
+        protected bool InstallSolcCompiler()
+        {             
+            if (File.Exists(SolcPath))
+            {                
+                return true;
+            }
+            var solcselectpath = Path.Combine(TaskToolsDir, "solc-select.exe");
+            if (!File.Exists(solcselectpath))
+            {
+                Log.LogError("Could not find solc-select executable.");
+                return false;
+                
+            }
+            var output = RunCmd("cmd.exe", $"/c solc-select.exe install {CompilerVersion}", TaskToolsDir);
+            if (CheckRunCmdOutput(output, $"Version '{CompilerVersion}' installed") && File.Exists(SolcPath))
+            {
+                Log.LogMessage(MessageImportance.High, $"solc {CompilerVersion} compiler installed at " + SolcPath);
+                return true;
+            }
+            else
+            {
+                Log.LogError($"Could not install solc {CompilerVersion} compiler: " + GetRunCmdError(output));
+                return false;
+            }
         }
 
         public Dictionary<string, object> RunCmd(string filename, string arguments, string workingdirectory)

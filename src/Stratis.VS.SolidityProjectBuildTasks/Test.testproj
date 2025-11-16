@@ -5,9 +5,10 @@
 	</ItemGroup>
   <PropertyGroup>
     <BindingsNS>TestNS</BindingsNS>
+    <CompilerVersion>0.8.27</CompilerVersion>
     <EVMVersion>london</EVMVersion>
   </PropertyGroup>
 	<Target Name="Build">
-		<CompileContracts Contracts="@(Compile)" ExtDir="C:\Users\Allister\AppData\Local\Microsoft\VisualStudio\17.0_c69ae1a2Exp\Extensions\Stratis DevEx\StratisEVM\0.1.5.0" ProjectDir="$(MSBuildProjectDirectory)" OutputPath="bin\solidity" BindingsNS="$(BindingsNS)" EVMVersion="$(EVMVersion)"/>
+		<CompileContracts Contracts="@(Compile)" ExtDir="C:\Users\Allister\AppData\Local\Microsoft\VisualStudio\17.0_c69ae1a2Exp\Extensions\Stratis DevEx\StratisEVM\0.1.5.0" ProjectDir="$(MSBuildProjectDirectory)" OutputPath="bin\solidity" BindingsNS="$(BindingsNS)" CompilerVersion="$(CompilerVersion)" EVMVersion="$(EVMVersion)"/>
 	</Target>
 </Project>

@@ -148,7 +148,6 @@ namespace Stratis.VS.StratisEVM
           
             await TaskScheduler.Default;
             await InstallBuildSystemAsync();
-            await InstallSlitherAnalyzerAsync();
 
             await JoinableTaskFactory.SwitchToMainThreadAsync();
             ApplicationThemeManager.Apply(UI.VSTheme.ApplicationThemeGuess);
@@ -164,6 +163,7 @@ namespace Stratis.VS.StratisEVM
         #region Static Methods
         private static async Task InstallBuildSystemAsync()
         {
+            await File.WriteAllTextAsync(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "extdir.txt"), Runtime.AssemblyLocation);
 #if DEBUG
             await Runtime.CopyDirectoryAsync(Runtime.AssemblyLocation.CombinePath("BuildSystem"), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity"), true);
 
@@ -192,7 +192,26 @@ namespace Stratis.VS.StratisEVM
                 }
             }
 #endif
-            await File.WriteAllTextAsync(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "extdir.txt"), Runtime.AssemblyLocation);
+            
+            await InstallSolcSelectAsync();
+            await InstallSlitherAnalyzerAsync();
+        }
+
+        private static async Task InstallSolcSelectAsync()
+        {
+            if (!File.Exists(Runtime.AssemblyLocation.CombinePath(SolcSelectExe)))
+            {
+                if (!await Runtime.DownloadFileAsync("solc-select", new Uri("https://ajb.nyc3.cdn.digitaloceanspaces.com/stratisdevex/solc-select.exe"), Runtime.AssemblyLocation.CombinePath(SolcSelectExe)))
+                {
+                    Runtime.Error("Could not download solc-select executable.");
+                    return;
+                }
+                
+            }
+            if (!File.Exists(Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", SolcSelectExe)))
+            {
+                await Runtime.CopyFileAsync(Runtime.AssemblyLocation.CombinePath(SolcSelectExe), Runtime.LocalAppDataDir.CombinePath("CustomProjectSystems", "Solidity", "Tools", SolcSelectExe));
+            }
         }
 
         private static async Task InstallSlitherAnalyzerAsync()
@@ -241,6 +260,8 @@ namespace Stratis.VS.StratisEVM
         public const string NPMFileUIContextRule = "9A7CA75A-FA6E-45B2-B6E9-4BFF0AB7BB88";
 
         public const string SlitherExe = "slither-0.10.3.exe";
+
+        public const string SolcSelectExe = "solc-select.exe";
         #endregion
 
     }

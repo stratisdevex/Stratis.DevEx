@@ -73,7 +73,7 @@
 
   <UsingTask TaskName="CompileContracts" AssemblyFile="$(LocalAppData)\CustomProjectSystems\Solidity\Tools\Stratis.VS.SolidityProjectBuildTasks.dll"/>
   <Target Name="Build">
-    <CompileContracts ExtDir="$(ExtDir)" ProjectDir="$(MSBuildProjectDirectory)" OutputPath="$(OutputPath)" BindingsNS="$(BindingsNS)" EVMVersion="$(EVMVersion)" Contracts="@(Contract)" />
+    <CompileContracts ExtDir="$(ExtDir)" ProjectDir="$(MSBuildProjectDirectory)" OutputPath="$(OutputPath)" BindingsNS="$(BindingsNS)" CompilerVersion="$(CompilerVersion)" EVMVersion="$(EVMVersion)"   Contracts="@(Contract)" />
   </Target>
 
   <Target Name="Rebuild">
