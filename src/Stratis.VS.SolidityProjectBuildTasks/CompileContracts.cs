@@ -38,7 +38,9 @@ namespace Stratis.VS
         public Dictionary<string, Source> Sources => Contracts.ToDictionary(k => k.GetMetadata("Filename"), v => new Source() { Urls = new[] { Path.Combine(v.GetMetadata("RelativeDir"), v.ItemSpec) } });
 
         public string SolcPath => Path.Combine(TaskToolsDir, ".solc-select", "artifacts", "solc-" + CompilerVersion, "solc-" + CompilerVersion);
-        
+
+        public string SlitherPath => Path.Combine(TaskToolsDir, "slither-0.10.3.exe");
+
         public static string TaskToolsDir { get; } =  Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CustomProjectSystems", "Solidity", "Tools");
         
         public override bool Execute()
@@ -95,7 +97,7 @@ namespace Stratis.VS
                     {
                         {"*", new Dictionary<string, string[]>()
                             {
-                                {"*", new [] {"abi", "evm.bytecode", "evm.gasEstimates", "ast" } },
+                                {"*", new [] {"abi", "evm.bytecode", "evm.gasEstimates" } },
                                 
                             }  
                         },
@@ -104,7 +106,9 @@ namespace Stratis.VS
                 },
                 Sources =  this.Sources        
             };
-            File.WriteAllText(Path.Combine(ProjectDir, "compilerinput.json"), Serialize(i));
+
+            //File.WriteAllText(Path.Combine(ProjectDir, "compilerinput.json"), Serialize(i));
+            
             try
             {
                 if (!p.Start())
@@ -258,7 +262,8 @@ namespace Stratis.VS
                     }
                 }
             }
-
+            string slitherAnalysisOutputPath = Path.Combine(outputdir, "slither-analysis.json");    
+            cmdline = $"{SlitherPath} \"{ProjectDir}\" --compile-force-framework solc --solc {SolcPath} --solc-args \"--base-path {ProjectDir} --include-path {Path.Combine(ProjectDir, "node_modules")} \"--print \"cfg,call-graph\" --json {slitherAnalysisOutputPath}";
             return true;
         }
 

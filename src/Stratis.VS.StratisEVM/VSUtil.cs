@@ -26,7 +26,7 @@ namespace Stratis.VS.StratisEVM
 
         protected static IVsOutputWindow outputWindow;
 
-        protected static string[] LogWindowNames = new string[] { "StratisEVM", "Solidity Compiler" };
+        protected static string[] LogWindowNames = new string[] { "StratisEVM" };
         
         public static void LogToBuildWindow(string text)
         {

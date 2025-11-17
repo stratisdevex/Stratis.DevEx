@@ -19,8 +19,8 @@ namespace Stratis.VS.StratisEVM
         public static async Task CompileFileAsync(string file, string workspaceDir)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "Solidity Compiler");
-            VSUtil.LogInfo("Solidity Compiler", string.Format("Compiling {0} in {1}...", file, workspaceDir));
+            VSUtil.ShowLogOutputWindowPane(ServiceProvider.GlobalProvider, "StratisEVM");
+            VSUtil.LogInfo("StratisEVM", string.Format("Compiling {0} in {1} using solc.js compiler...", file, workspaceDir));
             await TaskScheduler.Default;
             var binfiles = Directory.GetFiles(workspaceDir, "*.bin", SearchOption.TopDirectoryOnly);
             foreach ( var binfile in binfiles ) 
@@ -29,7 +29,7 @@ namespace Stratis.VS.StratisEVM
             }
             var cmd = "cmd.exe";
             var solcpath = File.Exists(Path.Combine(workspaceDir, "node_modules", "solc", "solc.js")) ? Path.Combine(workspaceDir, "node_modules", "solc", "solc.js") : Path.Combine(AssemblyLocation, "node_modules", "solc", "solc.js");
-            var args = "/c node " + solcpath + " --base-path=\"" + workspaceDir + "\"" + " \"" + file + "\" --bin";
+            var args = "/c node " + "\"" + solcpath + "\"" + " --base-path=\"" + workspaceDir + "\"" + " \"" + file + "\" --bin";
             if (Directory.Exists(Path.Combine(workspaceDir, "node_modules")))
             {
                 args += " --include-path=" + Path.Combine(workspaceDir, "node_modules");
@@ -38,19 +38,19 @@ namespace Stratis.VS.StratisEVM
             if (CheckRunCmdError(output)) 
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                VSUtil.LogError("Solidity Compiler", "Could not run Solidity Compiler process: " + cmd + " " + args + ": " + GetRunCmdError(output));
+                VSUtil.LogError("StratisEVM", "Could not run process: " + cmd + " " + args + ": " + GetRunCmdError(output));
                 return;
             }
             else if (output.ContainsKey("stdout"))
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                VSUtil.LogInfo("Solidity Compiler", (string)output["stdout"]);
+                VSUtil.LogInfo("StratisEVM", (string)output["stdout"]);
                 return;
             }
             else if (output.ContainsKey("stderr"))
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                VSUtil.LogInfo("Solidity Compiler", (string)output["stderr"]);
+                VSUtil.LogInfo("StratisEVM", (string)output["stderr"]);
                 return;
             }
             else
@@ -59,7 +59,7 @@ namespace Stratis.VS.StratisEVM
                 if (binfiles is null || binfiles.Length == 0) 
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    VSUtil.LogError("Solidity Compiler", "Could not read Solidity compiler output. No compiler output files found.");
+                    VSUtil.LogError("StratisEVM", "Could not read Solidity compiler output. No compiler output files found.");
                     return;
                 }
                 else
@@ -76,11 +76,11 @@ namespace Stratis.VS.StratisEVM
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     if (b == null)
                     {
-                        VSUtil.LogError("Solidity Compiler", "Error reading Solidity compiler output: could not find compiler output file for " + file + ".");
+                        VSUtil.LogError("StratisEVM", "Error reading Solidity compiler output: could not find compiler output file for " + file + ".");
                     }
                     else
                     {
-                        VSUtil.LogInfo("Solidity Compiler", "======= " + file + "======= " + "\nBinary: \n" + b);
+                        VSUtil.LogInfo("StratisEVM", "======= " + file + "======= " + "\nBinary: \n" + b);
                     }
                     return;
                 }
