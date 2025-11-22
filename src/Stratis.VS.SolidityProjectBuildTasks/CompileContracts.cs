@@ -263,7 +263,22 @@ namespace Stratis.VS
                 }
             }
             string slitherAnalysisOutputPath = Path.Combine(outputdir, "slither-analysis.json");    
-            cmdline = $"{SlitherPath} \"{ProjectDir}\" --compile-force-framework solc --solc {SolcPath} --solc-args \"--base-path {ProjectDir} --include-path {Path.Combine(ProjectDir, "node_modules")} \"--print \"cfg,call-graph\" --json {slitherAnalysisOutputPath}";
+            
+            string slitherargs = $"\"{ProjectDir}\" --compile-force-framework solc --solc \"{SolcPath}\" --solc-args \"--base-path {ProjectDir} --include-path {Path.Combine(ProjectDir, "node_modules")} \" --json {slitherAnalysisOutputPath}";
+            var slithercmdrun = RunCmd(SlitherPath, slitherargs, ProjectDir);
+            if (CheckRunCmdOutput(slithercmdrun, $"{ProjectDir} analyzed", true))
+            {
+                Log.LogMessage(MessageImportance.High, "Slither analysis completed. Output written to " + slitherAnalysisOutputPath);
+            }
+            else if (CheckRunCmdError(slithercmdrun))
+            {
+                
+                Log.LogError("Could not complete Slither analysis: " + GetRunCmdError(slithercmdrun));
+            }
+            else
+            {
+                Log.LogWarning("Slither analysis may not have completed successfully.");
+            }
             return true;
         }
 
@@ -420,9 +435,9 @@ namespace Stratis.VS
         public string GetRunCmdError(Dictionary<string, object> output) => (output.ContainsKey("error") ? (string)output["error"] : "")
             + (output.ContainsKey("exception") ? (string)output["exception"] : "" + (output.ContainsKey("stderr") ? (string)output["stderr"] : ""));
 
-        public bool CheckRunCmdOutput(Dictionary<string, object> output, string checktext)
+        public bool CheckRunCmdOutput(Dictionary<string, object> output, string checktext, bool ignoreErrors = false)
         {
-            if (output.ContainsKey("error") || output.ContainsKey("exception"))
+            if (!ignoreErrors && (output.ContainsKey("error") || output.ContainsKey("exception")))
             {
                 if (output.ContainsKey("error"))
                 {
@@ -436,13 +451,13 @@ namespace Stratis.VS
             }
             else
             {
-                if (output.ContainsKey("stderr"))
+                if (!ignoreErrors && output.ContainsKey("stderr"))
                 {
                     var stderr = (string)output["stderr"];
                     Log.LogMessage(MessageImportance.High, stderr);
                     return false;
                 }
-                if (output.ContainsKey("stdout"))
+                else if (output.ContainsKey("stdout"))
                 {
                     var stdout = (string)output["stdout"];
                     Log.LogMessage(MessageImportance.Low, stdout);
