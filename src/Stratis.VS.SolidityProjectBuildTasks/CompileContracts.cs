@@ -266,15 +266,10 @@ namespace Stratis.VS
             
             string slitherargs = $"\"{ProjectDir}\" --compile-force-framework solc --solc \"{SolcPath}\" --solc-args \"--base-path {ProjectDir} --include-path {Path.Combine(ProjectDir, "node_modules")} \" --json {slitherAnalysisOutputPath}";
             var slithercmdrun = RunCmd(SlitherPath, slitherargs, ProjectDir);
-            if (CheckRunCmdOutput(slithercmdrun, $"{ProjectDir} analyzed", true))
+            if (slithercmdrun.ContainsKey("stderr") && ((string) slithercmdrun["stderr"]).Contains($"{ProjectDir} analyzed"))
             {
                 Log.LogMessage(MessageImportance.High, "Slither analysis completed. Output written to " + slitherAnalysisOutputPath);
-            }
-            else if (CheckRunCmdError(slithercmdrun))
-            {
-                
-                Log.LogError("Could not complete Slither analysis: " + GetRunCmdError(slithercmdrun));
-            }
+            }            
             else
             {
                 Log.LogWarning("Slither analysis may not have completed successfully.");

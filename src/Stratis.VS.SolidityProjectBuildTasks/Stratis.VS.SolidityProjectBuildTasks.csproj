@@ -1,16 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net472</TargetFrameworks>
 	<IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="**\bindings\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Test.testproj" />
   </ItemGroup>
 
   <ItemGroup>

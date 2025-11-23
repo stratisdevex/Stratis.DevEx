@@ -3,8 +3,8 @@
     "MSBuild": {
       "commandName": "Executable",
       "executablePath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Preview\\MSBuild\\Current\\Bin\\MSBuild.exe",
-      "commandLineArgs": "C:\\Projects\\Stratis.DevEx\\src\\Stratis.VS.SolidityProjectBuildTasks\\Test.testproj",
-      "nativeDebugging": true
+      "commandLineArgs": "C:\\Projects\\Stratis.DevEx\\tests\\Stratis.VS.Tests.SolidityProjectBuildTasks\\Test.testproj",
+      "nativeDebugging": false
     }
   }
 }
