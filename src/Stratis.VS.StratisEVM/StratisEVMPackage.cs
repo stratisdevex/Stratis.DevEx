@@ -55,6 +55,7 @@ namespace Stratis.VS.StratisEVM
     [ProvideToolWindow(typeof(UI.RunSmartContractToolWindow), Style = VsDockStyle.Tabbed, Window = EnvDTE.Constants.vsWindowKindSolutionExplorer)]
     [ProvideToolWindowVisibility(typeof(UI.RunSmartContractToolWindow), SolutionHasSingleProject_string)]
     [ProvideToolWindowVisibility(typeof(UI.RunSmartContractToolWindow), SolutionHasMultipleProjects_string)]
+    [ProvideToolWindow(typeof(UI.SolidityStaticAnalysisToolWindow), Style = VsDockStyle.Tabbed, Window = EnvDTE.Constants.vsWindowKindSolutionExplorer)]
     public sealed partial class StratisEVMPackage : AsyncPackage, IVsSolutionEvents7, IVsSolutionEvents
     {
         #region Constructors
@@ -156,6 +157,7 @@ namespace Stratis.VS.StratisEVM
             await UI.StratisEVMBlockchainDashboardToolWindowCommand.InitializeAsync(this);
             await UI.DeploySolidityProjectToolWindowCommand.InitializeAsync(this); 
             await UI.RunSmartContractToolWindowCommand.InitializeAsync(this);
+            await UI.SolidityStaticAnalysisToolWindowCommand.InitializeAsync(this);
             
         }
         #endregion

@@ -47,6 +47,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SolidityProject\SlitherAnalysis.cs" />
     <Compile Include="SolidityProject\SolidityCompilerIO.cs" />
     <Compile Include="UI\BlockchainExplorer\Converters.cs" />
     <Compile Include="UI\DeploySolidityProject\DeploySolidityProjectToolWindow.cs" />
@@ -58,6 +59,11 @@
     <Compile Include="UI\RunSmartContract\RunSmartContractToolWindowCommand.cs" />
     <Compile Include="UI\RunSmartContract\RunSmartContractToolWindowControl.xaml.cs">
       <DependentUpon>RunSmartContractToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SolidityStaticAnalysis\SolidityStaticAnalysisToolWindow.cs" />
+    <Compile Include="UI\SolidityStaticAnalysis\SolidityStaticAnalysisToolWindowCommand.cs" />
+    <Compile Include="UI\SolidityStaticAnalysis\SolidityStaticAnalysisToolWindowControl.xaml.cs">
+      <DependentUpon>SolidityStaticAnalysisToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindow.cs" />
     <Compile Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardToolWindowCommand.cs" />
@@ -115,6 +121,7 @@
     </Content>
     <Content Include="Resources\DeploySolidityProjectToolWindowCommand.png" />
     <Content Include="Resources\RunSmartContractToolWindowCommand.png" />
+    <Content Include="Resources\SolidityAnalysisToolWindowCommand.png" />
     <None Include="UI\TreeView\Classes.cd" />
     <Resource Include="Images\SolidityProjectProjectIcon.png" />
     <Resource Include="Images\SoliditySourceFileIcon.png" />
@@ -293,6 +300,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UI\SolidityStaticAnalysis\SolidityStaticAnalysisResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\SolidityStaticAnalysis\SolidityStaticAnalysisToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\StratisEVMBlockchainDashboard\StratisEVMBlockchainDashboardTransactionsUserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -391,6 +406,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BuildSystem\Tools\" />
+    <Folder Include="UI\SolidityStaticAnalysis\Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

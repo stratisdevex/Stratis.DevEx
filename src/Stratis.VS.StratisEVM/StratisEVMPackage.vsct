@@ -191,6 +191,13 @@
           <ButtonText>RunSmartContractToolWindow</ButtonText>
         </Strings>
       </Button>
+      <Button guid="guidStratisEVMPackageCmdSet" id="cmdidSolidityAnalysisToolWindowCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="guidImages6" id="bmpPic1" />
+        <Strings>
+          <ButtonText>SolidityAnalysisToolWindow</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 	  
 	
@@ -211,6 +218,7 @@
       <Bitmap guid="guidImages3" href="Resources\StratisEVMBlockchainDashboardToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages4" href="Resources\DeploySolidityProjectToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages5" href="Resources\RunSmartContractToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages6" href="Resources\SolidityAnalysisToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
   </Commands>
 
@@ -250,6 +258,7 @@
       <IDSymbol value="4129" name="cmdidStratisEVMBlockchainDashboardToolWindowCommand" />
       <IDSymbol value="4130" name="cmdidDeploySolidityProjectToolWindowCommand" />
       <IDSymbol value="4131" name="cmdidRunSmartContractToolWindowCommand" />
+      <IDSymbol value="4132" name="cmdidSolidityAnalysisToolWindowCommand" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{566c40d3-8ac5-4660-9ccc-44da7e349169}">
@@ -336,6 +345,15 @@
     </GuidSymbol>
   
     <GuidSymbol value="{4a633e61-420d-41e3-bae2-62fbc81ce4f1}" name="guidImages5">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{e94e1c8d-511c-4915-ad7a-6f9d56ede8c7}" name="guidImages6">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />
