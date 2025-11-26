@@ -122,6 +122,16 @@
         </Strings>
       </Button>
 
+      <Button guid="guidStratisEVMPackageCmdSet1" id="SolidityProjectMenuCmdId4" priority="0x0100" type="Button">
+        <Parent guid="guidStratisEVMPackageCmdSet1" id="MyGroupForCommands" />
+        <Icon guid="guidNPMIcon" id="pngNPM" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Solidity Static Analysis...</ButtonText>
+        </Strings>
+      </Button>
+
 	  <!-- Blockchain Explorer toolbar buttons -->
     <Button guid="guidBlockchainExplorer" id="MyCommand" priority="0x0100" type="Button">
 		  <Parent guid="VSMainMenu" id="View.DevWindowsGroup.OtherWindows.Group1" />
@@ -195,7 +205,7 @@
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
         <Icon guid="guidImages6" id="bmpPic1" />
         <Strings>
-          <ButtonText>SolidityAnalysisToolWindow</ButtonText>
+          <ButtonText>Solidity Static Analysis ToolWindow</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -239,6 +249,7 @@
   <VisibilityConstraints>
     <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" context="SolidityFileUIContextRule" />
     <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="SolidityProjectMenuCmdId2" context="NPMFileUIContextRule" />
+    <VisibilityItem guid="guidStratisEVMPackageCmdSet1" id="SolidityProjectMenuCmdId4" context="SolidityFileUIContextRule" />
     <VisibilityItem guid="guidStratisEVMPackageCmdSet3" id="SolidityProjectMenuCmdId3" context="SolidityProjectFileUIContextRule" />
   </VisibilityConstraints>
   
@@ -291,7 +302,7 @@
       <IDSymbol value="4128" name="MyGroupForCommands" />
       <IDSymbol value="0x0100" name="cmdidSolidityProjectMenuCommands" />
       <IDSymbol value="0x0101" name="SolidityProjectMenuCmdId2" />
-     
+      <IDSymbol value="0x0104" name="SolidityProjectMenuCmdId4" />
     </GuidSymbol>
 
     <GuidSymbol name="guidStratisEVMPackageCmdSet3" value="{edaae768-9fc5-4b43-9421-cc1313528cda}">
