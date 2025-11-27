@@ -22,6 +22,8 @@ namespace Stratis.VS.StratisEVM
         public const int InstallPackagesCommandId = 0x0101;
 
         public const int ShowDeployToolWindowCommandId = 0x0102;
+
+        public const int AnalyzeCommandId = 0x0104;
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>

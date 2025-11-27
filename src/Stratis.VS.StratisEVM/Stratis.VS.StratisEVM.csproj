@@ -153,6 +153,9 @@
     <Content Include="Resources\DeploySolidity_16x16.png" />
     <Content Include="Resources\NodeJSPackage_16x.png" />
     <Content Include="Resources\SolidityProjectMenuCommands.png" />
+    <Content Include="Resources\SolidityStaticAnalysis.png" />
+    <Content Include="Resources\SolidityStaticAnalysis16x16.png" />
+    <Content Include="Resources\SolidityStaticAnalysis64x64.png" />
     <Content Include="Resources\solidity_16x16.png" />
     <Content Include="LanguageServer\SolidityLanguageSettings.json">
       <IncludeInVSIX>true</IncludeInVSIX>
