@@ -1,4 +1,9 @@
-﻿using System;
+﻿using Microsoft.Build.Framework;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
+using Newtonsoft.Json;
+using Stratis.DevEx;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,16 +11,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Threading;
-
-using Newtonsoft.Json;
-using Stratis.DevEx;
-
 namespace Stratis.VS.StratisEVM
 {
     public class SolidityCompiler : Runtime
     {
+        public static string SlitherPath => Path.Combine(TaskToolsDir, "slither-0.10.3.exe");
+
+        public static string TaskToolsDir { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CustomProjectSystems", "Solidity", "Tools");
+
         public static async Task CompileFileAsync(string file, string workspaceDir)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -104,6 +107,54 @@ namespace Stratis.VS.StratisEVM
         }
 
         public static SolidityCompilerIO2.SolidityCompilerOutput ParseOutputFile(string file) => 
-            JsonConvert.DeserializeObject<SolidityCompilerIO2.SolidityCompilerOutput>(File.ReadAllText(file));        
+            JsonConvert.DeserializeObject<SolidityCompilerIO2.SolidityCompilerOutput>(File.ReadAllText(file));
+
+
+        public static bool InstallSolcCompiler(string compilerVersion)
+        {
+            string solcPath = Path.Combine(TaskToolsDir, ".solc-select", "artifacts", "solc-" + compilerVersion, "solc-" + compilerVersion);
+            if (File.Exists(solcPath))
+            {
+                return true;
+            }
+            var solcselectpath = Path.Combine(TaskToolsDir, "solc-select.exe");
+            if (!File.Exists(solcselectpath))
+            {
+                VSUtil.LogError("StratsEVM", "Could not find solc-select executable.");
+                return false;
+
+            }
+            var output = RunCmd("cmd.exe", $"/c solc-select.exe install {compilerVersion}", TaskToolsDir);
+            if (CheckRunCmdOutput(output, $"Version '{compilerVersion}' installed") && File.Exists(solcPath))
+            {
+                VSUtil.LogInfo("StratisEVM", $"solc {compilerVersion} compiler installed at {solcPath}.");
+                return true;
+            }
+            else
+            {
+                VSUtil.LogError("StratisEVM", $"Could not install solc {compilerVersion} compiler: " + GetRunCmdError(output));
+                return false;
+            }
+        }
+
+        public static SlitherAnalysis Analyze(string relativeFilePath, string projectDir, string outputDir, string compilerVersion)
+        {
+            string slitherAnalysisOutputPath = Path.Combine(outputDir, relativeFilePath + "slither-analysis.json");
+            string solcPath = Path.Combine(TaskToolsDir, ".solc-select", "artifacts", "solc-" + compilerVersion, "solc-" + compilerVersion);
+            var solfile = Path.Combine(projectDir, relativeFilePath);
+            string slitherargs = $"\"{solfile}\" --compile-force-framework solc --solc \"{solcPath}\" --solc-args \"--base-path {projectDir} --include-path {Path.Combine(projectDir, "node_modules")} \" --json {slitherAnalysisOutputPath}";            
+            var slithercmdrun = RunCmd(SlitherPath, slitherargs, projectDir);
+            if (slithercmdrun.ContainsKey("stderr") && ((string)slithercmdrun["stderr"]).Contains($"{solfile} analyzed"))
+            {
+                var r = JsonConvert.DeserializeObject<SlitherAnalysis>(File.ReadAllText(slitherAnalysisOutputPath));
+                VSUtil.LogInfo("StratisEVM", $"Slither analysis of {solfile} completed successfully.");
+                return r;
+            }
+            else
+            {
+                VSUtil.LogError("StratisEVM", $"Slither analysis of {solfile} did not complete successfully.");
+                return null;
+            }
+        }
     }
 }

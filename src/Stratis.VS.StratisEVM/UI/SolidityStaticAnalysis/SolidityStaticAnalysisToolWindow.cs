@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
 
@@ -31,6 +32,9 @@ namespace Stratis.VS.StratisEVM.UI
             var c  = new SolidityStaticAnalysisToolWindowControl();
             c.window = this;
             this.Content = c;   
+            this.control = c;
         }
+
+        public SolidityStaticAnalysisToolWindowControl control;
     }
 }

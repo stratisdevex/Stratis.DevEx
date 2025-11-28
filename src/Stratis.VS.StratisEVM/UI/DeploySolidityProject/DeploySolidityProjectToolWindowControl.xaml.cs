@@ -41,7 +41,7 @@ namespace Stratis.VS.StratisEVM.UI
             {
                 return;
             }
-            var project = VSUtil.GetSelectedProject();
+            var project = VSUtil.GetSelectedProjectOrError();
             if (project == null)
             {
                 MessageBox.Show("No project selected. Please select a Solidity project to deploy.", "Deploy Solidity Project", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -101,7 +101,7 @@ namespace Stratis.VS.StratisEVM.UI
                 ShowDeployError("Select a Solidity smart contract to deploy from the project and a deploy profile to use.");
                 return;
             }
-            var project = VSUtil.GetSelectedProject();
+            var project = VSUtil.GetSelectedProjectOrError();
             var contract = DeployContractComboBox.SelectedItem.ToString().Split(new string[] { " - " }, StringSplitOptions.None);
             var contractFileName = contract[0] + "." + contract[1];
             var deployProfileName = DeployProfileComboBox.SelectedItem.ToString();
@@ -250,7 +250,7 @@ namespace Stratis.VS.StratisEVM.UI
             // Clear existing parameters
             ContractDeployParamsStackPanel.Children.Clear();
             if (DeployContractComboBox.SelectedItem == null) return;
-            var project = VSUtil.GetSelectedProject();
+            var project = VSUtil.GetSelectedProjectOrError();
             var contract = DeployContractComboBox.SelectedItem.ToString().Split(new string[] { " - " }, StringSplitOptions.None);
             var path = VSUtil.GetProjectItemFilePath(project, contract[1]);
             //var deployParams = SolidityFileParser.GetConstructorParameters(path).tr[contract[0]];

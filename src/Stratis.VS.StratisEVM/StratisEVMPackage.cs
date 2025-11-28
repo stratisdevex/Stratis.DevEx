@@ -157,7 +157,7 @@ namespace Stratis.VS.StratisEVM
             await UI.StratisEVMBlockchainDashboardToolWindowCommand.InitializeAsync(this);
             await UI.DeploySolidityProjectToolWindowCommand.InitializeAsync(this); 
             await UI.RunSmartContractToolWindowCommand.InitializeAsync(this);
-            await UI.SolidityStaticAnalysisToolWindowCommand.InitializeAsync(this);
+            //await UI.SolidityStaticAnalysisToolWindowCommand.InitializeAsync(this);
             
         }
         #endregion

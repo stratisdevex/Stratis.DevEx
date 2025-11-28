@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 using Microsoft.VisualStudio.Shell;
+using Stratis.VS.StratisEVM.UI;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -59,6 +60,12 @@ namespace Stratis.VS.StratisEVM
                 Supported = false
             };
             commandService.AddCommand(menuItem);
+            menuCommandID = new CommandID(CommandSet, AnalyzeCommandId);
+            menuItem = new OleMenuCommand(AnalyzeFile, menuCommandID)
+            {
+                Supported = false
+            };
+            commandService.AddCommand(menuItem);
         }
 
         /// <summary>
@@ -106,9 +113,27 @@ namespace Stratis.VS.StratisEVM
             await SolidityCompiler.InstallNPMPackagesAsync(dir);
         }
 
-        #pragma warning disable VSTHRD110, CS4014
+        private async Task AnalyzeFileAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+            EnvDTE80.DTE2 dte = (EnvDTE80.DTE2)await ServiceProvider.GetServiceAsync(typeof(EnvDTE.DTE));
+            var item = dte.SelectedItems.Item(1);
+            if (item.ProjectItem != null)
+            {
+                var window = (SolidityStaticAnalysisToolWindow) await this.package.ShowToolWindowAsync(typeof(SolidityStaticAnalysisToolWindow), 0, true, this.package.DisposalToken);
+                window.control.AnalyzeProjectFileItem(item.ProjectItem);
+            }
+            //var item = dte.SelectedItems.Item(1).ProjectItem;
+            var file = dte.SelectedItems.Item(1).ProjectItem.Properties.Item("FullPath").Value.ToString();
+            var dir = Path.GetDirectoryName(dte.SelectedItems.Item(1).ProjectItem.ContainingProject.FileName);
+            SolidityStaticAnalysisToolWindowControl.selectedFilePath = file;
+            
+                  
+        }
+#pragma warning disable VSTHRD110, CS4014
         private void CompileFile(object sender, EventArgs e) => CompileFileAsync();
         private void InstallNPMPackages(object sender, EventArgs e) => InstallNPMPackagesAsync();
+        private void AnalyzeFile(object sender, EventArgs e) => AnalyzeFileAsync();
 #pragma warning restore VSTHRD110, CS4014
     }
 }

@@ -303,7 +303,7 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public static Project GetSelectedProject()
+        public static Project GetSelectedProjectOrError()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var dte = StratisEVMPackage.Instance.GetService<DTE, EnvDTE80.DTE2>();
@@ -322,6 +322,26 @@ namespace Stratis.VS.StratisEVM
             else
             {
                 return si.Item(1).Project;
+            }
+        }
+
+        public static Project GetSelectedProject()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var dte = StratisEVMPackage.Instance.GetService<DTE, EnvDTE80.DTE2>();
+            if (dte == null)
+            {
+                ShowModalErrorDialogBox("Could not get DTE service.");
+                return null;
+            }
+            var si = dte.SelectedItems;
+            if (si == null || si.Count == 0 || si.Item(1).ProjectItem == null || si.Item(1).ProjectItem.ContainingProject == null)
+            {                
+                return null;
+            }
+            else
+            {
+                return si.Item(1).ProjectItem.ContainingProject;
             }
         }
 
