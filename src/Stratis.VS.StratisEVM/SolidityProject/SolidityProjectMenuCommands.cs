@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 using Microsoft.VisualStudio.Shell;
+
+using Stratis.DevEx;
 using Stratis.VS.StratisEVM.UI;
 
 namespace Stratis.VS.StratisEVM
@@ -118,17 +120,16 @@ namespace Stratis.VS.StratisEVM
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
             EnvDTE80.DTE2 dte = (EnvDTE80.DTE2)await ServiceProvider.GetServiceAsync(typeof(EnvDTE.DTE));
             var item = dte.SelectedItems.Item(1);
-            if (item.ProjectItem != null)
-            {
-                var window = (SolidityStaticAnalysisToolWindow) await this.package.ShowToolWindowAsync(typeof(SolidityStaticAnalysisToolWindow), 0, true, this.package.DisposalToken);
-                window.control.AnalyzeProjectFileItem(item.ProjectItem);
-            }
-            //var item = dte.SelectedItems.Item(1).ProjectItem;
-            var file = dte.SelectedItems.Item(1).ProjectItem.Properties.Item("FullPath").Value.ToString();
-            var dir = Path.GetDirectoryName(dte.SelectedItems.Item(1).ProjectItem.ContainingProject.FileName);
-            SolidityStaticAnalysisToolWindowControl.selectedFilePath = file;
+            var project = item.ProjectItem.ContainingProject;
+            var projectdir = Path.GetDirectoryName(project.FileName);
+            var filepath = item.ProjectItem.FileNames[1];
+            var outputDir = Path.Combine(Path.GetDirectoryName(project.FileName), project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
+            var r = await SolidityCompiler.AnalyzeAsync(Runtime.GetWindowsRelativePath(filepath, projectdir), projectdir, outputDir, "0.8.27");
             
-                  
+            var window = (SolidityStaticAnalysisToolWindow) await this.package.ShowToolWindowAsync(typeof(SolidityStaticAnalysisToolWindow), 0, true, this.package.DisposalToken);
+            window.control.AnalyzeProjectFileItem(item.ProjectItem, r);
+
+
         }
 #pragma warning disable VSTHRD110, CS4014
         private void CompileFile(object sender, EventArgs e) => CompileFileAsync();

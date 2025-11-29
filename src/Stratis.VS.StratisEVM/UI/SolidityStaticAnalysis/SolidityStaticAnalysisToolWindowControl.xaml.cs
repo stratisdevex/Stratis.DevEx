@@ -33,14 +33,14 @@ namespace Stratis.VS.StratisEVM.UI
 
         }
 
-        public void AnalyzeProjectFileItem(ProjectItem item)
+        
+        public void AnalyzeProjectFileItem(ProjectItem item, SlitherAnalysis analysis)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var project = item.ContainingProject;
-            var projectdir = Path.GetDirectoryName(project.FileName);
-            var filepath = item.FileNames[1];
-            var outputDir = Path.Combine(Path.GetDirectoryName(project.FileName), project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
-            var a = SolidityCompiler.Analyze(Runtime.GetWindowsRelativePath(filepath, projectdir), projectdir, outputDir, "0.8.27");
+            
         }
+        
+
+
     }
 }
