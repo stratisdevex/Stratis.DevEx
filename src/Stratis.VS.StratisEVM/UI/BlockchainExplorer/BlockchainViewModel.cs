@@ -1,10 +1,4 @@
-﻿using Microsoft.VisualStudio.Shell;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using Stratis.DevEx;
-using Stratis.DevEx.Ethereum;
-using Stratis.DevEx.Ethereum.Explorers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -16,6 +10,15 @@ using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.VisualStudio.Shell;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+using Stratis.DevEx;
+using Stratis.DevEx.Ethereum;
+using Stratis.DevEx.Ethereum.Explorers;
+
 using static Stratis.DevEx.Result;
 
 namespace Stratis.VS.StratisEVM.UI.ViewModel

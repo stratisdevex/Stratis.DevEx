@@ -1,20 +1,19 @@
-﻿using System;
+﻿using EnvDTE;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.ProjectSystem;
+using Microsoft.VisualStudio.ProjectSystem.Properties;
+using Microsoft.VisualStudio.Settings;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Shell.Settings;
+using Stratis.DevEx;
+using Stratis.DevEx.Ethereum;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;  
-
-using EnvDTE;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.ProjectSystem.Properties;
-using Microsoft.VisualStudio.ProjectSystem;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Settings;
-using Microsoft.VisualStudio.Shell.Settings;
-
-using Stratis.DevEx;
-using Stratis.DevEx.Ethereum;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -121,6 +120,10 @@ namespace Stratis.VS.StratisEVM
             LogInfo("StratisEVM", text);    
             ActivateLogOutputPane("StratisEVM");
         }
+
+        public static void LogStratisEVMInfo(string text) => LogInfo("StratisEVM", text);
+
+        public static void LogStratisEVMError(string text) => LogError("StratisEVM", text);
 
         public static bool InitializeVSServices(IServiceProvider provider)
         {

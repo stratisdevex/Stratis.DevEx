@@ -12,16 +12,32 @@
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
              Name="SolidityAnalysisToolWindow">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemesDictionary Theme="{x:Static stratisui:VSTheme.ApplicationThemeGuess}" />
+                <ui:ControlsDictionary />
+                <ResourceDictionary Source="SolidityStaticAnalysisResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!-- The view model that provides the data for the trees -->
+            <vm:SolidityStaticAnalysisViewModel x:Key="StaticAnalysis" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
-        
-        <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <ui:Button Name="AnalyzeButton" Appearance="Primary" Content="Analyze" Margin="0,10,0,0" Width="100" Height="36" Click="AnalyzeButton_Click" />
-                
-            </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="0">
+            <stratisui:SolidityStaticAnalysisTree x:Name="SolidityStaticAnalysisTree"
+                Items="{Binding Source={StaticResource StaticAnalysis}, Path=Objects}"
+                TreeNodeStyle="{StaticResource TreeViewItemStyle}"
+                TreeStyle="{StaticResource TreeViewStyle}"
+                NodeSortDescriptions="{StaticResource AscendingNames}"
+                SelectNodesOnRightClick="True"
+                IsLazyLoading="False"
+                Margin="0,0,0,10" />
         </StackPanel>
+        <ContentPresenter x:Name="RootContentDialog" Grid.Row="0"/>
     </Grid>
 </UserControl>

@@ -117,17 +117,18 @@ namespace Stratis.VS.StratisEVM
             {
                 return true;
             }
+            VSUtil.LogInfo("StratisEVM", $"Installing solc {compilerVersion} compiler...");
             var solcselectpath = Path.Combine(TaskToolsDir, "solc-select.exe");
             if (!File.Exists(solcselectpath))
             {
-                VSUtil.LogError("StratsEVM", "Could not find solc-select executable.");
+                VSUtil.LogError("StratsEVM", $"Could not find solc-select executable. Could not install solc {compilerVersion} compiler");
                 return false;
 
             }
             var output = RunCmd("cmd.exe", $"/c solc-select.exe install {compilerVersion}", TaskToolsDir);
             if (CheckRunCmdOutput(output, $"Version '{compilerVersion}' installed") && File.Exists(solcPath))
             {
-                VSUtil.LogInfo("StratisEVM", $"solc {compilerVersion} compiler installed at {solcPath}.");
+                VSUtil.LogInfo("StratisEVM", $"solc {compilerVersion} compiler installed.");
                 return true;
             }
             else

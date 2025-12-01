@@ -124,7 +124,8 @@ namespace Stratis.VS.StratisEVM
             var projectdir = Path.GetDirectoryName(project.FileName);
             var filepath = item.ProjectItem.FileNames[1];
             var outputDir = Path.Combine(Path.GetDirectoryName(project.FileName), project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString());
-            var r = await SolidityCompiler.AnalyzeAsync(Runtime.GetWindowsRelativePath(filepath, projectdir), projectdir, outputDir, "0.8.27");
+            var compilerVersion = VSUtil.GetProjectProperty(project, "CompilerVersion");
+            var r = await SolidityCompiler.AnalyzeAsync(Runtime.GetWindowsRelativePath(filepath, projectdir), projectdir, outputDir, compilerVersion);
             
             var window = (SolidityStaticAnalysisToolWindow) await this.package.ShowToolWindowAsync(typeof(SolidityStaticAnalysisToolWindow), 0, true, this.package.DisposalToken);
             window.control.AnalyzeProjectFileItem(item.ProjectItem, r);
