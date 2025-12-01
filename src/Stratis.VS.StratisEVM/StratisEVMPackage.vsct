@@ -87,7 +87,15 @@
         </Strings>
       </Button>
 
-    
+      <Button guid="guidStratisEVMPackageCmdSet" id="CmdId4" priority="0x0100" type="Button">
+        <Parent guid="guidStratisEVMPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidSolidityStaticAnalysisIcon" id="pngSolidityStaticAnalysis" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Analyze Solidity File</ButtonText>
+        </Strings>
+      </Button>
       
       
       <Button guid="guidStratisEVMPackageCmdSet1" id="cmdidSolidityProjectMenuCommands" priority="0x0100" type="Button">
@@ -266,6 +274,7 @@
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="CmdId1" value="0x0101" />
       <IDSymbol name="CmdId2" value="0x0102" />
+      <IDSymbol name="CmdId4" value="0x0104" />
       <IDSymbol value="256" name="cmdidBlockchainExplorerToolWindowCommand" />
       <IDSymbol value="4129" name="cmdidStratisEVMBlockchainDashboardToolWindowCommand" />
       <IDSymbol value="4130" name="cmdidDeploySolidityProjectToolWindowCommand" />

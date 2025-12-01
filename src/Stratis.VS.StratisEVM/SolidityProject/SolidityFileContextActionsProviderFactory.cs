@@ -24,6 +24,7 @@ namespace Stratis.VS.StratisEVM
         private static readonly IReadOnlyList<CommandID> SupportedCommands = new List<CommandID>
             {
                 new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd1Id),
+                new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd4Id),
                 //new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd2Id),
             };
 
@@ -39,7 +40,6 @@ namespace Stratis.VS.StratisEVM
 
         internal class SolidityFileContextActionProvider : IFileContextActionProvider
         {
-            private static readonly Guid ActionOutputWindowPane = new Guid("b9319ea3-b873-442f-abaa-3c1c1c00fd08");
             private IWorkspace workspaceContext;
 
             internal SolidityFileContextActionProvider(IWorkspace workspaceContext)
@@ -51,7 +51,6 @@ namespace Stratis.VS.StratisEVM
             {
                 return Task.FromResult<IReadOnlyList<IFileContextAction>>(new IFileContextAction[]
                 {
-                    // Word count command:
                     new SolidityFileContextAction(
                         fileContext,
                         new Tuple<Guid, uint>(ProviderCommandGroup, StratisEVMPackageIds.Cmd1Id),
@@ -59,35 +58,20 @@ namespace Stratis.VS.StratisEVM
                         async (fCtxt, progress, ct) =>
                         {
                             await SolidityCompiler.CompileFileAsync(filePath, fileContext.InputFiles.First());
-                        }),
+                        }
+                    ),
+                    new SolidityFileContextAction(
+                        fileContext,
+                        new Tuple<Guid, uint>(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd4Id),
+                        "Analyze Solidity File" + fileContext.DisplayName,
+                        async (fCtxt, progress, ct) =>
+                        {
+                            await SolidityCompiler.CompileFileAsync(filePath, fileContext.InputFiles.First());
+                        }
+                    ),
                 });
             }
-
-            internal static async Task OutputWindowPaneAsync(string message)
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                IVsOutputWindowPane outputPane = null;
-                var outputWindow = ServiceProvider.GlobalProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-                if (outputWindow != null && ErrorHandler.Failed(outputWindow.GetPane(ActionOutputWindowPane, out outputPane)))
-                {
-                    IVsWindowFrame windowFrame;
-                    var vsUiShell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
-                    if (vsUiShell != null)
-                    {
-                        uint flags = (uint)__VSFINDTOOLWIN.FTW_fForceCreate;
-                        vsUiShell.FindToolWindow(flags, VSConstants.StandardToolWindows.Output, out windowFrame);
-                        windowFrame.Show();
-                    }
-
-                    outputWindow.CreatePane(ActionOutputWindowPane, "Solidity Compiler", 1, 1);
-                    outputWindow.GetPane(ActionOutputWindowPane, out outputPane);
-                    outputPane.Activate();
-                }
-
-                outputPane?.OutputStringThreadSafe(message);
-            }
-
+            
             internal class SolidityFileContextAction : IFileContextAction, IVsCommandItem
             {
                 private Func<FileContext, IProgress<IFileContextActionProgressUpdate>, CancellationToken, Task> executeAction;

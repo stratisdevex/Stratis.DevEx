@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using Stratis.DevEx;
+using Stratis.VS.StratisEVM.UI.ViewModel;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -28,19 +29,20 @@ namespace Stratis.VS.StratisEVM.UI
         internal static EnvDTE.Project selectedProject;
         internal static string selectedFilePath;
 
-        private void AnalyzeButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
+       
         
         public void AnalyzeProjectFileItem(ProjectItem item, SlitherAnalysis analysis)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             
         }
-        
 
+        private SolidityStaticAnalysisInfo GetSelectedItem(object sender)
+        {
+            var window = (SolidityStaticAnalysisToolWindowControl)sender;
+            var tree = window.SolidityStaticAnalysisTree;
+            return tree.SelectedItem;
+        }
 
     }
 }
