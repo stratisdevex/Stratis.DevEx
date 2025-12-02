@@ -1,12 +1,15 @@
-﻿namespace Stratis.VS.StratisEVM.SolidityCompilerIO2
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.Collections.Generic;
+using System.Globalization;
+
+namespace Stratis.VS.StratisEVM.SolidityCompilerIO2
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    using System.Runtime.Serialization;
-
-    using Newtonsoft.Json;
-
     using System.ComponentModel;
+    using System.Runtime.Serialization;
 
 
     public partial class SolidityCompilerInput
@@ -171,4 +174,53 @@ public class Input
     public string internalType { get; set; }
     public string name { get; set; }
     public string type { get; set; }
+}
+
+public partial class PackageJsonFile
+{
+    [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
+    public string Name { get; set; }
+
+    [JsonProperty("version", NullValueHandling = NullValueHandling.Ignore)]
+    public string Version { get; set; }
+
+    [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
+    public string Description { get; set; }
+
+    [JsonProperty("main", NullValueHandling = NullValueHandling.Ignore)]
+    public string Main { get; set; }
+
+    [JsonProperty("scripts", NullValueHandling = NullValueHandling.Ignore)]
+    public Dictionary<string, string> Scripts { get; set; }
+
+    [JsonProperty("author", NullValueHandling = NullValueHandling.Ignore)]
+    public string Author { get; set; }
+
+    [JsonProperty("license", NullValueHandling = NullValueHandling.Ignore)]
+    public string License { get; set; }
+
+    [JsonProperty("devDependencies", NullValueHandling = NullValueHandling.Ignore)]
+    public Dictionary<string, string> DevDependencies { get; set; }
+
+    [JsonProperty("dependencies", NullValueHandling = NullValueHandling.Ignore)]
+    public Dictionary<string, string> Dependencies { get; set; }
+}
+
+public partial class PackageJsonFile
+{
+    public static PackageJsonFile Parse(string json) => JsonConvert.DeserializeObject<PackageJsonFile>(json, Stratis.DevEx.Ethereum.SolidityCompilerIO.PackageJsonConverter.Settings);
+    public static string ToJson(PackageJsonFile self) => JsonConvert.SerializeObject(self, Stratis.DevEx.Ethereum.SolidityCompilerIO.PackageJsonConverter.Settings);
+}
+
+internal static class PackageJsonConverter
+{
+    public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+    {
+        MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+        DateParseHandling = DateParseHandling.None,
+        Converters =
+            {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+    };
 }

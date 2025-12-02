@@ -1,4 +1,4 @@
-﻿namespace Stratis.VS.StratisEVM.SolidityCompilerIO
+﻿namespace Stratis.DevEx.Ethereum.SolidityCompilerIO
 {
     using System;
     using System.Collections.Generic;

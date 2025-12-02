@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Threading;
-using System.Threading.Tasks;
-using Task = System.Threading.Tasks.Task;
-
-using Microsoft.VisualStudio;
+﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Workspace;
+using Microsoft.VisualStudio.Workspace.Build;
 using Microsoft.VisualStudio.Workspace.Extensions.VS;
+using Microsoft.VisualStudio.Workspace.Settings;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace Stratis.VS.StratisEVM
 {
@@ -22,29 +23,27 @@ namespace Stratis.VS.StratisEVM
 
         private static readonly Guid ProviderCommandGroup = StratisEVMPackageIds.GuidStratisEVMPackageCmdSet;
         private static readonly IReadOnlyList<CommandID> SupportedCommands = new List<CommandID>
-            {
-                new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd1Id),
-                new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd4Id),
-                //new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd2Id),
-            };
+        {
+            new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd1Id),
+            new CommandID(StratisEVMPackageIds.GuidStratisEVMPackageCmdSet, StratisEVMPackageIds.Cmd4Id),
+        };
 
         public IFileContextActionProvider CreateProvider(IWorkspace workspaceContext)
         {
             return new SolidityFileContextActionProvider(workspaceContext);
         }
 
-        public IReadOnlyCollection<CommandID> GetSupportedVsCommands()
-        {
-            return SupportedCommands;
-        }
-
+        public IReadOnlyCollection<CommandID> GetSupportedVsCommands() => SupportedCommands;
+        
         internal class SolidityFileContextActionProvider : IFileContextActionProvider
         {
             private IWorkspace workspaceContext;
+            private string workingFolder;
 
             internal SolidityFileContextActionProvider(IWorkspace workspaceContext)
             {
                 this.workspaceContext = workspaceContext;
+                this.workingFolder = workspaceContext.Location;
             }
 
             public Task<IReadOnlyList<IFileContextAction>> GetActionsAsync(string filePath, FileContext fileContext, CancellationToken cancellationToken)
@@ -66,7 +65,7 @@ namespace Stratis.VS.StratisEVM
                         "Analyze Solidity File" + fileContext.DisplayName,
                         async (fCtxt, progress, ct) =>
                         {
-                            await SolidityCompiler.CompileFileAsync(filePath, fileContext.InputFiles.First());
+                            await SolidityCompiler.AnalyzeAsync(filePath, workingFolder, workingFolder, "0.8.27");
                         }
                     ),
                 });

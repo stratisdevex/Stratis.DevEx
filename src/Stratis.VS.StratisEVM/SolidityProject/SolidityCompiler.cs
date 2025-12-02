@@ -138,6 +138,34 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
+        public static string GetSolcVersion(string projectDir)
+        {
+            var packagejsonFilePath = Path.Combine(projectDir, "package.json");
+            if (!File.Exists(packagejsonFilePath))
+            {
+                return null;
+            }
+            
+            var packagejson = PackageJsonFile.Parse(File.ReadAllText(packagejsonFilePath));
+            if (packagejson.Dependencies.ContainsKey("solc"))
+            {
+                return packagejson.Dependencies["solc"];
+            }
+            else
+            {
+                packagejsonFilePath = Path.Combine(projectDir, "node_modules", "solc", "package.json");
+                if (!File.Exists(packagejsonFilePath))
+                {
+                    return null;
+                }
+                else
+                {
+                    packagejson = PackageJsonFile.Parse(File.ReadAllText(packagejsonFilePath));
+                    return packagejson.Version;
+                }
+            }
+
+        }
         public static async Task<bool> InstallSolcCompilerAsync(string compilerVersion)
         {
             string solcPath = Path.Combine(TaskToolsDir, ".solc-select", "artifacts", "solc-" + compilerVersion, "solc-" + compilerVersion);
@@ -165,8 +193,15 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public static async Task<SlitherAnalysis> AnalyzeAsync(string relativeFilePath, string projectDir, string outputDir, string compilerVersion)
+        public static async Task<SlitherAnalysis> AnalyzeAsync(string filePath, string projectDir, string outputDir, string compilerVersion)
         {
+            var relativeFilePath = GetWindowsRelativePath(filePath, projectDir);
+            var solcversion = GetSolcVersion(projectDir);
+            if (solcversion is null)
+            {
+                VSUtil.LogError("StratisEVM", "Could not determine solc version. Falling back to 0.8.27.");
+                solcversion = "0.8.27";
+            }
             if (!await InstallSolcCompilerAsync(compilerVersion))
             {
                 VSUtil.LogError("StratisEVM", $"Could not install solc {compilerVersion} compiler.");
@@ -174,18 +209,18 @@ namespace Stratis.VS.StratisEVM
             }
             string slitherAnalysisOutputPath = Path.Combine(outputDir, relativeFilePath + "slither-analysis.json");
             string solcPath = Path.Combine(TaskToolsDir, ".solc-select", "artifacts", "solc-" + compilerVersion, "solc-" + compilerVersion);
-            var solfile = Path.Combine(projectDir, relativeFilePath);
-            string slitherargs = $"\"{solfile}\" --compile-force-framework solc --solc \"{solcPath}\" --solc-args \"--base-path {projectDir} --include-path {Path.Combine(projectDir, "node_modules")} \" --json {slitherAnalysisOutputPath}";            
+            //var solfile = Path.Combine(projectDir, relativeFilePath);
+            string slitherargs = $"\"{filePath}\" --compile-force-framework solc --solc \"{solcPath}\" --solc-args \"--base-path {projectDir} --include-path {Path.Combine(projectDir, "node_modules")} \" --json {slitherAnalysisOutputPath}";            
             var slithercmdrun = await RunCmdAsync(SlitherPath, slitherargs, projectDir);
-            if (slithercmdrun.ContainsKey("stderr") && ((string)slithercmdrun["stderr"]).Contains($"{solfile} analyzed"))
+            if (slithercmdrun.ContainsKey("stderr") && ((string)slithercmdrun["stderr"]).Contains($"{filePath} analyzed"))
             {
                 var r = JsonConvert.DeserializeObject<SlitherAnalysis>(File.ReadAllText(slitherAnalysisOutputPath));
-                VSUtil.LogInfo("StratisEVM", $"Slither analysis of {solfile} completed successfully.");
+                VSUtil.LogInfo("StratisEVM", $"Slither analysis of {filePath} completed successfully.");
                 return r;
             }
             else
             {
-                VSUtil.LogError("StratisEVM", $"Slither analysis of {solfile} did not complete successfully.");
+                VSUtil.LogError("StratisEVM", $"Slither analysis of {filePath} did not complete successfully.");
                 return null;
             }
         }

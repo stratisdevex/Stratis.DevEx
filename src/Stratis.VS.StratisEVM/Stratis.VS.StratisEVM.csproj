@@ -48,6 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="SolidityProject\SlitherAnalysis.cs" />
+    <Compile Include="SolidityProject\SolidityBuildContextProviderFactory.cs" />
     <Compile Include="SolidityProject\SolidityCompilerIO.cs" />
     <Compile Include="UI\BlockchainExplorer\Converters.cs" />
     <Compile Include="UI\DeploySolidityProject\DeploySolidityProjectToolWindow.cs" />

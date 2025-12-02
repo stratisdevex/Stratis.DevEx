@@ -6,6 +6,9 @@ using System.Text;
 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Newtonsoft.Json;
+
+using Stratis.DevEx.Ethereum.SolidityCompilerIO;
 
 namespace Stratis.DevEx.Ethereum
 {
@@ -27,7 +30,9 @@ namespace Stratis.DevEx.Ethereum
 
         public static List<string> GetContractNames(string filepath) => new SolidityFileParser(filepath).contractNames;
 
-        public static Dictionary<string, Dictionary<string, string>> GetConstructorParameters(string filepath) => new SolidityFileParser(filepath).constructorParameters;       
+        public static Dictionary<string, Dictionary<string, string>> GetConstructorParameters(string filepath) => new SolidityFileParser(filepath).constructorParameters;
+
+        public PackageJsonFile ParsePackageJsonFile(string filePath) => JsonConvert.DeserializeObject<PackageJsonFile>(File.ReadAllText(filePath));
         #endregion
 
         #region Overrides
@@ -68,10 +73,20 @@ namespace Stratis.DevEx.Ethereum
 
             base.EnterFunctionDefinition(context);
         }
+
+        public override void ExitPragmaDirective([NotNull] SolidityParser.PragmaDirectiveContext context)
+        {
+            if (context.children.Count == 4 && context.children[0].GetText() == "pragma" && context.children[1].GetText() == "solidity")
+            {
+                solidityVersionRange = context.children[2].GetText();
+            }
+            base.ExitPragmaDirective(context);
+        }
         #endregion
 
         #region Fields
         public List<string> contractNames = new List<string>();
+        public string solidityVersionRange;
         public List<RecognitionException> exceptions = new List<RecognitionException>();
         protected SolidityParser parser;
 
