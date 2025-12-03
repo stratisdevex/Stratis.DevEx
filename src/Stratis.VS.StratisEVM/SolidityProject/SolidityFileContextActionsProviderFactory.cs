@@ -65,7 +65,7 @@ namespace Stratis.VS.StratisEVM
                         "Analyze Solidity File" + fileContext.DisplayName,
                         async (fCtxt, progress, ct) =>
                         {
-                            await SolidityCompiler.AnalyzeAsync(filePath, workingFolder, workingFolder, "0.8.27");
+                            await SolidityCompiler.AnalyzeAsync(filePath, workingFolder, workingFolder, null);
                         }
                     ),
                 });

@@ -33,6 +33,8 @@ namespace Stratis.DevEx.Ethereum
         public static Dictionary<string, Dictionary<string, string>> GetConstructorParameters(string filepath) => new SolidityFileParser(filepath).constructorParameters;
 
         public PackageJsonFile ParsePackageJsonFile(string filePath) => JsonConvert.DeserializeObject<PackageJsonFile>(File.ReadAllText(filePath));
+
+        public static string GetSolidityVersionRange(string filepath) => new SolidityFileParser(filepath).solidityVersionRange;
         #endregion
 
         #region Overrides

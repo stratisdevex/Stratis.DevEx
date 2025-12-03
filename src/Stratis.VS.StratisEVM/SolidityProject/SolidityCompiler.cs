@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 using Newtonsoft.Json;
 using Stratis.DevEx;
+using Stratis.DevEx.Ethereum;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -138,31 +139,26 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public static string GetSolcVersion(string projectDir)
+        public static string GetSolcVersion(string filepath, string projectDir)
         {
             var packagejsonFilePath = Path.Combine(projectDir, "package.json");
-            if (!File.Exists(packagejsonFilePath))
+            if (File.Exists(packagejsonFilePath))
             {
-                return null;
+                var packagejson = PackageJsonFile.Parse(File.ReadAllText(packagejsonFilePath));
+                if (packagejson.Dependencies.ContainsKey("solc"))
+                {
+                    return packagejson.Dependencies["solc"];
+                }
             }
-            
-            var packagejson = PackageJsonFile.Parse(File.ReadAllText(packagejsonFilePath));
-            if (packagejson.Dependencies.ContainsKey("solc"))
+            var solidityversion = SolidityFileParser.GetSolidityVersionRange(filepath);
+            if ( solidityversion.StartsWith("^"))
             {
-                return packagejson.Dependencies["solc"];
+                return solidityversion.Substring(1);
             }
             else
             {
-                packagejsonFilePath = Path.Combine(projectDir, "node_modules", "solc", "package.json");
-                if (!File.Exists(packagejsonFilePath))
-                {
-                    return null;
-                }
-                else
-                {
-                    packagejson = PackageJsonFile.Parse(File.ReadAllText(packagejsonFilePath));
-                    return packagejson.Version;
-                }
+                VSUtil.LogError("StratisEVM", $"Could not parse Solidity file version {solidityversion}.");
+                return null;
             }
 
         }
@@ -176,7 +172,7 @@ namespace Stratis.VS.StratisEVM
             var solcselectpath = Path.Combine(TaskToolsDir, "solc-select.exe");
             if (!File.Exists(solcselectpath))
             {
-                VSUtil.LogError("StratsEVM", "Could not find solc-select executable.");
+                VSUtil.LogError("StratisEVM", "Could not find solc-select executable.");
                 return false;
 
             }
@@ -193,14 +189,14 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public static async Task<SlitherAnalysis> AnalyzeAsync(string filePath, string projectDir, string outputDir, string compilerVersion)
+        public static async Task<SlitherAnalysis> AnalyzeAsync(string filePath, string projectDir, string outputDir, string compilerVersion = null)
         {
             var relativeFilePath = GetWindowsRelativePath(filePath, projectDir);
-            var solcversion = GetSolcVersion(projectDir);
-            if (solcversion is null)
+            compilerVersion = compilerVersion ?? GetSolcVersion(filePath, projectDir);
+            if (compilerVersion is null)
             {
                 VSUtil.LogError("StratisEVM", "Could not determine solc version. Falling back to 0.8.27.");
-                solcversion = "0.8.27";
+                compilerVersion = "0.8.27";
             }
             if (!await InstallSolcCompilerAsync(compilerVersion))
             {
@@ -209,18 +205,19 @@ namespace Stratis.VS.StratisEVM
             }
             string slitherAnalysisOutputPath = Path.Combine(outputDir, relativeFilePath + "slither-analysis.json");
             string solcPath = Path.Combine(TaskToolsDir, ".solc-select", "artifacts", "solc-" + compilerVersion, "solc-" + compilerVersion);
-            //var solfile = Path.Combine(projectDir, relativeFilePath);
-            string slitherargs = $"\"{filePath}\" --compile-force-framework solc --solc \"{solcPath}\" --solc-args \"--base-path {projectDir} --include-path {Path.Combine(projectDir, "node_modules")} \" --json {slitherAnalysisOutputPath}";            
+            string slitherargs = $"\"{filePath}\" --compile-force-framework solc --solc \"{solcPath}\" --solc-args \"--base-path {projectDir} --include-path {Path.Combine(projectDir, "node_modules")} \" --json -";            
             var slithercmdrun = await RunCmdAsync(SlitherPath, slitherargs, projectDir);
-            if (slithercmdrun.ContainsKey("stderr") && ((string)slithercmdrun["stderr"]).Contains($"{filePath} analyzed"))
+            var stdout = slithercmdrun.ContainsKey("stdout") ? (string)slithercmdrun["stdout"] : "";
+            var stderr = slithercmdrun.ContainsKey("stderr") ? (string)slithercmdrun["stderr"] : "";
+            if (stdout.Contains("\"success\": true"))
             {
-                var r = JsonConvert.DeserializeObject<SlitherAnalysis>(File.ReadAllText(slitherAnalysisOutputPath));
+                var r = JsonConvert.DeserializeObject<SlitherAnalysis>(stdout);
                 VSUtil.LogInfo("StratisEVM", $"Slither analysis of {filePath} completed successfully.");
                 return r;
             }
             else
             {
-                VSUtil.LogError("StratisEVM", $"Slither analysis of {filePath} did not complete successfully.");
+                VSUtil.LogError("StratisEVM", $"Slither analysis of {filePath} did not complete successfully. {stdout} {stderr}");
                 return null;
             }
         }
