@@ -66,6 +66,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             {
                 switch (Kind)
                 {
+                    case SolidityStaticAnalysisInfoKind.Detector:
+                        return (string)Data["Description"];
                     default:
                         return Name;
                 }
@@ -121,6 +123,12 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         }
 
         public string AssemblyLocation => Runtime.AssemblyLocation;
+
+        public SolidityStaticAnalysisInfo High => TryFindObjectByName("High");
+        public SolidityStaticAnalysisInfo Medium => TryFindObjectByName("Medium");
+        public SolidityStaticAnalysisInfo Low => TryFindObjectByName("Low");
+        public SolidityStaticAnalysisInfo Informational => TryFindObjectByName("Informational");
+        public SolidityStaticAnalysisInfo Optimization => TryFindObjectByName("Optimization");
         #endregion
 
         #region Methods
@@ -160,7 +168,50 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             return null;
         }
 
+        public void ClearAnalysis()
+        {
+            High.Children.Clear();
+            Medium.Children.Clear();
+            Low.Children.Clear();
+            Informational.Children.Clear();
+            Optimization.Children.Clear();
+        }
         
+        public void AddDetectorResult(Detector detector)
+        {            
+            var impact = detector.impact.ToLower();
+            SolidityStaticAnalysisInfo parent;
+            switch (impact)
+            {
+                case "high":
+                    parent = High;
+                    break;
+                case "medium":
+                    parent = Medium;
+                    break;
+                case "low":
+                    parent = Low;
+                    break;
+                case "informational":
+                    parent = Informational;
+                    break;
+                case "optimization":
+                    parent = Optimization;
+                    break;
+                default: throw new ArgumentException($"Unknown detector impact level: {impact}");
+            }
+            parent.AddChild(detector.id, SolidityStaticAnalysisInfoKind.Detector, new Dictionary<string, object>()
+            {
+                { "Description", detector.description },
+                { "Markdown", detector.markdown },
+                { "FirstMarkdownElement", detector.first_markdown_element },
+                { "Id", detector.id },
+                { "Check", detector.check },
+                { "Impact", detector.impact },
+                { "Confidence", detector.confidence },
+                { "Elements", detector.elements }
+            });
+        }
         public static ObservableCollection<SolidityStaticAnalysisInfo> CreateInitialTreeData()
         {
             var data = new ObservableCollection<SolidityStaticAnalysisInfo>();

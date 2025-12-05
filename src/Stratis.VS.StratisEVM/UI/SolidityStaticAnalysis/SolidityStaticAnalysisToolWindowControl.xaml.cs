@@ -31,10 +31,16 @@ namespace Stratis.VS.StratisEVM.UI
 
        
         
-        public void AnalyzeProjectFileItem(ProjectItem item, SlitherAnalysis analysis)
+        public void AnalyzeProjectFileItem(string filePath, string projectDir, SlitherAnalysis analysis)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            
+            var root =  SolidityStaticAnalysisTree.RootItem;
+            var vm = (SolidityStaticAnalysisViewModel)TryFindResource("StaticAnalysis");
+            vm.ClearAnalysis();                      
+            foreach (var d in analysis.results.detectors)
+            {
+                vm.AddDetectorResult(d);
+            }            
         }
 
         private SolidityStaticAnalysisInfo GetSelectedItem(object sender)

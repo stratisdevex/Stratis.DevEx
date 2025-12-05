@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Workspace;
 using Microsoft.VisualStudio.Workspace.Build;
 using Microsoft.VisualStudio.Workspace.Extensions.VS;
 using Microsoft.VisualStudio.Workspace.Settings;
+using Stratis.VS.StratisEVM.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -65,7 +66,12 @@ namespace Stratis.VS.StratisEVM
                         "Analyze Solidity File" + fileContext.DisplayName,
                         async (fCtxt, progress, ct) =>
                         {
-                            await SolidityCompiler.AnalyzeAsync(filePath, workingFolder, workingFolder, null);
+                            var r = await SolidityCompiler.AnalyzeAsync(filePath, workingFolder, workingFolder, null);
+                            if (r != null)
+                            {
+                                 var window = (SolidityStaticAnalysisToolWindow) await StratisEVMPackage.Instance.ShowToolWindowAsync(typeof(SolidityStaticAnalysisToolWindow), 0, true, StratisEVMPackage.Instance.DisposalToken);
+                                 window.control.AnalyzeProjectFileItem(filePath, workingFolder, r);
+                            }
                         }
                     ),
                 });
