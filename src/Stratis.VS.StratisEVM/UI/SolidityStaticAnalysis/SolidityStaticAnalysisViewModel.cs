@@ -1,13 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 using Stratis.DevEx;
 
@@ -67,7 +64,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 switch (Kind)
                 {
                     case SolidityStaticAnalysisInfoKind.Detector:
-                        return (string)Data["Description"];
+                        var desc = ((string)Data["Description"]).Split('\n')[0];
+                        return descRegex.Replace(desc, "");                        
                     default:
                         return Name;
                 }
@@ -84,8 +82,10 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         }
 
         public SolidityStaticAnalysisInfo AddFolder(string name) => AddChild(name, SolidityStaticAnalysisInfoKind.Folder);
-        
+
         #endregion
+
+        static Regex descRegex = new Regex("\\s\\(.+\\)\\:", RegexOptions.Compiled);
     }
 
     public class SolidityStaticAnalysisViewModel : INotifyPropertyChanged
@@ -237,5 +237,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         ///</summary>
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
+
+        
     }
 }
