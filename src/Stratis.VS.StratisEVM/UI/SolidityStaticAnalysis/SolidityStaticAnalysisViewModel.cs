@@ -13,7 +13,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
     public enum SolidityStaticAnalysisInfoKind
     {
         Folder,
-        Detector
+        Detector,
+        DetectorProperty
     }
 
     public class SolidityStaticAnalysisInfo
@@ -65,7 +66,9 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 {
                     case SolidityStaticAnalysisInfoKind.Detector:
                         var desc = ((string)Data["Description"]).Split('\n')[0];
-                        return descRegex.Replace(desc, "");                        
+                        return descRegex.Replace(desc, "");
+                    case SolidityStaticAnalysisInfoKind.DetectorProperty:
+                        return (string)Data["Name"] + ": " + (string)Data["Value"];
                     default:
                         return Name;
                 }
@@ -200,7 +203,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                     break;
                 default: throw new ArgumentException($"Unknown detector impact level: {impact}");
             }
-            parent.AddChild(detector.id, SolidityStaticAnalysisInfoKind.Detector, new Dictionary<string, object>()
+            var d = parent.AddChild(detector.id, SolidityStaticAnalysisInfoKind.Detector, new Dictionary<string, object>()
             {
                 { "Description", detector.description },
                 { "Markdown", detector.markdown },
@@ -210,6 +213,16 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                 { "Impact", detector.impact },
                 { "Confidence", detector.confidence },
                 { "Elements", detector.elements }
+            });
+            d.AddChild("check", SolidityStaticAnalysisInfoKind.DetectorProperty, new Dictionary<string, object>()
+            {
+                {"Name", "Check" },
+                {"Value", detector.check }
+            });
+            d.AddChild("confidence", SolidityStaticAnalysisInfoKind.DetectorProperty, new Dictionary<string, object>()
+            {
+                {"Name", "Confidence" },
+                {"Value", detector.confidence }
             });
         }
         public static ObservableCollection<SolidityStaticAnalysisInfo> CreateInitialTreeData()
