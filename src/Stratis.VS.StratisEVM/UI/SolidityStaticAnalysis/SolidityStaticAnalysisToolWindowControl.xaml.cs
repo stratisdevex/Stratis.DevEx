@@ -1,12 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using Stratis.DevEx;
+using Stratis.VS.StratisEVM.UI.ViewModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-
-using Microsoft.VisualStudio.Shell;
-using EnvDTE;
-using Stratis.DevEx;
-using Stratis.VS.StratisEVM.UI.ViewModel;
+using Wpf.Ui.Controls;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -20,6 +20,7 @@ namespace Stratis.VS.StratisEVM.UI
         /// </summary>
         public SolidityStaticAnalysisToolWindowControl()
         {
+            var _ = new Wpf.Ui.Markdown.Controls.MarkdownViewer();  
             this.InitializeComponent();
         }
 

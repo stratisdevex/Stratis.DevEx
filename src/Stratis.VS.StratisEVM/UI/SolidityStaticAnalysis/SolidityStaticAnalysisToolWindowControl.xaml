@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:uimd="http://schemas.lepo.co/wpfui/2022/xaml/markdown"
              xmlns:stratisui="clr-namespace:Stratis.VS.StratisEVM.UI;assembly="
              xmlns:vm="clr-namespace:Stratis.VS.StratisEVM.UI.ViewModel;assembly=" 
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0" 
@@ -17,6 +18,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemesDictionary Theme="{x:Static stratisui:VSTheme.ApplicationThemeGuess}" />
                 <ui:ControlsDictionary />
+                <uimd:ThemesDictionary Theme="{x:Static stratisui:VSTheme.ApplicationThemeGuess}" />
+                <uimd:ControlsDictionary />
                 <ResourceDictionary Source="SolidityStaticAnalysisResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!-- The view model that provides the data for the trees -->
@@ -37,6 +40,7 @@
                 SelectNodesOnRightClick="True"
                 IsLazyLoading="False"
                 Margin="0,0,0,10" />
+            <uimd:MarkdownViewer Markdown="Hello world" />
         </StackPanel>
         <ContentPresenter x:Name="RootContentDialog" Grid.Row="0"/>
     </Grid>

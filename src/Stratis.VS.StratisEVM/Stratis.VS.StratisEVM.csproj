@@ -236,6 +236,9 @@
     <PackageReference Include="WPF-UI">
       <Version>4.0.3</Version>
     </PackageReference>
+    <PackageReference Include="WPF-UI.Markdown">
+      <Version>4.0.2</Version>
+    </PackageReference>
     <Reference Include="System.Design" />
   </ItemGroup>
   <ItemGroup>
@@ -420,7 +423,10 @@
       <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Gu.Wpf.NumericInput'" />
       <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'BouncyCastle'" />
       <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('Nethereum'))" />
-      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('WPF-UI'))" />
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('WPF-UI'))" />	  
+	  <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('Wpf.Ui.Markdown'))" />
+	  <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('Markdig'))" />
+	  <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('ColorCode'))" />
     </ItemGroup>
   </Target>
   <!-- 
