@@ -47,7 +47,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SolidityProject\SlitherAnalysis.cs" />
+    <Compile Include="SolidityProject\SoliditySlitherAnalysis.cs" />
     <Compile Include="SolidityProject\SolidityBuildContextProviderFactory.cs" />
     <Compile Include="SolidityProject\SolidityCompilerIO.cs" />
     <Compile Include="UI\BlockchainExplorer\Converters.cs" />
@@ -236,9 +236,6 @@
     <PackageReference Include="WPF-UI">
       <Version>4.0.3</Version>
     </PackageReference>
-    <PackageReference Include="WPF-UI.Markdown">
-      <Version>4.0.2</Version>
-    </PackageReference>
     <Reference Include="System.Design" />
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +259,10 @@
     <ProjectReference Include="..\..\ext\NLog\src\NLog\NLog.csproj">
       <Project>{a0bff0db-ed9a-4639-ae86-8e709a1efc66}</Project>
       <Name>NLog</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ext\Wpf.Ui.Markdown\Wpf.Ui.Markdown.csproj">
+      <Project>{d1fb6478-62c3-c1af-67bf-11e03e44efb4}</Project>
+      <Name>Wpf.Ui.Markdown</Name>
     </ProjectReference>
     <ProjectReference Include="..\Stratis.DevEx.Base\Stratis.DevEx.Base.csproj">
       <Project>{f54aa3e2-f4bf-4c94-8ac9-a476265a70bf}</Project>
@@ -423,10 +424,10 @@
       <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Gu.Wpf.NumericInput'" />
       <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'BouncyCastle'" />
       <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('Nethereum'))" />
-      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('WPF-UI'))" />	  
-	  <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('Wpf.Ui.Markdown'))" />
-	  <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('Markdig'))" />
-	  <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('ColorCode'))" />
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('WPF-UI'))" />
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('Wpf.Ui.Markdown'))" />
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('Markdig'))" />
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.NuGetPackageId)').StartsWith('ColorCode'))" />
     </ItemGroup>
   </Target>
   <!-- 

@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Stratis.VS.StratisEVM
 {
-
-    public class SlitherAnalysis
+    public class SoliditySlitherAnalysis
     {
         public bool success { get; set; }
         public object error { get; set; }

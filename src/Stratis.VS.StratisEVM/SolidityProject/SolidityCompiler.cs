@@ -139,7 +139,7 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public static string GetSolcVersion(string filepath, string projectDir)
+        public static string TryGetSolcVersion(string filepath, string projectDir)
         {
             var packagejsonFilePath = Path.Combine(projectDir, "package.json");
             if (File.Exists(packagejsonFilePath))
@@ -189,10 +189,9 @@ namespace Stratis.VS.StratisEVM
             }
         }
 
-        public static async Task<SlitherAnalysis> AnalyzeAsync(string filePath, string projectDir, string outputDir, string compilerVersion = null)
+        public static async Task<SoliditySlitherAnalysis> AnalyzeAsync(string filePath, string projectDir, string outputDir, string compilerVersion = null)
         {
-            var relativeFilePath = GetWindowsRelativePath(filePath, projectDir);
-            compilerVersion = compilerVersion ?? GetSolcVersion(filePath, projectDir);
+            compilerVersion = compilerVersion ?? TryGetSolcVersion(filePath, projectDir);
             if (compilerVersion is null)
             {
                 VSUtil.LogError("StratisEVM", "Could not determine solc version. Falling back to 0.8.27.");
@@ -203,7 +202,7 @@ namespace Stratis.VS.StratisEVM
                 VSUtil.LogError("StratisEVM", $"Could not install solc {compilerVersion} compiler.");
                 return null;    
             }
-            string slitherAnalysisOutputPath = Path.Combine(outputDir, relativeFilePath + "slither-analysis.json");
+
             string solcPath = Path.Combine(TaskToolsDir, ".solc-select", "artifacts", "solc-" + compilerVersion, "solc-" + compilerVersion);
             string slitherargs = $"\"{filePath}\" --compile-force-framework solc --solc \"{solcPath}\" --solc-args \"--base-path {projectDir} --include-path {Path.Combine(projectDir, "node_modules")} \" --json -";            
             var slithercmdrun = await RunCmdAsync(SlitherPath, slitherargs, projectDir);
@@ -211,7 +210,7 @@ namespace Stratis.VS.StratisEVM
             var stderr = slithercmdrun.ContainsKey("stderr") ? (string)slithercmdrun["stderr"] : "";
             if (stdout.Contains("\"success\": true"))
             {
-                var r = JsonConvert.DeserializeObject<SlitherAnalysis>(stdout);
+                var r = JsonConvert.DeserializeObject<SoliditySlitherAnalysis>(stdout);
                 VSUtil.LogInfo("StratisEVM", $"Slither analysis of {filePath} completed successfully.");
                 return r;
             }

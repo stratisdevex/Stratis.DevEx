@@ -1,47 +1,39 @@
-﻿using EnvDTE;
+﻿using System.Windows.Controls;
+
 using Microsoft.VisualStudio.Shell;
-using Stratis.DevEx;
-using Stratis.VS.StratisEVM.UI.ViewModel;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Windows;
-using System.Windows.Controls;
+
 using Wpf.Ui.Controls;
+using Hardcodet.Wpf.GenericTreeView;
+
+using Stratis.VS.StratisEVM.UI.ViewModel;
 
 namespace Stratis.VS.StratisEVM.UI
 {
-    /// <summary>
-    /// Interaction logic for SolidityAnalysisToolWindowControl.
-    /// </summary>
     public partial class SolidityStaticAnalysisToolWindowControl : UserControl
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SolidityStaticAnalysisToolWindowControl"/> class.
-        /// </summary>
+        #region Constructor
         public SolidityStaticAnalysisToolWindowControl()
         {
             var _ = new Wpf.Ui.Markdown.Controls.MarkdownViewer();  
             this.InitializeComponent();
+#if IS_VSIX
+            VSTheme.WatchThemeChanges();
+            instance = this;
+#endif
         }
+        #endregion
 
-        
-        internal ToolWindowPane window;
-
-        internal static EnvDTE.Project selectedProject;
-        internal static string selectedFilePath;
-
-       
-        
-        public void AnalyzeProjectFileItem(string filePath, string projectDir, SlitherAnalysis analysis)
+        #region Methods
+        public void AnalyzeProjectFileItem(string filePath, string projectDir, SoliditySlitherAnalysis analysis)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var root =  SolidityStaticAnalysisTree.RootItem;
+            var root = SolidityStaticAnalysisTree.RootItem;
             var vm = (SolidityStaticAnalysisViewModel)TryFindResource("StaticAnalysis");
-            vm.ClearAnalysis();                      
+            vm.ClearAnalysis();
             foreach (var d in analysis.results.detectors)
             {
                 vm.AddDetectorResult(d);
-            }            
+            }
         }
 
         private SolidityStaticAnalysisInfo GetSelectedItem(object sender)
@@ -51,5 +43,24 @@ namespace Stratis.VS.StratisEVM.UI
             return tree.SelectedItem;
         }
 
+        #region Event handlers
+        private void OnSelectedItemChanged(object sender, RoutedTreeItemEventArgs<SolidityStaticAnalysisInfo> e)
+        {
+            if (sender is SolidityStaticAnalysisTree tree && tree.SelectedItem != null)
+                if (tree.SelectedItem.Kind == SolidityStaticAnalysisInfoKind.Detector)
+                {
+                    StaticAnalysisMarkdownViewer.Markdown = (string)e.NewItem.Data["Markdown"];
+                }
+        }
+        #endregion
+        
+        #endregion
+
+        #region Fields
+        internal ToolWindowPane window;
+        internal SolidityStaticAnalysisToolWindowControl instance;
+        #endregion
+
+        
     }
 }

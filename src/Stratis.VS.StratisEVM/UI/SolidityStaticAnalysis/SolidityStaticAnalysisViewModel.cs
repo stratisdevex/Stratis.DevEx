@@ -88,7 +88,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         #endregion
 
-        static Regex descRegex = new Regex("\\s\\(.+\\)\\:", RegexOptions.Compiled);
+        static Regex descRegex = new Regex("\\s\\(.+\\)\\:?", RegexOptions.Compiled);
     }
 
     public class SolidityStaticAnalysisViewModel : INotifyPropertyChanged
@@ -206,7 +206,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             var d = parent.AddChild(detector.id, SolidityStaticAnalysisInfoKind.Detector, new Dictionary<string, object>()
             {
                 { "Description", detector.description },
-                { "Markdown", detector.markdown },
+                { "Markdown", detector.markdown.Replace("\n", Environment.NewLine) },
                 { "FirstMarkdownElement", detector.first_markdown_element },
                 { "Id", detector.id },
                 { "Check", detector.check },

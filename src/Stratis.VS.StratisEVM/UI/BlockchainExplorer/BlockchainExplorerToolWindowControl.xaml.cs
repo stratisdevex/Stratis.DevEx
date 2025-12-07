@@ -41,13 +41,7 @@ namespace Stratis.VS.StratisEVM.UI
             instance = this;
             // Bug workaround, see https://github.com/microsoft/XamlBehaviorsWpf/issues/86
             var _ = new Card();
-            var __ = new BlockchainExplorerTree();
-            
-            var _x = __.Style;
-            var _y = __.Items;
-            var _z = __.TreeStyle;
-            var __xz = __.TreeNodeStyle;
-            var ____ = new Wpf.Ui.ThemeService();
+            var __ = new BlockchainExplorerTree();            
             /*
             System.Uri resourceLocater = new System.Uri("/Stratis.VS.StratisEVM;component/ui/blockchainexplorer/blockchainexplorertoolwind" +
         "owcontrol.xaml", System.UriKind.Relative);

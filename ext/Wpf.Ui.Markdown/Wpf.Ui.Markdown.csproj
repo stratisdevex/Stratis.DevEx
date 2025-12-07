@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<PackageId>WPF-UI.Markdown</PackageId>
+		<Product>WPF-UI.Markdown</Product>
+		<TargetFramework>net472</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<UseWinUI>false</UseWinUI>
+		<UseWindowsForms>false</UseWindowsForms>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<AssemblyVersion>4.0.2.0</AssemblyVersion>
+		<FileVersion>4.0.2.0</FileVersion>
+		<Version>$(VersionPrefix)4.0.2.0</Version>
+		<Authors>ema</Authors>
+		<Company>ema</Company>
+		<Description>WPF UI Markdown is based on WPF UI, and provides the simple markdown viewer.</Description>
+		<PackageProjectUrl>https://github.com/emako/wpfui.markdown</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/emako/wpfui.markdown</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>WPF-UI .NET WPF Markdown</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>wpfui.png</PackageIcon>
+		<NoWarn>1701;1702;8602;8604;8764;8600;0649;</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Resource Include="Resources\Fonts\*.ttf" />
+		<Resource Include="Resources\Images\*.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Resources\Fonts\*.ttf" />
+		<None Remove="Resources\Images\*.png" />
+	</ItemGroup>
+
+
+
+	<ItemGroup>
+		<PackageReference Include="WPF-UI" Version="4.0.2" />
+		<PackageReference Include="Markdig" Version="0.40.0" />
+		<PackageReference Include="ColorCode.Core" Version="2.0.15" />
+	</ItemGroup>
+
+
+
+</Project>
