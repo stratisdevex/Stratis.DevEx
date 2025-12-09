@@ -6,6 +6,7 @@ using Wpf.Ui.Controls;
 using Hardcodet.Wpf.GenericTreeView;
 
 using Stratis.VS.StratisEVM.UI.ViewModel;
+using Stratis.DevEx;
 
 namespace Stratis.VS.StratisEVM.UI
 {
@@ -28,12 +29,14 @@ namespace Stratis.VS.StratisEVM.UI
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var root = SolidityStaticAnalysisTree.RootItem;
+            root.Data["Label"] = Runtime.GetWindowsRelativePath(filePath, projectDir); ;
             var vm = (SolidityStaticAnalysisViewModel)TryFindResource("StaticAnalysis");
             vm.ClearAnalysis();
             foreach (var d in analysis.results.detectors)
             {
                 vm.AddDetectorResult(d);
             }
+            SolidityStaticAnalysisTree.Refresh();
         }
 
         private SolidityStaticAnalysisInfo GetSelectedItem(object sender)

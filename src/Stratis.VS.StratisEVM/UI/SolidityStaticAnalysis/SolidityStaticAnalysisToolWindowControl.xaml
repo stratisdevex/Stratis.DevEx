@@ -43,7 +43,6 @@
                 IsLazyLoading="False"
                 Margin="0,0,0,10" />
         </StackPanel>
-        <ContentPresenter x:Name="RootContentDialog" Grid.Row="0"/>
-        <uimd:MarkdownViewer Name="StaticAnalysisMarkdownViewer" Markdown="" Grid.Row="1" TextBrush="Yellow" />
+        <uimd:MarkdownViewer Name="StaticAnalysisMarkdownViewer" Grid.Row="1" HeaderBrush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" HyperlinkBrush="{DynamicResource {x:Static stratisui:VSTheme.ToolWindowTextKey}}" HyperlinkInteractive="False"  />
     </Grid>
 </UserControl>

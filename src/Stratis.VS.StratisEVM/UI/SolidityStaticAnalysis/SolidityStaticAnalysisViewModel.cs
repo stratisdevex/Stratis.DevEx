@@ -25,7 +25,10 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             Kind = kind;
             Name = name;
             Parent = parent;
-            Data = data;
+            if (data != null)
+            {
+                Data = data;
+            }                
         }
         #endregion
 
@@ -69,6 +72,8 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                         return descRegex.Replace(desc, "");
                     case SolidityStaticAnalysisInfoKind.DetectorProperty:
                         return (string)Data["Name"] + ": " + (string)Data["Value"];
+                    case SolidityStaticAnalysisInfoKind.Folder:
+                        return Data.ContainsKey("Label") ? Name + "(" + (string)Data["Label"] + ")" : Name;    
                     default:
                         return Name;
                 }
@@ -85,7 +90,6 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
         }
 
         public SolidityStaticAnalysisInfo AddFolder(string name) => AddChild(name, SolidityStaticAnalysisInfoKind.Folder);
-
         #endregion
 
         static Regex descRegex = new Regex("\\s\\(.+\\)\\:?", RegexOptions.Compiled);
@@ -102,6 +106,7 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
 
         #region Fields
         internal ObservableCollection<SolidityStaticAnalysisInfo> objects;
+        static Regex descRegex = new Regex("\\s\\(.+\\)\\:?", RegexOptions.Compiled);
         #endregion
 
         #region Properties
@@ -203,11 +208,14 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
                     break;
                 default: throw new ArgumentException($"Unknown detector impact level: {impact}");
             }
+            var fmd = detector.first_markdown_element.Split('#');
             var d = parent.AddChild(detector.id, SolidityStaticAnalysisInfoKind.Detector, new Dictionary<string, object>()
             {
-                { "Description", detector.description },
-                { "Markdown", detector.markdown.Replace("\n", Environment.NewLine) },
+                { "Description", descRegex.Replace(detector.description.Split('\n')[0], "") },
+                { "Markdown", detector.markdown.Replace("\t", "")},
                 { "FirstMarkdownElement", detector.first_markdown_element },
+                { "File", fmd[0] },
+                { "Line", fmd[1] },
                 { "Id", detector.id },
                 { "Check", detector.check },
                 { "Impact", detector.impact },
@@ -223,6 +231,11 @@ namespace Stratis.VS.StratisEVM.UI.ViewModel
             {
                 {"Name", "Confidence" },
                 {"Value", detector.confidence }
+            });
+            d.AddChild("file", SolidityStaticAnalysisInfoKind.DetectorProperty, new Dictionary<string, object>()
+            {
+                {"Name", "File" },
+                {"Value", fmd[0] }
             });
         }
         public static ObservableCollection<SolidityStaticAnalysisInfo> CreateInitialTreeData()
